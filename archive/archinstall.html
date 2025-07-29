@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+
+
+<style>
+body{
+	background-image:url('japan.jpg');
+	background-repeat:no-repeat;
+	background-attachment:fixed;
+	background-size:cover;
+}
+</style>
+
+<body style="background-color:SeaGreen;">
+
+<h1 style="background-color:MediumSeaGreen;" style="border:2px solid Violet;" style="text-align:center">Arch Linux Installation<br></h1>
+
+
+<p style="color:white;" style="border:2px solid Violet;" title="Thanks a lot!">How to install Arch on an old chromebook pixel... 
+<br>
+<!--p> Here's a video I made demonstrating Arch Linux installation, along with installing the LARBS meta-distro at the end. </p-->
+<video width="720" height="400" controls> 
+	<source
+	src="arch-install.webm"
+	type="video/webm"
+	>
+</video>
+
+<p style="background-color:SeaGreen;"> 
+### Arch Linux install <br> 
+### updated 2020-08 <br> 
+ <br> 
+ -- get wifi working <br> 
+ <br> 
+ # iwctl <br> 
+ <br>-- now you've entered the iwctl utility
+ <br>-- if it didn't start try starting the service: "systemctl start iwctl.service"
+ <br>
+ <br>-- get "device" name
+ <br># device list
+ <br>-- at this point you'll see something like "wlan0"
+ <br>
+ <br>-- use the "device" name to connect to the "SSID" of the station
+ <br>-- generic example: station "device" connect "SSID"
+ <br>-- below is a real example:
+ <br># station wlan0 connect HolstonConnectB2C2_2.4GHz_2GEXT
+ <br>-- at this point you'll be prompted for a password if you typed the above corretly and provided the corret "device" and "SSID" values
+ <br>-- to check your connection state type: "station device show"
+ <br>-- a real example:
+ <br># station wlan0 show
+ <br>-- this will allow you to see: "State: connected"
+ <br>-- quit iwd with: Ctrl+c
+ <br>
+ <br>-- you can test by using:
+ <br># ping 8.8.8.8
+ <br>-- if this works, try:
+ <br># ping archlinux.org
+ <br>-- if this works you're good to go
+ <br>
+ <br># timedatectl set-ntp true
+ <br>
+ <br>-- my approach is to use a bootable gparted usb drive to first nuke & format the drive
+ <br>-- sort out your disk stuff; leaving that out of this list
+ <br>-- suggest fdisk https://wiki.archlinux.org/index.php/Fdisk
+ <br>-- then format
+ <br># mkfs.ext4 /dev/sdx1
+ <br>
+ <br>-- mount the partition
+ <br># mount /dev/sdx1 /mnt
+ <br>-- (you will genfstab later)
+ <br>
+ <br>-- pacstrap to mounted volume
+ <br># pacstrap /mnt base base-devel linux linux-firmware
+ <br>
+ <br>-- now generate fstab
+ <br># genfstab -U /mnt >> /mnt/etc/fstab
+ <br>-- check it
+ <br># cat /mnt/etc/fstab
+ <br>
+ <br>-- chroot to the fresh install
+ <br># arch-chroot /mnt
+ <br>
+ <br>-- set the timezone
+ <br># ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
+ <br>
+ <br>-- set the hardware clock
+ <br># hwclock --systohc
+ <br>
+ <br>-- follow "Localization" steps; uncomment en_US.UTF-8 in /etc/locale.gen and run
+ <br># pacman -S vim
+ <br># vim /etc/locale.gen
+ <br># locale-gen
+ <br>
+ <br>-- create /etc/locale.conf
+ <br># vim /etc/locale.conf
+ <br>-- write in it
+ <br>LANG=en_US.UTF-8
+ <br>
+ <br>-- skip "set the keyboard layout"
+ <br>
+ <br>-- follow the "Network configuration" section
+ <br>-- create /etc/hostname & write desired hostname value in it
+ <br>-- create the /etc/hosts file and populate as usual
+ <br>
+ <br>127.0.0.1       localhost
+ <br>::1             localhost
+ <br>127.0.1.1       myhostname.localdomain  myhostname
+ <br>
+ <br>-- set root password
+ <br># passwd
+ <br>
+ <br>-- install grub
+ <br># pacman -S grub --noconfirm
+ <br># grub-install /dev/sdx
+ <br>-- ofc replace X with yours (usually "a")
+ <br># grub-mkconfig -o /boot/grub/grub.cfg
+ <br>
+ <br>-- install microcode loader and stuff
+ <br># pacman -S intel-ucode --noconfirm
+ <br># pacman -S networkmanager
+ <br>
+ <br>-- install larbs
+ <br># curl -LO larbs.xyz/larbs.sh
+ <br># bash larbs.sh
+ <br>-- enter username: "user" or something else
+ <br>-- after completion, you're returned back to chroot; exit that
+ <br>
+ <br>-- check for libxft-bgra
+ <br>-- might need to install libxft-bgra-git
+ <br>
+ <br># exit
+ <br>-- now you're back in the install environment; shut down
+ <br># shutdown now
+ <br>
+ <br>-- when you come back, you'll need to start and enable "NetworkManager.service"
+ <br># sudo systemctl start NetworkManager.service && sudo systemctl status NetworkManager.service
+ <br>
+ <br>-- vpn ( tried several things.. not totally sure)
+ <br># yay -S cisco-anyconnect anyconnect-client
+ <br>--- download the installed from vpn.k12.com, hack the .cache/yay/$package/PKGBUILD to spec rev number of .sh downloaded from vpn.k12.com
+ <br>--- the real mystery was solved by installing webkit2gtk
+ <br># yay -S webkit2gtk
+ <br>
+ <br>-- other things.. at the time of writing, you do need to install networkmanager
+ <br># yay -S code networkmanager htop gotop
+ <br># sudo pacman -S wpa_supplicant dhcpcd
+ </P>
+</body>
+</html>

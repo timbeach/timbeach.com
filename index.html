@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Timothy D Beach</title>
+  <link rel="shortcut icon" href="icons8-orthodox-cross-50.png" type="image/png" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --background: #0d0d0d;
+      --foreground: #00ff9f;
+      --highlight: #ff3cac;
+      --glow: rgba(0, 255, 159, 0.9);
+      --scanline: rgba(255,255,255,0.04);
+      --marquee-duration: 15s;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; padding: 0;
+      background-color: var(--background);
+      color: var(--foreground);
+      font-family: 'Share Tech Mono', monospace;
+      text-shadow: 0 0 6px var(--glow);
+      position: relative; overflow-x: hidden;
+    }
+    header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+      border-bottom: 2px solid var(--highlight);
+      animation: glow-pulse 3s infinite ease-in-out;
+      position: relative; z-index: 2;
+    }
+    header h1 {
+      font-size: 2.5rem;
+      color: var(--highlight);
+      margin: 0;
+    }
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: rgba(20,20,20,0.8);
+      border: 1px solid var(--foreground);
+      box-shadow: 0 0 25px var(--glow);
+      position: relative; z-index: 2;
+    }
+    h2 {
+      text-transform: uppercase;
+      color: var(--highlight);
+      border-left: 5px solid var(--highlight);
+      padding-left: 1rem;
+      margin-top: 2rem;
+      position: relative;
+    }
+    h2::after {
+      content: '';
+      display: block;
+      height: 1px;
+      background: var(--foreground);
+      margin-top: 0.5rem;
+      box-shadow: 0 0 8px var(--glow);
+    }
+    p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin: 1rem 0;
+    }
+    a {
+      color: var(--foreground);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--highlight);
+      cursor: pointer;
+    }
+    a:hover {
+      color: var(--highlight);
+      text-shadow: 0 0 6px var(--highlight);
+    }
+    hr {
+      border: none;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--highlight), transparent);
+      margin: 3rem 0;
+      box-shadow: 0 0 6px var(--highlight);
+    }
+    .cursor {
+      display: inline-block;
+      width: 10px; height: 1em;
+      background-color: var(--foreground);
+      animation: blink 1s step-start infinite;
+      vertical-align: bottom;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+    @keyframes glow-pulse {
+      0% { text-shadow: 0 0 4px var(--highlight); }
+      50% { text-shadow: 0 0 15px var(--highlight); }
+      100% { text-shadow: 0 0 4px var(--highlight); }
+    }
+    .subtext {
+      font-size: 0.9rem; color: #888;
+      margin-left: 1.5rem; display: block;
+    }
+    body::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%; pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent, transparent 2px, var(--scanline) 3px);
+      z-index: 1;
+    }
+    .terminal-overlay {
+      position: fixed; top: 0; left: 0;
+      width: 100vw; height: 100vh;
+      background: #000; color: var(--foreground);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 99; text-align: left;
+      font-family: 'Share Tech Mono', monospace;
+    }
+    .terminal-box {
+      padding: 2rem; background: #111;
+      border: 2px solid var(--highlight);
+      box-shadow: 0 0 15px var(--highlight);
+      max-width: 600px; width: 90%;
+      font-size: 1.2rem; line-height: 1.5;
+      white-space: pre-line;
+    }
+    .now-playing {
+      margin: 3rem auto 1rem;
+      padding: 1rem;
+      background: #111;
+      border: 1px solid var(--highlight);
+      box-shadow: 0 0 10px var(--glow);
+      max-width: 800px;
+      font-size: 1.1rem;
+      position: relative;
+      overflow: visible;
+    }
+    .marquee-wrapper { overflow: hidden; white-space: nowrap; }
+    .marquee {
+      display: inline-block;
+      padding-left: 100%;
+      animation: marquee var(--marquee-duration) linear infinite;
+    }
+    .marquee-wrapper:hover .marquee { animation-play-state: paused; }
+    @keyframes marquee { 0% { transform: translateX(0);} 100% { transform: translateX(-100%);} }
+    .controls { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+    .play-btn {
+      background: var(--highlight);
+      border: none;
+      color: var(--background);
+      padding: 0.3rem 0.6rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--highlight);
+      text-shadow: none;
+    }
+    .slider {
+      flex: 1; height: 8px;
+      background: var(--foreground);
+      border-radius: 5px;
+      outline: none;
+      appearance: none;
+      box-shadow: 0 0 8px var(--highlight);
+    }
+    .slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 18px; height: 18px;
+      border-radius: 50%; background: var(--highlight);
+      cursor: pointer; box-shadow: 0 0 4px var(--highlight);
+    }
+    .slider::-moz-range-thumb {
+      width: 18px; height: 18px;
+      border-radius: 50%; background: var(--highlight);
+      cursor: pointer;
+    }
+    .progress-bar {
+      width: 100%; height: 4px;
+      background: var(--background);
+      border: none; margin-top: 0.5rem;
+    }
+    .progress-bar::-webkit-progress-value { background: var(--highlight); }
+    .progress-bar::-moz-progress-bar { background: var(--highlight); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Timothy D Beach</h1>
+  </header>
+  <div class="container">
+    <div class="content">
+      <h2>Software Engineering</h2>
+      <p>20+ years of solving hard problems quietly <span class="cursor"></span></p>
+    </div>
+    <div class="content">
+      <hr>
+      <h2>Portals</h2>
+      <p>
+        <a href="#" onclick="launchTerminal('https://aegixlinux.org')">Aegix Linux website</a>
+        <span class="subtext">-&gt; the GNU/Linux distro project I started w/ my soulmate 💕</span>
+      </p>
+      <p>
+        <a href="#" onclick="launchTerminal('https://omostholytheotokos.com')">O Most Holy Theotokos dot com</a>
+        <span class="subtext">-&gt; Orthodox Christian prayer audio w/ a blessing from Holy Cross Monastery in WV</span>
+      </p>
+    </div>
+  </div>
+  <div id="terminal" class="terminal-overlay" style="display:none;">
+    <div class="terminal-box" id="terminal-box"></div>
+  </div>
+  <div class="now-playing">
+    <div class="marquee-wrapper">
+      <div class="marquee">&gt; now playing: “Taiko Flourish” – Trashh Panda [Orchestral / Rock]</div>
+    </div>
+    <div class="controls">
+      <button id="playBtn" class="play-btn">&gt;</button>
+      <input id="volumeSlider" type="range" min="0" max="1" step="0.01" value="0.5" class="slider" />
+    </div>
+    <progress id="progressBar" class="progress-bar" value="0" max="1"></progress>
+    <audio id="bgAudio" src="taiko.mp3" loop muted></audio>
+  </div>
+  <script>
+    function launchTerminal(url) {
+      const terminal = document.getElementById('terminal');
+      const box = document.getElementById('terminal-box');
+      const messages = [
+        '> deflecting spiritual malware...',
+        '> blessing packets...',
+        '> negotiating secure socket handshake...',
+        '> tunneling through firewall...',
+        '> rewriting bash history...'
+      ];
+      const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+      terminal.style.display = 'flex';
+      box.textContent = '> connecting to ' + url + '...';
+      setTimeout(() => { box.textContent += '\n> handshaking...'; }, 800);
+      setTimeout(() => { box.textContent += '\n' + randomMessage; }, 1600);
+      setTimeout(() => { box.textContent += '\n> launching portal...'; }, 2400);
+      setTimeout(() => {
+        window.open(url, '_blank');
+        terminal.style.display = 'none';
+      }, 3400);
+    }
+    const audioEl = document.getElementById('bgAudio');
+    const slider  = document.getElementById('volumeSlider');
+    const btn     = document.getElementById('playBtn');
+    const progress = document.getElementById('progressBar');
+    audioEl.volume = slider.value;
+    btn.addEventListener('click', () => {
+      if (audioEl.paused) { audioEl.play(); btn.textContent = '='; }
+      else { audioEl.pause(); btn.textContent = '>'; }
+      audioEl.muted = false;
+    });
+    slider.addEventListener('input', () => {
+      if (audioEl.paused) { audioEl.play(); btn.textContent = '='; }
+      audioEl.muted = false;
+      audioEl.volume = slider.value;
+    });
+    audioEl.addEventListener('timeupdate', () => {
+      if (audioEl.duration) { progress.value = audioEl.currentTime / audioEl.duration; }
+    });
+  </script>
+</body>
+</html>
+
