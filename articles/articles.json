@@ -1,0 +1,19 @@
+{
+    "parsimony.md": {
+      "title": "Parsimony and Aegix Linux",
+      "date": "2025-07-29",
+      "tags": ["linux", "aegix", "philosophy"]
+    },
+    "simplicity.md": {
+      "title": "Simplicity in Software Engineering",
+      "date": "2025-01-10",
+      "tags": ["aegix", "philosophy", "linux"]
+    },
+    "test-article.md": {
+      "title": "Test Article: How to Add New Articles",
+      "date": "2025-07-29",
+      "tags": ["tutorial", "meta", "example"]
+    }
+}
+
+
