@@ -337,7 +337,7 @@
 </head>
 <body>
   <header>
-    <h1>Timothy D Beach</h1>
+    <h1 onclick="navigate('home')" style="cursor: pointer;">Timothy D Beach</h1>
   </header>
   
   <div class="container">
@@ -351,30 +351,7 @@
     </div>
     
     <div id="content">
-      <div class="content">
-        <h2>Software Engineering</h2>
-        <p>20+ years of solving hard problems quietly</p>
-      </div>
-      <div class="content">
-        <hr>
-        <h2>Portals</h2>
-        <ul class="file-list">
-          <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
-            <span class="subtext">-&gt; the GNU/Linux distro project I started w/ my soulmate 💕</span>
-          </li>
-          <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
-            <span class="subtext">-&gt; Orthodox Christian prayer audio w/ a blessing from Holy Cross Monastery in WV</span>
-          </li>
-        </ul>
-      </div>
-      <div class="content">
-        <hr>
-        <h2>System Files</h2>
-        <ul class="file-list">
-          <li class="file-item directory" onclick="navigate('articles')">📁 articles/</li>
-          <li class="file-item directory" onclick="navigate('projects')">📁 projects/</li>
-        </ul>
-      </div>
+      <!-- Content will be loaded by JavaScript -->
     </div>
   </div>
 
@@ -454,28 +431,30 @@ Aegix Linux exemplifies parsimony by employing a streamlined approach to its arc
 
     // Projects data (can be converted to files later too)
     projects = {
-      'aegix-linux.md': {
-        title: 'Aegix Linux Distribution',
+      'Aegix Linux': {
+        title: 'The Aegix Linux Project',
         content: `
-# Aegix Linux Distribution
+# The Aegix Linux Project
 
-A GNU/Linux distribution built with love, purpose, and Orthodox Christian values.
+A GNU/Linux distribution built with love, purpose, and parsimony.
+[aegixlinux.org](https://aegixlinux.org)
 
 ## Project Overview
 
-Aegix Linux combines the stability of Debian with a carefully curated user experience designed for developers, creators, and those who appreciate meaningful technology.
+Aegix Linux combines system simplicity with a carefully curated user experience designed for developers, creators, and those who appreciate meaningful technology.
 
 ### Key Features
-- **Lightweight yet powerful** - Optimized for both servers and desktops
+- **Lightweight yet powerful** - Optimized for minimalism
 - **Developer-focused** - Pre-configured development environments
-- **Spiritual computing** - Technology that serves higher purposes
-- **Community-driven** - Built by users, for users
+- **Human-focused computing** - Technology that serves higher purposes
+- **Community-driven** - Built by users, for users, with love
 
 ### Technical Stack
-- **Base**: Debian Stable
-- **Desktop**: GNOME with custom Orthodox theme
-- **Package Manager**: Custom wrapper around APT
-- **Security**: Hardened kernel, SELinux, encrypted by default
+- **Base**: Artix with the Runit init system
+- **Desktop**: Suckless dwm, dmenu, dwmblocks, st, and more
+- **Package Manager**: yay
+- **Security**: encrypted by default
+- **Theming**: minimalist, with a focus on readability and simplicity
 
 ## Philosophy
 
@@ -485,10 +464,11 @@ Technology should be a tool for human flourishing. Every design decision in Aegi
         `,
         date: '2025-01-20'
       },
-      'prayer-audio.md': {
-        title: 'Orthodox Prayer Audio Platform',
+      'Orthodox Prayer Audio': {
+        title: 'O Most Holy Theotokos, Save Us!',
         content: `
 # O Most Holy Theotokos - Prayer Audio Platform
+[omostholytheotokos.com](https://omostholytheotokos.com)
 
 A web platform providing high-quality Eastern Orthodox prayer recordings, blessed by Holy Cross Monastery in West Virginia.
 
@@ -499,18 +479,16 @@ To make authentic Orthodox prayers accessible to the faithful worldwide, combini
 ### Features
 - **Monastery-blessed content** - All recordings approved by Holy Cross Monastery
 - **High-quality audio** - Professional recording equipment and acoustics
-- **Multiple languages** - Church Slavonic, Greek, English
 - **Responsive design** - Works on all devices
 
 ### Technical Implementation
 - **Frontend**: Vanilla HTML/CSS/JS for fast loading
 - **Audio**: High-bitrate MP3 with progressive loading
-- **CDN**: Global distribution for worldwide access
 - **SSL**: Secure connections for all users
 
 ## Spiritual Technology
 
-This project demonstrates how modern web technology can serve ancient spiritual practices. Every line of code is written with prayer and intention.
+This project demonstrates how modern web technology can serve ancient spiritual practices. 
 
 *Visit [omostholytheotokos.com](https://omostholytheotokos.com) to experience it.*
         `,
@@ -632,6 +610,14 @@ This project demonstrates how modern web technology can serve ancient spiritual 
           </div>
           <div class="content">
             <hr>
+            <h2>System Files</h2>
+            <ul class="file-list">
+              <li class="file-item directory" onclick="navigate('articles')">📁 articles/</li>
+              <li class="file-item directory" onclick="navigate('projects')">📁 projects/</li>
+            </ul>
+          </div>
+          <div class="content">
+            <hr>
             <h2>Portals</h2>
             <ul class="file-list">
               <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
@@ -640,14 +626,6 @@ This project demonstrates how modern web technology can serve ancient spiritual 
               <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
                 <span class="subtext">-&gt; Orthodox Christian prayer audio w/ a blessing from Holy Cross Monastery in WV</span>
               </li>
-            </ul>
-          </div>
-          <div class="content">
-            <hr>
-            <h2>System Files</h2>
-            <ul class="file-list">
-              <li class="file-item directory" onclick="navigate('articles')">📁 articles/</li>
-              <li class="file-item directory" onclick="navigate('projects')">📁 projects/</li>
             </ul>
           </div>
         `;
@@ -760,8 +738,15 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       
       // Load content with smooth transition
       try {
-        // Load the actual markdown content
-        const markdownContent = await loadArticleContent(filename);
+        let markdownContent;
+        
+        if (section === 'projects' && projects[filename]) {
+          // Use built-in project content
+          markdownContent = projects[filename].content;
+        } else {
+          // Load the actual markdown content from server
+          markdownContent = await loadArticleContent(filename);
+        }
         
         // Create the new content
         const newContent = `
@@ -980,6 +965,11 @@ This project demonstrates how modern web technology can serve ancient spiritual 
 
     // Load articles on page load
     loadArticles();
+
+    // Initialize home page content
+    setTimeout(() => {
+      navigate('home');
+    }, 100);
 
     // Handle URL hash routing for direct article links
     let isHandlingHash = false; // Prevent multiple simultaneous hash handling

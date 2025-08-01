@@ -47,6 +47,7 @@ tmux kill-session -t mysession
 
 All shortcuts use the `prefix` key, which is `Ctrl+b` by default
 
+```bash
 | Action             | Key sequence             |
 | ------------------ | ------------------------ |
 | New window         | `Ctrl+b`, then `c`       |
@@ -55,16 +56,9 @@ All shortcuts use the `prefix` key, which is `Ctrl+b` by default
 | Split horizontally | `Ctrl+b`, then `%`       |
 | Move between panes | `Ctrl+b`, then arrow key |
 | Detach             | `Ctrl+b`, then `d`       |
+```
 
 You can **detach** from a session and leave it running, then **reattach** later.
-
----
-
-## 🧪 Example Workflow (SSH-safe)
-
-```bash
-`tmux new -s dev     # create and attach a session named dev # (do your work, run processes)  # Press Ctrl+b then d  --> to detach  tmux a -t dev        # reattach later  tmux kill-session -t dev  # clean up when you're done
-```
 
 ## ✅ Tips
 
