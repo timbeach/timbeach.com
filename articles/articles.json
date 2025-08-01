@@ -9,10 +9,20 @@
       "date": "2025-01-10",
       "tags": ["aegix", "philosophy", "linux"]
     },
-    "test-article.md": {
-      "title": "Test Article: How to Add New Articles",
+    "add-articles.md": {
+      "title": "How to Add New Articles to timbeach.com",
       "date": "2025-07-29",
       "tags": ["tutorial", "meta", "example"]
+    },
+    "second-aegix-user.md": {
+      "title": "Adding a Second Aegix User",
+      "date": "2025-07-30",
+      "tags": ["aegix", "philosophy", "linux"]
+    },
+    "how-tmux-works.md": {
+      "title": "How tmux Works",
+      "date": "2025-08-01",
+      "tags": ["tmux", "tutorial", "linux"]
     }
 }
 

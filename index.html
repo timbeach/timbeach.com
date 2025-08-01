@@ -46,6 +46,9 @@
       position: relative; z-index: 2;
       min-height: 400px;
     }
+    #content {
+      transition: opacity 0.2s ease-in-out;
+    }
     h2 {
       text-transform: uppercase;
       color: var(--highlight);
@@ -245,6 +248,32 @@
     }
     .file-item.executable {
       color: #81C784;
+    }
+    .search-container {
+      margin-bottom: 1rem;
+    }
+    .search-input {
+      width: 100%;
+      padding: 0.5rem;
+      background: #1a1a1a;
+      border: 1px solid var(--highlight);
+      color: var(--foreground);
+      font-family: inherit;
+      font-size: 1rem;
+      border-radius: 4px;
+      outline: none;
+    }
+    .search-input:focus {
+      box-shadow: 0 0 8px var(--highlight);
+    }
+    .article-title {
+      font-weight: bold;
+      color: var(--foreground);
+    }
+    .article-date {
+      color: #888;
+      font-size: 0.9rem;
+      margin-left: 1rem;
     }
     .article-content {
       line-height: 1.8;
@@ -558,13 +587,19 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       pwd: () => '~/' + currentPath.join('/'),
       
       tree: () => {
-        const articleFiles = Object.keys(articles).join('    ');
+        // Sort articles by date for tree display
+        const sortedArticles = Object.keys(articles).sort((a, b) => {
+          const dateA = new Date(articles[a].date);
+          const dateB = new Date(articles[b].date);
+          return dateB - dateA;
+        });
+        
         return `~/timbeach.com
 ├── portals/
 │   ├── aegix-linux*
 │   └── theotokos-portal*
 ├── articles/
-│   ${Object.keys(articles).map(file => `├── ${file}`).join('\n│   ')}
+│   ${sortedArticles.map(file => `├── ${file}`).join('\n│   ')}
 └── projects/
     ├── aegix-linux.md
     └── prayer-audio.md`;
@@ -584,6 +619,12 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         currentPath = [];
         currentView = 'home';
         breadcrumb.textContent = '~/timbeach.com';
+        // Clear URL hash when going home
+        isProgrammaticNavigation = true;
+        window.location.hash = '';
+        setTimeout(() => {
+          isProgrammaticNavigation = false;
+        }, 100);
         content.innerHTML = `
           <div class="content">
             <h2>Software Engineering</h2>
@@ -614,19 +655,65 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         currentPath = ['articles'];
         currentView = 'articles';
         breadcrumb.textContent = '~/timbeach.com/articles';
+        // Update URL hash for articles section
+        isProgrammaticNavigation = true;
+        window.location.hash = 'articles';
+        setTimeout(() => {
+          isProgrammaticNavigation = false;
+        }, 100);
+        // Sort articles by date (newest first)
+        const sortedArticles = Object.keys(articles).sort((a, b) => {
+          const dateA = new Date(articles[a].date);
+          const dateB = new Date(articles[b].date);
+          return dateB - dateA; // Newest first
+        });
+        
         content.innerHTML = `
           <button class="back-btn" onclick="navigate('home')">← back</button>
           <h2>Articles</h2>
-          <ul class="file-list">
-            ${Object.keys(articles).map(file => 
-              `<li class="file-item article" onclick="showArticle('${file}', articles['${file}'])">${file}</li>`
+          <div class="search-container">
+            <input type="text" id="articleSearch" placeholder="Search articles..." class="search-input">
+          </div>
+          <ul class="file-list" id="articleList">
+            ${sortedArticles.map(file => 
+              `<li class="file-item article" onclick="showArticle('${file}', articles['${file}'])">
+                <span class="article-title">${articles[file].title}</span>
+                <span class="article-date">${articles[file].date}</span>
+              </li>`
             ).join('')}
           </ul>
         `;
+        
+        // Add search functionality
+        const searchInput = document.getElementById('articleSearch');
+        const articleList = document.getElementById('articleList');
+        
+        searchInput.addEventListener('input', function() {
+          const searchTerm = this.value.toLowerCase();
+          const listItems = articleList.querySelectorAll('li');
+          
+          listItems.forEach(item => {
+            const title = item.querySelector('.article-title').textContent.toLowerCase();
+            const filename = item.onclick.toString().includes('showArticle') ? 
+              item.onclick.toString().match(/showArticle\('([^']+)'/)[1].toLowerCase() : '';
+            
+            if (title.includes(searchTerm) || filename.includes(searchTerm)) {
+              item.style.display = 'block';
+            } else {
+              item.style.display = 'none';
+            }
+          });
+        });
       } else if (section === 'projects') {
         currentPath = ['projects'];
         currentView = 'projects';
         breadcrumb.textContent = '~/timbeach.com/projects';
+        // Update URL hash for projects section
+        isProgrammaticNavigation = true;
+        window.location.hash = 'projects';
+        setTimeout(() => {
+          isProgrammaticNavigation = false;
+        }, 100);
         content.innerHTML = `
           <button class="back-btn" onclick="navigate('home')">← back</button>
           <h2>Projects</h2>
@@ -639,9 +726,21 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       }
     }
 
+    let isShowingArticle = false; // Prevent multiple simultaneous article loads
+    
     async function showArticle(filename, article) {
+      if (isShowingArticle) return; // Prevent multiple simultaneous loads
+      
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
+      
+      // Determine the section based on where we are
+      let section = 'articles';
+      if (currentPath.length > 0) {
+        section = currentPath[0];
+      } else if (currentView === 'projects') {
+        section = 'projects';
+      }
       
       // Add to path
       if (currentPath.length === 1) {
@@ -650,30 +749,53 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       
       breadcrumb.textContent = '~/timbeach.com/' + currentPath.join('/');
       
-      // Show loading terminal effect with more realistic messages
-      showLoadingTerminal(`Downloading ${filename} from remote server...`, async () => {
-        try {
-          // Load the actual markdown content
-          const markdownContent = await loadArticleContent(filename);
-          
-          content.innerHTML = `
-            <button class="back-btn" onclick="navigate('${currentPath[0]}')">← back to ${currentPath[0]}/</button>
-            <div class="article-content">
-              ${parseMarkdown(markdownContent)}
-            </div>
-          `;
-        } catch (error) {
-          content.innerHTML = `
-            <button class="back-btn" onclick="navigate('${currentPath[0]}')">← back to ${currentPath[0]}/</button>
-            <div class="article-content">
-              <h2 style="color: var(--highlight);">Connection Failed</h2>
-              <p>Could not load article "${filename}". Please check your connection or try again later.</p>
-              <pre style="color: #888;">Error: ${error.message}</pre>
-            </div>
-          `;
-        }
-        currentPath.pop(); // Remove filename from path after loading
-      });
+      // Update URL hash for direct linking
+      isProgrammaticNavigation = true;
+      window.location.hash = `${section}/${filename}`;
+      setTimeout(() => {
+        isProgrammaticNavigation = false;
+      }, 100);
+      
+      isShowingArticle = true;
+      
+      // Load content with smooth transition
+      try {
+        // Load the actual markdown content
+        const markdownContent = await loadArticleContent(filename);
+        
+        // Create the new content
+        const newContent = `
+          <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
+          <div class="article-content">
+            ${parseMarkdown(markdownContent)}
+          </div>
+        `;
+        
+        // Update content smoothly
+        content.style.opacity = '0';
+        setTimeout(() => {
+          content.innerHTML = newContent;
+          content.style.opacity = '1';
+        }, 150);
+        
+      } catch (error) {
+        const errorContent = `
+          <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
+          <div class="article-content">
+            <h2 style="color: var(--highlight);">Connection Failed</h2>
+            <p>Could not load article "${filename}". Please check your connection or try again later.</p>
+            <pre style="color: #888;">Error: ${error.message}</pre>
+          </div>
+        `;
+        
+        content.style.opacity = '0';
+        setTimeout(() => {
+          content.innerHTML = errorContent;
+          content.style.opacity = '1';
+        }, 150);
+      }
+      currentPath.pop(); // Remove filename from path after loading
+      isShowingArticle = false; // Reset flag when done
     }
 
     function parseMarkdown(content) {
@@ -753,6 +875,7 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       ];
       
       terminal.style.display = 'flex';
+      box.textContent = ''; // Clear any previous content
       let i = 0;
       
       function showNextMessage() {
@@ -763,12 +886,13 @@ This project demonstrates how modern web technology can serve ancient spiritual 
             box.textContent += '\n' + messages[i];
           }
           i++;
-          setTimeout(showNextMessage, 600);
+          setTimeout(showNextMessage, 800); // Slightly slower for smoother effect
         } else {
           setTimeout(() => {
             terminal.style.display = 'none';
+            box.textContent = ''; // Clear content when hiding
             callback();
-          }, 800);
+          }, 1000);
         }
       }
       
@@ -856,6 +980,108 @@ This project demonstrates how modern web technology can serve ancient spiritual 
 
     // Load articles on page load
     loadArticles();
+
+    // Handle URL hash routing for direct article links
+    let isHandlingHash = false; // Prevent multiple simultaneous hash handling
+    
+    function handleHashRoute() {
+      if (isHandlingHash) return; // Prevent recursive calls
+      
+      const hash = window.location.hash.slice(1); // Remove the #
+      if (hash) {
+        isHandlingHash = true;
+        const [section, filename] = hash.split('/');
+        
+        if (section === 'articles' && filename) {
+          // Navigate to articles section first
+          navigate('articles');
+          // Then show the specific article
+          setTimeout(() => {
+            if (articles[filename]) {
+              showArticle(filename, articles[filename]);
+            }
+            isHandlingHash = false;
+          }, 300);
+        } else if (section === 'projects' && filename) {
+          // Navigate to projects section first
+          navigate('projects');
+          // Then show the specific project
+          setTimeout(() => {
+            if (projects[filename]) {
+              showArticle(filename, projects[filename]);
+            }
+            isHandlingHash = false;
+          }, 300);
+        } else if (section === 'articles' && !filename) {
+          // Just navigate to articles section
+          navigate('articles');
+          isHandlingHash = false;
+        } else if (section === 'projects' && !filename) {
+          // Just navigate to projects section
+          navigate('projects');
+          isHandlingHash = false;
+        } else {
+          isHandlingHash = false;
+        }
+      } else {
+        isHandlingHash = false;
+      }
+    }
+
+    let isProgrammaticNavigation = false; // Flag to prevent popstate loops
+    
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function() {
+      if (isProgrammaticNavigation) return; // Skip if we're programmatically updating hash
+      
+      const hash = window.location.hash.slice(1);
+      if (hash) {
+        const [section, filename] = hash.split('/');
+        
+        if (section === 'articles' && filename && articles[filename]) {
+          navigate('articles');
+          setTimeout(() => {
+            showArticle(filename, articles[filename]);
+          }, 100);
+        } else if (section === 'projects' && filename && projects[filename]) {
+          navigate('projects');
+          setTimeout(() => {
+            showArticle(filename, projects[filename]);
+          }, 100);
+        } else if (section === 'articles') {
+          navigate('articles');
+        } else if (section === 'projects') {
+          navigate('projects');
+        }
+      } else {
+        // Going back to home
+        navigate('home');
+      }
+    });
+
+    // Simple hash routing for initial page loads only
+    if (window.location.hash) {
+      const hash = window.location.hash.slice(1);
+      const [section, filename] = hash.split('/');
+      
+      if (section === 'articles' && filename && articles[filename]) {
+        // Navigate to articles and show the specific article
+        setTimeout(() => {
+          navigate('articles');
+          setTimeout(() => {
+            showArticle(filename, articles[filename]);
+          }, 100);
+        }, 100);
+      } else if (section === 'projects' && filename && projects[filename]) {
+        // Navigate to projects and show the specific project
+        setTimeout(() => {
+          navigate('projects');
+          setTimeout(() => {
+            showArticle(filename, projects[filename]);
+          }, 100);
+        }, 100);
+      }
+    }
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();

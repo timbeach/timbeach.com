@@ -1,4 +1,4 @@
-# How to Add Articles to This Site
+# Adding Articles to timbeach.com is parsimonious
 
 This site uses a custom, lightweight article system that makes it easy to add new content without any complex build processes or databases.
 
