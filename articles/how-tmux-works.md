@@ -22,8 +22,6 @@ tmux new-session -s timothason
 
 This creates a new tmux session named `mysession` and attaches you to it.
 
----
-
 ### 🔄 Attach to a named session
 
 ```bash

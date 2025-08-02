@@ -415,7 +415,9 @@ Aegix Linux exemplifies parsimony by employing a streamlined approach to its arc
     async function loadArticleContent(filename) {
       try {
         console.log(`Attempting to load: articles/${filename}`);
-        const response = await fetch(`articles/${filename}`);
+        // Add cache-busting parameter to prevent caching
+        const timestamp = Date.now();
+        const response = await fetch(`articles/${filename}?t=${timestamp}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
