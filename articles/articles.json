@@ -23,6 +23,11 @@
       "title": "How tmux Works",
       "date": "2025-08-01",
       "tags": ["tmux", "tutorial", "linux"]
+    },
+    "focusrite-scarlett-2i2-setup.md": {
+      "title": "Focusrite Scarlett 2i2 Setup",
+      "date": "2025-08-07",
+      "tags": ["audio", "tutorial", "linux"]
     }
 }
 
