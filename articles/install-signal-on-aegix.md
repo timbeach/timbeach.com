@@ -1,7 +1,7 @@
 # How to Install Signal on Aegix Linux
 
 ```bash
-yay -S signal-desktop
+yay -S signal-desktop --noconfirm
 ```
 
 Launch the app in a terminal with:
