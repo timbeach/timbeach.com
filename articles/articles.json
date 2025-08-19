@@ -28,6 +28,11 @@
       "title": "Focusrite Scarlett 2i2 Setup",
       "date": "2025-08-07",
       "tags": ["audio", "tutorial", "linux"]
+    },
+    "install-signal-on-aegix.md": {
+      "title": "How to Install Signal on Aegix Linux",
+      "date": "2025-08-19",
+      "tags": ["signal", "tutorial", "linux"]
     }
 }
 
