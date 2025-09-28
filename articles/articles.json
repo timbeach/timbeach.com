@@ -2,37 +2,44 @@
     "deploy-a-website.md": {
       "title": "Deploy a Website",
       "date": "2025-09-28",
-      "tags": ["tutorial", "deployment", "web"]
+      "tags": ["tutorial", "deployment", "web"],
+      "emoji": "🚀"
     },
     "install-signal-on-aegix.md": {
       "title": "Install Signal Desktop on Aegix Linux",
       "date": "2025-08-19",
-      "tags": ["signal", "tutorial", "linux"]
+      "tags": ["signal", "tutorial", "linux"],
+      "emoji": "💬"
     },
     "how-tmux-works.md": {
       "title": "How tmux Works",
       "date": "2025-08-01",
-      "tags": ["tmux", "tutorial", "linux"]
+      "tags": ["tmux", "tutorial", "linux"],
+      "emoji": "🖥️"
     },
     "second-aegix-user.md": {
       "title": "Adding a Second Aegix User",
       "date": "2025-07-30",
-      "tags": ["aegix", "philosophy", "linux"]
+      "tags": ["aegix", "philosophy", "linux"],
+      "emoji": "👥"
     },
     "parsimony.md": {
       "title": "Parsimony and Aegix Linux",
       "date": "2025-07-29",
-      "tags": ["linux", "aegix", "philosophy"]
+      "tags": ["linux", "aegix", "philosophy"],
+      "emoji": "🧘"
     },
     "add-articles.md": {
       "title": "How to Add New Articles to timbeach.com",
       "date": "2025-07-29",
-      "tags": ["tutorial", "meta", "example"]
+      "tags": ["tutorial", "meta", "example"],
+      "emoji": "📝"
     },
     "simplicity.md": {
       "title": "Simplicity in Software Engineering",
       "date": "2025-01-10",
-      "tags": ["aegix", "philosophy", "linux"]
+      "tags": ["aegix", "philosophy", "linux"],
+      "emoji": "⚡"
     }
 }
 

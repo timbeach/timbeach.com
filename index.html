@@ -566,6 +566,7 @@
             title: metadata.title,
             date: metadata.date,
             tags: metadata.tags || [],
+            emoji: metadata.emoji || '📄',
             filename: filename
           };
         }
@@ -610,7 +611,8 @@
 Aegix Linux exemplifies parsimony by employing a streamlined approach to its architecture and user experience. Built upon Artix Linux and utilizing the lightweight **Runit** init system instead of the more complex systemd, Aegix emphasizes performance, simplicity, and user control. By reducing dependencies, avoiding unnecessary layers, and adhering to straightforward POSIX-compliant scripting, Aegix Linux provides users with a clean, efficient operating environment that embodies the very principle of parsimony.
             `,
             date: '2025-07-29',
-            tags: ['linux', 'aegix', 'philosophy']
+            tags: ['linux', 'aegix', 'philosophy'],
+            emoji: '🧘'
           }
         };
       }
@@ -721,7 +723,7 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       ls: () => {
         if (currentPath.length === 0) {
           return `Recent Articles:
-${getRecentArticles(3).map(([filename, article]) => `  📄 ${article.title}`).join('\n')}
+${getRecentArticles(3).map(([filename, article]) => `  ${article.emoji} ${article.title}`).join('\n')}
 
 Projects:
   🐧 aegix-linux (external)
@@ -791,7 +793,7 @@ Directories:
 
         return `~/timbeach.com
 ├── Recent Articles
-│   ${recentArticles.map(([file, article]) => `├── 📄 ${article.title}`).join('\n│   ')}
+│   ${recentArticles.map(([file, article]) => `├── ${article.emoji} ${article.title}`).join('\n│   ')}
 ├── Projects
 │   ├── 🐧 aegix-linux (external)
 │   ├── ✨ zenshin-suru (external)
@@ -835,7 +837,7 @@ Directories:
             <ul class="file-list">
               ${recentArticles.map(([filename, article]) => `
                 <li class="file-item article" onclick="showArticle('${filename}', articles['${filename}'])">
-                  📄 ${article.title}
+                  ${article.emoji} ${article.title}
                   <span class="file-date">${article.date}</span>
                 </li>
               `).join('')}
@@ -882,9 +884,9 @@ Directories:
             <input type="text" id="articleSearch" placeholder="Search articles..." class="search-input">
           </div>
           <ul class="file-list" id="articleList">
-            ${sortedArticles.map(file => 
+            ${sortedArticles.map(file =>
               `<li class="file-item article" onclick="showArticle('${file}', articles['${file}'])">
-                <span class="article-title">${articles[file].title}</span>
+                <span class="article-title">${articles[file].emoji} ${articles[file].title}</span>
                 <span class="article-date">${articles[file].date}</span>
               </li>`
             ).join('')}
