@@ -559,7 +559,7 @@
       try {
         const response = await fetch('articles/articles.json');
         const articlesIndex = await response.json();
-        
+
         // Load each article's metadata
         for (const [filename, metadata] of Object.entries(articlesIndex)) {
           articles[filename] = {
@@ -569,6 +569,33 @@
             filename: filename
           };
         }
+
+        // Handle hash routing after articles are loaded
+        if (window.location.hash) {
+          const hash = window.location.hash.slice(1);
+          const [section, filename] = hash.split('/');
+
+          if (section === 'articles' && filename && articles[filename]) {
+            // Navigate to articles and show the specific article
+            setTimeout(() => {
+              navigate('articles');
+              setTimeout(() => {
+                showArticle(filename, articles[filename]);
+              }, 100);
+            }, 100);
+            return; // Don't run the normal home navigation
+          } else if (section === 'projects' && filename && projects[filename]) {
+            // Navigate to projects and show the specific project
+            setTimeout(() => {
+              navigate('projects');
+              setTimeout(() => {
+                showArticle(filename, projects[filename]);
+              }, 100);
+            }, 100);
+            return; // Don't run the normal home navigation
+          }
+        }
+
       } catch (error) {
         console.log('Could not load articles index, using fallback data');
         // Fallback to built-in articles if files aren't available
@@ -1166,12 +1193,14 @@ Directories:
     }
 
     // Load articles on page load
-    loadArticles();
-
-    // Initialize home page content
-    setTimeout(() => {
-      navigate('home');
-    }, 100);
+    loadArticles().then(() => {
+      // Only navigate to home if no hash routing was handled
+      if (!window.location.hash) {
+        setTimeout(() => {
+          navigate('home');
+        }, 100);
+      }
+    });
 
     // Handle URL hash routing for direct article links
     let isHandlingHash = false; // Prevent multiple simultaneous hash handling
@@ -1251,29 +1280,6 @@ Directories:
       }
     });
 
-    // Simple hash routing for initial page loads only
-    if (window.location.hash) {
-      const hash = window.location.hash.slice(1);
-      const [section, filename] = hash.split('/');
-      
-      if (section === 'articles' && filename && articles[filename]) {
-        // Navigate to articles and show the specific article
-        setTimeout(() => {
-          navigate('articles');
-          setTimeout(() => {
-            showArticle(filename, articles[filename]);
-          }, 100);
-        }, 100);
-      } else if (section === 'projects' && filename && projects[filename]) {
-        // Navigate to projects and show the specific project
-        setTimeout(() => {
-          navigate('projects');
-          setTimeout(() => {
-            showArticle(filename, projects[filename]);
-          }, 100);
-        }, 100);
-      }
-    }
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
