@@ -13,7 +13,7 @@
       --highlight: #ff3cac;
       --glow: rgba(0, 255, 159, 0.9);
       --scanline: rgba(255,255,255,0.04);
-      --marquee-duration: 15s;
+      --marquee-duration: 25s;
     }
 
     body::after {
@@ -32,6 +32,25 @@
         transparent 100%
       );
       background-size: 100% 3px;
+    }
+
+    .star {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .star-emerald { background: #50c878; animation: twinkle 4s infinite ease-in-out; }
+    .star-sapphire { background: #0f52ba; animation: twinkle 5s infinite ease-in-out; }
+    .star-ruby { background: #e0115f; animation: twinkle 3.5s infinite ease-in-out; }
+    .star-amethyst { background: #9966cc; animation: twinkle 6s infinite ease-in-out; }
+    .star-topaz { background: #ffc87c; animation: twinkle 4.5s infinite ease-in-out; }
+    .star-aquamarine { background: #7fffd4; animation: twinkle 5.5s infinite ease-in-out; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 0.8; transform: scale(1.2); }
     }
 
     * { box-sizing: border-box; }
@@ -241,6 +260,25 @@
       white-space: pre-wrap;
       display: none;
     }
+
+    .terminal-output::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .terminal-output::-webkit-scrollbar-track {
+      background: #0a0a0a;
+      border-radius: 4px;
+    }
+
+    .terminal-output::-webkit-scrollbar-thumb {
+      background: var(--foreground);
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    .terminal-output::-webkit-scrollbar-thumb:hover {
+      background: var(--highlight);
+    }
     .terminal-output.show {
       display: block;
     }
@@ -386,7 +424,7 @@
 
   <div class="now-playing">
     <div class="marquee-wrapper">
-      <div class="marquee">&gt; now playing: "Taiko Flourish" – Trashh Panda [Orchestral / Rock]</div>
+      <div class="marquee">&gt; now playing: "Taiko Flourish" – Timothy Beach [Orchestral / Rock]</div>
     </div>
     <div class="controls">
       <button id="playBtn" class="play-btn">&gt;</button>
@@ -540,7 +578,16 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       
       ls: () => {
         if (currentPath.length === 0) {
-          return `articles/    projects/`;
+          return `Recent Articles:
+${getRecentArticles(3).map(([filename, article]) => `  📄 ${article.title}`).join('\n')}
+
+Projects:
+  🐧 aegix-linux (external)
+  ✨ zenshin-suru (external)
+  🙏 theotokos-portal (external)
+
+Directories:
+  articles/`;
         } else if (currentPath[0] === 'articles') {
           return Object.keys(articles).join('    ');
         } else if (currentPath[0] === 'projects') {
@@ -592,22 +639,23 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       pwd: () => '~/' + currentPath.join('/'),
       
       tree: () => {
-        // Sort articles by date for tree display
+        // Get recent articles for tree display
+        const recentArticles = getRecentArticles(3);
         const sortedArticles = Object.keys(articles).sort((a, b) => {
           const dateA = new Date(articles[a].date);
           const dateB = new Date(articles[b].date);
           return dateB - dateA;
         });
-        
+
         return `~/timbeach.com
-├── portals/
-│   ├── aegix-linux*
-│   └── theotokos-portal*
-├── articles/
-│   ${sortedArticles.map(file => `├── ${file}`).join('\n│   ')}
-└── projects/
-    ├── aegix-linux.md
-    └── prayer-audio.md`;
+├── Recent Articles
+│   ${recentArticles.map(([file, article]) => `├── 📄 ${article.title}`).join('\n│   ')}
+├── Projects
+│   ├── 🐧 aegix-linux (external)
+│   ├── ✨ zenshin-suru (external)
+│   └── 🙏 theotokos-portal (external)
+└── articles/
+    ${sortedArticles.map(file => `├── ${file}`).join('\n    ')}`;
       },
       
       back: () => {
@@ -651,6 +699,21 @@ This project demonstrates how modern web technology can serve ancient spiritual 
               `).join('')}
             </ul>
             <p><a href="#" onclick="navigate('articles')" style="color: var(--foreground);">View all articles →</a></p>
+          </div>
+          <div class="content">
+            <hr>
+            <h2>Projects</h2>
+            <ul class="file-list">
+              <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
+                <span class="subtext">GNU/Linux distro I created w/ my soulmate 💕</span>
+              </li>
+              <li class="file-item executable" onclick="launchTerminal('https://zenshinsuru.com')">✨ zenshin-suru
+                <span class="subtext">Interactive space exploration</span>
+              </li>
+              <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
+                <span class="subtext">Eastern Orthodox prayer resources</span>
+              </li>
+            </ul>
           </div>
         `;
       } else if (section === 'articles') {
@@ -1099,6 +1162,33 @@ This project demonstrates how modern web technology can serve ancient spiritual 
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
+
+    // Create twinkling jewel-toned stars
+    function createStars() {
+      const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
+      const numStars = 300; // Dense starfield for cosmic effect
+
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = `star star-${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+
+        // Random position
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+
+        // Random size (1-3px)
+        const size = Math.random() * 2 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+
+        // Random animation delay for staggered twinkling
+        star.style.animationDelay = Math.random() * 6 + 's';
+
+        document.body.appendChild(star);
+      }
+    }
+
+    createStars();
   </script>
 </body>
 </html>
