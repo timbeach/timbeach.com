@@ -1021,17 +1021,9 @@ Directories:
       let codeBlockIndex = 0;
       
       // Handle code blocks with language specification
-      processedContent = processedContent.replace(/```\s*(\w+)\s*\n([\s\S]*?)\n```/g, (match, lang, code) => {
+      processedContent = processedContent.replace(/```\s*(\w+)?\s*\n?([\s\S]*?)\n?```/g, (match, lang, code) => {
         const placeholder = `__CODE_BLOCK_${codeBlockIndex}__`;
-        codeBlocks.push({ placeholder, lang, code });
-        codeBlockIndex++;
-        return placeholder;
-      });
-      
-      // Handle code blocks without language specification
-      processedContent = processedContent.replace(/```\n([\s\S]*?)\n```/g, (match, code) => {
-        const placeholder = `__CODE_BLOCK_${codeBlockIndex}__`;
-        codeBlocks.push({ placeholder, lang: '', code });
+        codeBlocks.push({ placeholder, lang: lang || '', code: code.trim() });
         codeBlockIndex++;
         return placeholder;
       });

@@ -77,6 +77,7 @@ vim /var/www/masonborchard.com/index.html
 ```
 
 ### Configure nginx Virtual Host
+
 Create nginx configuration file:
 ```bash
 sudo vim /etc/nginx/sites-available/masonborchard.com
@@ -129,6 +130,7 @@ sudo systemctl reload nginx
 ## Step 4: Firewall Configuration
 
 ### Configure UFW (Uncomplicated Firewall)
+
 ```bash
 # Install UFW if not already installed
 sudo apt install ufw -y
@@ -153,6 +155,7 @@ sudo ufw status verbose
 ## Step 5: SSL Certificate Setup (Optional but Recommended)
 
 ### Install Certbot for Let's Encrypt SSL
+
 ```bash
 # Install certbot with nginx plugin via apt
 sudo apt install certbot python3-certbot-nginx -y
@@ -191,12 +194,14 @@ This will automatically:
 
 ### Test Website Accessibility
 1. **DNS Propagation**: Use tools like `dig` or online DNS checkers
+
    ```bash
    dig masonborchard.com
    dig www.masonborchard.com
    ```
 
 2. **HTTP Response**: Test with curl
+
    ```bash
    curl -I http://masonborchard.com
    curl -I https://masonborchard.com  # if SSL configured
@@ -218,6 +223,7 @@ This will automatically:
 - **Backup**: Regular backups of website files and server configuration
 
 ### Monitoring
+
 ```bash
 # Check nginx status
 sudo systemctl status nginx
