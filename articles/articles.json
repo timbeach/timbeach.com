@@ -1,38 +1,38 @@
 {
-    "parsimony.md": {
-      "title": "Parsimony and Aegix Linux",
-      "date": "2025-07-29",
-      "tags": ["linux", "aegix", "philosophy"]
+    "deploy-a-website.md": {
+      "title": "Deploy a Website",
+      "date": "2025-09-28",
+      "tags": ["tutorial", "deployment", "web"]
     },
-    "simplicity.md": {
-      "title": "Simplicity in Software Engineering",
-      "date": "2025-01-10",
-      "tags": ["aegix", "philosophy", "linux"]
-    },
-    "add-articles.md": {
-      "title": "How to Add New Articles to timbeach.com",
-      "date": "2025-07-29",
-      "tags": ["tutorial", "meta", "example"]
-    },
-    "second-aegix-user.md": {
-      "title": "Adding a Second Aegix User",
-      "date": "2025-07-30",
-      "tags": ["aegix", "philosophy", "linux"]
+    "install-signal-on-aegix.md": {
+      "title": "How to Install Signal on Aegix Linux",
+      "date": "2025-08-19",
+      "tags": ["signal", "tutorial", "linux"]
     },
     "how-tmux-works.md": {
       "title": "How tmux Works",
       "date": "2025-08-01",
       "tags": ["tmux", "tutorial", "linux"]
     },
-    "focusrite-scarlett-2i2-setup.md": {
-      "title": "Focusrite Scarlett 2i2 Setup",
-      "date": "2025-08-07",
-      "tags": ["audio", "tutorial", "linux"]
+    "second-aegix-user.md": {
+      "title": "Adding a Second Aegix User",
+      "date": "2025-07-30",
+      "tags": ["aegix", "philosophy", "linux"]
     },
-    "install-signal-on-aegix.md": {
-      "title": "How to Install Signal on Aegix Linux",
-      "date": "2025-08-19",
-      "tags": ["signal", "tutorial", "linux"]
+    "parsimony.md": {
+      "title": "Parsimony and Aegix Linux",
+      "date": "2025-07-29",
+      "tags": ["linux", "aegix", "philosophy"]
+    },
+    "add-articles.md": {
+      "title": "How to Add New Articles to timbeach.com",
+      "date": "2025-07-29",
+      "tags": ["tutorial", "meta", "example"]
+    },
+    "simplicity.md": {
+      "title": "Simplicity in Software Engineering",
+      "date": "2025-01-10",
+      "tags": ["aegix", "philosophy", "linux"]
     }
 }
 

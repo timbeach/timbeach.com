@@ -13,15 +13,53 @@
       --highlight: #ff3cac;
       --glow: rgba(0, 255, 159, 0.9);
       --scanline: rgba(255,255,255,0.04);
-      --marquee-duration: 15s;
+      --marquee-duration: 25s;
     }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.02) 50%,
+        transparent 100%
+      );
+      background-size: 100% 3px;
+    }
+
+    .star {
+      position: fixed;
+      border-radius: 50%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    .star-emerald { background: #50c878; animation: twinkle 4s infinite ease-in-out; }
+    .star-sapphire { background: #0f52ba; animation: twinkle 5s infinite ease-in-out; }
+    .star-ruby { background: #e0115f; animation: twinkle 3.5s infinite ease-in-out; }
+    .star-amethyst { background: #9966cc; animation: twinkle 6s infinite ease-in-out; }
+    .star-topaz { background: #ffc87c; animation: twinkle 4.5s infinite ease-in-out; }
+    .star-aquamarine { background: #7fffd4; animation: twinkle 5.5s infinite ease-in-out; }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 0.8; transform: scale(1.2); }
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0; padding: 0;
       background-color: var(--background);
       color: var(--foreground);
       font-family: 'Share Tech Mono', monospace;
-      text-shadow: 0 0 6px var(--glow);
+      text-shadow: none;
       position: relative; overflow-x: hidden;
     }
     header {
@@ -46,6 +84,121 @@
       position: relative; z-index: 2;
       min-height: 400px;
     }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+        max-width: none;
+      }
+
+      header {
+        padding: 1rem 0.5rem 0.5rem;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .terminal-nav {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .terminal-prompt {
+        font-size: 0.9rem;
+        margin-right: 0.25rem;
+      }
+
+      .terminal-input {
+        font-size: 0.9rem;
+      }
+
+      .breadcrumb {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .terminal-box {
+        padding: 1rem;
+        font-size: 1rem;
+        width: 95%;
+      }
+
+      .now-playing {
+        margin: 2rem 1rem 1rem;
+        padding: 0.75rem;
+        font-size: 1rem;
+        max-width: none;
+      }
+
+      .controls {
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+      }
+
+      .play-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 1rem;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      .container {
+        margin: 0.5rem;
+        padding: 0.75rem;
+      }
+
+      .terminal-nav {
+        padding: 0.5rem;
+      }
+
+      .terminal-prompt {
+        font-size: 0.8rem;
+      }
+
+      .terminal-input {
+        font-size: 0.8rem;
+      }
+
+      .terminal-input::placeholder {
+        font-size: 0.8rem;
+      }
+
+      .breadcrumb {
+        font-size: 0.8rem;
+      }
+
+      header h1 {
+        font-size: 1.75rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .now-playing {
+        margin: 1rem 0.5rem 0.5rem;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .play-btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.9rem;
+      }
+
+      .marquee {
+        font-size: 0.9rem;
+      }
+    }
     #content {
       transition: opacity 0.2s ease-in-out;
     }
@@ -56,6 +209,7 @@
       padding-left: 1rem;
       margin-top: 2rem;
       position: relative;
+      text-shadow: none;
     }
     h2::after {
       content: '';
@@ -103,6 +257,11 @@
     .subtext {
       font-size: 0.9rem; color: #888;
       margin-left: 1.5rem; display: block;
+    }
+    .file-date {
+      margin-left: auto;
+      color: #888;
+      font-size: 0.8rem;
     }
     body::before {
       content: '';
@@ -215,6 +374,25 @@
       font-size: 0.95rem;
       white-space: pre-wrap;
       display: none;
+    }
+
+    .terminal-output::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .terminal-output::-webkit-scrollbar-track {
+      background: #0a0a0a;
+      border-radius: 4px;
+    }
+
+    .terminal-output::-webkit-scrollbar-thumb {
+      background: var(--foreground);
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    .terminal-output::-webkit-scrollbar-thumb:hover {
+      background: var(--highlight);
     }
     .terminal-output.show {
       display: block;
@@ -345,7 +523,7 @@
       <div class="breadcrumb" id="breadcrumb">~/timbeach.com</div>
       <div style="display: flex; align-items: center;">
         <span class="terminal-prompt">tbeach@system:~$</span>
-        <input type="text" class="terminal-input" id="terminalInput" placeholder="type 'help' for commands">
+        <input type="text" class="terminal-input" id="terminalInput" placeholder="type 'help'">
       </div>
       <div class="terminal-output" id="terminalOutput"></div>
     </div>
@@ -361,7 +539,7 @@
 
   <div class="now-playing">
     <div class="marquee-wrapper">
-      <div class="marquee">&gt; now playing: "Taiko Flourish" – Trashh Panda [Orchestral / Rock]</div>
+      <div class="marquee">&gt; now playing: "Taiko Flourish" – Timothy Beach [Orchestral / Rock]</div>
     </div>
     <div class="controls">
       <button id="playBtn" class="play-btn">&gt;</button>
@@ -515,7 +693,16 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       
       ls: () => {
         if (currentPath.length === 0) {
-          return `articles/    projects/`;
+          return `Recent Articles:
+${getRecentArticles(3).map(([filename, article]) => `  📄 ${article.title}`).join('\n')}
+
+Projects:
+  🐧 aegix-linux (external)
+  ✨ zenshin-suru (external)
+  🙏 theotokos-portal (external)
+
+Directories:
+  articles/`;
         } else if (currentPath[0] === 'articles') {
           return Object.keys(articles).join('    ');
         } else if (currentPath[0] === 'projects') {
@@ -562,27 +749,28 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         return '';
       },
       
-      whoami: () => 'Timothy D Beach - Software Engineer & Digital Monk',
+      whoami: () => 'Timothy D Beach - Software Engineer & Recording Artist',
       
       pwd: () => '~/' + currentPath.join('/'),
       
       tree: () => {
-        // Sort articles by date for tree display
+        // Get recent articles for tree display
+        const recentArticles = getRecentArticles(3);
         const sortedArticles = Object.keys(articles).sort((a, b) => {
           const dateA = new Date(articles[a].date);
           const dateB = new Date(articles[b].date);
           return dateB - dateA;
         });
-        
+
         return `~/timbeach.com
-├── portals/
-│   ├── aegix-linux*
-│   └── theotokos-portal*
-├── articles/
-│   ${sortedArticles.map(file => `├── ${file}`).join('\n│   ')}
-└── projects/
-    ├── aegix-linux.md
-    └── prayer-audio.md`;
+├── Recent Articles
+│   ${recentArticles.map(([file, article]) => `├── 📄 ${article.title}`).join('\n│   ')}
+├── Projects
+│   ├── 🐧 aegix-linux (external)
+│   ├── ✨ zenshin-suru (external)
+│   └── 🙏 theotokos-portal (external)
+└── articles/
+    ${sortedArticles.map(file => `├── ${file}`).join('\n    ')}`;
       },
       
       back: () => {
@@ -590,6 +778,12 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         return 'Returned to home directory';
       }
     };
+
+    function getRecentArticles(count = 3) {
+      return Object.entries(articles)
+        .sort(([,a], [,b]) => new Date(b.date) - new Date(a.date))
+        .slice(0, count);
+    }
 
     function navigate(section) {
       const content = document.getElementById('content');
@@ -605,28 +799,34 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         setTimeout(() => {
           isProgrammaticNavigation = false;
         }, 100);
+        // Get 3 most recent articles
+        const recentArticles = getRecentArticles(3);
+
         content.innerHTML = `
           <div class="content">
-            <h2>Software Engineering</h2>
-            <p>20+ years of solving hard problems quietly</p>
-          </div>
-          <div class="content">
-            <hr>
-            <h2>System Files</h2>
+            <h2>Recent Articles</h2>
             <ul class="file-list">
-              <li class="file-item directory" onclick="navigate('articles')">📁 articles/</li>
-              <li class="file-item directory" onclick="navigate('projects')">📁 projects/</li>
+              ${recentArticles.map(([filename, article]) => `
+                <li class="file-item article" onclick="showArticle('${filename}', articles['${filename}'])">
+                  📄 ${article.title}
+                  <span class="file-date">${article.date}</span>
+                </li>
+              `).join('')}
             </ul>
+            <p><a href="#" onclick="navigate('articles')" style="color: var(--foreground);">View all articles →</a></p>
           </div>
           <div class="content">
             <hr>
-            <h2>Portals</h2>
+            <h2>Projects</h2>
             <ul class="file-list">
               <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
-                <span class="subtext">-&gt; the GNU/Linux distro project I started w/ my soulmate 💕</span>
+                <span class="subtext">GNU/Linux distro I created w/ my soulmate 💕</span>
+              </li>
+              <li class="file-item executable" onclick="launchTerminal('https://zenshinsuru.com')">✨ zenshin-suru
+                <span class="subtext">Interactive space exploration</span>
               </li>
               <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
-                <span class="subtext">-&gt; Orthodox Christian prayer audio w/ a blessing from Holy Cross Monastery in WV</span>
+                <span class="subtext">Eastern Orthodox prayer resources</span>
               </li>
             </ul>
           </div>
@@ -1077,6 +1277,33 @@ This project demonstrates how modern web technology can serve ancient spiritual 
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
+
+    // Create twinkling jewel-toned stars
+    function createStars() {
+      const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
+      const numStars = 300; // Dense starfield for cosmic effect
+
+      for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.className = `star star-${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+
+        // Random position
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+
+        // Random size (1-3px)
+        const size = Math.random() * 2 + 1;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+
+        // Random animation delay for staggered twinkling
+        star.style.animationDelay = Math.random() * 6 + 's';
+
+        document.body.appendChild(star);
+      }
+    }
+
+    createStars();
   </script>
 </body>
 </html>

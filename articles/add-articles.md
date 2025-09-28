@@ -2,6 +2,10 @@
 
 This site uses a custom, lightweight article system that makes it easy to add new content without any complex build processes or databases.
 
+## Use This System for Your Own Site
+
+Want to build your own website with this article system? The complete source code is available on GitHub at [https://github.com/timbeach/timbeach.com](https://github.com/timbeach/timbeach.com). You can fork the repository and customize it for your own content while keeping the parsimonious design philosophy intact.
+
 ## How It Works
 
 The system consists of two simple components:
@@ -98,4 +102,72 @@ timbeach.com/
 - **Portability** - Easy to move or backup
 - **Version Control** - Text files work great with git
 
-This system proves that you don't need complex tools to create a beautiful, functional website. Sometimes the simplest solution is the best solution. 
+## Advanced Features
+
+### Terminal Integration
+The site features a terminal-style navigation system with commands:
+- `ls` - List articles and directories
+- `cd articles` - Navigate to articles directory
+- `cat filename.md` - Display article content
+- `tree` - Show directory structure with articles sorted by date
+- `help` - Show all available commands
+
+### Dynamic Loading System
+The JavaScript implementation includes:
+- **Graceful fallback** - If external files fail to load, built-in content is displayed
+- **Cache busting** - Timestamp parameters prevent browser caching issues
+- **Smooth transitions** - Content fades in/out during navigation
+- **Direct linking** - URLs like `#articles/filename.md` work for sharing specific articles
+
+### Markdown Parser
+The custom markdown parser handles:
+- Headers (H1, H2, H3)
+- Code blocks with language highlighting
+- Inline code formatting
+- Bold and italic text
+- Links with target="_blank"
+- Paragraph wrapping
+- Preserves formatting within code blocks
+
+### Search Functionality
+When viewing the articles directory:
+- Real-time search by title or filename
+- Case-insensitive matching
+- Instant filtering of article list
+
+## Technical Implementation Details
+
+### Data Flow
+1. **Page Load**: JavaScript fetches `articles/articles.json`
+2. **Article Request**: When user clicks an article, JavaScript fetches the `.md` file
+3. **Parsing**: Custom markdown parser converts content to HTML
+4. **Display**: Content appears with terminal-style navigation
+
+### Error Handling
+- **Network failures**: Falls back to built-in article content
+- **Missing files**: Shows "Article Not Found" message with error details
+- **JSON parse errors**: Gracefully handles malformed metadata
+
+### Performance Optimizations
+- **Lazy loading**: Articles only load when requested
+- **Minimal dependencies**: No external JavaScript libraries
+- **Efficient caching**: Browser caches static files naturally
+- **Small footprint**: Entire site is a single HTML file + articles
+
+## File Naming Conventions
+
+Use lowercase with hyphens for readability:
+- ✅ `my-article-title.md`
+- ✅ `linux-tutorial.md`
+- ❌ `MyArticleTitle.md`
+- ❌ `my_article_title.md`
+
+## Deployment
+
+The deployment is equally simple:
+```bash
+./deploy.sh
+```
+This rsync script pushes all changes to the production server, excluding `.git/`, `archive/`, and `.well-known/` directories.
+
+This system proves that you don't need complex tools to create a beautiful, functional website. Sometimes the simplest solution is the best solution - and this custom article system exemplifies the philosophy of parsimony in web development. 
