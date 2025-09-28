@@ -84,6 +84,121 @@
       position: relative; z-index: 2;
       min-height: 400px;
     }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+      .container {
+        margin: 1rem;
+        padding: 1rem;
+        max-width: none;
+      }
+
+      header {
+        padding: 1rem 0.5rem 0.5rem;
+      }
+
+      header h1 {
+        font-size: 2rem;
+      }
+
+      .terminal-nav {
+        padding: 0.75rem;
+        margin-bottom: 1rem;
+      }
+
+      .terminal-prompt {
+        font-size: 0.9rem;
+        margin-right: 0.25rem;
+      }
+
+      .terminal-input {
+        font-size: 0.9rem;
+      }
+
+      .breadcrumb {
+        font-size: 0.85rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .terminal-box {
+        padding: 1rem;
+        font-size: 1rem;
+        width: 95%;
+      }
+
+      .now-playing {
+        margin: 2rem 1rem 1rem;
+        padding: 0.75rem;
+        font-size: 1rem;
+        max-width: none;
+      }
+
+      .controls {
+        gap: 0.75rem;
+        margin-top: 0.75rem;
+      }
+
+      .play-btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 1rem;
+      }
+    }
+
+    /* Extra small mobile devices */
+    @media (max-width: 480px) {
+      .container {
+        margin: 0.5rem;
+        padding: 0.75rem;
+      }
+
+      .terminal-nav {
+        padding: 0.5rem;
+      }
+
+      .terminal-prompt {
+        font-size: 0.8rem;
+      }
+
+      .terminal-input {
+        font-size: 0.8rem;
+      }
+
+      .terminal-input::placeholder {
+        font-size: 0.8rem;
+      }
+
+      .breadcrumb {
+        font-size: 0.8rem;
+      }
+
+      header h1 {
+        font-size: 1.75rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
+
+      .now-playing {
+        margin: 1rem 0.5rem 0.5rem;
+        padding: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      .controls {
+        gap: 0.5rem;
+        margin-top: 0.5rem;
+      }
+
+      .play-btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.9rem;
+      }
+
+      .marquee {
+        font-size: 0.9rem;
+      }
+    }
     #content {
       transition: opacity 0.2s ease-in-out;
     }
@@ -408,7 +523,7 @@
       <div class="breadcrumb" id="breadcrumb">~/timbeach.com</div>
       <div style="display: flex; align-items: center;">
         <span class="terminal-prompt">tbeach@system:~$</span>
-        <input type="text" class="terminal-input" id="terminalInput" placeholder="type 'help' for commands">
+        <input type="text" class="terminal-input" id="terminalInput" placeholder="type 'help'">
       </div>
       <div class="terminal-output" id="terminalOutput"></div>
     </div>
@@ -634,7 +749,7 @@ Directories:
         return '';
       },
       
-      whoami: () => 'Timothy D Beach - Software Engineer & Digital Monk',
+      whoami: () => 'Timothy D Beach - Software Engineer & Recording Artist',
       
       pwd: () => '~/' + currentPath.join('/'),
       
