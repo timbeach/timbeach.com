@@ -15,13 +15,32 @@
       --scanline: rgba(255,255,255,0.04);
       --marquee-duration: 15s;
     }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(
+        to bottom,
+        transparent 0%,
+        rgba(255, 255, 255, 0.02) 50%,
+        transparent 100%
+      );
+      background-size: 100% 3px;
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0; padding: 0;
       background-color: var(--background);
       color: var(--foreground);
       font-family: 'Share Tech Mono', monospace;
-      text-shadow: 0 0 6px var(--glow);
+      text-shadow: none;
       position: relative; overflow-x: hidden;
     }
     header {
@@ -56,6 +75,7 @@
       padding-left: 1rem;
       margin-top: 2rem;
       position: relative;
+      text-shadow: none;
     }
     h2::after {
       content: '';
@@ -103,6 +123,11 @@
     .subtext {
       font-size: 0.9rem; color: #888;
       margin-left: 1.5rem; display: block;
+    }
+    .file-date {
+      margin-left: auto;
+      color: #888;
+      font-size: 0.8rem;
     }
     body::before {
       content: '';
@@ -591,6 +616,12 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       }
     };
 
+    function getRecentArticles(count = 3) {
+      return Object.entries(articles)
+        .sort(([,a], [,b]) => new Date(b.date) - new Date(a.date))
+        .slice(0, count);
+    }
+
     function navigate(section) {
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
@@ -605,30 +636,21 @@ This project demonstrates how modern web technology can serve ancient spiritual 
         setTimeout(() => {
           isProgrammaticNavigation = false;
         }, 100);
+        // Get 3 most recent articles
+        const recentArticles = getRecentArticles(3);
+
         content.innerHTML = `
           <div class="content">
-            <h2>Software Engineering</h2>
-            <p>20+ years of solving hard problems quietly</p>
-          </div>
-          <div class="content">
-            <hr>
-            <h2>System Files</h2>
+            <h2>Recent Articles</h2>
             <ul class="file-list">
-              <li class="file-item directory" onclick="navigate('articles')">📁 articles/</li>
-              <li class="file-item directory" onclick="navigate('projects')">📁 projects/</li>
+              ${recentArticles.map(([filename, article]) => `
+                <li class="file-item article" onclick="showArticle('${filename}', articles['${filename}'])">
+                  📄 ${article.title}
+                  <span class="file-date">${article.date}</span>
+                </li>
+              `).join('')}
             </ul>
-          </div>
-          <div class="content">
-            <hr>
-            <h2>Portals</h2>
-            <ul class="file-list">
-              <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
-                <span class="subtext">-&gt; the GNU/Linux distro project I started w/ my soulmate 💕</span>
-              </li>
-              <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
-                <span class="subtext">-&gt; Orthodox Christian prayer audio w/ a blessing from Holy Cross Monastery in WV</span>
-              </li>
-            </ul>
+            <p><a href="#" onclick="navigate('articles')" style="color: var(--foreground);">View all articles →</a></p>
           </div>
         `;
       } else if (section === 'articles') {
