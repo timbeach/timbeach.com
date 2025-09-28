@@ -1,4 +1,4 @@
-# How to Install Signal on Aegix Linux
+# Install Signal Desktop on Aegix Linux
 
 ```bash
 yay -S signal-desktop --noconfirm
