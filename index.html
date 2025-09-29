@@ -53,6 +53,157 @@
       50% { opacity: 0.8; transform: scale(1.2); }
     }
 
+    /* Focus mode styles */
+    .focus-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(0, 255, 159, 0.1);
+      border: 1px solid var(--foreground);
+      color: var(--foreground);
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.9rem;
+      z-index: 1000;
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .focus-toggle:hover {
+      background: rgba(0, 255, 159, 0.2);
+      box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+    }
+
+    .focus-toggle.active {
+      background: rgba(0, 255, 159, 0.3);
+      color: #00ff9f;
+    }
+
+    /* Focus mode activated */
+    body.focus-mode {
+      --background: #1a1a1a;
+      --foreground: #2a9d8f;
+      --highlight: #f4a261;
+      --glow: rgba(42, 157, 143, 0.3);
+    }
+
+    body.focus-mode .star {
+      animation-play-state: paused;
+      opacity: 0.1;
+    }
+
+    body.focus-mode::after {
+      display: none; /* Remove scanlines */
+    }
+
+    body.focus-mode .container {
+      max-width: 900px;
+      background-color: rgba(245, 245, 245, 0.05);
+      box-shadow: 0 0 15px rgba(42, 157, 143, 0.2);
+    }
+
+    body.focus-mode .article-content {
+      line-height: 1.8;
+      font-size: 1.05rem;
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    body.focus-mode header {
+      border-bottom: 2px solid #2a9d8f;
+      animation: none;
+    }
+
+    body.focus-mode header h1 {
+      color: #2a9d8f;
+    }
+
+    body.focus-mode .file-item:hover {
+      background: rgba(42, 157, 143, 0.1);
+    }
+
+    body.focus-mode .back-btn {
+      border-color: #2a9d8f;
+      color: #2a9d8f;
+    }
+
+    body.focus-mode .back-btn:hover {
+      background: rgba(42, 157, 143, 0.1);
+    }
+
+    /* Hire Me Section Styles */
+    .hire-me-section {
+      background: rgba(0, 255, 159, 0.05);
+      border: 1px solid rgba(0, 255, 159, 0.2);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin: 1rem 0;
+    }
+
+    .services-list {
+      list-style: none;
+      padding: 0;
+      margin: 1rem 0;
+    }
+
+    .services-list li {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0, 255, 159, 0.1);
+    }
+
+    .services-list li:last-child {
+      border-bottom: none;
+    }
+
+    .contact-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .contact-btn {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: rgba(0, 255, 159, 0.1);
+      border: 1px solid var(--foreground);
+      color: var(--foreground);
+      text-decoration: none;
+      border-radius: 4px;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+    }
+
+    .contact-btn:hover {
+      background: rgba(0, 255, 159, 0.2);
+      box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* Focus mode styles for hire me section */
+    body.focus-mode .hire-me-section {
+      background: rgba(42, 157, 143, 0.05);
+      border-color: rgba(42, 157, 143, 0.2);
+    }
+
+    body.focus-mode .services-list li {
+      border-bottom-color: rgba(42, 157, 143, 0.1);
+    }
+
+    body.focus-mode .contact-btn {
+      background: rgba(42, 157, 143, 0.1);
+      border-color: #2a9d8f;
+      color: #2a9d8f;
+    }
+
+    body.focus-mode .contact-btn:hover {
+      background: rgba(42, 157, 143, 0.2);
+      box-shadow: 0 0 10px rgba(42, 157, 143, 0.5);
+    }
+
     * { box-sizing: border-box; }
     body {
       margin: 0; padding: 0;
@@ -549,6 +700,9 @@
     <audio id="bgAudio" src="taiko.mp3" loop muted></audio>
   </div>
 
+  <!-- Focus Mode Toggle Button -->
+  <button id="focusToggle" class="focus-toggle">🎯 Focus Mode</button>
+
   <script>
     // Articles will be loaded from external files
     let articles = {};
@@ -817,7 +971,12 @@ Directories:
     function navigate(section) {
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
-      
+
+      // Hide focus toggle when not viewing articles, unless focus mode is active
+      if (section !== 'article' && !focusMode) {
+        hideFocusToggle();
+      }
+
       if (section === 'home') {
         currentPath = [];
         currentView = 'home';
@@ -833,6 +992,17 @@ Directories:
 
         content.innerHTML = `
           <div class="content">
+            <h2>💼 Hire Me</h2>
+            <div class="hire-me-section">
+              <p>Available for web development, software engineering, audio engineering, and Linux systems work.</p>
+              <div class="contact-links">
+                <a href="mailto:beachtimothyd@gmail.com" class="contact-btn">📧 Contact Me</a>
+                <a href="https://github.com/timbeach" target="_blank" class="contact-btn">💻 GitHub</a>
+              </div>
+            </div>
+          </div>
+          <div class="content">
+            <hr>
             <h2>Recent Articles</h2>
             <ul class="file-list">
               ${recentArticles.map(([filename, article]) => `
@@ -939,9 +1109,12 @@ Directories:
     
     async function showArticle(filename, article) {
       if (isShowingArticle) return; // Prevent multiple simultaneous loads
-      
+
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
+
+      // Show focus toggle when viewing an article
+      showFocusToggle();
       
       // Determine the section based on where we are
       let section = 'articles';
@@ -1277,6 +1450,46 @@ Directories:
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
+
+    // Focus Mode functionality
+    let focusMode = localStorage.getItem('focusMode') === 'true';
+    const focusToggle = document.getElementById('focusToggle');
+
+    function toggleFocusMode() {
+      focusMode = !focusMode;
+      localStorage.setItem('focusMode', focusMode);
+      updateFocusMode();
+    }
+
+    function updateFocusMode() {
+      if (focusMode) {
+        document.body.classList.add('focus-mode');
+        focusToggle.classList.add('active');
+        focusToggle.textContent = '🌟 Normal Mode';
+        showFocusToggle(); // Always show toggle when focus mode is active
+      } else {
+        document.body.classList.remove('focus-mode');
+        focusToggle.classList.remove('active');
+        focusToggle.textContent = '🎯 Focus Mode';
+        // Only hide toggle if we're not viewing an article
+        if (currentView !== 'article' && currentPath.length <= 1) {
+          hideFocusToggle();
+        }
+      }
+    }
+
+    function showFocusToggle() {
+      focusToggle.style.display = 'block';
+    }
+
+    function hideFocusToggle() {
+      focusToggle.style.display = 'none';
+    }
+
+    focusToggle.addEventListener('click', toggleFocusMode);
+
+    // Initialize focus mode state
+    updateFocusMode();
 
     // Create twinkling jewel-toned stars
     function createStars() {
