@@ -326,6 +326,147 @@
       0%, 100% { background-position: 0% 50%; }
       50% { background-position: 100% 50%; }
     }
+
+    /* Hack command - spin animation */
+    @keyframes hack-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(1080deg); }
+    }
+    body.hacking {
+      animation: hack-spin 3s ease-in-out;
+    }
+
+    /* Konami code - blur/fizzle effect */
+    @keyframes fizzle {
+      0%, 100% {
+        filter: blur(0px) brightness(1);
+        transform: scale(1);
+      }
+      10% {
+        filter: blur(5px) brightness(1.5);
+        transform: scale(1.02);
+      }
+      20% {
+        filter: blur(2px) brightness(0.8);
+        transform: scale(0.98);
+      }
+      30% {
+        filter: blur(8px) brightness(1.3);
+        transform: scale(1.03);
+      }
+      40% {
+        filter: blur(3px) brightness(0.9);
+        transform: scale(0.99);
+      }
+      50% {
+        filter: blur(10px) brightness(1.6);
+        transform: scale(1.04);
+      }
+      60% {
+        filter: blur(4px) brightness(0.7);
+        transform: scale(0.97);
+      }
+      70% {
+        filter: blur(6px) brightness(1.4);
+        transform: scale(1.02);
+      }
+      80% {
+        filter: blur(3px) brightness(0.9);
+        transform: scale(0.99);
+      }
+      90% {
+        filter: blur(5px) brightness(1.2);
+        transform: scale(1.01);
+      }
+    }
+    body.fizzle {
+      animation: fizzle 5s ease-in-out;
+    }
+
+    /* Matrix rain canvas */
+    #matrixCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+    }
+    #matrixCanvas.active {
+      display: block;
+    }
+
+    /* Matrix modal */
+    .matrix-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .matrix-modal.active {
+      display: flex;
+    }
+    .matrix-modal-content {
+      text-align: center;
+      color: #00ff9f;
+      font-family: 'Courier New', monospace;
+      font-size: 24px;
+      text-shadow: 0 0 10px #00ff9f;
+    }
+    .matrix-modal-content p {
+      margin: 10px 0;
+    }
+    .modal-hint {
+      font-size: 16px;
+      opacity: 0.7;
+      margin-top: 20px !important;
+    }
+
+    /* Hack image overlay */
+    .hack-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .hack-overlay.active {
+      display: flex;
+    }
+    .hack-overlay img {
+      max-width: 400px;
+      max-height: 400px;
+      filter: drop-shadow(0 0 30px #00ff9f) drop-shadow(0 0 60px #00ff9f);
+      animation: hack-glow 1s ease-in-out infinite alternate;
+    }
+    body.hacking .hack-overlay img {
+      animation: hack-glow 1s ease-in-out infinite alternate, counter-spin 3s ease-in-out;
+    }
+    @keyframes counter-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(-1080deg); }
+    }
+    @keyframes hack-glow {
+      0% {
+        filter: drop-shadow(0 0 20px #00ff9f) drop-shadow(0 0 40px #00ff9f);
+      }
+      100% {
+        filter: drop-shadow(0 0 40px #00ff9f) drop-shadow(0 0 80px #00ff9f);
+      }
+    }
     .container {
       max-width: 800px;
       margin: 2rem auto;
@@ -452,7 +593,15 @@
       }
     }
     #content {
-      transition: opacity 0.2s ease-in-out;
+      transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    }
+    #content.fade-out {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    #content.fade-in {
+      opacity: 1;
+      transform: translateY(0);
     }
     h2 {
       text-transform: uppercase;
@@ -510,12 +659,13 @@
     }
     .subtext {
       font-family: 'Satoshi', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 300;
-      color: #888;
+      font-size: 0.85rem;
+      font-weight: 400;
+      color: #999;
       margin-left: 1.5rem;
       display: block;
-      font-style: italic;
+      font-style: normal;
+      opacity: 0.8;
     }
     .file-date {
       margin-left: auto;
@@ -728,6 +878,21 @@
       line-height: 1.5;
       margin-top: 0.5rem;
     }
+    .preview-card img {
+      width: 100%;
+      height: auto;
+      border-radius: 4px;
+      margin-bottom: 0.5rem;
+      border: 1px solid var(--highlight);
+    }
+    .preview-card .project-image {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 0.75rem;
+      border: 1px solid var(--highlight);
+    }
     @media (max-width: 768px) {
       .file-item .preview-card {
         display: none;
@@ -900,6 +1065,22 @@
     <div><span class="label">Visible:</span> <span id="visibleStars">--</span> stars</div>
   </div>
 
+  <!-- Matrix Rain Canvas -->
+  <canvas id="matrixCanvas"></canvas>
+
+  <!-- Matrix Modal -->
+  <div id="matrixModal" class="matrix-modal">
+    <div class="matrix-modal-content">
+      <p>Entering The Matrix...</p>
+      <p class="modal-hint">Press ESC to exit</p>
+    </div>
+  </div>
+
+  <!-- Hack Overlay -->
+  <div id="hackOverlay" class="hack-overlay">
+    <img src="pix/mr-robot-mask.png" alt="Mr. Robot">
+  </div>
+
   <script>
     // Articles will be loaded from external files
     let articles = {};
@@ -1069,7 +1250,8 @@ This project demonstrates how modern web technology can serve ancient spiritual 
   whoami      - display user info
   pwd         - show current path
   tree        - show directory structure
-  back        - return to previous view`,
+  back        - return to previous view
+  easter      - why not try it?`,
       
       ls: () => {
         if (currentPath.length === 0) {
@@ -1156,6 +1338,117 @@ Directories:
       back: () => {
         navigate('home');
         return 'Returned to home directory';
+      },
+
+      // Easter eggs
+      matrix: () => {
+        showMatrixModal();
+        return `Wake up, Neo...
+The Matrix has you.
+Follow the white rabbit.
+
+Knock, knock.`;
+      },
+
+      hack: () => {
+        // Show Mr. Robot mask and start spinning
+        const overlay = document.getElementById('hackOverlay');
+        overlay.classList.add('active');
+
+        // Start spin immediately
+        document.body.classList.add('hacking');
+
+        // After spin completes (3 seconds), hide everything
+        setTimeout(() => {
+          document.body.classList.remove('hacking');
+          overlay.classList.remove('active');
+        }, 3000);
+
+        const steps = [
+          'Initializing hack sequence...',
+          'Bypassing firewall...',
+          'Cracking 256-bit encryption...',
+          'Accessing mainframe...',
+          'Downloading secrets...',
+          '[SPINNING DETECTED]',
+          'ERROR: Nice try. You\'re not Mr. Robot.'
+        ];
+        return steps.join('\n');
+      },
+
+      easter: () => {
+        return `🥚 Hidden Easter Egg Commands:
+
+  matrix    - Enter the Matrix
+  hack      - Attempt to hack the mainframe
+  sudo      - Try to gain root access
+  pray      - The Jesus Prayer
+  coffee    - Brew some ASCII coffee
+  vim       - Learn to exit vim
+  meaning   - The answer to everything
+  konami    - The legendary code
+
+Type any command to activate it!`;
+      },
+
+      sudo: () => {
+        return `[sudo] password for tbeach:
+Permission denied. You are not in the sudoers file.
+This incident will be reported to your mother.`;
+      },
+
+      pray: () => {
+        return `🙏 Gospodi Iisuse Khriste, Syne Bozhy, pomiluy mya greshnago.
+
+(Lord Jesus Christ, Son of God, have mercy on me, a sinner)`;
+      },
+
+      coffee: () => {
+        return `      )  (
+     (   ) )
+      ) ( (
+    _______)_
+ .-'---------|
+( C|/\\/\\/\\/\\/|
+ '-./\\/\\/\\/\\/|
+   '_________'
+    '-------'
+
+Coffee.exe is brewing...`;
+      },
+
+      vim: () => {
+        return `You are now in vim.
+
+How to exit vim:
+1. Don't panic
+2. Press ESC
+3. Type :q!
+4. Press Enter
+5. Question your life choices
+
+...just kidding, you're still in the browser. Try 'help' instead.`;
+      },
+
+      meaning: () => {
+        return '42';
+      },
+
+      konami: () => {
+        // Trigger fizzle animation
+        document.body.classList.add('fizzle');
+        setTimeout(() => {
+          document.body.classList.remove('fizzle');
+        }, 5000);
+
+        return `↑ ↑ ↓ ↓ ← → ← → B A
+
+🎮 KONAMI CODE ACTIVATED
++30 Lives
+Unlimited Ammo
+God Mode: ON
+
+...in your imagination, anyway.`;
       }
     };
 
@@ -1166,15 +1459,21 @@ Directories:
     }
 
     function navigate(section) {
+      playWhoosh(); // Play navigation sound
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
 
-      // Hide focus toggle when not viewing articles, unless focus mode is active
-      if (section !== 'article' && !focusMode) {
-        hideFocusToggle();
-      }
+      // Fade out current content
+      content.classList.add('fade-out');
 
-      if (section === 'home') {
+      // Wait for fade out, then update content
+      setTimeout(() => {
+        // Hide focus toggle when not viewing articles, unless focus mode is active
+        if (section !== 'article' && !focusMode) {
+          hideFocusToggle();
+        }
+
+        if (section === 'home') {
         currentPath = [];
         currentView = 'home';
         breadcrumb.textContent = '~/timbeach.com';
@@ -1227,12 +1526,27 @@ Directories:
             <ul class="file-list">
               <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegix-linux
                 <span class="subtext">GNU/Linux distro I created w/ my soulmate 💕</span>
+                <div class="preview-card">
+                  <img src="pix/aegix-linux.png" alt="Aegix Linux" class="project-image">
+                  <h3>Aegix Linux</h3>
+                  <div class="excerpt">A GNU/Linux distribution built with love, purpose, and parsimony.</div>
+                </div>
               </li>
               <li class="file-item executable" onclick="launchTerminal('https://zenshinsuru.com')">✨ zenshin-suru
                 <span class="subtext">Interactive space exploration</span>
+                <div class="preview-card">
+                  <img src="pix/zenshin-suru.jpg" alt="Zenshin Suru" class="project-image">
+                  <h3>Zenshin Suru</h3>
+                  <div class="excerpt">Interactive space exploration experience with real-time celestial mechanics.</div>
+                </div>
               </li>
               <li class="file-item executable" onclick="launchTerminal('https://omostholytheotokos.com')">🙏 theotokos-portal
                 <span class="subtext">Eastern Orthodox prayer resources</span>
+                <div class="preview-card">
+                  <img src="pix/theotokos-portal.png" alt="Theotokos Portal" class="project-image">
+                  <h3>O Most Holy Theotokos</h3>
+                  <div class="excerpt">High-quality Eastern Orthodox prayer recordings, blessed by Holy Cross Monastery.</div>
+                </div>
               </li>
             </ul>
           </div>
@@ -1317,12 +1631,18 @@ Directories:
           </ul>
         `;
       }
+
+      // Fade in new content
+      content.classList.remove('fade-out');
+      content.classList.add('fade-in');
+      }, 300); // Match transition duration
     }
 
     let isShowingArticle = false; // Prevent multiple simultaneous article loads
     
     async function showArticle(filename, article) {
       if (isShowingArticle) return; // Prevent multiple simultaneous loads
+      playClick(); // Play click sound when opening article
 
       const content = document.getElementById('content');
       const breadcrumb = document.getElementById('breadcrumb');
@@ -1375,11 +1695,12 @@ Directories:
         `;
         
         // Update content smoothly
-        content.style.opacity = '0';
+        content.classList.add('fade-out');
         setTimeout(() => {
           content.innerHTML = newContent;
-          content.style.opacity = '1';
-        }, 150);
+          content.classList.remove('fade-out');
+          content.classList.add('fade-in');
+        }, 300);
         
       } catch (error) {
         const errorContent = `
@@ -1390,12 +1711,13 @@ Directories:
             <pre style="color: #888;">Error: ${error.message}</pre>
           </div>
         `;
-        
-        content.style.opacity = '0';
+
+        content.classList.add('fade-out');
         setTimeout(() => {
           content.innerHTML = errorContent;
-          content.style.opacity = '1';
-        }, 150);
+          content.classList.remove('fade-out');
+          content.classList.add('fade-in');
+        }, 300);
       }
       currentPath.pop(); // Remove filename from path after loading
       isShowingArticle = false; // Reset flag when done
@@ -1494,18 +1816,105 @@ Directories:
       showNextMessage();
     }
 
+    // Strip emoji from article title for autocomplete matching
+    function stripEmoji(str) {
+      return str.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '').trim();
+    }
+
+    // Tab autocomplete for terminal
+    function handleTabComplete(input) {
+      const parts = input.trim().split(' ');
+
+      // Autocomplete for 'cd' command at root
+      if (parts[0] === 'cd' && currentPath.length === 0) {
+        const partial = parts.slice(1).join(' ');
+        const directories = ['articles', 'projects'];
+
+        const matches = directories.filter(dir =>
+          dir.toLowerCase().startsWith(partial.toLowerCase())
+        );
+
+        if (matches.length === 1) {
+          // Single match - autocomplete it
+          return `cd ${matches[0]}`;
+        } else if (matches.length > 1 && partial.length > 0) {
+          // Multiple matches - show options
+          const output = document.getElementById('terminalOutput');
+          output.textContent += `\nMatching directories:\n`;
+          matches.forEach(dir => {
+            output.textContent += `  ${dir}/\n`;
+          });
+          output.textContent += '\n';
+          output.classList.add('show');
+          output.scrollTop = output.scrollHeight;
+          return input; // Keep current input
+        }
+      }
+
+      // Autocomplete for 'cat' command in articles directory
+      if (parts[0] === 'cat' && currentPath[0] === 'articles') {
+        const partial = parts.slice(1).join(' ');
+
+        // Get all article filenames and titles without emojis
+        const matches = Object.entries(articles)
+          .map(([filename, article]) => ({
+            filename,
+            title: article.title,
+            titleNoEmoji: stripEmoji(article.title),
+            emoji: article.emoji
+          }))
+          .filter(item =>
+            item.titleNoEmoji.toLowerCase().startsWith(partial.toLowerCase()) ||
+            item.filename.toLowerCase().startsWith(partial.toLowerCase())
+          );
+
+        if (matches.length === 1) {
+          // Single match - autocomplete it
+          return `cat ${matches[0].filename}`;
+        } else if (matches.length > 1) {
+          // Multiple matches - show options
+          const output = document.getElementById('terminalOutput');
+          output.textContent += `\nMatching articles:\n`;
+          matches.forEach(m => {
+            output.textContent += `  ${m.emoji} ${m.titleNoEmoji} (${m.filename})\n`;
+          });
+          output.textContent += '\n';
+          output.classList.add('show');
+          output.scrollTop = output.scrollHeight;
+          return input; // Keep current input
+        }
+      }
+
+      return input; // No autocomplete available
+    }
+
     // Handle terminal input
     document.getElementById('terminalInput').addEventListener('keydown', function(e) {
+      // Handle Tab key for autocomplete
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        playClick();
+        const completed = handleTabComplete(this.value);
+        this.value = completed;
+        return;
+      }
+
+      // Play typing sound for most keys
+      if (e.key.length === 1) {
+        playType();
+      }
+
       if (e.key === 'Enter') {
+        playCommand(); // Play command execution sound
         const input = this.value.trim();
         const [command, ...args] = input.split(' ');
         const output = document.getElementById('terminalOutput');
-        
+
         if (input) {
           // Show the command that was entered
           output.textContent += `tbeach@system:~$ ${input}\n`;
           output.classList.add('show');
-          
+
           if (commands[command]) {
             const result = commands[command](args.join(' '));
             if (result && command !== 'clear') {
@@ -1518,11 +1927,11 @@ Directories:
           } else {
             output.textContent += `Command not found: ${command}. Type 'help' for available commands.\n\n`;
           }
-          
+
           // Scroll to bottom
           output.scrollTop = output.scrollHeight;
         }
-        
+
         this.value = '';
       }
     });
@@ -1541,12 +1950,14 @@ Directories:
       const randomMessage = messages[Math.floor(Math.random() * messages.length)];
       terminal.style.display = 'flex';
       box.textContent = '> connecting to ' + url + '...';
-      setTimeout(() => { box.textContent += '\n> handshaking...'; }, 800);
-      setTimeout(() => { box.textContent += '\n' + randomMessage; }, 1600);
-      setTimeout(() => { box.textContent += '\n> launching portal...'; }, 2400);
+      playCommand();
+      setTimeout(() => { box.textContent += '\n> handshaking...'; playType(); }, 800);
+      setTimeout(() => { box.textContent += '\n' + randomMessage; playType(); }, 1600);
+      setTimeout(() => { box.textContent += '\n> launching portal...'; playCommand(); }, 2400);
       setTimeout(() => {
         window.open(url, '_blank');
         terminal.style.display = 'none';
+        playWhoosh();
       }, 3400);
     }
 
@@ -1704,6 +2115,227 @@ Directories:
 
     // Initialize focus mode state
     updateFocusMode();
+
+    // Matrix Rain Effect
+    let matrixInterval = null;
+
+    function showMatrixModal() {
+      const modal = document.getElementById('matrixModal');
+      modal.classList.add('active');
+
+      setTimeout(() => {
+        modal.classList.remove('active');
+        startMatrixRain();
+      }, 3000);
+    }
+
+    function startMatrixRain() {
+      const canvas = document.getElementById('matrixCanvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.classList.add('active');
+
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()';
+      const fontSize = 14;
+      const columns = canvas.width / fontSize;
+      const drops = [];
+
+      for (let i = 0; i < columns; i++) {
+        drops[i] = 1;
+      }
+
+      function draw() {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.fillStyle = '#00ff9f';
+        ctx.font = fontSize + 'px monospace';
+
+        for (let i = 0; i < drops.length; i++) {
+          const text = chars[Math.floor(Math.random() * chars.length)];
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+          if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+          }
+          drops[i]++;
+        }
+      }
+
+      matrixInterval = setInterval(draw, 33);
+    }
+
+    function stopMatrixRain() {
+      const canvas = document.getElementById('matrixCanvas');
+      canvas.classList.remove('active');
+      if (matrixInterval) {
+        clearInterval(matrixInterval);
+        matrixInterval = null;
+      }
+    }
+
+    // ESC key to stop matrix
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        stopMatrixRain();
+      }
+    });
+
+    // Web Audio API for sound effects
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    // Create white noise buffer for harshness
+    function createNoiseBuffer(duration = 0.02) {
+      const bufferSize = audioContext.sampleRate * duration;
+      const buffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      return buffer;
+    }
+
+    // Mechanical click sound (low frequency with noise)
+    function playClick() {
+      // Oscillator for tone
+      const oscillator = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+
+      // Noise for harshness
+      const noise = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const noiseFilter = audioContext.createBiquadFilter();
+
+      noise.buffer = createNoiseBuffer(0.015);
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 400;
+
+      oscillator.connect(oscGain);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      oscGain.connect(audioContext.destination);
+      noiseGain.connect(audioContext.destination);
+
+      oscillator.frequency.value = 250 + Math.random() * 100; // 250-350Hz
+      oscillator.type = 'square';
+
+      oscGain.gain.setValueAtTime(0.12, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.015);
+
+      noiseGain.gain.setValueAtTime(0.08, audioContext.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.015);
+
+      oscillator.start(audioContext.currentTime);
+      noise.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.015);
+      noise.stop(audioContext.currentTime + 0.015);
+    }
+
+    // Typing sound (low mechanical with noise)
+    function playType() {
+      const oscillator = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+
+      const noise = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const noiseFilter = audioContext.createBiquadFilter();
+
+      noise.buffer = createNoiseBuffer(0.01);
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 300;
+
+      oscillator.connect(oscGain);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      oscGain.connect(audioContext.destination);
+      noiseGain.connect(audioContext.destination);
+
+      const pitch = 180 + Math.random() * 240; // 180-420Hz
+      oscillator.frequency.value = pitch;
+      oscillator.type = 'square';
+
+      oscGain.gain.setValueAtTime(0.06, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.01);
+
+      noiseGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.01);
+
+      oscillator.start(audioContext.currentTime);
+      noise.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.01);
+      noise.stop(audioContext.currentTime + 0.01);
+    }
+
+    // Command execution sound (deep thunk with noise)
+    function playCommand() {
+      const oscillator = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+
+      const noise = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const noiseFilter = audioContext.createBiquadFilter();
+
+      noise.buffer = createNoiseBuffer(0.05);
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 200;
+
+      oscillator.connect(oscGain);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      oscGain.connect(audioContext.destination);
+      noiseGain.connect(audioContext.destination);
+
+      oscillator.frequency.value = 100;
+      oscillator.type = 'square';
+
+      oscGain.gain.setValueAtTime(0.15, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+
+      noiseGain.gain.setValueAtTime(0.1, audioContext.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+
+      oscillator.start(audioContext.currentTime);
+      noise.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.05);
+      noise.stop(audioContext.currentTime + 0.05);
+    }
+
+    // Navigation sound (low sweep with noise)
+    function playWhoosh() {
+      const oscillator = audioContext.createOscillator();
+      const oscGain = audioContext.createGain();
+
+      const noise = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const noiseFilter = audioContext.createBiquadFilter();
+
+      noise.buffer = createNoiseBuffer(0.1);
+      noiseFilter.type = 'lowpass';
+      noiseFilter.frequency.value = 350;
+
+      oscillator.connect(oscGain);
+      noise.connect(noiseFilter);
+      noiseFilter.connect(noiseGain);
+      oscGain.connect(audioContext.destination);
+      noiseGain.connect(audioContext.destination);
+
+      oscillator.frequency.setValueAtTime(420, audioContext.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.1);
+      oscillator.type = 'sawtooth';
+
+      oscGain.gain.setValueAtTime(0.05, audioContext.currentTime);
+      oscGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+      noiseGain.gain.setValueAtTime(0.04, audioContext.currentTime);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+
+      oscillator.start(audioContext.currentTime);
+      noise.start(audioContext.currentTime);
+      oscillator.stop(audioContext.currentTime + 0.1);
+      noise.stop(audioContext.currentTime + 0.1);
+    }
 
     // Astronomical calculations for live sky
     let observerLat = 0; // Default to equator
