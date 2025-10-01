@@ -451,41 +451,6 @@
       margin-top: 20px !important;
     }
 
-    /* Custom cursor */
-    body {
-      cursor: none;
-    }
-
-    #cursor {
-      position: fixed;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: #ffff00;
-      pointer-events: none;
-      z-index: 99999;
-      transition: transform 0.15s ease, opacity 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
-      box-shadow: 0 0 10px #ffff00, 0 0 20px #ffff00;
-      animation: cursor-pulse 2s ease-in-out infinite;
-    }
-
-    #cursor.hover {
-      background: var(--foreground);
-      box-shadow: 0 0 15px var(--foreground), 0 0 30px var(--foreground);
-      animation: none;
-    }
-
-    @keyframes cursor-pulse {
-      0%, 100% {
-        transform: scale(1);
-        opacity: 0.8;
-      }
-      50% {
-        transform: scale(1.1);
-        opacity: 1;
-      }
-    }
-
     /* Hack image overlay */
     .hack-overlay {
       position: fixed;
@@ -946,6 +911,43 @@
       .file-item .preview-card {
         display: none;
       }
+      header h1 .preview-card {
+        display: none;
+      }
+    }
+
+    /* Header preview card */
+    header h1 {
+      position: relative;
+    }
+    header h1 .preview-card {
+      position: absolute;
+      left: 50%;
+      top: 100%;
+      transform: translateX(-50%) translateY(20px);
+      background: #000;
+      border: 2px solid var(--foreground);
+      padding: 0;
+      width: 400px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border-radius: 4px;
+      overflow: hidden;
+      line-height: 0;
+    }
+    header h1:hover .preview-card {
+      opacity: 1;
+      transform: translateX(-50%) translateY(10px);
+    }
+    header h1 .preview-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      vertical-align: bottom;
+      margin: 0;
+      padding: 0;
     }
     .file-item.directory {
       color: #4FC3F7;
@@ -1070,7 +1072,12 @@
 </head>
 <body>
   <header>
-    <h1 onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')" style="cursor: pointer;">Timothy D Beach</h1>
+    <h1 onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
+      Timothy D Beach
+      <div class="preview-card">
+        <img src="pix/space-guitar.png" alt="Space Guitar">
+      </div>
+    </h1>
   </header>
   
   <div class="container">
@@ -1129,9 +1136,6 @@
   <div id="hackOverlay" class="hack-overlay">
     <img src="pix/mr-robot-mask.png" alt="Mr. Robot">
   </div>
-
-  <!-- Custom Cursor -->
-  <div id="cursor"></div>
 
   <script>
     // Articles will be loaded from external files
@@ -2690,60 +2694,6 @@ God Mode: ON
 
     // Start the shooting star cycle
     scheduleShootingStar();
-
-    // Custom cursor functionality
-    const cursor = document.getElementById('cursor');
-    let mouseX = 0;
-    let mouseY = 0;
-    let cursorX = 0;
-    let cursorY = 0;
-
-    // Update mouse position
-    document.addEventListener('mousemove', (e) => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-    });
-
-    // Smooth cursor movement
-    function updateCursor() {
-      cursorX += (mouseX - cursorX) * 0.2;
-      cursorY += (mouseY - cursorY) * 0.2;
-      cursor.style.left = cursorX + 'px';
-      cursor.style.top = cursorY + 'px';
-      requestAnimationFrame(updateCursor);
-    }
-    updateCursor();
-
-    // Add hover effect for interactive elements
-    const interactiveElements = document.querySelectorAll('a, button, .file-item, input, .play-btn, .focus-toggle');
-
-    function addHoverEffect() {
-      cursor.classList.add('hover');
-    }
-
-    function removeHoverEffect() {
-      cursor.classList.remove('hover');
-    }
-
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', addHoverEffect);
-      el.addEventListener('mouseleave', removeHoverEffect);
-    });
-
-    // Re-apply hover listeners when content changes (for dynamically added elements)
-    const observer = new MutationObserver(() => {
-      document.querySelectorAll('a, button, .file-item, input').forEach(el => {
-        el.removeEventListener('mouseenter', addHoverEffect);
-        el.removeEventListener('mouseleave', removeHoverEffect);
-        el.addEventListener('mouseenter', addHoverEffect);
-        el.addEventListener('mouseleave', removeHoverEffect);
-      });
-    });
-
-    observer.observe(document.getElementById('content'), {
-      childList: true,
-      subtree: true
-    });
   </script>
 </body>
 </html>
