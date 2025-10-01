@@ -991,6 +991,7 @@ Directories:
         const recentArticles = getRecentArticles(3);
 
         content.innerHTML = `
+          <!-- HIRE ME SECTION - Commented out for future revamp
           <div class="content">
             <h2>💼 Hire Me</h2>
             <div class="hire-me-section">
@@ -1003,6 +1004,8 @@ Directories:
           </div>
           <div class="content">
             <hr>
+          -->
+          <div class="content">
             <h2>Recent Articles</h2>
             <ul class="file-list">
               ${recentArticles.map(([filename, article]) => `
