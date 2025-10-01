@@ -452,13 +452,6 @@
       filter: drop-shadow(0 0 30px #00ff9f) drop-shadow(0 0 60px #00ff9f);
       animation: hack-glow 1s ease-in-out infinite alternate;
     }
-    body.hacking .hack-overlay img {
-      animation: hack-glow 1s ease-in-out infinite alternate, counter-spin 3s ease-in-out;
-    }
-    @keyframes counter-spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(-1080deg); }
-    }
     @keyframes hack-glow {
       0% {
         filter: drop-shadow(0 0 20px #00ff9f) drop-shadow(0 0 40px #00ff9f);
@@ -1351,18 +1344,18 @@ Knock, knock.`;
       },
 
       hack: () => {
-        // Show Mr. Robot mask and start spinning
+        // Show Mr. Robot mask and trigger fizzle effect
         const overlay = document.getElementById('hackOverlay');
         overlay.classList.add('active');
 
-        // Start spin immediately
-        document.body.classList.add('hacking');
+        // Start fizzle effect
+        document.body.classList.add('fizzle');
 
-        // After spin completes (3 seconds), hide everything
+        // After fizzle completes (5 seconds), hide everything
         setTimeout(() => {
-          document.body.classList.remove('hacking');
+          document.body.classList.remove('fizzle');
           overlay.classList.remove('active');
-        }, 3000);
+        }, 5000);
 
         const steps = [
           'Initializing hack sequence...',
@@ -1370,7 +1363,7 @@ Knock, knock.`;
           'Cracking 256-bit encryption...',
           'Accessing mainframe...',
           'Downloading secrets...',
-          '[SPINNING DETECTED]',
+          '[FIZZLE DETECTED]',
           'ERROR: Nice try. You\'re not Mr. Robot.'
         ];
         return steps.join('\n');
@@ -1435,11 +1428,11 @@ How to exit vim:
       },
 
       konami: () => {
-        // Trigger fizzle animation
-        document.body.classList.add('fizzle');
+        // Trigger spin animation
+        document.body.classList.add('hacking');
         setTimeout(() => {
-          document.body.classList.remove('fizzle');
-        }, 5000);
+          document.body.classList.remove('hacking');
+        }, 3000);
 
         return `↑ ↑ ↓ ↓ ← → ← → B A
 
