@@ -6,6 +6,7 @@
   <title>Timothy D Beach</title>
   <link rel="shortcut icon" href="icons8-orthodox-cross-50.png" type="image/png" />
   <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
   <style>
     :root {
       --background: #0d0d0d;
@@ -39,18 +40,94 @@
       border-radius: 50%;
       z-index: -1;
       pointer-events: none;
+      transition: transform 0.1s ease-out;
     }
 
-    .star-emerald { background: #50c878; animation: twinkle 4s infinite ease-in-out; }
-    .star-sapphire { background: #0f52ba; animation: twinkle 5s infinite ease-in-out; }
-    .star-ruby { background: #e0115f; animation: twinkle 3.5s infinite ease-in-out; }
-    .star-amethyst { background: #9966cc; animation: twinkle 6s infinite ease-in-out; }
-    .star-topaz { background: #ffc87c; animation: twinkle 4.5s infinite ease-in-out; }
-    .star-aquamarine { background: #7fffd4; animation: twinkle 5.5s infinite ease-in-out; }
+    .star-emerald { background: #50c878; box-shadow: 0 0 2px #50c878, 0 0 4px #50c878; animation: twinkle 4s infinite ease-in-out; }
+    .star-sapphire { background: #4d9fff; box-shadow: 0 0 2px #4d9fff, 0 0 4px #4d9fff; animation: twinkle 5s infinite ease-in-out; }
+    .star-ruby { background: #ff5577; box-shadow: 0 0 2px #ff5577, 0 0 4px #ff5577; animation: twinkle 3.5s infinite ease-in-out; }
+    .star-amethyst { background: #bb88ff; box-shadow: 0 0 2px #bb88ff, 0 0 4px #bb88ff; animation: twinkle 6s infinite ease-in-out; }
+    .star-topaz { background: #ffd700; box-shadow: 0 0 2px #ffd700, 0 0 4px #ffd700; animation: twinkle 4.5s infinite ease-in-out; }
+    .star-aquamarine { background: #00ffff; box-shadow: 0 0 2px #00ffff, 0 0 4px #00ffff; animation: twinkle 5.5s infinite ease-in-out; }
 
     @keyframes twinkle {
-      0%, 100% { opacity: 0.2; transform: scale(0.8); }
-      50% { opacity: 0.8; transform: scale(1.2); }
+      0%, 100% { opacity: 0.5; transform: scale(0.9); }
+      50% { opacity: 0.85; transform: scale(1.2); }
+    }
+
+    /* Parallax depth layers */
+    .star.layer-1 { z-index: -3; }
+    .star.layer-2 { z-index: -2; }
+    .star.layer-3 { z-index: -1; }
+
+    /* Sky info display */
+    .sky-info {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid var(--foreground);
+      padding: 0.75rem 1rem;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--foreground);
+      z-index: 1000;
+      border-radius: 4px;
+      line-height: 1.6;
+      opacity: 0.8;
+      transition: opacity 0.3s ease;
+    }
+    .sky-info:hover {
+      opacity: 1;
+    }
+    .sky-info .label {
+      color: var(--highlight);
+      font-weight: bold;
+    }
+    @media (max-width: 768px) {
+      .sky-info {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+
+    /* Shooting star */
+    .shooting-star {
+      position: fixed;
+      width: 1px;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.6);
+      border-radius: 50%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0;
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0.4);
+    }
+
+    @keyframes shoot {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(-45deg);
+      }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-500px, 500px) rotate(-45deg);
+      }
+    }
+
+    .shooting-star::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100px;
+      height: 1px;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.5) 100%);
+      transform: translate(0%, -50%);
+      box-shadow: 0 0 2px rgba(255, 255, 255, 0.3);
     }
 
     /* Focus mode styles */
@@ -174,13 +251,21 @@
       border-radius: 4px;
       font-family: 'Share Tech Mono', monospace;
       font-size: 0.9rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
 
     .contact-btn:hover {
-      background: rgba(0, 255, 159, 0.2);
-      box-shadow: 0 0 10px rgba(0, 255, 159, 0.5);
-      transform: translateY(-2px);
+      background: rgba(0, 255, 159, 0.3);
+      box-shadow: 0 0 20px rgba(0, 255, 159, 0.6), 0 0 40px rgba(0, 255, 159, 0.3);
+      transform: translateY(-3px) scale(1.05);
+      border-color: var(--foreground);
+      text-shadow: 0 0 10px rgba(0, 255, 159, 0.8);
+    }
+
+    .contact-btn:active {
+      transform: translateY(-1px) scale(1.02);
     }
 
     /* Focus mode styles for hire me section */
@@ -217,13 +302,29 @@
       text-align: center;
       padding: 2rem 1rem 1rem;
       border-bottom: 2px solid var(--highlight);
-      animation: glow-pulse 3s infinite ease-in-out;
       position: relative; z-index: 2;
     }
     header h1 {
       font-size: 2.5rem;
-      color: var(--highlight);
       margin: 0;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: inline-block;
+      background: linear-gradient(135deg, var(--highlight) 0%, #ff1493 25%, var(--foreground) 60%, var(--highlight) 100%);
+      background-size: 300% 300%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient-shift 45s ease infinite;
+    }
+    header h1:hover {
+      transform: scale(1.05);
+      filter: drop-shadow(0 0 20px var(--highlight)) drop-shadow(0 0 40px var(--foreground));
+      letter-spacing: 2px;
+    }
+    @keyframes gradient-shift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
     }
     .container {
       max-width: 800px;
@@ -371,9 +472,12 @@
       box-shadow: 0 0 8px var(--glow);
     }
     p {
+      font-family: 'Satoshi', sans-serif;
       font-size: 1.1rem;
-      line-height: 1.6;
+      font-weight: 400;
+      line-height: 1.8;
       margin: 1rem 0;
+      letter-spacing: -0.01em;
     }
     a {
       color: var(--foreground);
@@ -401,13 +505,17 @@
     }
     @keyframes blink { 50% { opacity: 0; } }
     @keyframes glow-pulse {
-      0% { text-shadow: 0 0 4px var(--highlight); }
-      50% { text-shadow: 0 0 15px var(--highlight); }
-      100% { text-shadow: 0 0 4px var(--highlight); }
+      0%, 100% { text-shadow: 0 0 4px var(--highlight); }
+      50% { text-shadow: 0 0 12px var(--highlight); }
     }
     .subtext {
-      font-size: 0.9rem; color: #888;
-      margin-left: 1.5rem; display: block;
+      font-family: 'Satoshi', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: #888;
+      margin-left: 1.5rem;
+      display: block;
+      font-style: italic;
     }
     .file-date {
       margin-left: auto;
@@ -562,12 +670,68 @@
       cursor: pointer;
       border-left: 3px solid transparent;
       padding-left: 1rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: left center;
+      position: relative;
     }
     .file-item:hover {
       border-left-color: var(--highlight);
       background: rgba(255, 60, 172, 0.1);
       padding-left: 1.5rem;
+      transform: scale(1.02);
+      box-shadow: 0 4px 20px rgba(255, 60, 172, 0.3);
+      text-shadow: 0 0 8px rgba(0, 255, 159, 0.5);
+    }
+    .file-item .preview-card {
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      transform: translateY(-50%) translateX(20px);
+      background: rgba(20, 20, 20, 0.98);
+      border: 1px solid var(--highlight);
+      padding: 1rem;
+      min-width: 300px;
+      max-width: 400px;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 32px rgba(255, 60, 172, 0.4);
+    }
+    .file-item:hover .preview-card {
+      opacity: 1;
+      transform: translateY(-50%) translateX(10px);
+    }
+    .preview-card h3 {
+      margin: 0 0 0.5rem 0;
+      color: var(--foreground);
+      font-size: 1rem;
+    }
+    .preview-card .tags {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+    }
+    .preview-card .tag {
+      background: rgba(0, 255, 159, 0.2);
+      color: var(--foreground);
+      padding: 0.2rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.75rem;
+    }
+    .preview-card .excerpt {
+      font-family: 'Satoshi', sans-serif;
+      color: #aaa;
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.5;
+      margin-top: 0.5rem;
+    }
+    @media (max-width: 768px) {
+      .file-item .preview-card {
+        display: none;
+      }
     }
     .file-item.directory {
       color: #4FC3F7;
@@ -605,14 +769,34 @@
       margin-left: 1rem;
     }
     .article-content {
-      line-height: 1.8;
+      font-family: 'Satoshi', sans-serif;
+      line-height: 1.9;
       font-size: 1.1rem;
+      font-weight: 400;
+    }
+    .article-content h2,
+    .article-content h3,
+    .article-content h4 {
+      font-family: 'Share Tech Mono', monospace;
     }
     .article-content h3 {
       color: var(--highlight);
       border-bottom: 1px solid var(--highlight);
       padding-bottom: 0.5rem;
       margin-top: 2rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+    .article-content p {
+      margin: 1.25rem 0;
+    }
+    .article-content strong {
+      font-weight: 600;
+      color: var(--foreground);
+    }
+    .article-content em {
+      font-style: italic;
+      color: #bbb;
     }
     .article-content code {
       background: #222;
@@ -646,12 +830,18 @@
       font-family: inherit;
       cursor: pointer;
       margin-bottom: 2rem;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
     .back-btn:hover {
       background: var(--highlight);
       color: var(--background);
-      box-shadow: 0 0 10px var(--highlight);
+      box-shadow: 0 0 20px var(--highlight), 0 0 40px rgba(255, 60, 172, 0.5);
+      transform: translateY(-2px) scale(1.05);
+    }
+    .back-btn:active {
+      transform: translateY(0) scale(1);
     }
     .typing-effect {
       overflow: hidden;
@@ -666,7 +856,7 @@
 </head>
 <body>
   <header>
-    <h1 onclick="navigate('home')" style="cursor: pointer;">Timothy D Beach</h1>
+    <h1 onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')" style="cursor: pointer;">Timothy D Beach</h1>
   </header>
   
   <div class="container">
@@ -702,6 +892,13 @@
 
   <!-- Focus Mode Toggle Button -->
   <button id="focusToggle" class="focus-toggle">🎯 Focus Mode</button>
+
+  <!-- Sky Info Display -->
+  <div class="sky-info" id="skyInfo">
+    <div><span class="label">LST:</span> <span id="lstTime">--:--:--</span></div>
+    <div><span class="label">Location:</span> <span id="location">Loading...</span></div>
+    <div><span class="label">Visible:</span> <span id="visibleStars">--</span> stars</div>
+  </div>
 
   <script>
     // Articles will be loaded from external files
@@ -1012,6 +1209,13 @@ Directories:
                 <li class="file-item article" onclick="showArticle('${filename}', articles['${filename}'])">
                   ${article.emoji} ${article.title}
                   <span class="file-date">${article.date}</span>
+                  <div class="preview-card">
+                    <h3>${article.title}</h3>
+                    <div class="tags">
+                      ${(article.tags || []).map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                    </div>
+                    <div class="excerpt">Click to read more...</div>
+                  </div>
                 </li>
               `).join('')}
             </ul>
@@ -1061,6 +1265,13 @@ Directories:
               `<li class="file-item article" onclick="showArticle('${file}', articles['${file}'])">
                 <span class="article-title">${articles[file].emoji} ${articles[file].title}</span>
                 <span class="article-date">${articles[file].date}</span>
+                <div class="preview-card">
+                  <h3>${articles[file].title}</h3>
+                  <div class="tags">
+                    ${(articles[file].tags || []).map(tag => `<span class="tag">#${tag}</span>`).join('')}
+                  </div>
+                  <div class="excerpt">Click to read more...</div>
+                </div>
               </li>`
             ).join('')}
           </ul>
@@ -1494,32 +1705,307 @@ Directories:
     // Initialize focus mode state
     updateFocusMode();
 
-    // Create twinkling jewel-toned stars
-    function createStars() {
-      const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
-      const numStars = 300; // Dense starfield for cosmic effect
+    // Astronomical calculations for live sky
+    let observerLat = 0; // Default to equator
+    let observerLon = 0;
+    let observerLocation = "Equator";
 
-      for (let i = 0; i < numStars; i++) {
-        const star = document.createElement('div');
-        star.className = `star star-${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+    // Calculate Julian Date from JavaScript Date
+    function getJulianDate(date) {
+      return (date.getTime() / 86400000) + 2440587.5;
+    }
 
-        // Random position
-        star.style.left = Math.random() * 100 + '%';
-        star.style.top = Math.random() * 100 + '%';
+    // Calculate Greenwich Mean Sidereal Time (GMST)
+    function getGMST(date) {
+      const jd = getJulianDate(date);
+      const d = jd - 2451545.0;
+      let gmst = 18.697374558 + 24.06570982441908 * d;
+      gmst = gmst % 24;
+      if (gmst < 0) gmst += 24;
+      return gmst;
+    }
 
-        // Random size (1-3px)
-        const size = Math.random() * 2 + 1;
-        star.style.width = size + 'px';
-        star.style.height = size + 'px';
+    // Calculate Local Sidereal Time (LST)
+    function getLST(date, longitude) {
+      const gmst = getGMST(date);
+      let lst = gmst + (longitude / 15.0);
+      lst = lst % 24;
+      if (lst < 0) lst += 24;
+      return lst;
+    }
 
-        // Random animation delay for staggered twinkling
-        star.style.animationDelay = Math.random() * 6 + 's';
+    // Format LST as HH:MM:SS
+    function formatLST(lst) {
+      const hours = Math.floor(lst);
+      const minutes = Math.floor((lst - hours) * 60);
+      const seconds = Math.floor(((lst - hours) * 60 - minutes) * 60);
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
 
-        document.body.appendChild(star);
+    // Convert RA/Dec to Altitude/Azimuth
+    function raDecToAltAz(ra, dec, lst, lat) {
+      // Convert to radians
+      const raRad = ra * Math.PI / 180;
+      const decRad = dec * Math.PI / 180;
+      const latRad = lat * Math.PI / 180;
+      const lstRad = lst * 15 * Math.PI / 180; // LST in hours to degrees to radians
+
+      // Hour Angle
+      const ha = lstRad - raRad;
+
+      // Calculate altitude
+      const sinAlt = Math.sin(decRad) * Math.sin(latRad) +
+                     Math.cos(decRad) * Math.cos(latRad) * Math.cos(ha);
+      const alt = Math.asin(sinAlt) * 180 / Math.PI;
+
+      // Calculate azimuth
+      const cosAz = (Math.sin(decRad) - Math.sin(latRad) * sinAlt) /
+                    (Math.cos(latRad) * Math.cos(Math.asin(sinAlt)));
+      let az = Math.acos(Math.max(-1, Math.min(1, cosAz))) * 180 / Math.PI;
+      if (Math.sin(ha) > 0) az = 360 - az;
+
+      return { altitude: alt, azimuth: az };
+    }
+
+    // Try to get user's location
+    function initGeolocation() {
+      if ('geolocation' in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            observerLat = position.coords.latitude;
+            observerLon = position.coords.longitude;
+            observerLocation = `${observerLat.toFixed(2)}°, ${observerLon.toFixed(2)}°`;
+            document.getElementById('location').textContent = observerLocation;
+            console.log(`Observer location: ${observerLocation}`);
+            updateStarPositions();
+          },
+          (error) => {
+            console.log('Geolocation not available, using equator', error);
+            document.getElementById('location').textContent = observerLocation;
+            updateStarPositions();
+          }
+        );
+      } else {
+        console.log('Geolocation not supported');
+        document.getElementById('location').textContent = observerLocation;
+        updateStarPositions();
       }
     }
 
-    createStars();
+    // Store star catalog data globally
+    let starCatalog = null;
+
+    // Create twinkling jewel-toned stars with parallax
+    async function createStars() {
+      const stars = [];
+
+      // Try to load real star catalog
+      try {
+        const response = await fetch('stars.json');
+        if (response.ok) {
+          const catalog = await response.json();
+          starCatalog = catalog.stars;
+          console.log(`Loaded ${starCatalog.length} real stars from catalog`);
+        }
+      } catch (error) {
+        console.log('Could not load star catalog, using random stars', error);
+      }
+
+      // If we have real star data, render it
+      if (starCatalog) {
+        starCatalog.forEach((starInfo, index) => {
+          const star = document.createElement('div');
+          star.className = `star star-${starInfo.color}`;
+          star.title = starInfo.name; // Show star name on hover
+
+          // Store star data for live updates
+          star.dataset.ra = starInfo.ra;
+          star.dataset.dec = starInfo.dec;
+          star.dataset.mag = starInfo.mag;
+          star.dataset.name = starInfo.name;
+
+          // Size based on magnitude (brighter = larger)
+          const size = Math.max(1.5, 5 - starInfo.mag * 0.8);
+          star.style.width = size + 'px';
+          star.style.height = size + 'px';
+
+          // Layer based on magnitude (brighter stars in foreground)
+          const layer = starInfo.mag < 1 ? 3 : (starInfo.mag < 2 ? 2 : 1);
+          star.classList.add(`layer-${layer}`);
+          star.dataset.layer = layer;
+
+          // Random animation delay for staggered twinkling
+          star.style.animationDelay = Math.random() * 6 + 's';
+
+          // Initially hidden until position calculated
+          star.style.display = 'none';
+
+          document.body.appendChild(star);
+          stars.push(star);
+        });
+      } else {
+        // Fallback: Create random stars
+        const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
+        const numStars = 300;
+
+        for (let i = 0; i < numStars; i++) {
+          const star = document.createElement('div');
+          star.className = `star star-${starTypes[Math.floor(Math.random() * starTypes.length)]}`;
+
+          const layer = Math.floor(Math.random() * 3) + 1;
+          star.classList.add(`layer-${layer}`);
+
+          const left = Math.random() * 100;
+          const top = Math.random() * 100;
+          star.style.left = left + '%';
+          star.style.top = top + '%';
+
+          const size = Math.random() * 2 + 1;
+          star.style.width = size + 'px';
+          star.style.height = size + 'px';
+
+          star.style.animationDelay = Math.random() * 6 + 's';
+
+          star.dataset.layer = layer;
+          star.dataset.initialLeft = left;
+          star.dataset.initialTop = top;
+
+          document.body.appendChild(star);
+          stars.push(star);
+        }
+      }
+
+      return stars;
+    }
+
+    // Update star positions based on current time and observer location
+    function updateStarPositions() {
+      if (!starCatalog) return;
+
+      const now = new Date();
+      const lst = getLST(now, observerLon);
+
+      // Update LST display
+      document.getElementById('lstTime').textContent = formatLST(lst);
+
+      // Get all star elements
+      const starElements = document.querySelectorAll('.star[data-ra]');
+      let visibleCount = 0;
+
+      starElements.forEach(star => {
+        const ra = parseFloat(star.dataset.ra);
+        const dec = parseFloat(star.dataset.dec);
+
+        // Convert to altitude/azimuth
+        const altAz = raDecToAltAz(ra, dec, lst, observerLat);
+
+        // Only show stars above horizon (altitude > 0)
+        if (altAz.altitude > 0) {
+          visibleCount++;
+          star.style.display = 'block';
+
+          // Map azimuth (0-360) to horizontal position
+          // Azimuth 0° = North (top), 90° = East (right), 180° = South (bottom), 270° = West (left)
+          // For screen: 0° = right edge, rotating counter-clockwise
+          const left = (altAz.azimuth / 360) * 100;
+
+          // Map altitude (0-90) to vertical position
+          // Higher altitude = higher on screen (closer to center)
+          // We'll map to a circular projection where horizon is at edges
+          const top = 50 - (altAz.altitude / 90) * 40; // Center at 50%, spread out
+
+          star.style.left = left + '%';
+          star.style.top = top + '%';
+
+          // Store for parallax
+          star.dataset.initialLeft = left;
+          star.dataset.initialTop = top;
+        } else {
+          star.style.display = 'none';
+        }
+      });
+
+      // Update visible star count
+      document.getElementById('visibleStars').textContent = visibleCount;
+
+      console.log(`LST: ${formatLST(lst)}, Visible stars: ${visibleCount}/${starCatalog.length}`);
+    }
+
+    // Update star positions every second
+    function startLiveSky() {
+      updateStarPositions();
+      setInterval(updateStarPositions, 1000); // Update every second
+    }
+
+    // Initialize stars asynchronously
+    let stars = [];
+    createStars().then(starArray => {
+      stars = starArray;
+      // Initialize geolocation and start live sky
+      initGeolocation();
+      startLiveSky();
+    });
+
+    // Parallax scroll effect
+    let ticking = false;
+    window.addEventListener('scroll', function() {
+      if (!ticking) {
+        window.requestAnimationFrame(function() {
+          const scrolled = window.pageYOffset;
+
+          stars.forEach(star => {
+            const layer = parseInt(star.dataset.layer);
+            const speed = layer * 0.15; // Different speeds for depth
+            const initialTop = parseFloat(star.dataset.initialTop);
+
+            // Move stars at different speeds based on layer
+            const newTop = initialTop - (scrolled * speed / 10);
+            star.style.transform = `translateY(${scrolled * speed / 10}px)`;
+          });
+
+          ticking = false;
+        });
+
+        ticking = true;
+      }
+    });
+
+    // Create shooting stars occasionally
+    function createShootingStar() {
+      const shootingStar = document.createElement('div');
+      shootingStar.className = 'shooting-star';
+
+      // Random starting position (top right area)
+      const startX = Math.random() * window.innerWidth * 0.5 + window.innerWidth * 0.5;
+      const startY = Math.random() * window.innerHeight * 0.3;
+
+      shootingStar.style.left = startX + 'px';
+      shootingStar.style.top = startY + 'px';
+
+      document.body.appendChild(shootingStar);
+
+      // Trigger animation (faster - 0.8 seconds)
+      setTimeout(() => {
+        shootingStar.style.animation = 'shoot 0.8s linear forwards';
+      }, 10);
+
+      // Remove after animation
+      setTimeout(() => {
+        shootingStar.remove();
+      }, 900);
+    }
+
+    // Create shooting stars at random intervals (every 20-40 seconds)
+    function scheduleShootingStar() {
+      const delay = Math.random() * 20000 + 20000; // 20-40 seconds
+      setTimeout(() => {
+        createShootingStar();
+        scheduleShootingStar(); // Schedule next one
+      }, delay);
+    }
+
+    // Start the shooting star cycle
+    scheduleShootingStar();
   </script>
 </body>
 </html>
