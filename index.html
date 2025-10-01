@@ -1072,6 +1072,15 @@
       white-space: pre;
       display: block;
     }
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border: 2px solid var(--highlight);
+      border-radius: 4px;
+      margin: 2rem 0;
+      box-shadow: 0 0 20px rgba(255, 60, 172, 0.4);
+      display: block;
+    }
     .back-btn {
       background: transparent;
       border: 1px solid var(--highlight);
@@ -1849,6 +1858,9 @@ God Mode: ON
         .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
         .replace(/\*(.+?)\*/g, '<em>$1</em>');
       
+      // Handle images (must come before links since ![...] contains [...])
+      processedContent = processedContent.replace(/!\[([^\]]*)\]\((.+?)\)/g, '<img src="$2" alt="$1" />');
+
       // Handle links
       processedContent = processedContent.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
       

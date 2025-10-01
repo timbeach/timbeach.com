@@ -2,6 +2,8 @@
 
 This document outlines the complete process used to deploy Mason Borchard's personal website from development to production on the internet.
 
+![Moon Man](../pix/moon-man.jpeg)
+
 ## Overview
 
 This guide covers deploying a static HTML website using a VPS (Virtual Private Server), custom domain, and nginx web server. The process involves server setup, domain configuration, DNS management, web server configuration, and security considerations.
