@@ -2582,6 +2582,7 @@ God Mode: ON
 
       // If we have real star data, render it
       if (starCatalog) {
+        // First, add the real bright stars from the catalog
         starCatalog.forEach((starInfo, index) => {
           const star = document.createElement('div');
           star.className = `star star-${starInfo.color}`;
@@ -2612,6 +2613,46 @@ God Mode: ON
           document.body.appendChild(star);
           stars.push(star);
         });
+
+        // Add procedural fainter background stars for visual density
+        // These follow astronomical positioning but represent dimmer stars
+        const numBackgroundStars = 400;
+        const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
+
+        for (let i = 0; i < numBackgroundStars; i++) {
+          const star = document.createElement('div');
+          const color = starTypes[Math.floor(Math.random() * starTypes.length)];
+          star.className = `star star-${color}`;
+
+          // Generate realistic celestial coordinates
+          const ra = Math.random() * 360; // Right Ascension: 0-360 degrees
+          const dec = (Math.random() * 180) - 90; // Declination: -90 to +90 degrees
+          const mag = 3 + Math.random() * 3; // Fainter magnitudes: 3-6
+
+          // Store star data for live updates
+          star.dataset.ra = ra;
+          star.dataset.dec = dec;
+          star.dataset.mag = mag;
+          star.dataset.name = `Faint Star ${i}`;
+
+          // Smaller size for fainter stars
+          const size = Math.max(0.8, 2 - (mag - 3) * 0.3);
+          star.style.width = size + 'px';
+          star.style.height = size + 'px';
+
+          // Background layer
+          star.classList.add('layer-1');
+          star.dataset.layer = 1;
+
+          // Random animation delay for staggered twinkling
+          star.style.animationDelay = Math.random() * 6 + 's';
+
+          // Initially hidden until position calculated
+          star.style.display = 'none';
+
+          document.body.appendChild(star);
+          stars.push(star);
+        }
       } else {
         // Fallback: Create random stars
         const starTypes = ['emerald', 'sapphire', 'ruby', 'amethyst', 'topaz', 'aquamarine'];
@@ -2673,15 +2714,22 @@ God Mode: ON
           visibleCount++;
           star.style.display = 'block';
 
-          // Map azimuth (0-360) to horizontal position
-          // Azimuth 0° = North (top), 90° = East (right), 180° = South (bottom), 270° = West (left)
-          // For screen: 0° = right edge, rotating counter-clockwise
-          const left = (altAz.azimuth / 360) * 100;
+          // Use fisheye/azimuthal equidistant projection (like a planetarium dome)
+          // Center of screen = zenith (altitude 90°), edges = horizon (altitude 0°)
+          // This is astronomically accurate and fills the whole screen!
 
-          // Map altitude (0-90) to vertical position
-          // Higher altitude = higher on screen (closer to center)
-          // We'll map to a circular projection where horizon is at edges
-          const top = 50 - (altAz.altitude / 90) * 40; // Center at 50%, spread out
+          // Distance from center based on altitude
+          // altitude 90° (zenith) = center, altitude 0° (horizon) = edge at 50% radius
+          const radius = (1 - altAz.altitude / 90) * 50; // 0-50% from center
+
+          // Convert azimuth to radians (0° = North = up on screen)
+          const azimuthRad = altAz.azimuth * Math.PI / 180;
+
+          // Convert polar coordinates to screen position
+          // Azimuth 0° = North = top (negative y direction)
+          // Azimuth 90° = East = right (positive x direction)
+          const left = 50 + radius * Math.sin(azimuthRad);
+          const top = 50 - radius * Math.cos(azimuthRad);
 
           star.style.left = left + '%';
           star.style.top = top + '%';
