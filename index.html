@@ -757,10 +757,12 @@
     .marquee-wrapper { overflow: hidden; white-space: nowrap; }
     .marquee {
       display: inline-block;
+    }
+    .marquee.scrolling {
       padding-left: 100%;
       animation: marquee var(--marquee-duration) linear infinite;
     }
-    .marquee-wrapper:hover .marquee { animation-play-state: paused; }
+    .marquee-wrapper:hover .marquee.scrolling { animation-play-state: paused; }
     @keyframes marquee { 0% { transform: translateX(0);} 100% { transform: translateX(-100%);} }
     .controls { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
     .play-btn {
@@ -1144,7 +1146,7 @@
 
   <div class="now-playing">
     <div class="marquee-wrapper">
-      <div class="marquee">&gt; now playing: "Taiko Flourish" – Timothy Beach [Orchestral / Rock]</div>
+      <div id="marqueeText" class="marquee">click &gt; to rock out 🤘</div>
     </div>
     <div class="controls">
       <button id="playBtn" class="play-btn">&gt;</button>
@@ -2074,16 +2076,43 @@ God Mode: ON
     const slider = document.getElementById('volumeSlider');
     const btn = document.getElementById('playBtn');
     const progress = document.getElementById('progressBar');
-    
+    const marqueeText = document.getElementById('marqueeText');
+    let hasPlayed = false;
+
     if (audioEl) {
       audioEl.volume = slider.value;
+
+      const startPlaying = () => {
+        if (!hasPlayed) {
+          marqueeText.textContent = '> now playing: "Taiko Flourish" – Timothy Beach [Orchestral / Rock]';
+          hasPlayed = true;
+        }
+        marqueeText.classList.add('scrolling');
+      };
+
+      const stopPlaying = () => {
+        marqueeText.classList.remove('scrolling');
+      };
+
       btn.addEventListener('click', () => {
-        if (audioEl.paused) { audioEl.play(); btn.textContent = '='; }
-        else { audioEl.pause(); btn.textContent = '>'; }
+        if (audioEl.paused) {
+          audioEl.play();
+          btn.textContent = '=';
+          startPlaying();
+        }
+        else {
+          audioEl.pause();
+          btn.textContent = '>';
+          stopPlaying();
+        }
         audioEl.muted = false;
       });
       slider.addEventListener('input', () => {
-        if (audioEl.paused) { audioEl.play(); btn.textContent = '='; }
+        if (audioEl.paused) {
+          audioEl.play();
+          btn.textContent = '=';
+          startPlaying();
+        }
         audioEl.muted = false;
         audioEl.volume = slider.value;
       });
