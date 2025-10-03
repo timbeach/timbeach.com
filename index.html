@@ -98,10 +98,23 @@
       line-height: 1.6;
       opacity: 0.8;
       transition: opacity 0.3s ease;
-      cursor: help;
+      cursor: pointer;
     }
     .sky-info:hover {
       opacity: 1;
+      background: rgba(0, 0, 0, 0.85);
+    }
+    /* Stars-only view mode */
+    body.stars-view header,
+    body.stars-view .container,
+    body.stars-view .focus-toggle {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+    body.stars-view .sky-info {
+      background: rgba(0, 0, 0, 0.9);
+      border-color: var(--highlight);
     }
     .sky-info .label {
       color: var(--highlight);
@@ -1169,6 +1182,7 @@
       <p>The stars you see on this page represent the actual night sky based on your location and the current time.</p>
       <p>Each star is accurately positioned using real astronomical data from star catalogs, showing you which stars are currently visible above your horizon.</p>
       <p><strong>LST:</strong> Local Sidereal Time - astronomical time based on Earth's rotation relative to distant stars.</p>
+      <p style="margin-top: 0.5rem; color: var(--highlight);"><strong>Click to toggle full stars view! ✨</strong></p>
     </div>
   </div>
 
@@ -2222,6 +2236,19 @@ God Mode: ON
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
+
+    // Stars-only view toggle
+    const skyInfo = document.getElementById('skyInfo');
+    let starsViewActive = false;
+
+    skyInfo.addEventListener('click', function() {
+      starsViewActive = !starsViewActive;
+      if (starsViewActive) {
+        document.body.classList.add('stars-view');
+      } else {
+        document.body.classList.remove('stars-view');
+      }
+    });
 
     // Focus Mode functionality
     let focusMode = localStorage.getItem('focusMode') === 'true';
