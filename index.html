@@ -1127,11 +1127,78 @@
       from { width: 0; }
       to { width: 100%; }
     }
+    .confetti-particle {
+      position: fixed;
+      pointer-events: none;
+      font-size: 1.2rem;
+      z-index: 9999;
+      animation: confetti-fall linear forwards, sparkle 0.8s ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8))
+              drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+    }
+    .confetti-star {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      border-radius: 50%;
+      animation: confetti-star-fall linear forwards, star-twinkle 0.8s ease-in-out infinite alternate;
+      opacity: 1;
+    }
+    .confetti-star.emerald { background: #50c878; box-shadow: 0 0 6px #50c878, 0 0 12px #50c878; }
+    .confetti-star.sapphire { background: #4d9fff; box-shadow: 0 0 6px #4d9fff, 0 0 12px #4d9fff; }
+    .confetti-star.ruby { background: #ff5577; box-shadow: 0 0 6px #ff5577, 0 0 12px #ff5577; }
+    .confetti-star.topaz { background: #ffd700; box-shadow: 0 0 6px #ffd700, 0 0 12px #ffd700; }
+    .confetti-star.aquamarine { background: #00ffff; box-shadow: 0 0 6px #00ffff, 0 0 12px #00ffff; }
+    @keyframes confetti-star-fall {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--velocity-x, 0), 100vh) scale(0.8);
+        opacity: 0;
+      }
+    }
+    @keyframes star-twinkle {
+      0% {
+        filter: brightness(0.8);
+      }
+      100% {
+        filter: brightness(1.5);
+      }
+    }
+    @keyframes confetti-fall {
+      0% {
+        transform: translate(0, 0) rotate(0deg) scale(1);
+        opacity: 1;
+      }
+      80% {
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--velocity-x, 0), 100vh) rotate(180deg) scale(0.8);
+        opacity: 0;
+      }
+    }
+    @keyframes sparkle {
+      0% {
+        filter: drop-shadow(0 0 3px rgba(255, 215, 0, 0.8))
+                drop-shadow(0 0 6px rgba(255, 255, 255, 0.6));
+      }
+      100% {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1))
+                drop-shadow(0 0 12px rgba(255, 255, 255, 0.9))
+                drop-shadow(0 0 16px rgba(60, 179, 113, 0.6));
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1 onclick="window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank')">
+    <h1 onclick="event.preventDefault(); explodeConfetti(event.clientX, event.clientY); setTimeout(() => { window.location.hash = ''; }, 100);">
       Timothy D Beach
       <div class="preview-card">
         <img src="pix/space-guitar.png" alt="Space Guitar">
@@ -1500,11 +1567,17 @@ Knock, knock.`;
         return steps.join('\n');
       },
 
+      rickroll: () => {
+        window.open('https://www.youtube.com/watch?v=dQw4w9WgXcQ', '_blank');
+        return `Never gonna give you up, never gonna let you down... 🎵`;
+      },
+
       easter: () => {
         return `🥚 Hidden Easter Egg Commands:
 
   matrix    - Enter the Matrix
   hack      - Attempt to hack the mainframe
+  rickroll  - Never gonna give you up
   sudo      - Try to gain root access
   pray      - The Jesus Prayer
   coffee    - Brew some ASCII coffee
@@ -2237,6 +2310,78 @@ God Mode: ON
 
     // Focus terminal input on page load
     document.getElementById('terminalInput').focus();
+
+    // Confetti explosion effect
+    function explodeConfetti(x, y) {
+      const emojis = ['🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '🐧', '💖', '💖', '💖', '💖', '💖', '💖'];
+      const starColors = ['emerald', 'sapphire', 'ruby', 'topaz', 'aquamarine'];
+      const particleCount = 50;
+      const starCount = 90;
+
+      // Adjust spread based on viewport width for mobile
+      const isMobile = window.innerWidth <= 768;
+      const maxSpread = isMobile ? window.innerWidth * 0.8 : 2000;
+
+      // Create emoji confetti
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+        particle.textContent = emoji;
+        particle.style.left = x + 'px';
+        particle.style.top = y + 'px';
+
+        // Set emoji sizes
+        if (emoji === '🐧') {
+          particle.style.fontSize = '1.9rem';
+        } else if (emoji === '💖') {
+          particle.style.fontSize = '1.5rem';
+        }
+
+        // Random horizontal velocity - responsive to viewport
+        const velocityX = (Math.random() - 0.5) * maxSpread;
+        particle.style.setProperty('--velocity-x', velocityX + 'px');
+
+        // Add random animation delay for staggered effect
+        particle.style.animationDelay = Math.random() * 0.3 + 's';
+        // Slower fall time: 3-5 seconds
+        const duration = 3 + Math.random() * 2;
+        particle.style.animationDuration = duration + 's';
+
+        document.body.appendChild(particle);
+
+        // Remove particle after animation (add extra buffer)
+        setTimeout(() => particle.remove(), (duration + 0.5) * 1000);
+      }
+
+      // Create star particles
+      for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        const colorClass = starColors[Math.floor(Math.random() * starColors.length)];
+        star.className = `confetti-star ${colorClass}`;
+
+        // Random size between 4-8px for better visibility
+        const size = 4 + Math.random() * 4;
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.left = x + 'px';
+        star.style.top = y + 'px';
+
+        // Random horizontal velocity - responsive to viewport
+        const velocityX = (Math.random() - 0.5) * maxSpread;
+        star.style.setProperty('--velocity-x', velocityX + 'px');
+
+        // Staggered animation - set both animations
+        star.style.animationDelay = Math.random() * 0.3 + 's';
+        const duration = 3 + Math.random() * 2;
+        star.style.animation = `confetti-star-fall ${duration}s linear forwards, star-twinkle 0.8s ease-in-out infinite alternate`;
+
+        document.body.appendChild(star);
+
+        // Remove after animation
+        setTimeout(() => star.remove(), (duration + 0.5) * 1000);
+      }
+    }
 
     // Stars-only view toggle
     const skyInfo = document.getElementById('skyInfo');
