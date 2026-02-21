@@ -1,6 +1,6 @@
 # Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes
 
-![Agent Teams](../pix/agent-teams-diagram.jpg)
+![Agent Teams](../pix/agent-teams-diagram.png)
 
 You're staring at a feature that touches the API, the frontend, and the test suite. Three separate concerns, three separate contexts, and one of you. You could work through them sequentially — endpoint first, then component, then tests — context-switching each time, holding the whole architecture in your head at once. Or you could do what any reasonable engineering manager would do: delegate. Tell three specialists to work in parallel, coordinate through a shared task list, and synthesize the results when they're done.
 
