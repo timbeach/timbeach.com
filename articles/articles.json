@@ -1,4 +1,10 @@
 {
+    "trng-deep-dive.md": {
+      "title": "True Random Number Generators: From Quantum Physics to Silicon",
+      "date": "2026-02-20",
+      "tags": ["cryptography", "quantum", "security", "hardware"],
+      "emoji": "🎲"
+    },
     "deploy-a-website.md": {
       "title": "Deploy a Website",
       "date": "2025-09-28",
