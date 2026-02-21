@@ -1,4 +1,10 @@
 {
+    "claude-code-agent-teams.md": {
+      "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
+      "date": "2026-02-21",
+      "tags": ["claude-code", "ai", "tmux", "tutorial", "linux"],
+      "emoji": "🤖"
+    },
     "trng-deep-dive.md": {
       "title": "True Random Number Generators: From Quantum Physics to Silicon",
       "date": "2026-02-20",
