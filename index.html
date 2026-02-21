@@ -224,6 +224,13 @@
       border-color: var(--accent);
     }
 
+    /* Hide focus toggle on mobile — auto-managed by JS instead */
+    @media (max-width: 768px) {
+      .focus-toggle {
+        display: none !important;
+      }
+    }
+
     /* Focus mode activated */
     body.focus-mode {
       --background: #111;
@@ -2443,6 +2450,10 @@ God Mode: ON
       updateFocusMode();
     }
 
+    function isMobile() {
+      return window.matchMedia('(max-width: 768px)').matches;
+    }
+
     function updateFocusMode() {
       if (focusMode) {
         document.body.classList.add('focus-mode');
@@ -2453,8 +2464,10 @@ God Mode: ON
         focusToggle.classList.remove('active');
         focusToggle.textContent = '🎯 Focus Mode';
       }
-      // Always keep toggle visible
-      focusToggle.style.display = 'block';
+      // Only show toggle on desktop; mobile is auto-managed
+      if (!isMobile()) {
+        focusToggle.style.display = 'block';
+      }
     }
 
     function showFocusToggle() {
