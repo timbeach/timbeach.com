@@ -583,6 +583,12 @@
         border-left: none;
         border-right: none;
       }
+
+      .article-content table {
+        display: block;
+        overflow-x: auto;
+        font-size: 0.85rem;
+      }
     }
 
     /* Extra small mobile devices */
@@ -1132,6 +1138,26 @@
       margin: 2rem 0;
       box-shadow: none;
       display: block;
+    }
+    .article-content table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+    .article-content th,
+    .article-content td {
+      border: 1px solid var(--border);
+      padding: 0.5rem 0.75rem;
+      text-align: left;
+    }
+    .article-content th {
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .article-content tr:nth-child(even) {
+      background: rgba(255, 255, 255, 0.02);
     }
     /* Article title (first h2 from markdown # heading) */
     .article-content h2:first-child {
@@ -1990,7 +2016,33 @@ God Mode: ON
       
       // Handle inline code
       processedContent = processedContent.replace(/`([^`]+)`/g, '<code>$1</code>');
-      
+
+      // Handle markdown tables — replace with placeholders to protect from <p> wrapping
+      const tablePlaceholders = [];
+      let tableIndex = 0;
+      processedContent = processedContent.replace(
+        /(^\|.+\|$\n^\|[\s\-:|]+\|$\n(?:^\|.+\|$\n?)+)/gm,
+        (tableBlock) => {
+          const rows = tableBlock.trim().split('\n');
+          const headers = rows[0].split('|').filter(c => c.trim()).map(c => c.trim());
+          const bodyRows = rows.slice(2);
+          let html = '<table><thead><tr>';
+          headers.forEach(h => { html += `<th>${h}</th>`; });
+          html += '</tr></thead><tbody>';
+          bodyRows.forEach(row => {
+            const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
+            html += '<tr>';
+            cells.forEach(c => { html += `<td>${c}</td>`; });
+            html += '</tr>';
+          });
+          html += '</tbody></table>';
+          const placeholder = `__TABLE_BLOCK_${tableIndex}__`;
+          tablePlaceholders.push({ placeholder, html });
+          tableIndex++;
+          return placeholder;
+        }
+      );
+
       // Handle headers (but not inside code blocks since they're now placeholders)
       processedContent = processedContent
         .replace(/^# (.+)$/gm, '<h2>$1</h2>')
@@ -2026,6 +2078,12 @@ God Mode: ON
         const trimmedCode = code.replace(/^\n+|\n+$/g, '');
         const codeElement = lang ? `<pre><code class="language-${lang}">${trimmedCode}</code></pre>` : `<pre><code>${trimmedCode}</code></pre>`;
         processedContent = processedContent.replace(placeholder, codeElement);
+      });
+
+      // Restore table blocks
+      tablePlaceholders.forEach(({ placeholder, html }) => {
+        processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
+        processedContent = processedContent.replace(placeholder, html);
       });
       
       return processedContent;
