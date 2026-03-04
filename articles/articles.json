@@ -1,4 +1,10 @@
 {
+    "releasing-music.md": {
+      "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
+      "date": "2026-03-02",
+      "tags": ["music", "tutorial", "indie", "spotify"],
+      "emoji": "🎵"
+    },
     "claude-code-agent-teams.md": {
       "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
       "date": "2026-02-21",
