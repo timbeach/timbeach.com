@@ -1159,6 +1159,79 @@
     .article-content tr:nth-child(even) {
       background: rgba(255, 255, 255, 0.02);
     }
+    .article-content ul,
+    .article-content ol {
+      margin: 1.25rem 0;
+      padding-left: 1.5rem;
+    }
+    .article-content li {
+      margin: 0.4rem 0;
+      line-height: 1.7;
+    }
+    .article-content ul.task-list {
+      list-style: none;
+      padding-left: 0;
+    }
+    .article-content ul.task-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      margin: 0.6rem 0;
+    }
+    .article-content ul.task-list li .task-checkbox {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.1rem;
+      height: 1.1rem;
+      min-width: 1.1rem;
+      border: 1.5px solid var(--accent);
+      border-radius: 3px;
+      margin-top: 0.35rem;
+      background: transparent;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .article-content ul.task-list li .task-checkbox:hover {
+      background: var(--accent-dim);
+      box-shadow: 0 0 6px rgba(93, 228, 199, 0.3);
+    }
+    .article-content ul.task-list li .task-checkbox.checked {
+      background: var(--accent-dim);
+      animation: checkbox-pop 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .article-content ul.task-list li .task-checkbox.checked::after {
+      content: '\2713';
+      color: var(--accent);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+    .article-content ul.task-list li.task-done > span:last-child {
+      text-decoration: line-through;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+    }
+    @keyframes checkbox-pop {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.35); }
+      70% { transform: scale(0.9); }
+      100% { transform: scale(1); }
+    }
+    .task-checkbox.ripple::before {
+      content: '';
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: rgba(93, 228, 199, 0.3);
+      animation: checkbox-ripple 0.5s ease-out forwards;
+    }
+    @keyframes checkbox-ripple {
+      0% { transform: scale(0); opacity: 1; }
+      100% { transform: scale(2); opacity: 0; }
+    }
     /* Article title (first h2 from markdown # heading) */
     .article-content h2:first-child {
       font-size: 1.8rem;
@@ -1975,8 +2048,17 @@ God Mode: ON
           content.innerHTML = newContent;
           content.classList.remove('fade-out');
           content.classList.add('fade-in');
+          // Make task list checkboxes interactive
+          content.querySelectorAll('.task-checkbox').forEach(cb => {
+            cb.addEventListener('click', () => {
+              cb.classList.toggle('checked');
+              cb.closest('li').classList.toggle('task-done');
+              cb.classList.add('ripple');
+              setTimeout(() => cb.classList.remove('ripple'), 500);
+            });
+          });
         }, 300);
-        
+
       } catch (error) {
         const errorContent = `
           <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
@@ -2043,6 +2125,61 @@ God Mode: ON
         }
       );
 
+      // Handle unordered lists (including task lists) — replace with placeholders
+      const listPlaceholders = [];
+      let listIndex = 0;
+      processedContent = processedContent.replace(
+        /((?:^[-*] (?:\[[ x]\] )?.+$\n?)+)/gm,
+        (listBlock) => {
+          const items = listBlock.trim().split('\n');
+          const hasTaskItems = items.some(item => /^[-*] \[[ x]\] /.test(item));
+          let html;
+          if (hasTaskItems) {
+            html = '<ul class="task-list">';
+            items.forEach(item => {
+              const match = item.match(/^[-*] \[([ x])\] (.+)$/);
+              if (match) {
+                const checked = match[1] === 'x';
+                const text = match[2];
+                html += `<li><span class="task-checkbox${checked ? ' checked' : ''}"></span><span>${text}</span></li>`;
+              } else {
+                const text = item.replace(/^[-*] /, '');
+                html += `<li><span>${text}</span></li>`;
+              }
+            });
+          } else {
+            html = '<ul>';
+            items.forEach(item => {
+              const text = item.replace(/^[-*] /, '');
+              html += `<li>${text}</li>`;
+            });
+          }
+          html += '</ul>';
+          const placeholder = `__LIST_BLOCK_${listIndex}__`;
+          listPlaceholders.push({ placeholder, html });
+          listIndex++;
+          return placeholder;
+        }
+      );
+
+      // Handle ordered lists — replace with placeholders
+      processedContent = processedContent.replace(
+        /((?:^\d+\. .+$\n?)+)/gm,
+        (listBlock) => {
+          const items = listBlock.trim().split('\n');
+          let html = '<ol>';
+          items.forEach(item => {
+            const text = item.replace(/^\d+\. /, '');
+            html += `<li>${text}</li>`;
+          });
+          html += '</ol>';
+          const placeholder = `__LIST_BLOCK_${listIndex}__`;
+          listPlaceholders.push({ placeholder, html });
+          listIndex++;
+          return placeholder;
+        }
+      );
+
       // Handle headers (but not inside code blocks since they're now placeholders)
       processedContent = processedContent
         .replace(/^# (.+)$/gm, '<h2>$1</h2>')
@@ -2082,6 +2219,12 @@ God Mode: ON
 
       // Restore table blocks
       tablePlaceholders.forEach(({ placeholder, html }) => {
+        processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
+        processedContent = processedContent.replace(placeholder, html);
+      });
+
+      // Restore list blocks
+      listPlaceholders.forEach(({ placeholder, html }) => {
         processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
         processedContent = processedContent.replace(placeholder, html);
       });

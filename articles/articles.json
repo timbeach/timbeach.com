@@ -1,4 +1,10 @@
 {
+    "software-delivery-sop.md": {
+      "title": "Software Delivery and Deployment SOP",
+      "date": "2026-03-18",
+      "tags": ["software-engineering", "deployment", "git", "devops", "sop"],
+      "emoji": "📋"
+    },
     "releasing-music.md": {
       "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
       "date": "2026-03-02",
