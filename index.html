@@ -1448,21 +1448,15 @@
           const [section, filename] = hash.split('/');
 
           if (section === 'articles' && filename && articles[filename]) {
-            // Navigate to articles and show the specific article
+            // Deep-link: show article directly without navigating through articles list
             setTimeout(() => {
-              navigate('articles');
-              setTimeout(() => {
-                showArticle(filename, articles[filename]);
-              }, 100);
+              showArticle(filename, articles[filename]);
             }, 100);
             return; // Don't run the normal home navigation
           } else if (section === 'projects' && filename && projects[filename]) {
-            // Navigate to projects and show the specific project
+            // Deep-link: show project directly without navigating through projects list
             setTimeout(() => {
-              navigate('projects');
-              setTimeout(() => {
-                showArticle(filename, projects[filename]);
-              }, 100);
+              showArticle(filename, projects[filename]);
             }, 100);
             return; // Don't run the normal home navigation
           }
@@ -1816,7 +1810,8 @@ God Mode: ON
       // Wait for fade out, then update content
       setTimeout(() => {
         // Auto-disable focus mode when leaving article view
-        if (focusMode) {
+        // Skip if we're handling a hash route (about to show an article)
+        if (focusMode && !isHandlingHash) {
           focusMode = false;
           localStorage.setItem('focusMode', false);
           updateFocusMode();
@@ -2488,7 +2483,7 @@ God Mode: ON
         if (section === 'articles' && filename) {
           // Navigate to articles section first
           navigate('articles');
-          // Then show the specific article
+          // Then show the specific article (wait for navigate fade to finish)
           setTimeout(() => {
             if (articles[filename]) {
               showArticle(filename, articles[filename]);
@@ -2642,7 +2637,10 @@ God Mode: ON
     });
 
     // Focus Mode functionality
-    let focusMode = localStorage.getItem('focusMode') === 'true';
+    // If deep-linking to an article, start in focus mode immediately to prevent flash
+    const hashOnLoad = window.location.hash.slice(1);
+    const deepLinkToArticle = hashOnLoad && hashOnLoad.includes('/');
+    let focusMode = deepLinkToArticle ? true : localStorage.getItem('focusMode') === 'true';
     const focusToggle = document.getElementById('focusToggle');
 
     function toggleFocusMode() {

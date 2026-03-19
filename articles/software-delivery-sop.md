@@ -1,5 +1,7 @@
 # Software Delivery and Deployment SOP
 
+*Co-authored with [Mason U Borchard](https://masonborchard.com/)*
+
 A practical standard operating procedure for teams managing branching, releases, SQL changes, and deployments in a corporate software environment.
 
 ![Software Delivery SOP](pix/team-software-sop.png)
