@@ -1,4 +1,10 @@
 {
+    "custom-claude-skills.md": {
+      "title": "How to Write a Custom Claude Code Skill",
+      "date": "2026-03-19",
+      "tags": ["claude-code", "ai", "tutorial", "skills"],
+      "emoji": "🛠️"
+    },
     "software-delivery-sop.md": {
       "title": "Software Delivery and Deployment SOP",
       "date": "2026-03-18",
