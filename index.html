@@ -1344,6 +1344,242 @@
                 drop-shadow(0 0 16px rgba(60, 179, 113, 0.6));
       }
     }
+
+    /* ═══════════════════════════════════════════
+       TTS Article Reader — "Terminal Audio Deck"
+       ═══════════════════════════════════════════ */
+
+    .tts-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 9000;
+      background: rgba(10, 10, 10, 0.96);
+      border-top: 1px solid var(--accent);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      font-family: var(--mono);
+      box-shadow: 0 -4px 30px rgba(93, 228, 199, 0.08);
+    }
+    .tts-bar.visible {
+      transform: translateY(0);
+    }
+    .tts-bar-inner {
+      max-width: var(--page-width);
+      margin: 0 auto;
+      padding: 0.65rem 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    /* Progress track across top of bar */
+    .tts-progress-track {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--border);
+    }
+    .tts-progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 6px var(--accent);
+    }
+
+    /* Transport controls */
+    .tts-transport {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-shrink: 0;
+    }
+    .tts-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      width: 2rem;
+      height: 2rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      padding: 0;
+    }
+    .tts-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .tts-btn.active {
+      background: var(--accent);
+      color: var(--background);
+      border-color: var(--accent);
+    }
+    .tts-btn svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+
+    /* Status / current text preview */
+    .tts-status {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .tts-status-label {
+      font-size: 0.65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 0.15rem;
+    }
+    .tts-status-text {
+      font-size: 0.75rem;
+      color: var(--foreground);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: var(--serif);
+      font-weight: 400;
+    }
+
+    /* Speed control */
+    .tts-speed {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      flex-shrink: 0;
+    }
+    .tts-speed-label {
+      font-size: 0.7rem;
+      color: var(--muted);
+      min-width: 2.5em;
+      text-align: center;
+    }
+    .tts-speed-slider {
+      width: 50px;
+      height: 3px;
+      background: var(--border);
+      border-radius: 2px;
+      outline: none;
+      appearance: none;
+      cursor: pointer;
+    }
+    .tts-speed-slider::-webkit-slider-thumb {
+      appearance: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      cursor: pointer;
+    }
+    .tts-speed-slider::-moz-range-thumb {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: none;
+      cursor: pointer;
+    }
+
+    /* Voice selector */
+    .tts-voice-select {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.3rem 0.4rem;
+      border-radius: 4px;
+      max-width: 120px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .tts-voice-select:focus {
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    /* Close button */
+    .tts-close {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0.2rem;
+      line-height: 1;
+      transition: color 0.15s ease;
+      flex-shrink: 0;
+    }
+    .tts-close:hover {
+      color: var(--highlight);
+    }
+
+    /* ── Paragraph highlighting ── */
+    .article-content.tts-active > * {
+      transition: opacity 0.4s ease, border-color 0.4s ease, background 0.4s ease;
+    }
+    .article-content.tts-active > *:not(.tts-reading) {
+      opacity: 0.4;
+    }
+    .article-content.tts-active > .tts-reading {
+      opacity: 1;
+      border-left: 3px solid var(--accent);
+      padding-left: 1rem;
+      background: linear-gradient(90deg, rgba(93, 228, 199, 0.06) 0%, transparent 70%);
+      border-radius: 2px;
+      position: relative;
+    }
+    /* Glow pulse on the active paragraph border */
+    .article-content.tts-active > .tts-reading {
+      animation: tts-glow 2s ease-in-out infinite;
+    }
+    @keyframes tts-glow {
+      0%, 100% { border-left-color: var(--accent); }
+      50% { border-left-color: var(--highlight); }
+    }
+
+    /* Pad bottom of page when TTS bar is visible so nothing is hidden behind it */
+    body.tts-open .container {
+      margin-bottom: 4.5rem;
+    }
+    body.tts-open::after {
+      content: '';
+      display: block;
+      height: 4.5rem;
+    }
+
+    /* Mobile adjustments for TTS bar */
+    @media (max-width: 768px) {
+      .tts-bar-inner {
+        padding: 0.5rem 0.75rem;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+      .tts-voice-select {
+        display: none;
+      }
+      .tts-status {
+        order: 5;
+        flex-basis: 100%;
+      }
+      .tts-speed-slider {
+        width: 40px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1401,6 +1637,35 @@
       <p>Each star is accurately positioned using real astronomical data from star catalogs, showing you which stars are currently visible above your horizon.</p>
       <p><strong>LST:</strong> Local Sidereal Time - astronomical time based on Earth's rotation relative to distant stars.</p>
       <p style="margin-top: 0.5rem; color: var(--highlight);"><strong>Click to toggle full stars view! ✨</strong></p>
+    </div>
+  </div>
+
+  <!-- TTS Article Reader Bar -->
+  <div class="tts-bar" id="ttsBar">
+    <div class="tts-progress-track">
+      <div class="tts-progress-fill" id="ttsProgress"></div>
+    </div>
+    <div class="tts-bar-inner">
+      <div class="tts-transport">
+        <button class="tts-btn" id="ttsPlayBtn" title="Play / Pause">
+          <svg viewBox="0 0 24 24" id="ttsPlayIcon"><polygon points="6,3 20,12 6,21"/></svg>
+        </button>
+        <button class="tts-btn" id="ttsStopBtn" title="Stop">
+          <svg viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="14" rx="1"/></svg>
+        </button>
+      </div>
+      <div class="tts-status">
+        <div class="tts-status-label" id="ttsLabel">article reader</div>
+        <div class="tts-status-text" id="ttsStatusText">ready</div>
+      </div>
+      <div class="tts-speed">
+        <input type="range" class="tts-speed-slider" id="ttsSpeedSlider" min="0.5" max="2" step="0.1" value="1">
+        <span class="tts-speed-label" id="ttsSpeedLabel">1.0x</span>
+      </div>
+      <select class="tts-voice-select" id="ttsVoiceSelect" title="Voice">
+        <option>Loading...</option>
+      </select>
+      <button class="tts-close" id="ttsClose" title="Close reader">&times;</button>
     </div>
   </div>
 
@@ -1869,7 +2134,7 @@ God Mode: ON
             <h2>Projects</h2>
             <ul class="file-list">
               <li class="file-item executable" onclick="launchTerminal('https://aegixlinux.org')">🐧 aegixlinux.org
-                <span class="subtext">GNU/Linux distro I created w/ my soulmate 💕</span>
+                <span class="subtext">GNU/Linux distro I created w/ my beautiful soulmate <a href="https://masonborchard.com/" target="_blank" onclick="event.stopPropagation()">Mason</a> 💕</span>
                 <div class="preview-card">
                   <img src="pix/aegix-icon-1.png" alt="Aegix Linux" class="project-image">
                   <h3>Aegix Linux</h3>
@@ -2031,7 +2296,10 @@ God Mode: ON
         
         // Create the new content
         const newContent = `
-          <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
+          <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
+            <button class="back-btn" onclick="ttsOpen()" style="border-color: var(--accent); color: var(--accent);">▶ read aloud</button>
+          </div>
           <div class="article-content">
             ${parseMarkdown(markdownContent)}
           </div>
@@ -3252,6 +3520,358 @@ God Mode: ON
 
     // Start the shooting star cycle
     scheduleShootingStar();
+
+    // ═══════════════════════════════════════════
+    // TTS Article Reader Engine
+    // ═══════════════════════════════════════════
+
+    const tts = {
+      bar: document.getElementById('ttsBar'),
+      playBtn: document.getElementById('ttsPlayBtn'),
+      playIcon: document.getElementById('ttsPlayIcon'),
+      stopBtn: document.getElementById('ttsStopBtn'),
+      progress: document.getElementById('ttsProgress'),
+      label: document.getElementById('ttsLabel'),
+      statusText: document.getElementById('ttsStatusText'),
+      speedSlider: document.getElementById('ttsSpeedSlider'),
+      speedLabel: document.getElementById('ttsSpeedLabel'),
+      voiceSelect: document.getElementById('ttsVoiceSelect'),
+      closeBtn: document.getElementById('ttsClose'),
+
+      synth: window.speechSynthesis,
+      paragraphs: [],       // DOM elements to read
+      currentIndex: -1,
+      isPlaying: false,
+      isPaused: false,
+      rate: 1.0,
+      selectedVoice: null,
+      voices: [],
+    };
+
+    // SVG paths for play/pause icons
+    const PLAY_SVG = '<polygon points="6,3 20,12 6,21"/>';
+    const PAUSE_SVG = '<rect x="5" y="3" width="5" height="18" rx="1"/><rect x="14" y="3" width="5" height="18" rx="1"/>';
+
+    // Populate voice list
+    function ttsLoadVoices() {
+      tts.voices = tts.synth.getVoices();
+      if (!tts.voices.length) return;
+
+      tts.voiceSelect.innerHTML = '';
+
+      // Prefer English voices, sort "natural"/"neural" to top
+      const english = tts.voices.filter(v => v.lang.startsWith('en'));
+      const sorted = english.sort((a, b) => {
+        const aNeural = /natural|neural|enhanced|premium/i.test(a.name) ? 0 : 1;
+        const bNeural = /natural|neural|enhanced|premium/i.test(b.name) ? 0 : 1;
+        return aNeural - bNeural || a.name.localeCompare(b.name);
+      });
+
+      // Add a few non-English at the end for fun
+      const others = tts.voices.filter(v => !v.lang.startsWith('en')).slice(0, 5);
+      const all = [...sorted, ...others];
+
+      all.forEach((voice, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = `${voice.name.replace(/^(Microsoft |Google |Apple )/, '')} (${voice.lang})`;
+        opt.dataset.voiceName = voice.name;
+        opt.dataset.voiceLang = voice.lang;
+        tts.voiceSelect.appendChild(opt);
+      });
+
+      // Store for lookup
+      tts._voiceList = all;
+
+      // Default to first voice
+      if (!tts.selectedVoice && all.length) {
+        tts.selectedVoice = all[0];
+      }
+    }
+
+    // Voices load asynchronously in some browsers
+    ttsLoadVoices();
+    if (tts.synth.onvoiceschanged !== undefined) {
+      tts.synth.onvoiceschanged = ttsLoadVoices;
+    }
+
+    // Extract readable elements from .article-content
+    function ttsCollectParagraphs() {
+      const container = document.querySelector('.article-content');
+      if (!container) return [];
+      // Select readable block-level elements, skip code blocks
+      return Array.from(container.querySelectorAll('h2, h3, h4, p, li'));
+    }
+
+    // Get plain text from an element (strip HTML)
+    function ttsGetText(el) {
+      // Skip elements that are only code/images
+      const clone = el.cloneNode(true);
+      clone.querySelectorAll('code, img').forEach(c => c.remove());
+      return clone.textContent.trim();
+    }
+
+    // Open the TTS bar
+    function ttsOpen() {
+      tts.paragraphs = ttsCollectParagraphs();
+      if (!tts.paragraphs.length) return;
+
+      tts.bar.classList.add('visible');
+      document.body.classList.add('tts-open');
+      tts.statusText.textContent = 'press play to start reading';
+      tts.label.textContent = `article reader · ${tts.paragraphs.length} sections`;
+      ttsUpdateProgress();
+    }
+
+    // Close and cleanup
+    function ttsClose() {
+      ttsStop();
+      tts.bar.classList.remove('visible');
+      document.body.classList.remove('tts-open');
+      const ac = document.querySelector('.article-content');
+      if (ac) ac.classList.remove('tts-active');
+    }
+
+    // Start or resume reading
+    function ttsPlay() {
+      if (tts.isPaused) {
+        tts.synth.resume();
+        tts.isPlaying = true;
+        tts.isPaused = false;
+        tts.playIcon.innerHTML = PAUSE_SVG;
+        tts.playBtn.classList.add('active');
+        return;
+      }
+
+      // Ensure voices are loaded (Chromium loads them async)
+      if (!tts._voiceList || !tts._voiceList.length) {
+        ttsLoadVoices();
+        // If still no voices, wait for them
+        if (!tts._voiceList || !tts._voiceList.length) {
+          tts.statusText.textContent = 'loading voices...';
+          const waitForVoices = setInterval(() => {
+            ttsLoadVoices();
+            if (tts._voiceList && tts._voiceList.length) {
+              clearInterval(waitForVoices);
+              ttsPlay();
+            }
+          }, 100);
+          // Give up after 3 seconds
+          setTimeout(() => clearInterval(waitForVoices), 3000);
+          return;
+        }
+      }
+
+      // Chromium bug workaround: cancel any stale synth state before starting
+      tts.synth.cancel();
+
+      // Start fresh from current index or beginning
+      if (tts.currentIndex < 0) tts.currentIndex = 0;
+
+      const ac = document.querySelector('.article-content');
+      if (ac) ac.classList.add('tts-active');
+
+      tts.isPlaying = true;
+      tts.playIcon.innerHTML = PAUSE_SVG;
+      tts.playBtn.classList.add('active');
+
+      // Small delay after cancel() to let Chromium reset its internal state
+      setTimeout(() => ttsSpeakCurrent(), 50);
+    }
+
+    // Pause
+    function ttsPause() {
+      tts.synth.pause();
+      tts.isPlaying = false;
+      tts.isPaused = true;
+      tts.playIcon.innerHTML = PLAY_SVG;
+      tts.playBtn.classList.remove('active');
+    }
+
+    // Stop completely
+    function ttsStop() {
+      tts.synth.cancel();
+      if (tts._resumeInterval) clearInterval(tts._resumeInterval);
+      tts.isPlaying = false;
+      tts.isPaused = false;
+      tts.currentIndex = -1;
+      tts.playIcon.innerHTML = PLAY_SVG;
+      tts.playBtn.classList.remove('active');
+
+      // Remove all highlights
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+      const ac = document.querySelector('.article-content');
+      if (ac) ac.classList.remove('tts-active');
+
+      tts.statusText.textContent = 'stopped';
+      ttsUpdateProgress();
+    }
+
+    // Speak the current paragraph
+    function ttsSpeakCurrent() {
+      if (tts.currentIndex >= tts.paragraphs.length) {
+        // Finished reading
+        ttsStop();
+        tts.statusText.textContent = 'finished';
+        return;
+      }
+
+      const el = tts.paragraphs[tts.currentIndex];
+      const text = ttsGetText(el);
+
+      // Skip empty paragraphs
+      if (!text) {
+        tts.currentIndex++;
+        ttsSpeakCurrent();
+        return;
+      }
+
+      // Highlight current paragraph
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+      el.classList.add('tts-reading');
+
+      // Auto-scroll into view
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      // Update status display
+      tts.statusText.textContent = text.length > 80 ? text.slice(0, 80) + '...' : text;
+      ttsUpdateProgress();
+
+      // Create utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = tts.rate;
+
+      // Set voice
+      const voiceIdx = tts.voiceSelect.selectedIndex;
+      if (tts._voiceList && tts._voiceList[voiceIdx]) {
+        utterance.voice = tts._voiceList[voiceIdx];
+      }
+
+      // Track start time to detect Chromium instant-onend bug
+      let startTime = 0;
+      let retries = 0;
+
+      utterance.onstart = () => {
+        startTime = Date.now();
+      };
+
+      utterance.onend = () => {
+        if (!tts.isPlaying) return; // Was stopped/paused
+
+        // Chromium bug: onend fires instantly without actually speaking.
+        // If it ended in under 80ms for non-trivial text, retry.
+        const elapsed = Date.now() - startTime;
+        if (elapsed < 80 && text.length > 5 && retries < 3) {
+          retries++;
+          console.warn(`TTS: onend fired in ${elapsed}ms, retrying (${retries}/3)...`);
+          setTimeout(() => {
+            tts.synth.cancel();
+            setTimeout(() => tts.synth.speak(utterance), 50);
+          }, 150);
+          return;
+        }
+
+        tts.currentIndex++;
+        ttsSpeakCurrent();
+      };
+
+      utterance.onerror = (e) => {
+        if (e.error === 'canceled' || e.error === 'interrupted') return;
+        console.warn('TTS error:', e.error);
+        // Retry once on error before skipping
+        if (retries < 2) {
+          retries++;
+          setTimeout(() => {
+            tts.synth.cancel();
+            setTimeout(() => tts.synth.speak(utterance), 100);
+          }, 200);
+          return;
+        }
+        tts.currentIndex++;
+        ttsSpeakCurrent();
+      };
+
+      tts.synth.speak(utterance);
+
+      // Chromium workaround: keep synth alive with a periodic resume ping.
+      // Chrome pauses speech after ~15s of inactivity in the audio pipeline.
+      if (tts._resumeInterval) clearInterval(tts._resumeInterval);
+      tts._resumeInterval = setInterval(() => {
+        if (tts.synth.speaking && !tts.synth.paused) {
+          tts.synth.pause();
+          tts.synth.resume();
+        } else if (!tts.synth.speaking) {
+          clearInterval(tts._resumeInterval);
+        }
+      }, 10000);
+    }
+
+    // Update progress bar
+    function ttsUpdateProgress() {
+      if (tts.paragraphs.length === 0) {
+        tts.progress.style.width = '0%';
+        return;
+      }
+      const pct = ((tts.currentIndex + 1) / tts.paragraphs.length) * 100;
+      tts.progress.style.width = Math.max(0, Math.min(100, pct)) + '%';
+    }
+
+    // Click a paragraph to jump to it while reading
+    document.addEventListener('click', (e) => {
+      if (!tts.isPlaying && !tts.isPaused) return;
+      const el = e.target.closest('.article-content > *');
+      if (!el) return;
+      const idx = tts.paragraphs.indexOf(el);
+      if (idx === -1) return;
+
+      tts.synth.cancel();
+      tts.isPaused = false;
+      tts.currentIndex = idx;
+      tts.isPlaying = true;
+      tts.playIcon.innerHTML = PAUSE_SVG;
+      tts.playBtn.classList.add('active');
+      setTimeout(() => ttsSpeakCurrent(), 50);
+    });
+
+    // Wire up controls
+    tts.playBtn.addEventListener('click', () => {
+      if (tts.isPlaying) {
+        ttsPause();
+      } else {
+        ttsPlay();
+      }
+    });
+
+    tts.stopBtn.addEventListener('click', ttsStop);
+    tts.closeBtn.addEventListener('click', ttsClose);
+
+    tts.speedSlider.addEventListener('input', () => {
+      tts.rate = parseFloat(tts.speedSlider.value);
+      tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
+      // If currently playing, restart current paragraph with new speed
+      if (tts.isPlaying && !tts.isPaused) {
+        tts.synth.cancel();
+        tts.isPaused = false;
+        setTimeout(() => ttsSpeakCurrent(), 50);
+      }
+    });
+
+    tts.voiceSelect.addEventListener('change', () => {
+      // Restart current paragraph with new voice if playing
+      if (tts.isPlaying && !tts.isPaused) {
+        tts.synth.cancel();
+        tts.isPaused = false;
+        setTimeout(() => ttsSpeakCurrent(), 50);
+      }
+    });
+
+    // Close TTS when navigating away from article
+    const _origNavigate = navigate;
+    navigate = function(section) {
+      ttsClose();
+      return _origNavigate(section);
+    };
+
   </script>
 </body>
 </html>
