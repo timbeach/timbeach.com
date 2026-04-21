@@ -4248,14 +4248,19 @@ God Mode: ON
 
     tts.voiceSelect.addEventListener('change', (e) => {
       tts.selectedVoiceId = e.target.value;
-      // Restart current paragraph with new voice if playing
-      if (tts.isPlaying && !tts.isPaused) {
-        // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
-        tts.engine.cancel();
-        if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
-        tts.isPaused = false;
-        setTimeout(() => ttsSpeakCurrent(), 50);
+      // Invalidate look-ahead: the next-paragraph synth was done in the old voice.
+      if (tts.queue.next) {
+        if (tts.queue.next.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
+        tts.queue.next = null;
       }
+      // Abort any inflight synth for the next paragraph so Task 9's look-ahead picks up fresh.
+      const nextIdx = tts.currentIndex + 1;
+      if (tts.queue.inflight.has(nextIdx)) {
+        tts.queue.inflight.get(nextIdx).abort.cancelled = true;
+        tts.queue.inflight.delete(nextIdx);
+      }
+      // Current paragraph intentionally finishes in the old voice (spec §5).
+      // The next advance will use the new voice.
     });
 
     // Close TTS when navigating away from article
