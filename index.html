@@ -3740,10 +3740,11 @@ God Mode: ON
           this._abort = new AbortController();
 
           // Dynamic ESM import. Pinned version for reproducibility.
-          let KokoroTTS;
+          let KokoroTTS, env;
           try {
             const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/+esm');
             KokoroTTS = mod.KokoroTTS;
+            env = mod.env;  // re-exported from @huggingface/transformers
           } catch (e) {
             throw new Error('failed to load voice library (jsDelivr unreachable?): ' + e.message);
           }
@@ -3754,10 +3755,32 @@ God Mode: ON
             }
           };
 
-          this._tts = await KokoroTTS.from_pretrained(
-            'onnx-community/Kokoro-82M-v1.0-ONNX',
-            { dtype: 'q8', progress_callback: progressCallback }
-          );
+          const attemptLoad = async () => {
+            this._tts = await KokoroTTS.from_pretrained(
+              'onnx-community/Kokoro-82M-v1.0-ONNX',
+              { dtype: 'q8', progress_callback: progressCallback }
+            );
+          };
+
+          // Attempt 1: HuggingFace (default)
+          if (env) env.remoteHost = 'https://huggingface.co';
+          try {
+            await attemptLoad();
+          } catch (hfErr) {
+            console.warn('[tts] huggingface load failed, trying local mirror:', hfErr);
+            // Attempt 2: same-origin /models/ mirror
+            if (env) env.remoteHost = location.origin;
+            if (typeof onProgress === 'function') {
+              onProgress({ file: '__retry__', loaded: 0, total: 1 });  // signal UI to reset
+            }
+            try {
+              await attemptLoad();
+            } catch (localErr) {
+              console.error('[tts] local mirror also failed:', localErr);
+              throw new Error(`both huggingface and local mirror failed (hf: ${hfErr?.message || hfErr}; local: ${localErr?.message || localErr})`);
+            }
+          }
+
           this._loaded = true;
         })().finally(() => { this._initPromise = null; });
 
@@ -3935,6 +3958,14 @@ God Mode: ON
       const fileTotals = new Map();
       const fileLoaded = new Map();
       const onProgress = ({ file, loaded, total }) => {
+        if (file === '__retry__') {
+          tts.statusText.textContent = 'huggingface unreachable, trying mirror…';
+          fileTotals.clear();
+          fileLoaded.clear();
+          tts.hqBtn.textContent = 'retrying…';
+          tts.progress.style.width = '0%';
+          return;
+        }
         fileTotals.set(file, total);
         fileLoaded.set(file, loaded);
         let tAll = 0, lAll = 0;
