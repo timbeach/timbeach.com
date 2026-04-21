@@ -3680,6 +3680,11 @@ God Mode: ON
       isPaused: false,
       rate: 1.0,
       selectedVoiceId: null,
+      queue: {
+        current: null,    // { idx, audio, text } or null
+        next: null,       // same shape
+        inflight: new Map(),  // idx -> { promise, abort: AbortController-like }
+      },
     };
 
     // SVG paths for play/pause icons
@@ -3787,6 +3792,12 @@ God Mode: ON
 
     // Stop completely
     function ttsStop() {
+      // Clear queue and revoke any blob URLs (Kokoro audio, added later)
+      if (tts.queue.current?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.current.audio._blobUrl);
+      if (tts.queue.next?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
+      tts.queue.current = null;
+      tts.queue.next = null;
+      tts.queue.inflight.clear();
       tts.engine.cancel();
       if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
       tts.isPlaying = false;
@@ -3804,6 +3815,18 @@ God Mode: ON
       ttsUpdateProgress();
     }
 
+    // Deduplicated synth — reuses an in-flight promise for the same idx
+    function ttsSynth(idx, text) {
+      if (tts.queue.inflight.has(idx)) {
+        return tts.queue.inflight.get(idx).promise;
+      }
+      const abort = { cancelled: false };
+      const promise = tts.engine.synth(text, tts.selectedVoiceId, tts.rate)
+        .finally(() => tts.queue.inflight.delete(idx));
+      tts.queue.inflight.set(idx, { promise, abort });
+      return promise;
+    }
+
     // Speak the current paragraph
     async function ttsSpeakCurrent() {
       if (!tts.isPlaying || tts.currentIndex < 0) return;
@@ -3812,7 +3835,9 @@ God Mode: ON
         tts.statusText.textContent = 'finished';
         return;
       }
-      const para = tts.paragraphs[tts.currentIndex];
+
+      const idx = tts.currentIndex;
+      const para = tts.paragraphs[idx];
       const text = ttsGetText(para);
       if (!text) {
         tts.currentIndex++;
@@ -3823,17 +3848,18 @@ God Mode: ON
       tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
       para.classList.add('tts-reading');
       para.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      tts.statusText.textContent = `reading paragraph ${tts.currentIndex + 1} of ${tts.paragraphs.length}`;
+      tts.statusText.textContent = `reading paragraph ${idx + 1} of ${tts.paragraphs.length}`;
       ttsUpdateProgress();
 
-      const idx = tts.currentIndex;
-      const audio = await tts.engine.synth(text, tts.selectedVoiceId, tts.rate);
+      const audio = await ttsSynth(idx, text);
       if (!tts.isPlaying || tts.currentIndex !== idx) {
         // Stopped or advanced while synth was running — drop this audio.
-        audio._cancel?.();
+        audio?._cancel?.();
         return;
       }
+      tts.queue.current = { idx, audio, text };
       tts._currentAudio = audio;
+      audio.playbackRate = tts.rate;
       audio.addEventListener('ended', () => {
         if (!tts.isPlaying || tts._currentAudio !== audio) return;
         tts.currentIndex++;
@@ -3860,6 +3886,7 @@ God Mode: ON
       const idx = tts.paragraphs.indexOf(el);
       if (idx === -1) return;
 
+      // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
       tts.engine.cancel();
       if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
       tts.isPaused = false;
@@ -3887,6 +3914,7 @@ God Mode: ON
       tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
       // If currently playing, restart current paragraph with new speed
       if (tts.isPlaying && !tts.isPaused) {
+        // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
         tts.engine.cancel();
         if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
         tts.isPaused = false;
@@ -3898,6 +3926,7 @@ God Mode: ON
       tts.selectedVoiceId = e.target.value;
       // Restart current paragraph with new voice if playing
       if (tts.isPlaying && !tts.isPaused) {
+        // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
         tts.engine.cancel();
         if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
         tts.isPaused = false;
