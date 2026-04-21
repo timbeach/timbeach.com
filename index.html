@@ -1426,6 +1426,15 @@
       color: var(--background);
       border-color: var(--accent);
     }
+    .tts-btn:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+    .tts-btn:disabled:hover {
+      border-color: var(--border);
+      color: var(--foreground);
+      background: transparent;
+    }
     .tts-btn svg {
       width: 14px;
       height: 14px;
@@ -1492,6 +1501,10 @@
       background: var(--accent);
       border: none;
       cursor: pointer;
+    }
+    .tts-speed-slider:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
     }
 
     /* Voice selector */
@@ -3752,6 +3765,7 @@ God Mode: ON
       if (!tts.selectedVoiceId && nativeEngine.voices.length) {
         tts.selectedVoiceId = nativeEngine.voices[0].id;
       }
+      ttsApplyEngineState();
     }
 
     // Voices load asynchronously in some browsers — nativeEngine.init() handles onvoiceschanged internally
@@ -3773,6 +3787,33 @@ God Mode: ON
       return clone.textContent.trim();
     }
 
+    // Apply UI state based on whether any engine has voices available.
+    function ttsApplyEngineState() {
+      const hasNative = nativeEngine.voices.length > 0;
+      const hasKokoro = tts.engine.name === 'kokoro';
+      const hasAny = hasNative || hasKokoro;
+
+      // Transport controls
+      tts.playBtn.disabled = !hasAny;
+      tts.stopBtn.disabled = !hasAny;
+      tts.speedSlider.disabled = !hasAny;
+
+      // Voice dropdown + HQ button
+      if (tts.engine.name === 'kokoro') {
+        // Handled when kokoroEngine is introduced in Task 6 (ttsOnKokoroReady repopulates).
+      } else if (hasNative) {
+        tts.voiceSelect.disabled = false;
+        tts.hqBtn.classList.remove('promoted');
+        tts.hqBtn.textContent = 'HQ · ~80MB';
+      } else {
+        tts.voiceSelect.disabled = true;
+        tts.voiceSelect.innerHTML = '<option>(no voices)</option>';
+        tts.hqBtn.classList.add('promoted');
+        tts.hqBtn.textContent = 'load HQ · ~80MB';
+        tts.statusText.textContent = 'no system voices — click HQ to enable read-aloud';
+      }
+    }
+
     // Open the TTS bar
     function ttsOpen() {
       tts.paragraphs = ttsCollectParagraphs();
@@ -3783,6 +3824,7 @@ God Mode: ON
       tts.statusText.textContent = 'press play to start reading';
       tts.label.textContent = `article reader · ${tts.paragraphs.length} sections`;
       ttsUpdateProgress();
+      ttsApplyEngineState();
     }
 
     // Close and cleanup
@@ -3805,11 +3847,10 @@ God Mode: ON
         return;
       }
 
-      // Ensure engine is ready
-      // TODO (Task 4): replace with full native-less detection per spec §2
-      if (tts.engine === nativeEngine && !nativeEngine._loaded) {
-        tts.statusText.textContent = 'loading voices...';
-        await nativeEngine.init();
+      // Refuse to start if no engine is available.
+      if (tts.engine.name === 'native' && nativeEngine.voices.length === 0) {
+        tts.statusText.textContent = 'no system voices — click HQ to enable read-aloud';
+        return;
       }
 
       // Chromium bug workaround: cancel any stale synth state before starting
