@@ -1528,6 +1528,52 @@
       color: var(--highlight);
     }
 
+    /* HQ (high-quality neural voice) toggle button */
+    .tts-hq {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--foreground);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      flex-shrink: 0;
+      letter-spacing: 0.03em;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .tts-hq:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+    .tts-hq.loading {
+      border-color: var(--highlight);
+      color: var(--highlight);
+      cursor: progress;
+    }
+    .tts-hq.ready {
+      background: var(--accent-dim);
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 8px rgba(93, 228, 199, 0.25);
+    }
+    .tts-hq.promoted {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--accent-dim);
+      animation: tts-pulse 2.5s ease-in-out infinite;
+    }
+    @keyframes tts-pulse {
+      0%, 100% { box-shadow: 0 0 4px rgba(93, 228, 199, 0.2); }
+      50% { box-shadow: 0 0 12px rgba(93, 228, 199, 0.5); }
+    }
+    .tts-hq:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
     /* ── Paragraph highlighting ── */
     .article-content.tts-active > * {
       transition: opacity 0.4s ease, border-color 0.4s ease, background 0.4s ease;
@@ -1662,6 +1708,7 @@
         <input type="range" class="tts-speed-slider" id="ttsSpeedSlider" min="0.5" max="2" step="0.1" value="1">
         <span class="tts-speed-label" id="ttsSpeedLabel">1.0x</span>
       </div>
+      <button class="tts-hq" id="ttsHqBtn" title="Load high-quality neural voice (~80 MB one-time download)">HQ · ~80MB</button>
       <select class="tts-voice-select" id="ttsVoiceSelect" title="Voice">
         <option>Loading...</option>
       </select>
@@ -3672,6 +3719,7 @@ God Mode: ON
       speedLabel: document.getElementById('ttsSpeedLabel'),
       voiceSelect: document.getElementById('ttsVoiceSelect'),
       closeBtn: document.getElementById('ttsClose'),
+      hqBtn: document.getElementById('ttsHqBtn'),
 
       engine: nativeEngine,
       paragraphs: [],       // DOM elements to read
