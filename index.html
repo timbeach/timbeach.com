@@ -3730,11 +3730,38 @@ God Mode: ON
       _tts: null,         // KokoroTTS instance (set by init in Task 6)
       _loaded: false,
       _abort: null,       // AbortController for in-flight loads (Task 6)
+      _initPromise: null, // Re-entrancy guard: second caller awaits same promise
 
       async init(onProgress) {
         if (this._loaded) return;
-        // Placeholder: Task 6 fills in the real download logic.
-        throw new Error('kokoroEngine.init not implemented yet');
+        if (this._initPromise) return this._initPromise;
+
+        this._initPromise = (async () => {
+          this._abort = new AbortController();
+
+          // Dynamic ESM import. Pinned version for reproducibility.
+          let KokoroTTS;
+          try {
+            const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/+esm');
+            KokoroTTS = mod.KokoroTTS;
+          } catch (e) {
+            throw new Error('failed to load voice library (jsDelivr unreachable?): ' + e.message);
+          }
+
+          const progressCallback = (evt) => {
+            if (typeof onProgress === 'function' && evt.total && evt.file) {
+              onProgress({ file: evt.file, loaded: evt.loaded, total: evt.total });
+            }
+          };
+
+          this._tts = await KokoroTTS.from_pretrained(
+            'onnx-community/Kokoro-82M-v1.0-ONNX',
+            { dtype: 'q8', progress_callback: progressCallback }
+          );
+          this._loaded = true;
+        })().finally(() => { this._initPromise = null; });
+
+        return this._initPromise;
       },
 
       async synth(text, voiceId, rate) {
@@ -3885,6 +3912,83 @@ God Mode: ON
         tts.hqBtn.textContent = 'load HQ · ~80MB';
         tts.statusText.textContent = 'no system voices — click HQ to enable read-aloud';
       }
+    }
+
+    async function loadKokoro() {
+      if (kokoroEngine._loaded) {
+        tts.engine = kokoroEngine;
+        ttsOnKokoroReady();
+        return;
+      }
+
+      // UI: downloading state
+      tts.hqBtn.classList.add('loading');
+      tts.hqBtn.classList.remove('promoted', 'ready');
+      tts.hqBtn.disabled = true;
+      tts.playBtn.disabled = true;
+      tts.stopBtn.disabled = true;
+      tts.speedSlider.disabled = true;
+      tts.statusText.textContent = 'downloading high-quality voice…';
+      tts.progress.style.width = '0%';
+
+      // Track aggregate progress across files
+      const fileTotals = new Map();
+      const fileLoaded = new Map();
+      const onProgress = ({ file, loaded, total }) => {
+        fileTotals.set(file, total);
+        fileLoaded.set(file, loaded);
+        let tAll = 0, lAll = 0;
+        for (const v of fileTotals.values()) tAll += v;
+        for (const v of fileLoaded.values()) lAll += v;
+        const pct = tAll > 0 ? Math.min(100, Math.floor(100 * lAll / tAll)) : 0;
+        tts.hqBtn.textContent = `loading… ${pct}%`;
+        tts.progress.style.width = pct + '%';
+        tts.statusText.textContent = `downloading high-quality voice… ${pct}%`;
+      };
+
+      try {
+        await kokoroEngine.init(onProgress);
+      } catch (e) {
+        console.error('[tts] kokoro load failed:', e);
+        // Abort any in-flight fetch inside the library and null the controller
+        // so the next retry doesn't stomp on a stale one.
+        try { kokoroEngine._abort?.abort(); } catch (_) {}
+        kokoroEngine._abort = null;
+        tts.hqBtn.classList.remove('loading');
+        tts.hqBtn.disabled = false;
+        tts.hqBtn.textContent = 'HQ · ~80MB';
+        tts.playBtn.disabled = false;
+        tts.stopBtn.disabled = false;
+        tts.speedSlider.disabled = false;
+        tts.statusText.textContent = 'voice download failed — try again later';
+        return;
+      }
+
+      tts.engine = kokoroEngine;
+      ttsOnKokoroReady();
+    }
+
+    function ttsOnKokoroReady() {
+      tts.hqBtn.classList.remove('loading', 'promoted');
+      tts.hqBtn.classList.add('ready');
+      tts.hqBtn.disabled = false;
+      tts.hqBtn.textContent = 'HQ ✓';
+      tts.playBtn.disabled = false;
+      tts.stopBtn.disabled = false;
+      tts.speedSlider.disabled = false;
+      tts.progress.style.width = '0%';
+
+      // Repopulate voice dropdown with Kokoro voices
+      tts.voiceSelect.innerHTML = '';
+      kokoroEngine.voices.forEach((voice) => {
+        const opt = document.createElement('option');
+        opt.value = voice.id;
+        opt.textContent = voice.label;
+        tts.voiceSelect.appendChild(opt);
+      });
+      tts.voiceSelect.disabled = false;
+      tts.selectedVoiceId = kokoroEngine.voices[0]?.id || 'af_bella';  // default: Bella
+      tts.statusText.textContent = 'ready';
     }
 
     // Open the TTS bar
@@ -4070,6 +4174,33 @@ God Mode: ON
 
     tts.stopBtn.addEventListener('click', ttsStop);
     tts.closeBtn.addEventListener('click', ttsClose);
+
+    tts.hqBtn.addEventListener('click', () => {
+      if (tts.hqBtn.disabled) return;
+      if (tts.engine.name === 'kokoro') {
+        ttsRevertToNative();
+      } else {
+        loadKokoro();
+      }
+    });
+
+    function ttsRevertToNative() {
+      if (tts._currentAudio) tts._currentAudio.pause();
+      kokoroEngine.cancel();
+      tts.engine = nativeEngine;
+      tts.hqBtn.classList.remove('ready');
+      tts.hqBtn.textContent = 'HQ · ~80MB';
+      // Restore native voice dropdown
+      tts.voiceSelect.innerHTML = '';
+      nativeEngine.voices.forEach((voice) => {
+        const opt = document.createElement('option');
+        opt.value = voice.id;
+        opt.textContent = voice.label;
+        tts.voiceSelect.appendChild(opt);
+      });
+      tts.selectedVoiceId = nativeEngine.voices[0]?.id || null;
+      tts.statusText.textContent = 'reverted to system voice';
+    }
 
     tts.speedSlider.addEventListener('input', () => {
       tts.rate = parseFloat(tts.speedSlider.value);
