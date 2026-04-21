@@ -3720,6 +3720,79 @@ God Mode: ON
       },
     };
 
+    const kokoroEngine = {
+      name: 'kokoro',
+      voices: [
+        { id: 'af_bella',   label: 'Bella (US)',    lang: 'en-US' },
+        { id: 'am_michael', label: 'Michael (US)',  lang: 'en-US' },
+        { id: 'bm_george',  label: 'George (UK)',   lang: 'en-GB' },
+      ],
+      _tts: null,         // KokoroTTS instance (set by init in Task 6)
+      _loaded: false,
+      _abort: null,       // AbortController for in-flight loads (Task 6)
+
+      async init(onProgress) {
+        if (this._loaded) return;
+        // Placeholder: Task 6 fills in the real download logic.
+        throw new Error('kokoroEngine.init not implemented yet');
+      },
+
+      async synth(text, voiceId, rate) {
+        if (!this._loaded) throw new Error('kokoroEngine not initialized');
+        // Kokoro generates PCM; we wrap it in a WAV blob and return an HTMLAudioElement.
+        const { audio, sampling_rate } = await this._tts.generate(text, {
+          voice: voiceId || 'af_bella',
+          speed: 1.0,  // we use audio.playbackRate instead, for uniformity with nativeEngine
+        });
+        const wav = kokoroEngine._encodeWav(audio, sampling_rate);
+        const blob = new Blob([wav], { type: 'audio/wav' });
+        const url = URL.createObjectURL(blob);
+        const el = new Audio(url);
+        el._blobUrl = url;  // so ttsStop can revoke
+        el.playbackRate = rate;
+        el._cancel = () => {
+          el.pause();
+          el.currentTime = 0;
+        };
+        return el;
+      },
+
+      cancel() {
+        if (this._abort) this._abort.abort();
+      },
+
+      // Minimal WAV encoder: Float32Array PCM -> WAV ArrayBuffer.
+      _encodeWav(samples, sampleRate) {
+        const numChannels = 1;
+        const bytesPerSample = 2;  // int16
+        const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
+        const view = new DataView(buffer);
+        const writeStr = (offset, str) => {
+          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+        };
+        writeStr(0, 'RIFF');
+        view.setUint32(4, 36 + samples.length * bytesPerSample, true);
+        writeStr(8, 'WAVE');
+        writeStr(12, 'fmt ');
+        view.setUint32(16, 16, true);
+        view.setUint16(20, 1, true);  // PCM
+        view.setUint16(22, numChannels, true);
+        view.setUint32(24, sampleRate, true);
+        view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
+        view.setUint16(32, numChannels * bytesPerSample, true);
+        view.setUint16(34, 16, true);  // bits per sample
+        writeStr(36, 'data');
+        view.setUint32(40, samples.length * bytesPerSample, true);
+        let offset = 44;
+        for (let i = 0; i < samples.length; i++) {
+          const s = Math.max(-1, Math.min(1, samples[i]));
+          view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
+          offset += 2;
+        }
+        return buffer;
+      },
+    };
+
     const tts = {
       bar: document.getElementById('ttsBar'),
       playBtn: document.getElementById('ttsPlayBtn'),
