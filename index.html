@@ -4020,6 +4020,16 @@ God Mode: ON
       tts.voiceSelect.disabled = false;
       tts.selectedVoiceId = kokoroEngine.voices[0]?.id || 'af_bella';  // default: Bella
       tts.statusText.textContent = 'ready';
+
+      // Restart playback from current paragraph if we were playing before the swap
+      if (tts._pendingResumeIdx !== undefined && tts._pendingResumeIdx >= 0) {
+        tts.currentIndex = tts._pendingResumeIdx;
+        tts._pendingResumeIdx = undefined;
+        tts.isPlaying = true;
+        tts.playIcon.innerHTML = PAUSE_SVG;
+        tts.playBtn.classList.add('active');
+        ttsSpeakCurrent();
+      }
     }
 
     // Open the TTS bar
@@ -4089,21 +4099,28 @@ God Mode: ON
 
     // Stop completely
     function ttsStop() {
-      // Clear queue and revoke any blob URLs (Kokoro audio, added later)
+      tts.engine.cancel();
+      if (tts._resumeInterval) clearInterval(tts._resumeInterval);
+      if (tts._currentAudio) {
+        tts._currentAudio.pause?.();
+        if (tts._currentAudio._cancel) tts._currentAudio._cancel();
+        if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
+      }
+      // Clear queue
       if (tts.queue.current?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.current.audio._blobUrl);
       if (tts.queue.next?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
       tts.queue.current = null;
       tts.queue.next = null;
+      for (const entry of tts.queue.inflight.values()) entry.abort.cancelled = true;
       tts.queue.inflight.clear();
-      tts.engine.cancel();
-      if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
+
+      tts._currentAudio = null;
       tts.isPlaying = false;
       tts.isPaused = false;
       tts.currentIndex = -1;
       tts.playIcon.innerHTML = PLAY_SVG;
       tts.playBtn.classList.remove('active');
 
-      // Remove all highlights
       tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
       const ac = document.querySelector('.article-content');
       if (ac) ac.classList.remove('tts-active');
@@ -4231,20 +4248,33 @@ God Mode: ON
 
     // Click a paragraph to jump to it while reading
     document.addEventListener('click', (e) => {
-      if (!tts.isPlaying && !tts.isPaused) return;
-      const el = e.target.closest('.article-content > *');
-      if (!el) return;
-      const idx = tts.paragraphs.indexOf(el);
-      if (idx === -1) return;
+      if (!tts.isPlaying) return;
+      const container = document.querySelector('.article-content');
+      if (!container) return;
+      const p = e.target.closest('p, h2, h3, h4, li');
+      if (!p || !container.contains(p)) return;
+      const idx = tts.paragraphs.indexOf(p);
+      if (idx < 0) return;
+      e.preventDefault();
 
-      // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
+      // Cancel current playback
       tts.engine.cancel();
-      if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
-      tts.isPaused = false;
+      if (tts._currentAudio) {
+        tts._currentAudio._cancel?.();
+        if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
+      }
+      tts._currentAudio = null;
+
+      // Clear look-ahead (stale, possibly for a different paragraph)
+      if (tts.queue.next?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
+      tts.queue.next = null;
+
+      // Abort any inflight synths (look-ahead may have been for idx_old+1)
+      for (const entry of tts.queue.inflight.values()) entry.abort.cancelled = true;
+      tts.queue.inflight.clear();
+
       tts.currentIndex = idx;
-      tts.isPlaying = true;
-      tts.playIcon.innerHTML = PAUSE_SVG;
-      tts.playBtn.classList.add('active');
+      tts.isPaused = false;
       setTimeout(() => ttsSpeakCurrent(), 50);
     });
 
@@ -4265,17 +4295,21 @@ God Mode: ON
       if (tts.engine.name === 'kokoro') {
         ttsRevertToNative();
       } else {
+        // Capture resume idx so ttsOnKokoroReady can restart playback after load
+        if (tts.isPlaying) {
+          tts._pendingResumeIdx = tts.queue.current?.idx ?? tts.currentIndex;
+        }
         loadKokoro();
       }
     });
 
     function ttsRevertToNative() {
-      if (tts._currentAudio) tts._currentAudio.pause();
-      kokoroEngine.cancel();
+      const wasPlaying = tts.isPlaying;
+      const resumeIdx = wasPlaying ? (tts.queue.current?.idx ?? tts.currentIndex) : -1;
+      ttsStop();
       tts.engine = nativeEngine;
       tts.hqBtn.classList.remove('ready');
       tts.hqBtn.textContent = 'HQ · ~80MB';
-      // Restore native voice dropdown
       tts.voiceSelect.innerHTML = '';
       nativeEngine.voices.forEach((voice) => {
         const opt = document.createElement('option');
@@ -4285,18 +4319,25 @@ God Mode: ON
       });
       tts.selectedVoiceId = nativeEngine.voices[0]?.id || null;
       tts.statusText.textContent = 'reverted to system voice';
+      if (resumeIdx >= 0) {
+        tts.currentIndex = resumeIdx;
+        tts.isPlaying = true;
+        tts.playIcon.innerHTML = PAUSE_SVG;
+        tts.playBtn.classList.add('active');
+        ttsSpeakCurrent();
+      }
     }
 
-    tts.speedSlider.addEventListener('input', () => {
-      tts.rate = parseFloat(tts.speedSlider.value);
+    tts.speedSlider.addEventListener('input', (e) => {
+      tts.rate = parseFloat(e.target.value);
       tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
-      // If currently playing, restart current paragraph with new speed
-      if (tts.isPlaying && !tts.isPaused) {
-        // TODO (Task 9): also clear tts.queue.inflight entries here so look-ahead isn't stranded
-        tts.engine.cancel();
-        if (tts._currentAudio) { tts._currentAudio?._cancel(); tts._currentAudio = null; }
-        tts.isPaused = false;
-        setTimeout(() => ttsSpeakCurrent(), 50);
+      if (tts._currentAudio) {
+        tts._currentAudio.playbackRate = tts.rate;
+      }
+      // Invalidate look-ahead (was synthesized at old rate for native; Kokoro uses playbackRate anyway)
+      if (tts.queue.next) {
+        if (tts.queue.next.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
+        tts.queue.next = null;
       }
     });
 
