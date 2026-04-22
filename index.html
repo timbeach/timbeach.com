@@ -3742,9 +3742,11 @@ God Mode: ON
           try {
             worker = new Worker('tts-worker.js', { type: 'module' });
           } catch (e) {
+            console.error('[tts] worker spawn failed', e);
             reject(new Error('web worker unavailable: ' + (e.message || e)));
             return;
           }
+          console.log('[tts] worker spawned');
           this._worker = worker;
 
           worker.onmessage = (ev) => {
@@ -3752,9 +3754,11 @@ God Mode: ON
             if (msg.type === 'progress') {
               if (typeof onProgress === 'function') onProgress(msg);
             } else if (msg.type === 'ready') {
+              console.log('[tts] worker ready');
               this._loaded = true;
               resolve();
             } else if (msg.type === 'error') {
+              console.error('[tts] worker error event', msg.message);
               reject(new Error(msg.message));
             } else if (msg.type === 'synth') {
               const entry = this._pending.get(msg.reqId);
@@ -3764,7 +3768,10 @@ God Mode: ON
               if (entry) { this._pending.delete(msg.reqId); entry.reject(new Error(msg.message)); }
             }
           };
-          worker.onerror = (e) => reject(new Error('worker error: ' + (e.message || 'unknown')));
+          worker.onerror = (e) => {
+            console.error('[tts] worker onerror', e);
+            reject(new Error('worker error: ' + (e.message || 'unknown')));
+          };
           worker.postMessage({ cmd: 'init' });
         }).finally(() => { this._initPromise = null; });
 

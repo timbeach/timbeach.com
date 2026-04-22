@@ -11,13 +11,19 @@
 
 let ttsInstance = null;
 
+const log = (...a) => console.log('[tts:worker]', ...a);
+
 async function init() {
+  log('init: importing kokoro-js…');
+  const t0 = performance.now();
   let KokoroTTS, env;
   try {
     const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/+esm');
     KokoroTTS = mod.KokoroTTS;
     env = mod.env;
+    log(`init: import done in ${((performance.now()-t0)/1000).toFixed(1)}s`);
   } catch (e) {
+    log('init: import FAILED', e);
     self.postMessage({ type: 'error', message: 'failed to load voice library (jsDelivr unreachable?): ' + e.message });
     return;
   }
@@ -36,15 +42,20 @@ async function init() {
   };
 
   if (env) env.remoteHost = 'https://huggingface.co';
+  log('init: from_pretrained (HF)…');
+  const tLoad = performance.now();
   try {
     await attemptLoad();
+    log(`init: model loaded in ${((performance.now()-tLoad)/1000).toFixed(1)}s`);
   } catch (hfErr) {
-    // Signal the UI to reset progress for the retry attempt.
+    log('init: HF failed, trying local mirror', hfErr);
     self.postMessage({ type: 'progress', file: '__retry__', loaded: 0, total: 1 });
     if (env) env.remoteHost = self.location.origin;
     try {
       await attemptLoad();
+      log('init: model loaded from local mirror');
     } catch (localErr) {
+      log('init: local mirror also failed', localErr);
       self.postMessage({
         type: 'error',
         message: `both huggingface and local mirror failed (hf: ${hfErr?.message || hfErr}; local: ${localErr?.message || localErr})`,
@@ -57,17 +68,23 @@ async function init() {
 }
 
 async function synth(reqId, text, voiceId) {
+  log(`synth #${reqId} (${text.length} chars, voice=${voiceId})`);
+  const t0 = performance.now();
   try {
     const { audio, sampling_rate } = await ttsInstance.generate(text, {
       voice: voiceId || 'af_bella',
       speed: 1.0,
     });
     const samples = audio instanceof Float32Array ? audio : new Float32Array(audio);
+    const dur = ((performance.now()-t0)/1000).toFixed(2);
+    const audioSec = (samples.length / sampling_rate).toFixed(1);
+    log(`synth #${reqId} done in ${dur}s (${audioSec}s of audio, ${samples.length} samples @ ${sampling_rate}Hz)`);
     self.postMessage(
       { type: 'synth', reqId, samples, sampleRate: sampling_rate },
       [samples.buffer]
     );
   } catch (e) {
+    log(`synth #${reqId} FAILED`, e);
     self.postMessage({ type: 'synth-error', reqId, message: e?.message || String(e) });
   }
 }
