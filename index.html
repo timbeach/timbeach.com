@@ -3727,78 +3727,62 @@ God Mode: ON
         { id: 'am_michael', label: 'Michael (US)',  lang: 'en-US' },
         { id: 'bm_george',  label: 'George (UK)',   lang: 'en-GB' },
       ],
-      _tts: null,         // KokoroTTS instance (set by init in Task 6)
+      _worker: null,
       _loaded: false,
-      _abort: null,       // AbortController for in-flight loads (Task 6)
-      _initPromise: null, // Re-entrancy guard: second caller awaits same promise
+      _initPromise: null,    // Re-entrancy guard: second caller awaits same promise
+      _pending: new Map(),   // reqId -> { resolve, reject } for in-flight synth calls
+      _reqSeq: 0,
 
       async init(onProgress) {
         if (this._loaded) return;
         if (this._initPromise) return this._initPromise;
 
-        this._initPromise = (async () => {
-          this._abort = new AbortController();
-
-          // Dynamic ESM import. Pinned version for reproducibility.
-          let KokoroTTS, env;
+        this._initPromise = new Promise((resolve, reject) => {
+          let worker;
           try {
-            const mod = await import('https://cdn.jsdelivr.net/npm/kokoro-js@1.2.0/+esm');
-            KokoroTTS = mod.KokoroTTS;
-            env = mod.env;  // re-exported from @huggingface/transformers
+            worker = new Worker('tts-worker.js', { type: 'module' });
           } catch (e) {
-            throw new Error('failed to load voice library (jsDelivr unreachable?): ' + e.message);
+            reject(new Error('web worker unavailable: ' + (e.message || e)));
+            return;
           }
+          this._worker = worker;
 
-          const progressCallback = (evt) => {
-            if (typeof onProgress === 'function' && evt.total && evt.file) {
-              onProgress({ file: evt.file, loaded: evt.loaded, total: evt.total });
+          worker.onmessage = (ev) => {
+            const msg = ev.data;
+            if (msg.type === 'progress') {
+              if (typeof onProgress === 'function') onProgress(msg);
+            } else if (msg.type === 'ready') {
+              this._loaded = true;
+              resolve();
+            } else if (msg.type === 'error') {
+              reject(new Error(msg.message));
+            } else if (msg.type === 'synth') {
+              const entry = this._pending.get(msg.reqId);
+              if (entry) { this._pending.delete(msg.reqId); entry.resolve(msg); }
+            } else if (msg.type === 'synth-error') {
+              const entry = this._pending.get(msg.reqId);
+              if (entry) { this._pending.delete(msg.reqId); entry.reject(new Error(msg.message)); }
             }
           };
-
-          const attemptLoad = async () => {
-            this._tts = await KokoroTTS.from_pretrained(
-              'onnx-community/Kokoro-82M-v1.0-ONNX',
-              { dtype: 'q8', progress_callback: progressCallback }
-            );
-          };
-
-          // Attempt 1: HuggingFace (default)
-          if (env) env.remoteHost = 'https://huggingface.co';
-          try {
-            await attemptLoad();
-          } catch (hfErr) {
-            console.warn('[tts] huggingface load failed, trying local mirror:', hfErr);
-            // Attempt 2: same-origin /models/ mirror
-            if (env) env.remoteHost = location.origin;
-            if (typeof onProgress === 'function') {
-              onProgress({ file: '__retry__', loaded: 0, total: 1 });  // signal UI to reset
-            }
-            try {
-              await attemptLoad();
-            } catch (localErr) {
-              console.error('[tts] local mirror also failed:', localErr);
-              throw new Error(`both huggingface and local mirror failed (hf: ${hfErr?.message || hfErr}; local: ${localErr?.message || localErr})`);
-            }
-          }
-
-          this._loaded = true;
-        })().finally(() => { this._initPromise = null; });
+          worker.onerror = (e) => reject(new Error('worker error: ' + (e.message || 'unknown')));
+          worker.postMessage({ cmd: 'init' });
+        }).finally(() => { this._initPromise = null; });
 
         return this._initPromise;
       },
 
       async synth(text, voiceId, rate) {
         if (!this._loaded) throw new Error('kokoroEngine not initialized');
-        // Kokoro generates PCM; we wrap it in a WAV blob and return an HTMLAudioElement.
-        const { audio, sampling_rate } = await this._tts.generate(text, {
-          voice: voiceId || 'af_bella',
-          speed: 1.0,  // we use audio.playbackRate instead, for uniformity with nativeEngine
+        const reqId = ++this._reqSeq;
+        const { samples, sampleRate } = await new Promise((resolve, reject) => {
+          this._pending.set(reqId, { resolve, reject });
+          this._worker.postMessage({ cmd: 'synth', reqId, text, voiceId });
         });
-        const wav = kokoroEngine._encodeWav(audio, sampling_rate);
+        const wav = kokoroEngine._encodeWav(samples, sampleRate);
         const blob = new Blob([wav], { type: 'audio/wav' });
         const url = URL.createObjectURL(blob);
         const el = new Audio(url);
-        el._blobUrl = url;  // so ttsStop can revoke
+        el._blobUrl = url;
         el.playbackRate = rate;
         el._cancel = () => {
           el.pause();
@@ -3808,7 +3792,22 @@ God Mode: ON
       },
 
       cancel() {
-        if (this._abort) this._abort.abort();
+        // WASM generate() isn't interruptible. Stale results are discarded
+        // on arrival by queue-level staleness checks in ttsSpeakCurrent.
+      },
+
+      // Kill the worker and reject any pending synths. Used on load failure
+      // so the next HQ click starts clean.
+      _terminate() {
+        if (this._worker) {
+          try { this._worker.terminate(); } catch (_) {}
+          this._worker = null;
+        }
+        this._loaded = false;
+        for (const entry of this._pending.values()) {
+          try { entry.reject(new Error('worker terminated')); } catch (_) {}
+        }
+        this._pending.clear();
       },
 
       // Minimal WAV encoder: Float32Array PCM -> WAV ArrayBuffer.
@@ -3981,10 +3980,8 @@ God Mode: ON
         await kokoroEngine.init(onProgress);
       } catch (e) {
         console.error('[tts] kokoro load failed:', e);
-        // Abort any in-flight fetch inside the library and null the controller
-        // so the next retry doesn't stomp on a stale one.
-        try { kokoroEngine._abort?.abort(); } catch (_) {}
-        kokoroEngine._abort = null;
+        // Kill the worker so the next HQ click starts with a fresh one.
+        kokoroEngine._terminate();
         tts.hqBtn.classList.remove('loading');
         tts.hqBtn.disabled = false;
         tts.hqBtn.textContent = 'HQ · ~80MB';
