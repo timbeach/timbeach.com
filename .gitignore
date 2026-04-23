@@ -5,3 +5,7 @@ CLAUDE.md
 .claude/
 thailand_2026/photos/
 models/
+audition/
+tools/venv/
+tools/models/
+
