@@ -1701,7 +1701,11 @@
             date: metadata.date,
             tags: metadata.tags || [],
             emoji: metadata.emoji || '📄',
-            filename: filename
+            filename: filename,
+            audio: metadata.audio || null,
+            timings: metadata.timings || null,
+            voice: metadata.voice || null,
+            duration: metadata.duration || null,
           };
         }
 
@@ -2296,7 +2300,7 @@ God Mode: ON
         const newContent = `
           <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
             <button class="back-btn" onclick="navigate('${section}')">← back to ${section}/</button>
-            <button class="back-btn" onclick="ttsOpen()" style="border-color: var(--accent); color: var(--accent);">▶ read aloud</button>
+            ${article.audio ? `<button class="back-btn" onclick="ttsOpen('${filename}')" style="border-color: var(--accent); color: var(--accent);">▶ read aloud</button>` : ''}
           </div>
           <div class="article-content">
             ${parseMarkdown(markdownContent)}
@@ -3535,10 +3539,10 @@ God Mode: ON
       speedLabel: document.getElementById('ttsSpeedLabel'),
       closeBtn: document.getElementById('ttsClose'),
 
-      paragraphs: [],       // DOM elements to read
+      audio: null,          // HTMLAudioElement created by ttsOpen
+      timings: null,        // {voice, duration, paragraphs: [{idx, start, end, text}]}
+      paragraphs: [],       // DOM elements matched by ttsCollectParagraphs
       currentIndex: -1,
-      isPlaying: false,
-      isPaused: false,
       rate: 1.0,
     };
 
@@ -3562,135 +3566,176 @@ God Mode: ON
       return clone.textContent.trim();
     }
 
-    // Open the TTS bar
-    function ttsOpen() {
-      tts.paragraphs = ttsCollectParagraphs();
-      if (!tts.paragraphs.length) return;
+    // Open the TTS bar for the currently displayed article.
+    // `articleFilename` is the key in articles.json (e.g. "how-to-config-obsidian.md").
+    async function ttsOpen(articleFilename) {
+      const meta = articles?.[articleFilename];
+      if (!meta?.audio || !meta?.timings) {
+        console.warn('[tts] no audio for', articleFilename);
+        return;
+      }
 
-      tts.bar.classList.add('visible');
-      document.body.classList.add('tts-open');
-      tts.statusText.textContent = 'press play to start reading';
-      tts.label.textContent = `article reader · ${tts.paragraphs.length} sections`;
-      ttsUpdateProgress();
+      // Fetch timings sidecar
+      let timings;
+      try {
+        const res = await fetch(meta.timings);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        timings = await res.json();
+      } catch (e) {
+        console.warn('[tts] failed to load timings:', e);
+        return;
+      }
+
+      // Collect paragraph DOM and sanity-check against timings.
+      const paras = ttsCollectParagraphs();
+      if (paras.length !== timings.paragraphs.length) {
+        console.warn('[tts] paragraph count mismatch (' + paras.length + ' DOM vs '
+          + timings.paragraphs.length + ' in timings) — article was edited without re-render. Hiding bar.');
+        return;
+      }
+      const firstDomText = ttsGetText(paras[0]);
+      if (firstDomText !== timings.paragraphs[0].text) {
+        console.warn('[tts] first paragraph text mismatch — article was edited without re-render. Hiding bar.');
+        return;
+      }
+
+      // Tear down any previous session
+      if (tts.audio) {
+        tts.audio.pause();
+        tts.audio.src = '';
+        tts.audio = null;
+      }
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+
+      // Wire state
+      tts.paragraphs = paras;
+      tts.timings = timings;
+      tts.currentIndex = -1;
+      tts.rate = parseFloat(tts.speedSlider.value) || 1.0;
+
+      // Audio element
+      const audio = new Audio(meta.audio);
+      audio.preload = 'none';
+      audio.playbackRate = tts.rate;
+      tts.audio = audio;
+
+      audio.addEventListener('timeupdate', ttsOnTimeUpdate);
+      audio.addEventListener('ended', ttsOnEnded);
+      audio.addEventListener('error', () => {
+        console.warn('[tts] audio failed to load — hiding bar');
+        ttsClose();
+      });
+
+      // Paragraph-click to seek
+      paras.forEach((para, idx) => {
+        if (para.dataset.ttsWired) return;
+        para.dataset.ttsWired = '1';
+        para.style.cursor = 'pointer';
+        para.addEventListener('click', () => {
+          if (!tts.audio) return;
+          tts.audio.currentTime = tts.timings.paragraphs[idx].start;
+          if (tts.audio.paused) tts.audio.play();
+          tts.playIcon.innerHTML = PAUSE_SVG;
+        });
+      });
+
+      // Show the bar
+      tts.bar.classList.add('active');
+      document.querySelector('.article-content')?.classList.add('tts-active');
+      tts.statusText.textContent = 'ready';
+      tts.playIcon.innerHTML = PLAY_SVG;
+      tts.progress.style.width = '0%';
     }
 
     // Close and cleanup
     function ttsClose() {
-      ttsStop();
-      tts.bar.classList.remove('visible');
-      document.body.classList.remove('tts-open');
-      const ac = document.querySelector('.article-content');
-      if (ac) ac.classList.remove('tts-active');
+      if (tts.audio) {
+        tts.audio.pause();
+        tts.audio.src = '';
+        tts.audio = null;
+      }
+      tts.timings = null;
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+      tts.paragraphs = [];
+      tts.currentIndex = -1;
+      tts.bar.classList.remove('active');
+      document.querySelector('.article-content')?.classList.remove('tts-active');
     }
 
-    // Start or resume reading
-    async function ttsPlay() {
-      if (tts.isPaused) {
-        tts._currentAudio?.resume();
-        tts.isPlaying = true;
-        tts.isPaused = false;
+    // Toggle play/pause
+    function ttsPlay() {
+      if (!tts.audio) return;
+      if (tts.audio.paused) {
+        tts.audio.play();
         tts.playIcon.innerHTML = PAUSE_SVG;
-        tts.playBtn.classList.add('active');
-        return;
+      } else {
+        tts.audio.pause();
+        tts.playIcon.innerHTML = PLAY_SVG;
       }
-
-      // Chromium bug workaround: cancel any stale synth state before starting
-      // (engine.cancel() will be rewired by T9)
-
-      // Start fresh from current index or beginning
-      if (tts.currentIndex < 0) tts.currentIndex = 0;
-
-      const ac = document.querySelector('.article-content');
-      if (ac) ac.classList.add('tts-active');
-
-      tts.isPlaying = true;
-      tts.playIcon.innerHTML = PAUSE_SVG;
-      tts.playBtn.classList.add('active');
     }
 
-    // Pause
-    function ttsPause() {
-      tts._currentAudio?.pause();
-      tts.isPlaying = false;
-      tts.isPaused = true;
-      tts.playIcon.innerHTML = PLAY_SVG;
-      tts.playBtn.classList.remove('active');
-    }
-
-    // Stop completely
+    // Stop and reset to beginning
     function ttsStop() {
-      if (tts._currentAudio) {
-        tts._currentAudio.pause?.();
-        if (tts._currentAudio._cancel) tts._currentAudio._cancel();
-        if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
-      }
-
-      tts._currentAudio = null;
-      tts.isPlaying = false;
-      tts.isPaused = false;
+      if (!tts.audio) return;
+      tts.audio.pause();
+      tts.audio.currentTime = 0;
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
       tts.currentIndex = -1;
       tts.playIcon.innerHTML = PLAY_SVG;
-      tts.playBtn.classList.remove('active');
-
-      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
-      const ac = document.querySelector('.article-content');
-      if (ac) ac.classList.remove('tts-active');
-
       tts.statusText.textContent = 'stopped';
-      ttsUpdateProgress();
+      tts.progress.style.width = '0%';
     }
 
+    // Update progress bar and paragraph highlight based on current audio time
+    function ttsOnTimeUpdate() {
+      if (!tts.audio || !tts.timings) return;
+      const t = tts.audio.currentTime;
+      const paras = tts.timings.paragraphs;
+      let idx = -1;
+      for (let i = 0; i < paras.length; i++) {
+        if (t >= paras[i].start && t < paras[i].end) { idx = i; break; }
+      }
+      if (idx === -1 && t >= (paras[paras.length - 1]?.end || 0)) idx = paras.length - 1;
 
-    // Update progress bar
+      if (idx !== tts.currentIndex && idx !== -1) {
+        tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+        tts.paragraphs[idx].classList.add('tts-reading');
+        tts.paragraphs[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        tts.currentIndex = idx;
+        tts.statusText.textContent = `reading paragraph ${idx + 1} of ${paras.length}`;
+      }
+
+      const pct = Math.min(100, (t / tts.timings.duration) * 100);
+      tts.progress.style.width = pct + '%';
+    }
+
+    // Handle audio playback ending
+    function ttsOnEnded() {
+      tts.statusText.textContent = 'finished';
+      tts.playIcon.innerHTML = PLAY_SVG;
+      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+      tts.currentIndex = -1;
+    }
+
+    // Update progress bar (legacy helper kept for compatibility)
     function ttsUpdateProgress() {
-      if (tts.paragraphs.length === 0) {
+      if (!tts.timings || !tts.audio) {
         tts.progress.style.width = '0%';
         return;
       }
-      const pct = ((tts.currentIndex + 1) / tts.paragraphs.length) * 100;
-      tts.progress.style.width = Math.max(0, Math.min(100, pct)) + '%';
+      const pct = Math.min(100, (tts.audio.currentTime / tts.timings.duration) * 100);
+      tts.progress.style.width = pct + '%';
     }
 
-    // Click a paragraph to jump to it while reading
-    document.addEventListener('click', (e) => {
-      if (!tts.isPlaying) return;
-      const container = document.querySelector('.article-content');
-      if (!container) return;
-      const p = e.target.closest('p, h2, h3, h4, li');
-      if (!p || !container.contains(p)) return;
-      const idx = tts.paragraphs.indexOf(p);
-      if (idx < 0) return;
-      e.preventDefault();
-
-      // Cancel current playback and jump to paragraph
-      if (tts._currentAudio) {
-        tts._currentAudio._cancel?.();
-        if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
-      }
-      tts._currentAudio = null;
-
-      tts.currentIndex = idx;
-      tts.isPaused = false;
-    });
-
     // Wire up controls
-    tts.playBtn.addEventListener('click', () => {
-      if (tts.isPlaying) {
-        ttsPause();
-      } else {
-        ttsPlay();
-      }
-    });
-
+    tts.playBtn.addEventListener('click', ttsPlay);
     tts.stopBtn.addEventListener('click', ttsStop);
     tts.closeBtn.addEventListener('click', ttsClose);
 
-    tts.speedSlider.addEventListener('input', (e) => {
-      tts.rate = parseFloat(e.target.value);
-      tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
-      if (tts._currentAudio) {
-        tts._currentAudio.playbackRate = tts.rate;
-      }
+    tts.speedSlider.addEventListener('input', () => {
+      tts.rate = parseFloat(tts.speedSlider.value);
+      tts.speedLabel.textContent = tts.rate.toFixed(2) + 'x';
+      if (tts.audio) tts.audio.playbackRate = tts.rate;
     });
 
     // Close TTS when navigating away from article
