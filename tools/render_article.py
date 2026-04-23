@@ -137,7 +137,6 @@ def encode_opus(samples: np.ndarray, sample_rate: int, out_path: Path) -> None:
 
 
 import argparse
-import os
 import sys
 import time
 
@@ -232,15 +231,16 @@ def main(argv: list[str] | None = None) -> int:
         data = json.loads(ARTICLES_JSON.read_text())
         slugs = [name[:-3] for name in data if name.endswith(".md")]
         rendered = 0
+        errors: list[str] = []
         for slug in slugs:
             try:
                 if render_article(slug, args.voice, args.force, kokoro):
                     rendered += 1
             except Exception as e:
                 print(f"  ERROR {slug}: {e}", file=sys.stderr)
-                return 1
-        print(f"done: {rendered}/{len(slugs)} articles rendered")
-        return 0
+                errors.append(slug)
+        print(f"done: {rendered}/{len(slugs)} articles rendered, {len(errors)} errors")
+        return 1 if errors else 0
 
     try:
         render_article(args.slug, args.voice, args.force, kokoro)
