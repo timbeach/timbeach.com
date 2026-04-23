@@ -1,5 +1,6 @@
+import json
 import numpy as np
-from render_article import extract_paragraphs, render_paragraphs
+from render_article import extract_paragraphs, render_paragraphs, write_timings_json, update_articles_json
 
 
 def test_simple_paragraphs():
@@ -97,3 +98,63 @@ def test_variable_length_paragraphs_compute_correct_offsets():
     assert timings[0]["start"] == 0.0 and timings[0]["end"] == 1.0
     assert timings[1]["start"] == 1.0 and timings[1]["end"] == 3.0
     assert timings[2]["start"] == 3.0 and timings[2]["end"] == 3.5
+
+
+def test_write_timings_json_shape(tmp_path):
+    out = tmp_path / "slug.timings.json"
+    timings = [
+        {"idx": 0, "start": 0.0, "end": 1.5, "text": "Hello."},
+        {"idx": 1, "start": 1.5, "end": 3.2, "text": "World."},
+    ]
+    write_timings_json(out, voice="bm_lewis", duration=3.2, timings=timings)
+    data = json.loads(out.read_text())
+    assert data == {
+        "voice": "bm_lewis",
+        "duration": 3.2,
+        "paragraphs": timings,
+    }
+
+
+def test_update_articles_json_adds_fields(tmp_path):
+    aj = tmp_path / "articles.json"
+    aj.write_text(json.dumps({
+        "foo.md": {"title": "Foo", "date": "2026-01-01", "tags": ["a"]},
+        "bar.md": {"title": "Bar", "date": "2026-01-02", "tags": ["b"]},
+    }, indent=2))
+    update_articles_json(
+        aj,
+        filename="bar.md",
+        audio="audio/bar.ogg",
+        timings="audio/bar.timings.json",
+        voice="bm_lewis",
+        duration=42.5,
+    )
+    data = json.loads(aj.read_text())
+    assert data["foo.md"] == {"title": "Foo", "date": "2026-01-01", "tags": ["a"]}
+    assert data["bar.md"] == {
+        "title": "Bar",
+        "date": "2026-01-02",
+        "tags": ["b"],
+        "audio": "audio/bar.ogg",
+        "timings": "audio/bar.timings.json",
+        "voice": "bm_lewis",
+        "duration": 42.5,
+    }
+
+
+def test_update_articles_json_unknown_slug_raises(tmp_path):
+    aj = tmp_path / "articles.json"
+    aj.write_text(json.dumps({"foo.md": {"title": "Foo"}}))
+    import pytest
+    with pytest.raises(KeyError):
+        update_articles_json(aj, filename="missing.md", audio="x", timings="y", voice="z", duration=1.0)
+
+
+def test_update_articles_json_preserves_formatting(tmp_path):
+    """Output should be 2-space indented with trailing newline (matches existing file)."""
+    aj = tmp_path / "articles.json"
+    aj.write_text(json.dumps({"foo.md": {"title": "Foo"}}, indent=2) + "\n")
+    update_articles_json(aj, filename="foo.md", audio="a", timings="t", voice="v", duration=1.0)
+    text = aj.read_text()
+    assert text.endswith("\n")
+    assert '  "foo.md"' in text  # 2-space indent preserved

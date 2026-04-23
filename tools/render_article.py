@@ -1,6 +1,8 @@
 """Pre-render an article's audio + paragraph timings for timbeach.com."""
 from __future__ import annotations
 
+import json
+from pathlib import Path
 from typing import Callable
 import numpy as np
 
@@ -59,3 +61,40 @@ def render_paragraphs(
         cursor_samples += len(samples)
 
     return np.concatenate(chunks), sample_rate, timings
+
+
+def write_timings_json(
+    path: Path,
+    voice: str,
+    duration: float,
+    timings: list[dict],
+) -> None:
+    """Write timings JSON file with voice, duration, and paragraph timings."""
+    payload = {
+        "voice": voice,
+        "duration": round(duration, 3),
+        "paragraphs": timings,
+    }
+    path.write_text(json.dumps(payload, indent=2) + "\n")
+
+
+def update_articles_json(
+    path: Path,
+    filename: str,
+    audio: str,
+    timings: str,
+    voice: str,
+    duration: float,
+) -> None:
+    """Add audio/timings/voice/duration to an existing article entry.
+
+    Raises KeyError if the slug isn't already in the file.
+    """
+    data = json.loads(Path(path).read_text())
+    if filename not in data:
+        raise KeyError(f"articles.json has no entry for {filename!r}")
+    data[filename]["audio"] = audio
+    data[filename]["timings"] = timings
+    data[filename]["voice"] = voice
+    data[filename]["duration"] = round(duration, 3)
+    Path(path).write_text(json.dumps(data, indent=2) + "\n")
