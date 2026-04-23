@@ -1,6 +1,9 @@
 """Pre-render an article's audio + paragraph timings for timbeach.com."""
 from __future__ import annotations
 
+from typing import Callable
+import numpy as np
+
 from markdown_it import MarkdownIt
 from bs4 import BeautifulSoup
 
@@ -24,3 +27,35 @@ def extract_paragraphs(md_text: str) -> list[str]:
         if text:
             paragraphs.append(text)
     return paragraphs
+
+
+def render_paragraphs(
+    paragraphs: list[str],
+    voice: str,
+    synth: Callable[[str, str], tuple[np.ndarray, int]],
+) -> tuple[np.ndarray, int, list[dict]]:
+    """Synthesize each paragraph, concat, return (samples, sr, timings).
+
+    `synth(text, voice)` must return (float32 samples, sample_rate).
+    """
+    if not paragraphs:
+        return np.zeros(0, dtype=np.float32), 0, []
+
+    chunks: list[np.ndarray] = []
+    timings: list[dict] = []
+    sample_rate: int | None = None
+    cursor_samples = 0
+
+    for idx, text in enumerate(paragraphs):
+        samples, sr = synth(text, voice)
+        if sample_rate is None:
+            sample_rate = sr
+        elif sr != sample_rate:
+            raise ValueError(f"sample rate mismatch: paragraph {idx} returned {sr}, expected {sample_rate}")
+        start = cursor_samples / sample_rate
+        end = (cursor_samples + len(samples)) / sample_rate
+        timings.append({"idx": idx, "start": start, "end": end, "text": text})
+        chunks.append(samples)
+        cursor_samples += len(samples)
+
+    return np.concatenate(chunks), sample_rate, timings
