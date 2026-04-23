@@ -3588,6 +3588,10 @@ God Mode: ON
 
       // Collect paragraph DOM and sanity-check against timings.
       const paras = ttsCollectParagraphs();
+      if (paras.length === 0 || timings.paragraphs.length === 0) {
+        console.warn('[tts] empty article or empty timings — hiding bar');
+        return;
+      }
       if (paras.length !== timings.paragraphs.length) {
         console.warn('[tts] paragraph count mismatch (' + paras.length + ' DOM vs '
           + timings.paragraphs.length + ' in timings) — article was edited without re-render. Hiding bar.');
@@ -3655,7 +3659,10 @@ God Mode: ON
         tts.audio = null;
       }
       tts.timings = null;
-      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
+      tts.paragraphs.forEach(p => {
+        p.classList.remove('tts-reading');
+        delete p.dataset.ttsWired;
+      });
       tts.paragraphs = [];
       tts.currentIndex = -1;
       tts.bar.classList.remove('visible');
@@ -3715,16 +3722,6 @@ God Mode: ON
       tts.playIcon.innerHTML = PLAY_SVG;
       tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
       tts.currentIndex = -1;
-    }
-
-    // Update progress bar (legacy helper kept for compatibility)
-    function ttsUpdateProgress() {
-      if (!tts.timings || !tts.audio) {
-        tts.progress.style.width = '0%';
-        return;
-      }
-      const pct = Math.min(100, (tts.audio.currentTime / tts.timings.duration) * 100);
-      tts.progress.style.width = pct + '%';
     }
 
     // Wire up controls
