@@ -1,0 +1,120 @@
+{
+  "voice": "bm_lewis",
+  "duration": 162.197,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 1.7706666666666666,
+      "text": "Step 1: Ask Claude."
+    },
+    {
+      "idx": 1,
+      "start": 1.7706666666666666,
+      "end": 3.7546666666666666,
+      "text": "Step 2: There is no step 2."
+    },
+    {
+      "idx": 2,
+      "start": 3.7546666666666666,
+      "end": 6.293333333333333,
+      "text": "OK fine, here's the long version."
+    },
+    {
+      "idx": 3,
+      "start": 6.293333333333333,
+      "end": 28.352,
+      "text": "Obsidian, like most modern apps, keeps its settings in a pile of JSON files tucked away inside your vault (). You could go clicking through Settings panels, memorizing the difference between \"Editor \u2192 Display\" and \"Editor \u2192 Behavior,\" hunting for the one toggle that turns off that specific thing you hate. Or you could just say what you want out loud."
+    },
+    {
+      "idx": 4,
+      "start": 28.352,
+      "end": 35.392,
+      "text": "The other day I got tired of the squiggly red underlines treating every third word as a typo. So I asked:"
+    },
+    {
+      "idx": 5,
+      "start": 35.392,
+      "end": 43.136,
+      "text": "how do we turn off spell check red underlining in obsidian? if you can find the config and update it directly, go ahead"
+    },
+    {
+      "idx": 6,
+      "start": 43.136,
+      "end": 51.669333333333334,
+      "text": "Claude found , flipped  to , and told me to reload the vault. Total time: maybe six seconds, most of which was me typing the question."
+    },
+    {
+      "idx": 7,
+      "start": 51.669333333333334,
+      "end": 63.616,
+      "text": "No scavenger hunts through preference panels. No StackExchange threads from 2019 describing menus that no longer exist. No  incantations with escaped quotes."
+    },
+    {
+      "idx": 8,
+      "start": 63.616,
+      "end": 71.808,
+      "text": "You just describe the vibe you want, and a piece of software rearranges the other piece of software to match. The future is weird."
+    },
+    {
+      "idx": 9,
+      "start": 71.808,
+      "end": 73.94133333333333,
+      "text": "Then teach it to do this forever"
+    },
+    {
+      "idx": 10,
+      "start": 73.94133333333333,
+      "end": 83.008,
+      "text": "One-off wins are nice. But if you're going to do this kind of thing a lot, the next move is to codify the trick into a skill. So I followed up with:"
+    },
+    {
+      "idx": 11,
+      "start": 83.008,
+      "end": 110.03733333333334,
+      "text": "thank you.. that was brilliant.. now let's take this one step further.. spin up subagents to look through .obsidian and one to go online and look at obsidian documentation.. then write a guide for future agents to understand how to interact with obsidian programmatically to change settings via claude code in natural language rather than clicking around in the interface.. if this goes well, also create a skill for this.. go into planning mode first if you need to"
+    },
+    {
+      "idx": 12,
+      "start": 110.03733333333334,
+      "end": 121.04533333333333,
+      "text": "Two parallel subagents went digging: one cataloged  file by file, the other scraped , the forum, and vetted GitHub examples. They reported back, and Claude shipped ."
+    },
+    {
+      "idx": 13,
+      "start": 121.04533333333333,
+      "end": 144.98133333333334,
+      "text": "The skill now knows the safety rules (close Obsidian first;  and  are off-limits \u2014 Obsidian rewrites them constantly), the file map of which JSON controls what, and the cookbook recipes: toggling booleans in , changing theme and font in , enabling or disabling plugins, overriding hotkeys with  instead of  for portability, and reloading without a restart via the Command Palette."
+    },
+    {
+      "idx": 14,
+      "start": 144.98133333333334,
+      "end": 154.19733333333335,
+      "text": "Next time I \u2014 or any future session \u2014 asks anything about Obsidian settings, the skill loads automatically and Claude already knows where to look."
+    },
+    {
+      "idx": 15,
+      "start": 154.19733333333335,
+      "end": 155.54133333333334,
+      "text": "So the real loop is:"
+    },
+    {
+      "idx": 16,
+      "start": 155.54133333333334,
+      "end": 157.29066666666668,
+      "text": "Ask Claude to do the thing."
+    },
+    {
+      "idx": 17,
+      "start": 157.29066666666668,
+      "end": 160.0,
+      "text": "Ask Claude to write down how it did the thing."
+    },
+    {
+      "idx": 18,
+      "start": 160.0,
+      "end": 162.19733333333335,
+      "text": "Never think about the thing again."
+    }
+  ]
+}

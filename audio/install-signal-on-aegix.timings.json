@@ -1,0 +1,60 @@
+{
+  "voice": "bm_lewis",
+  "duration": 21.013,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 2.112,
+      "text": "Launch the app in a terminal with:"
+    },
+    {
+      "idx": 1,
+      "start": 2.112,
+      "end": 6.8053333333333335,
+      "text": "Or use  and start typing signal-desktop to launch it via dmenu."
+    },
+    {
+      "idx": 2,
+      "start": 6.8053333333333335,
+      "end": 8.384,
+      "text": "Notice the QR code."
+    },
+    {
+      "idx": 3,
+      "start": 8.384,
+      "end": 11.690666666666667,
+      "text": "Go to the Signal app on your phone and find Settings."
+    },
+    {
+      "idx": 4,
+      "start": 11.690666666666667,
+      "end": 13.205333333333334,
+      "text": "Tap \"Linked devices\""
+    },
+    {
+      "idx": 5,
+      "start": 13.205333333333334,
+      "end": 14.933333333333334,
+      "text": "Tap \"Link a new device\""
+    },
+    {
+      "idx": 6,
+      "start": 14.933333333333334,
+      "end": 16.85333333333333,
+      "text": "This will open up your camera."
+    },
+    {
+      "idx": 7,
+      "start": 16.85333333333333,
+      "end": 19.605333333333334,
+      "text": "Scan the QR code to link your device."
+    },
+    {
+      "idx": 8,
+      "start": 19.605333333333334,
+      "end": 21.013333333333332,
+      "text": "\ud83d\ude18"
+    }
+  ]
+}

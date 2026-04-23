@@ -1,0 +1,576 @@
+{
+  "voice": "bm_lewis",
+  "duration": 284.821,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 9.386666666666667,
+      "text": "This site uses a custom, lightweight article system that makes it easy to add new content without any complex build processes or databases."
+    },
+    {
+      "idx": 1,
+      "start": 9.386666666666667,
+      "end": 11.776,
+      "text": "Use This System for Your Own Site"
+    },
+    {
+      "idx": 2,
+      "start": 11.776,
+      "end": 31.573333333333334,
+      "text": "Want to build your own website with this article system? The complete source code is available on GitHub at https://github.com/timbeach/timbeach.com. You can fork the repository and customize it for your own content while keeping the parsimonious design philosophy intact."
+    },
+    {
+      "idx": 3,
+      "start": 31.573333333333334,
+      "end": 32.59733333333333,
+      "text": "How It Works"
+    },
+    {
+      "idx": 4,
+      "start": 32.59733333333333,
+      "end": 35.498666666666665,
+      "text": "The system consists of two simple components:"
+    },
+    {
+      "idx": 5,
+      "start": 35.498666666666665,
+      "end": 38.63466666666667,
+      "text": "Markdown files - Your actual article content"
+    },
+    {
+      "idx": 6,
+      "start": 38.63466666666667,
+      "end": 43.370666666666665,
+      "text": "JSON metadata - Article information like title, date, and tags"
+    },
+    {
+      "idx": 7,
+      "start": 43.370666666666665,
+      "end": 44.906666666666666,
+      "text": "Adding a New Article"
+    },
+    {
+      "idx": 8,
+      "start": 44.906666666666666,
+      "end": 47.296,
+      "text": "Step 1: Create the Markdown File"
+    },
+    {
+      "idx": 9,
+      "start": 47.296,
+      "end": 50.26133333333333,
+      "text": "Create a new markdown file in the  directory:"
+    },
+    {
+      "idx": 10,
+      "start": 50.26133333333333,
+      "end": 54.35733333333334,
+      "text": "Write your article content using standard markdown syntax:"
+    },
+    {
+      "idx": 11,
+      "start": 54.35733333333334,
+      "end": 55.168,
+      "text": "Features"
+    },
+    {
+      "idx": 12,
+      "start": 55.168,
+      "end": 57.024,
+      "text": "Code blocks work perfectly"
+    },
+    {
+      "idx": 13,
+      "start": 57.024,
+      "end": 58.64533333333333,
+      "text": "Bold and italic text"
+    },
+    {
+      "idx": 14,
+      "start": 58.64533333333333,
+      "end": 60.245333333333335,
+      "text": "Links to external sites"
+    },
+    {
+      "idx": 15,
+      "start": 60.245333333333335,
+      "end": 61.44,
+      "text": "Code Example"
+    },
+    {
+      "idx": 16,
+      "start": 61.44,
+      "end": 64.59733333333334,
+      "text": "The system supports all standard markdown features!"
+    },
+    {
+      "idx": 17,
+      "start": 64.59733333333334,
+      "end": 67.22133333333333,
+      "text": "Step 2: Add Metadata to JSON"
+    },
+    {
+      "idx": 18,
+      "start": 67.22133333333333,
+      "end": 68.544,
+      "text": "Add an entry to :"
+    },
+    {
+      "idx": 19,
+      "start": 68.544,
+      "end": 70.10133333333333,
+      "text": "Step 3: That's It!"
+    },
+    {
+      "idx": 20,
+      "start": 70.10133333333333,
+      "end": 79.104,
+      "text": "The article will automatically appear in the articles list. No build process, no database, no complex CMS - just files and JSON."
+    },
+    {
+      "idx": 21,
+      "start": 79.104,
+      "end": 80.36266666666667,
+      "text": "System Features"
+    },
+    {
+      "idx": 22,
+      "start": 80.36266666666667,
+      "end": 81.728,
+      "text": "Automatic Loading"
+    },
+    {
+      "idx": 23,
+      "start": 81.728,
+      "end": 84.94933333333333,
+      "text": "Articles load from markdown files when available"
+    },
+    {
+      "idx": 24,
+      "start": 84.94933333333333,
+      "end": 88.68266666666666,
+      "text": "Falls back to built-in content if files aren't accessible"
+    },
+    {
+      "idx": 25,
+      "start": 88.68266666666666,
+      "end": 91.264,
+      "text": "No server-side processing required"
+    },
+    {
+      "idx": 26,
+      "start": 91.264,
+      "end": 92.58666666666667,
+      "text": "Markdown Support"
+    },
+    {
+      "idx": 27,
+      "start": 92.58666666666667,
+      "end": 94.592,
+      "text": "Full markdown syntax support"
+    },
+    {
+      "idx": 28,
+      "start": 94.592,
+      "end": 96.98133333333334,
+      "text": "Code blocks with language highlighting"
+    },
+    {
+      "idx": 29,
+      "start": 96.98133333333334,
+      "end": 99.15733333333333,
+      "text": "Links, images, and formatting"
+    },
+    {
+      "idx": 30,
+      "start": 99.15733333333333,
+      "end": 100.928,
+      "text": "Lists, tables, and more"
+    },
+    {
+      "idx": 31,
+      "start": 100.928,
+      "end": 102.208,
+      "text": "Simple Maintenance"
+    },
+    {
+      "idx": 32,
+      "start": 102.208,
+      "end": 105.19466666666666,
+      "text": "Version control friendly (just text files)"
+    },
+    {
+      "idx": 33,
+      "start": 105.19466666666666,
+      "end": 107.2,
+      "text": "Easy to backup and restore"
+    },
+    {
+      "idx": 34,
+      "start": 107.2,
+      "end": 110.63466666666666,
+      "text": "No database migrations or complex deployments"
+    },
+    {
+      "idx": 35,
+      "start": 110.63466666666666,
+      "end": 111.68,
+      "text": "File Structure"
+    },
+    {
+      "idx": 36,
+      "start": 111.68,
+      "end": 113.42933333333333,
+      "text": "Benefits of This Approach"
+    },
+    {
+      "idx": 37,
+      "start": 113.42933333333333,
+      "end": 116.352,
+      "text": "Simplicity - Just markdown and JSON"
+    },
+    {
+      "idx": 38,
+      "start": 116.352,
+      "end": 118.76266666666666,
+      "text": "Performance - Static files load fast"
+    },
+    {
+      "idx": 39,
+      "start": 118.76266666666666,
+      "end": 121.92,
+      "text": "Reliability - No database dependencies"
+    },
+    {
+      "idx": 40,
+      "start": 121.92,
+      "end": 124.48,
+      "text": "Portability - Easy to move or backup"
+    },
+    {
+      "idx": 41,
+      "start": 124.48,
+      "end": 127.744,
+      "text": "Version Control - Text files work great with git"
+    },
+    {
+      "idx": 42,
+      "start": 127.744,
+      "end": 129.10933333333332,
+      "text": "Advanced Features"
+    },
+    {
+      "idx": 43,
+      "start": 129.10933333333332,
+      "end": 130.624,
+      "text": "Terminal Integration"
+    },
+    {
+      "idx": 44,
+      "start": 130.624,
+      "end": 134.848,
+      "text": "The site features a terminal-style navigation system with commands:"
+    },
+    {
+      "idx": 45,
+      "start": 134.848,
+      "end": 137.19466666666668,
+      "text": "- List articles and directories"
+    },
+    {
+      "idx": 46,
+      "start": 137.19466666666668,
+      "end": 139.456,
+      "text": "- Navigate to articles directory"
+    },
+    {
+      "idx": 47,
+      "start": 139.456,
+      "end": 141.22666666666666,
+      "text": "- Display article content"
+    },
+    {
+      "idx": 48,
+      "start": 141.22666666666666,
+      "end": 144.81066666666666,
+      "text": "- Show directory structure with articles sorted by date"
+    },
+    {
+      "idx": 49,
+      "start": 144.81066666666666,
+      "end": 146.58133333333333,
+      "text": "- Show all available commands"
+    },
+    {
+      "idx": 50,
+      "start": 146.58133333333333,
+      "end": 148.30933333333334,
+      "text": "Dynamic Loading System"
+    },
+    {
+      "idx": 51,
+      "start": 148.30933333333334,
+      "end": 150.976,
+      "text": "The JavaScript implementation includes:"
+    },
+    {
+      "idx": 52,
+      "start": 150.976,
+      "end": 156.39466666666667,
+      "text": "Graceful fallback - If external files fail to load, built-in content is displayed"
+    },
+    {
+      "idx": 53,
+      "start": 156.39466666666667,
+      "end": 160.93866666666668,
+      "text": "Cache busting - Timestamp parameters prevent browser caching issues"
+    },
+    {
+      "idx": 54,
+      "start": 160.93866666666668,
+      "end": 165.71733333333333,
+      "text": "Smooth transitions - Content fades in/out during navigation"
+    },
+    {
+      "idx": 55,
+      "start": 165.71733333333333,
+      "end": 169.92,
+      "text": "Direct linking - URLs like  work for sharing specific articles"
+    },
+    {
+      "idx": 56,
+      "start": 169.92,
+      "end": 171.22133333333332,
+      "text": "Markdown Parser"
+    },
+    {
+      "idx": 57,
+      "start": 171.22133333333332,
+      "end": 173.65333333333334,
+      "text": "The custom markdown parser handles:"
+    },
+    {
+      "idx": 58,
+      "start": 173.65333333333334,
+      "end": 176.23466666666667,
+      "text": "Headers (H1, H2, H3)"
+    },
+    {
+      "idx": 59,
+      "start": 176.23466666666667,
+      "end": 178.624,
+      "text": "Code blocks with language highlighting"
+    },
+    {
+      "idx": 60,
+      "start": 178.624,
+      "end": 180.43733333333333,
+      "text": "Inline code formatting"
+    },
+    {
+      "idx": 61,
+      "start": 180.43733333333333,
+      "end": 182.05866666666665,
+      "text": "Bold and italic text"
+    },
+    {
+      "idx": 62,
+      "start": 182.05866666666665,
+      "end": 184.21333333333334,
+      "text": "Links with target=\"_blank\""
+    },
+    {
+      "idx": 63,
+      "start": 184.21333333333334,
+      "end": 185.536,
+      "text": "Paragraph wrapping"
+    },
+    {
+      "idx": 64,
+      "start": 185.536,
+      "end": 188.01066666666668,
+      "text": "Preserves formatting within code blocks"
+    },
+    {
+      "idx": 65,
+      "start": 188.01066666666668,
+      "end": 189.48266666666666,
+      "text": "Search Functionality"
+    },
+    {
+      "idx": 66,
+      "start": 189.48266666666666,
+      "end": 191.65866666666668,
+      "text": "When viewing the articles directory:"
+    },
+    {
+      "idx": 67,
+      "start": 191.65866666666668,
+      "end": 194.45333333333335,
+      "text": "Real-time search by title or filename"
+    },
+    {
+      "idx": 68,
+      "start": 194.45333333333335,
+      "end": 196.24533333333332,
+      "text": "Case-insensitive matching"
+    },
+    {
+      "idx": 69,
+      "start": 196.24533333333332,
+      "end": 198.57066666666665,
+      "text": "Instant filtering of article list"
+    },
+    {
+      "idx": 70,
+      "start": 198.57066666666665,
+      "end": 200.896,
+      "text": "Technical Implementation Details"
+    },
+    {
+      "idx": 71,
+      "start": 200.896,
+      "end": 201.92,
+      "text": "Data Flow"
+    },
+    {
+      "idx": 72,
+      "start": 201.92,
+      "end": 204.37333333333333,
+      "text": "Page Load: JavaScript fetches"
+    },
+    {
+      "idx": 73,
+      "start": 204.37333333333333,
+      "end": 209.408,
+      "text": "Article Request: When user clicks an article, JavaScript fetches the  file"
+    },
+    {
+      "idx": 74,
+      "start": 209.408,
+      "end": 213.78133333333332,
+      "text": "Parsing: Custom markdown parser converts content to HTML"
+    },
+    {
+      "idx": 75,
+      "start": 213.78133333333332,
+      "end": 217.51466666666667,
+      "text": "Display: Content appears with terminal-style navigation"
+    },
+    {
+      "idx": 76,
+      "start": 217.51466666666667,
+      "end": 218.58133333333333,
+      "text": "Error Handling"
+    },
+    {
+      "idx": 77,
+      "start": 218.58133333333333,
+      "end": 222.464,
+      "text": "Network failures: Falls back to built-in article content"
+    },
+    {
+      "idx": 78,
+      "start": 222.464,
+      "end": 226.98666666666668,
+      "text": "Missing files: Shows \"Article Not Found\" message with error details"
+    },
+    {
+      "idx": 79,
+      "start": 226.98666666666668,
+      "end": 231.296,
+      "text": "JSON parse errors: Gracefully handles malformed metadata"
+    },
+    {
+      "idx": 80,
+      "start": 231.296,
+      "end": 233.28,
+      "text": "Performance Optimizations"
+    },
+    {
+      "idx": 81,
+      "start": 233.28,
+      "end": 236.75733333333332,
+      "text": "Lazy loading: Articles only load when requested"
+    },
+    {
+      "idx": 82,
+      "start": 236.75733333333332,
+      "end": 240.74666666666667,
+      "text": "Minimal dependencies: No external JavaScript libraries"
+    },
+    {
+      "idx": 83,
+      "start": 240.74666666666667,
+      "end": 244.608,
+      "text": "Efficient caching: Browser caches static files naturally"
+    },
+    {
+      "idx": 84,
+      "start": 244.608,
+      "end": 250.048,
+      "text": "Small footprint: Entire site is a single HTML file + articles"
+    },
+    {
+      "idx": 85,
+      "start": 250.048,
+      "end": 251.88266666666667,
+      "text": "File Naming Conventions"
+    },
+    {
+      "idx": 86,
+      "start": 251.88266666666667,
+      "end": 254.89066666666668,
+      "text": "Use lowercase with hyphens for readability:"
+    },
+    {
+      "idx": 87,
+      "start": 254.89066666666668,
+      "end": 256.448,
+      "text": "\u2705"
+    },
+    {
+      "idx": 88,
+      "start": 256.448,
+      "end": 258.00533333333334,
+      "text": "\u2705"
+    },
+    {
+      "idx": 89,
+      "start": 258.00533333333334,
+      "end": 258.9653333333333,
+      "text": "\u274c"
+    },
+    {
+      "idx": 90,
+      "start": 258.9653333333333,
+      "end": 259.92533333333336,
+      "text": "\u274c"
+    },
+    {
+      "idx": 91,
+      "start": 259.92533333333336,
+      "end": 260.8,
+      "text": "Deployment"
+    },
+    {
+      "idx": 92,
+      "start": 260.8,
+      "end": 263.0613333333333,
+      "text": "The deployment is equally simple:"
+    },
+    {
+      "idx": 93,
+      "start": 263.0613333333333,
+      "end": 269.16266666666667,
+      "text": "This rsync script pushes all changes to the production server, excluding , , and  directories."
+    },
+    {
+      "idx": 94,
+      "start": 269.16266666666667,
+      "end": 284.8213333333333,
+      "text": "This system proves that you don't need complex tools to create a beautiful, functional website. Sometimes the simplest solution is the best solution - and this custom article system exemplifies the philosophy of parsimony in web development."
+    }
+  ]
+}

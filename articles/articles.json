@@ -1,82 +1,210 @@
 {
-    "dependency-hell.md": {
-      "title": "Dependency Hell: Why Software Breaks When Everything Works",
-      "date": "2026-04-06",
-      "tags": ["software-engineering", "dependencies", "linux", "devops", "tutorial"],
-      "emoji": "🔥"
-    },
-    "custom-claude-skills.md": {
-      "title": "How to Write a Custom Claude Code Skill",
-      "date": "2026-03-19",
-      "tags": ["claude-code", "ai", "tutorial", "skills"],
-      "emoji": "🛠️"
-    },
-    "software-delivery-sop.md": {
-      "title": "Software Delivery and Deployment SOP",
-      "date": "2026-03-18",
-      "tags": ["software-engineering", "deployment", "git", "devops", "sop"],
-      "emoji": "📋"
-    },
-    "releasing-music.md": {
-      "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
-      "date": "2026-03-02",
-      "tags": ["music", "tutorial", "indie", "spotify"],
-      "emoji": "🎵"
-    },
-    "claude-code-agent-teams.md": {
-      "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
-      "date": "2026-02-21",
-      "tags": ["claude-code", "ai", "tmux", "tutorial", "linux"],
-      "emoji": "🤖"
-    },
-    "trng-deep-dive.md": {
-      "title": "True Random Number Generators: From Quantum Physics to Silicon",
-      "date": "2026-02-20",
-      "tags": ["cryptography", "quantum", "security", "hardware"],
-      "emoji": "🎲"
-    },
-    "deploy-a-website.md": {
-      "title": "Deploy a Website",
-      "date": "2025-09-28",
-      "tags": ["tutorial", "deployment", "web"],
-      "emoji": "🚀"
-    },
-    "install-signal-on-aegix.md": {
-      "title": "Install Signal Desktop on Aegix Linux",
-      "date": "2025-08-19",
-      "tags": ["signal", "tutorial", "linux"],
-      "emoji": "💬"
-    },
-    "how-tmux-works.md": {
-      "title": "How tmux Works",
-      "date": "2025-08-01",
-      "tags": ["tmux", "tutorial", "linux"],
-      "emoji": "🖥️"
-    },
-    "second-aegix-user.md": {
-      "title": "Adding a Second Aegix User",
-      "date": "2025-07-30",
-      "tags": ["aegix", "philosophy", "linux"],
-      "emoji": "👥"
-    },
-    "parsimony.md": {
-      "title": "Parsimony and Aegix Linux",
-      "date": "2025-07-29",
-      "tags": ["linux", "aegix", "philosophy"],
-      "emoji": "🧘"
-    },
-    "add-articles.md": {
-      "title": "How to Add New Articles to timbeach.com",
-      "date": "2025-07-29",
-      "tags": ["tutorial", "meta", "example"],
-      "emoji": "📝"
-    },
-    "simplicity.md": {
-      "title": "Simplicity in Software Engineering",
-      "date": "2025-01-10",
-      "tags": ["aegix", "philosophy", "linux"],
-      "emoji": "⚡"
-    }
+  "how-to-config-obsidian.md": {
+    "title": "How to Configure Obsidian",
+    "date": "2026-04-21",
+    "tags": [
+      "obsidian",
+      "claude-code",
+      "ai",
+      "skills",
+      "subagents",
+      "tutorial"
+    ],
+    "emoji": "\ud83d\uddd2\ufe0f",
+    "audio": "audio/how-to-config-obsidian.ogg",
+    "timings": "audio/how-to-config-obsidian.timings.json",
+    "voice": "bm_lewis",
+    "duration": 162.197
+  },
+  "dependency-hell.md": {
+    "title": "Dependency Hell: Why Software Breaks When Everything Works",
+    "date": "2026-04-06",
+    "tags": [
+      "software-engineering",
+      "dependencies",
+      "linux",
+      "devops",
+      "tutorial"
+    ],
+    "emoji": "\ud83d\udd25",
+    "audio": "audio/dependency-hell.ogg",
+    "timings": "audio/dependency-hell.timings.json",
+    "voice": "bm_lewis",
+    "duration": 891.051
+  },
+  "custom-claude-skills.md": {
+    "title": "How to Write a Custom Claude Code Skill",
+    "date": "2026-03-19",
+    "tags": [
+      "claude-code",
+      "ai",
+      "tutorial",
+      "skills"
+    ],
+    "emoji": "\ud83d\udee0\ufe0f",
+    "audio": "audio/custom-claude-skills.ogg",
+    "timings": "audio/custom-claude-skills.timings.json",
+    "voice": "bm_lewis",
+    "duration": 373.056
+  },
+  "software-delivery-sop.md": {
+    "title": "Software Delivery and Deployment SOP",
+    "date": "2026-03-18",
+    "tags": [
+      "software-engineering",
+      "deployment",
+      "git",
+      "devops",
+      "sop"
+    ],
+    "emoji": "\ud83d\udccb",
+    "audio": "audio/software-delivery-sop.ogg",
+    "timings": "audio/software-delivery-sop.timings.json",
+    "voice": "bm_lewis",
+    "duration": 587.797
+  },
+  "releasing-music.md": {
+    "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
+    "date": "2026-03-02",
+    "tags": [
+      "music",
+      "tutorial",
+      "indie",
+      "spotify"
+    ],
+    "emoji": "\ud83c\udfb5",
+    "audio": "audio/releasing-music.ogg",
+    "timings": "audio/releasing-music.timings.json",
+    "voice": "bm_lewis",
+    "duration": 930.731
+  },
+  "claude-code-agent-teams.md": {
+    "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
+    "date": "2026-02-21",
+    "tags": [
+      "claude-code",
+      "ai",
+      "tmux",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83e\udd16",
+    "audio": "audio/claude-code-agent-teams.ogg",
+    "timings": "audio/claude-code-agent-teams.timings.json",
+    "voice": "bm_lewis",
+    "duration": 653.035
+  },
+  "trng-deep-dive.md": {
+    "title": "True Random Number Generators: From Quantum Physics to Silicon",
+    "date": "2026-02-20",
+    "tags": [
+      "cryptography",
+      "quantum",
+      "security",
+      "hardware"
+    ],
+    "emoji": "\ud83c\udfb2",
+    "audio": "audio/trng-deep-dive.ogg",
+    "timings": "audio/trng-deep-dive.timings.json",
+    "voice": "bm_lewis",
+    "duration": 2563.008
+  },
+  "deploy-a-website.md": {
+    "title": "Deploy a Website",
+    "date": "2025-09-28",
+    "tags": [
+      "tutorial",
+      "deployment",
+      "web"
+    ],
+    "emoji": "\ud83d\ude80",
+    "audio": "audio/deploy-a-website.ogg",
+    "timings": "audio/deploy-a-website.timings.json",
+    "voice": "bm_lewis",
+    "duration": 354.688
+  },
+  "install-signal-on-aegix.md": {
+    "title": "Install Signal Desktop on Aegix Linux",
+    "date": "2025-08-19",
+    "tags": [
+      "signal",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83d\udcac",
+    "audio": "audio/install-signal-on-aegix.ogg",
+    "timings": "audio/install-signal-on-aegix.timings.json",
+    "voice": "bm_lewis",
+    "duration": 21.013
+  },
+  "how-tmux-works.md": {
+    "title": "How tmux Works",
+    "date": "2025-08-01",
+    "tags": [
+      "tmux",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83d\udda5\ufe0f",
+    "audio": "audio/how-tmux-works.ogg",
+    "timings": "audio/how-tmux-works.timings.json",
+    "voice": "bm_lewis",
+    "duration": 76.779
+  },
+  "second-aegix-user.md": {
+    "title": "Adding a Second Aegix User",
+    "date": "2025-07-30",
+    "tags": [
+      "aegix",
+      "philosophy",
+      "linux"
+    ],
+    "emoji": "\ud83d\udc65",
+    "audio": "audio/second-aegix-user.ogg",
+    "timings": "audio/second-aegix-user.timings.json",
+    "voice": "bm_lewis",
+    "duration": 72.683
+  },
+  "parsimony.md": {
+    "title": "Parsimony and Aegix Linux",
+    "date": "2025-07-29",
+    "tags": [
+      "linux",
+      "aegix",
+      "philosophy"
+    ],
+    "emoji": "\ud83e\uddd8",
+    "audio": "audio/parsimony.ogg",
+    "timings": "audio/parsimony.timings.json",
+    "voice": "bm_lewis",
+    "duration": 51.307
+  },
+  "add-articles.md": {
+    "title": "How to Add New Articles to timbeach.com",
+    "date": "2025-07-29",
+    "tags": [
+      "tutorial",
+      "meta",
+      "example"
+    ],
+    "emoji": "\ud83d\udcdd",
+    "audio": "audio/add-articles.ogg",
+    "timings": "audio/add-articles.timings.json",
+    "voice": "bm_lewis",
+    "duration": 284.821
+  },
+  "simplicity.md": {
+    "title": "Simplicity in Software Engineering",
+    "date": "2025-01-10",
+    "tags": [
+      "aegix",
+      "philosophy",
+      "linux"
+    ],
+    "emoji": "\u26a1",
+    "audio": "audio/simplicity.ogg",
+    "timings": "audio/simplicity.timings.json",
+    "voice": "bm_lewis",
+    "duration": 40.0
+  }
 }
-
-

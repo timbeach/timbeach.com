@@ -1,0 +1,606 @@
+{
+  "voice": "bm_lewis",
+  "duration": 653.035,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 29.781333333333333,
+      "text": "You're staring at a feature that touches the API, the frontend, and the test suite. Three separate concerns, three separate contexts, and one of you. You could work through them sequentially \u2014 endpoint first, then component, then tests \u2014 context-switching each time, holding the whole architecture in your head at once. Or you could do what any reasonable engineering manager would do: delegate. Tell three specialists to work in parallel, coordinate through a shared task list, and synthesize the results when they're done."
+    },
+    {
+      "idx": 1,
+      "start": 29.781333333333333,
+      "end": 49.344,
+      "text": "Claude Code agent teams let you do exactly that. You spawn multiple Claude instances \u2014 each in its own tmux pane, each with its own context window, each working on a discrete piece of the problem. They message each other, share a task board, and report back to you. It's pair programming scaled sideways."
+    },
+    {
+      "idx": 2,
+      "start": 49.344,
+      "end": 62.50666666666667,
+      "text": "This guide walks you through setup, first launch, architecture, practical patterns, and the safety model. By the end, you'll have a one-word alias that turns a single Claude session into a coordinated team."
+    },
+    {
+      "idx": 3,
+      "start": 62.50666666666667,
+      "end": 63.57333333333333,
+      "text": "Prerequisites"
+    },
+    {
+      "idx": 4,
+      "start": 63.57333333333333,
+      "end": 65.06666666666666,
+      "text": "You need three things:"
+    },
+    {
+      "idx": 5,
+      "start": 65.06666666666666,
+      "end": 69.12,
+      "text": "Claude Code installed and working ( command available in your shell)"
+    },
+    {
+      "idx": 6,
+      "start": 69.12,
+      "end": 72.96,
+      "text": "tmux installed ( to check \u2014 any recent version works)"
+    },
+    {
+      "idx": 7,
+      "start": 72.96,
+      "end": 76.01066666666667,
+      "text": "Two settings in your Claude configuration file"
+    },
+    {
+      "idx": 8,
+      "start": 76.01066666666667,
+      "end": 79.76533333333333,
+      "text": "Add the following to  (create the file if it doesn't exist):"
+    },
+    {
+      "idx": 9,
+      "start": 79.76533333333333,
+      "end": 100.94933333333333,
+      "text": "If the file already exists with other settings, merge these in. The  block enables the experimental teams feature. The  setting suppresses the confirmation dialog that appears each time you launch Claude with  \u2014 without it, you'd have to click through a warning on every team session start. We'll discuss the safety implications of that flag at the end."
+    },
+    {
+      "idx": 10,
+      "start": 100.94933333333333,
+      "end": 101.86666666666666,
+      "text": "The Alias"
+    },
+    {
+      "idx": 11,
+      "start": 101.86666666666666,
+      "end": 111.296,
+      "text": "The full launch command is verbose. Let's fix that. Add this alias to your shell configuration (e.g., , , or wherever you keep aliases):"
+    },
+    {
+      "idx": 12,
+      "start": 111.296,
+      "end": 114.06933333333333,
+      "text": "Two flags, each doing something specific:"
+    },
+    {
+      "idx": 13,
+      "start": 114.06933333333333,
+      "end": 127.36,
+      "text": "\u2014 bypasses all permission prompts. Teammates inherit this, which means they can run commands, edit files, and take actions without asking you first. This is what makes autonomous parallel work possible."
+    },
+    {
+      "idx": 14,
+      "start": 127.36,
+      "end": 135.78666666666666,
+      "text": "\u2014 tells Claude to spawn each teammate as a separate process in its own tmux pane, rather than running them all in a single process."
+    },
+    {
+      "idx": 15,
+      "start": 135.78666666666666,
+      "end": 140.352,
+      "text": "Reload your shell config ( or open a new terminal), and you're ready."
+    },
+    {
+      "idx": 16,
+      "start": 140.352,
+      "end": 141.20533333333333,
+      "text": "Quick Start"
+    },
+    {
+      "idx": 17,
+      "start": 141.20533333333333,
+      "end": 142.82666666666665,
+      "text": "1. Get into tmux"
+    },
+    {
+      "idx": 18,
+      "start": 142.82666666666665,
+      "end": 147.84,
+      "text": "Teammates spawn as tmux panes, so you need to be inside a tmux session first:"
+    },
+    {
+      "idx": 19,
+      "start": 147.84,
+      "end": 149.84533333333334,
+      "text": "Then navigate to your project:"
+    },
+    {
+      "idx": 20,
+      "start": 149.84533333333334,
+      "end": 165.80266666666665,
+      "text": "What if you're not in tmux? Claude falls back to in-process mode \u2014 all teammates run inside your single terminal. You can cycle through them with  and toggle the task list with . It works, but you lose the visual parallel layout that makes teams powerful."
+    },
+    {
+      "idx": 21,
+      "start": 165.80266666666665,
+      "end": 167.59466666666665,
+      "text": "2. Describe what you want"
+    },
+    {
+      "idx": 22,
+      "start": 167.59466666666665,
+      "end": 171.47733333333332,
+      "text": "Once Claude is running, just tell it what you need in plain language:"
+    },
+    {
+      "idx": 23,
+      "start": 171.47733333333332,
+      "end": 173.86666666666667,
+      "text": "Claude \u2014 now acting as team lead \u2014 will:"
+    },
+    {
+      "idx": 24,
+      "start": 173.86666666666667,
+      "end": 176.46933333333334,
+      "text": "Create the team with a config file at"
+    },
+    {
+      "idx": 25,
+      "start": 176.46933333333334,
+      "end": 178.45333333333335,
+      "text": "Create a shared task list at"
+    },
+    {
+      "idx": 26,
+      "start": 178.45333333333335,
+      "end": 181.376,
+      "text": "Spawn each teammate in its own tmux pane"
+    },
+    {
+      "idx": 27,
+      "start": 181.376,
+      "end": 184.64,
+      "text": "Assign initial tasks and begin coordinating"
+    },
+    {
+      "idx": 28,
+      "start": 184.64,
+      "end": 189.54666666666665,
+      "text": "Within seconds, your terminal splits into panes. Each teammate starts working."
+    },
+    {
+      "idx": 29,
+      "start": 189.54666666666665,
+      "end": 191.95733333333334,
+      "text": "3. Watch, navigate, intervene"
+    },
+    {
+      "idx": 30,
+      "start": 191.95733333333334,
+      "end": 194.51733333333334,
+      "text": "Standard tmux navigation applies:"
+    },
+    {
+      "idx": 31,
+      "start": 194.51733333333334,
+      "end": 205.632,
+      "text": "| Action | Keys |\n|---|---|\n| Move between panes | , then arrow keys |\n| Zoom one pane full-screen | , then  (toggle) |\n| Resize panes | , then  |\n| Click into a pane | Just click (if mouse mode is on) |"
+    },
+    {
+      "idx": 32,
+      "start": 205.632,
+      "end": 217.74933333333334,
+      "text": "You can read any teammate's output, and if you click into their pane, you can type messages directly to them. The team lead pane (your original session) is where you issue high-level instructions."
+    },
+    {
+      "idx": 33,
+      "start": 217.74933333333334,
+      "end": 218.77333333333334,
+      "text": "How It Works"
+    },
+    {
+      "idx": 34,
+      "start": 218.77333333333334,
+      "end": 219.776,
+      "text": "Architecture"
+    },
+    {
+      "idx": 35,
+      "start": 219.776,
+      "end": 221.01333333333332,
+      "text": "Four moving parts:"
+    },
+    {
+      "idx": 36,
+      "start": 221.01333333333332,
+      "end": 235.2,
+      "text": "Team lead \u2014 your original Claude session. It creates the team, defines tasks, spawns teammates, and synthesizes results. This is the only session you interact with directly (unless you click into a teammate's pane)."
+    },
+    {
+      "idx": 37,
+      "start": 235.2,
+      "end": 246.72,
+      "text": "Teammates \u2014 independent Claude processes, each with its own context window. They don't share memory with the lead or with each other \u2014 they communicate through messages and the task list."
+    },
+    {
+      "idx": 38,
+      "start": 246.72,
+      "end": 258.79466666666667,
+      "text": "Task list \u2014 JSON files on disk at . Every agent can read and write to it. Tasks have statuses (, , ), owners, dependencies, and descriptions. This is the coordination backbone."
+    },
+    {
+      "idx": 39,
+      "start": 258.79466666666667,
+      "end": 270.61333333333334,
+      "text": "Messaging \u2014 agents send direct messages to each other by name. No polling, no shared state beyond the task list. The lead gets notified when teammates finish tasks or need help."
+    },
+    {
+      "idx": 40,
+      "start": 270.61333333333334,
+      "end": 273.216,
+      "text": "What teammates inherit (and what they don't)"
+    },
+    {
+      "idx": 41,
+      "start": 273.216,
+      "end": 275.648,
+      "text": "Each teammate automatically receives:"
+    },
+    {
+      "idx": 42,
+      "start": 275.648,
+      "end": 277.41866666666664,
+      "text": "Your project's  instructions"
+    },
+    {
+      "idx": 43,
+      "start": 277.41866666666664,
+      "end": 279.5946666666667,
+      "text": "Configured MCP servers"
+    },
+    {
+      "idx": 44,
+      "start": 279.5946666666667,
+      "end": 281.68533333333335,
+      "text": "Available skills and plugins"
+    },
+    {
+      "idx": 45,
+      "start": 281.68533333333335,
+      "end": 285.07733333333334,
+      "text": "The spawn prompt from the lead (their specific assignment)"
+    },
+    {
+      "idx": 46,
+      "start": 285.07733333333334,
+      "end": 303.744,
+      "text": "What they do not get: the lead's conversation history. If context matters for a task, the lead needs to include it in the spawn prompt or in a message. This is by design \u2014 it keeps each teammate's context window focused on their specific job rather than polluted with unrelated conversation."
+    },
+    {
+      "idx": 47,
+      "start": 303.744,
+      "end": 304.87466666666666,
+      "text": "Common Patterns"
+    },
+    {
+      "idx": 48,
+      "start": 304.87466666666666,
+      "end": 306.8586666666667,
+      "text": "Parallel feature development"
+    },
+    {
+      "idx": 49,
+      "start": 306.8586666666667,
+      "end": 311.72266666666667,
+      "text": "The most natural use case. You have a feature that spans multiple concerns:"
+    },
+    {
+      "idx": 50,
+      "start": 311.72266666666667,
+      "end": 328.2986666666667,
+      "text": "The key phrase is \"agree on the schema before implementing.\" Teammates can message each other directly \u2014 the lead doesn't have to relay everything. The DB teammate can share the schema with the API and UI teammates, and they can coordinate without you in the loop."
+    },
+    {
+      "idx": 51,
+      "start": 328.2986666666667,
+      "end": 329.6426666666667,
+      "text": "Parallel debugging"
+    },
+    {
+      "idx": 52,
+      "start": 329.6426666666667,
+      "end": 333.056,
+      "text": "Four eyes are better than two. Twenty are better still:"
+    },
+    {
+      "idx": 53,
+      "start": 333.056,
+      "end": 344.27733333333333,
+      "text": "Each investigator works a different angle simultaneously. When one finds something relevant, they message the others. The lead synthesizes the findings into a diagnosis."
+    },
+    {
+      "idx": 54,
+      "start": 344.27733333333333,
+      "end": 346.1333333333333,
+      "text": "Multi-angle code review"
+    },
+    {
+      "idx": 55,
+      "start": 346.1333333333333,
+      "end": 352.5973333333333,
+      "text": "A single reviewer catches bugs. Multiple reviewers with different mandates catch categories of bugs:"
+    },
+    {
+      "idx": 56,
+      "start": 352.5973333333333,
+      "end": 355.02933333333334,
+      "text": "Research and design exploration"
+    },
+    {
+      "idx": 57,
+      "start": 355.02933333333334,
+      "end": 359.21066666666667,
+      "text": "Not all teamwork is about code. Sometimes you need perspectives:"
+    },
+    {
+      "idx": 58,
+      "start": 359.21066666666667,
+      "end": 360.576,
+      "text": "Controlling the Team"
+    },
+    {
+      "idx": 59,
+      "start": 360.576,
+      "end": 362.53866666666664,
+      "text": "Message a specific teammate"
+    },
+    {
+      "idx": 60,
+      "start": 362.53866666666664,
+      "end": 364.3093333333333,
+      "text": "Assign or reassign tasks"
+    },
+    {
+      "idx": 61,
+      "start": 364.3093333333333,
+      "end": 374.44266666666664,
+      "text": "Tasks can also have dependencies \u2014 \"don't start the integration tests until the API endpoints are done\" \u2014 which the lead manages through the task list."
+    },
+    {
+      "idx": 62,
+      "start": 374.44266666666664,
+      "end": 376.128,
+      "text": "Require plan approval"
+    },
+    {
+      "idx": 63,
+      "start": 376.128,
+      "end": 385.68533333333335,
+      "text": "For high-stakes work, you can put teammates in plan mode. They research and propose a plan, then wait for your explicit approval before writing any code:"
+    },
+    {
+      "idx": 64,
+      "start": 385.68533333333335,
+      "end": 400.896,
+      "text": "The teammate will explore the codebase, write up a plan, and send it to you. You review it, approve or reject with feedback, and only then do they start implementing. This gives you architectural control without micromanaging the implementation."
+    },
+    {
+      "idx": 65,
+      "start": 400.896,
+      "end": 402.28266666666667,
+      "text": "Shut down teammates"
+    },
+    {
+      "idx": 66,
+      "start": 402.28266666666667,
+      "end": 403.56266666666664,
+      "text": "When work is done:"
+    },
+    {
+      "idx": 67,
+      "start": 403.56266666666664,
+      "end": 405.312,
+      "text": "Or wind down everything:"
+    },
+    {
+      "idx": 68,
+      "start": 405.312,
+      "end": 410.3466666666667,
+      "text": "This removes the team config and task list files. The tmux panes close."
+    },
+    {
+      "idx": 69,
+      "start": 410.3466666666667,
+      "end": 412.13866666666667,
+      "text": "Choose models for teammates"
+    },
+    {
+      "idx": 70,
+      "start": 412.13866666666667,
+      "end": 417.51466666666664,
+      "text": "Not every task needs the most capable (and expensive) model. You can specify:"
+    },
+    {
+      "idx": 71,
+      "start": 417.51466666666664,
+      "end": 428.3093333333333,
+      "text": "Use Opus for complex architectural work, Sonnet for straightforward implementation, Haiku for simple lookups and formatting. The lead can mix models across teammates."
+    },
+    {
+      "idx": 72,
+      "start": 428.3093333333333,
+      "end": 429.888,
+      "text": "Tips and Troubleshooting"
+    },
+    {
+      "idx": 73,
+      "start": 429.888,
+      "end": 431.76533333333333,
+      "text": "Getting the granularity right"
+    },
+    {
+      "idx": 74,
+      "start": 431.76533333333333,
+      "end": 449.536,
+      "text": "Task size is the single biggest factor in team effectiveness. Too small and you drown in coordination overhead \u2014 agents spend more time messaging than working. Too large and teammates go dark for long stretches, potentially duplicating effort or heading in the wrong direction."
+    },
+    {
+      "idx": 75,
+      "start": 449.536,
+      "end": 468.9066666666667,
+      "text": "The sweet spot: self-contained units of work. A module. A test file. An API endpoint with its route, controller, and validation. Aim for roughly 5\u20136 tasks per teammate per session. Each task should be something a teammate can complete without needing to ask three clarifying questions."
+    },
+    {
+      "idx": 76,
+      "start": 468.9066666666667,
+      "end": 470.336,
+      "text": "Token economics"
+    },
+    {
+      "idx": 77,
+      "start": 470.336,
+      "end": 485.78133333333335,
+      "text": "Each teammate gets its own context window. Three teammates means roughly 3x the token usage of a single session \u2014 there's no sharing or deduplication of context across agents. Factor this into your planning, especially for long sessions."
+    },
+    {
+      "idx": 78,
+      "start": 485.78133333333335,
+      "end": 486.93333333333334,
+      "text": "Things to know"
+    },
+    {
+      "idx": 79,
+      "start": 486.93333333333334,
+      "end": 493.80266666666665,
+      "text": "Teammates can DM each other. The lead sees a summary of peer messages but doesn't have to relay everything."
+    },
+    {
+      "idx": 80,
+      "start": 493.80266666666665,
+      "end": 499.072,
+      "text": "One team per session. You can't nest teams or have a teammate lead its own sub-team."
+    },
+    {
+      "idx": 81,
+      "start": 499.072,
+      "end": 509.2266666666667,
+      "text": "Sessions don't resume teammates. If you use  or , in-process teammates won't be restored. The team lead session resumes, but you'd need to re-spawn teammates."
+    },
+    {
+      "idx": 82,
+      "start": 509.2266666666667,
+      "end": 513.8773333333334,
+      "text": "Orphaned tmux sessions happen if something crashes. Clean up with  and ."
+    },
+    {
+      "idx": 83,
+      "start": 513.8773333333334,
+      "end": 514.9653333333333,
+      "text": "Common issues"
+    },
+    {
+      "idx": 84,
+      "start": 514.9653333333333,
+      "end": 538.0693333333334,
+      "text": "| Problem | Solution |\n|---|---|\n| No tmux panes appearing | You probably ran  outside a tmux session. Start tmux first. |\n| Teammate seems stuck | Message them directly \u2014 sometimes they need a nudge or clarification. |\n| Panes too small to read |  zooms a single pane full-screen. Toggle it again to return. |\n| Want to kill a specific pane | , then  confirms killing the active pane. |"
+    },
+    {
+      "idx": 85,
+      "start": 538.0693333333334,
+      "end": 539.8613333333333,
+      "text": "In-process fallback keys"
+    },
+    {
+      "idx": 86,
+      "start": 539.8613333333333,
+      "end": 544.1706666666666,
+      "text": "If you're not using tmux, teammates run in-process. Navigation:"
+    },
+    {
+      "idx": 87,
+      "start": 544.1706666666666,
+      "end": 549.6746666666667,
+      "text": "| Key | Action |\n|---|---|\n|  | Cycle through teammates |\n|  | Interrupt current teammate's turn |\n|  | Toggle task list view |"
+    },
+    {
+      "idx": 88,
+      "start": 549.6746666666667,
+      "end": 551.2533333333333,
+      "text": "A Note on Safety"
+    },
+    {
+      "idx": 89,
+      "start": 551.2533333333333,
+      "end": 569.9626666666667,
+      "text": "The  flag means what it says. Every agent in the team \u2014 lead and teammates alike \u2014 can execute arbitrary shell commands, edit any file in the project, and make destructive changes without asking permission. There is no confirmation step, no sandbox, no undo beyond what git provides."
+    },
+    {
+      "idx": 90,
+      "start": 569.9626666666667,
+      "end": 581.7386666666666,
+      "text": "This is the tradeoff that makes autonomous parallel work possible. If every teammate had to ask before running  or editing a file, the coordination overhead would make teams impractical."
+    },
+    {
+      "idx": 91,
+      "start": 581.7386666666666,
+      "end": 583.0186666666667,
+      "text": "Mitigate the risk:"
+    },
+    {
+      "idx": 92,
+      "start": 583.0186666666667,
+      "end": 590.6986666666667,
+      "text": "Work in git-tracked directories with clean commit history. If a teammate breaks something,  shows what changed and  reverts it."
+    },
+    {
+      "idx": 93,
+      "start": 590.6986666666667,
+      "end": 599.8506666666667,
+      "text": "Don't run teams in directories with sensitive files (credentials, production configs, private keys) unless you trust the prompts you're giving."
+    },
+    {
+      "idx": 94,
+      "start": 599.8506666666667,
+      "end": 607.36,
+      "text": "Start small. Try a two-agent team on a low-stakes task before orchestrating six agents on your production codebase."
+    },
+    {
+      "idx": 95,
+      "start": 607.36,
+      "end": 612.032,
+      "text": "For finer-grained control without the nuclear option, configure permissions in :"
+    },
+    {
+      "idx": 96,
+      "start": 612.032,
+      "end": 628.1173333333334,
+      "text": "This lets you allow specific operations (running tests, committing, reading files, editing source) while blocking dangerous ones (force pushes, recursive deletes). It's more work to configure, but it lets you use teams without the global permission bypass."
+    },
+    {
+      "idx": 97,
+      "start": 628.1173333333334,
+      "end": 629.184,
+      "text": "File Reference"
+    },
+    {
+      "idx": 98,
+      "start": 629.184,
+      "end": 633.7493333333333,
+      "text": "| What | Location |\n|---|---|\n| Team configuration |  |\n| Shared task list |  |\n| Claude settings |  |"
+    },
+    {
+      "idx": 99,
+      "start": 633.7493333333333,
+      "end": 653.0346666666667,
+      "text": "One alias, one tmux session, one sentence describing what you want built. The agents handle the rest \u2014 splitting work, coordinating, reporting back. It won't replace thinking about architecture, but it will replace the tedium of context-switching between three files that all need to change at once."
+    }
+  ]
+}
