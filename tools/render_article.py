@@ -134,3 +134,121 @@ def encode_opus(samples: np.ndarray, sample_rate: int, out_path: Path) -> None:
             raise RuntimeError(f"ffmpeg failed: {result.stderr}")
     finally:
         wav_path.unlink(missing_ok=True)
+
+
+import argparse
+import os
+import sys
+import time
+
+
+REPO_ROOT = Path(__file__).resolve().parent.parent
+ARTICLES_JSON = REPO_ROOT / "articles" / "articles.json"
+ARTICLES_DIR = REPO_ROOT / "articles"
+AUDIO_DIR = REPO_ROOT / "audio"
+MODEL_DIR = Path(__file__).resolve().parent / "models"
+
+
+def _load_kokoro():
+    """Lazy-load Kokoro so `--help` doesn't pay the ~10s init cost."""
+    from kokoro_onnx import Kokoro
+    return Kokoro(
+        str(MODEL_DIR / "kokoro-v1.0.onnx"),
+        str(MODEL_DIR / "voices-v1.0.bin"),
+    )
+
+
+def _kokoro_synth(kokoro, voice: str):
+    """Return a synth(text, voice) closure bound to a loaded Kokoro instance."""
+    lang = "en-gb" if voice.startswith("b") else "en-us"
+    def synth(text: str, _voice: str):
+        samples, sr = kokoro.create(text, voice=_voice, speed=1.0, lang=lang)
+        return samples, sr
+    return synth
+
+
+def render_article(slug: str, voice: str, force: bool, kokoro) -> bool:
+    """Render one article. Returns True if rendered, False if skipped."""
+    md_path = ARTICLES_DIR / f"{slug}.md"
+    ogg_path = AUDIO_DIR / f"{slug}.ogg"
+    timings_path = AUDIO_DIR / f"{slug}.timings.json"
+
+    if not md_path.exists():
+        raise FileNotFoundError(f"{md_path} does not exist")
+
+    # Idempotency: skip if output newer than source AND voice hasn't changed.
+    if not force and ogg_path.exists() and timings_path.exists():
+        if ogg_path.stat().st_mtime > md_path.stat().st_mtime:
+            current = json.loads(ARTICLES_JSON.read_text())
+            if current.get(f"{slug}.md", {}).get("voice") == voice:
+                print(f"  skip {slug}: up to date (voice={voice})")
+                return False
+
+    md_text = md_path.read_text()
+    paragraphs = extract_paragraphs(md_text)
+    if not paragraphs:
+        print(f"  skip {slug}: no readable paragraphs")
+        return False
+
+    print(f"  rendering {slug} ({len(paragraphs)} paragraphs, voice={voice})…", flush=True)
+    t0 = time.time()
+    synth = _kokoro_synth(kokoro, voice)
+    samples, sr, timings = render_paragraphs(paragraphs, voice=voice, synth=synth)
+    duration = len(samples) / sr
+
+    AUDIO_DIR.mkdir(exist_ok=True)
+    encode_opus(samples, sr, ogg_path)
+    write_timings_json(timings_path, voice=voice, duration=duration, timings=timings)
+    update_articles_json(
+        ARTICLES_JSON,
+        filename=f"{slug}.md",
+        audio=f"audio/{slug}.ogg",
+        timings=f"audio/{slug}.timings.json",
+        voice=voice,
+        duration=duration,
+    )
+
+    size_mb = ogg_path.stat().st_size / 1024 / 1024
+    print(f"    {duration:.1f}s audio, {size_mb:.2f} MB, {time.time()-t0:.1f}s render")
+    return True
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Render article audio + paragraph timings")
+    parser.add_argument("slug", nargs="?", help="article slug (without .md)")
+    parser.add_argument("--all", action="store_true", help="render every article in articles.json")
+    parser.add_argument("--voice", default="bm_lewis", help="Kokoro voice ID (default: bm_lewis)")
+    parser.add_argument("--force", action="store_true", help="re-render even if output is up-to-date")
+    args = parser.parse_args(argv)
+
+    if not args.slug and not args.all:
+        parser.error("either <slug> or --all is required")
+    if args.slug and args.all:
+        parser.error("pass <slug> OR --all, not both")
+
+    kokoro = _load_kokoro()
+
+    if args.all:
+        data = json.loads(ARTICLES_JSON.read_text())
+        slugs = [name[:-3] for name in data if name.endswith(".md")]
+        rendered = 0
+        for slug in slugs:
+            try:
+                if render_article(slug, args.voice, args.force, kokoro):
+                    rendered += 1
+            except Exception as e:
+                print(f"  ERROR {slug}: {e}", file=sys.stderr)
+                return 1
+        print(f"done: {rendered}/{len(slugs)} articles rendered")
+        return 0
+
+    try:
+        render_article(args.slug, args.voice, args.force, kokoro)
+    except Exception as e:
+        print(f"ERROR: {e}", file=sys.stderr)
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
