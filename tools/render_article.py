@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import re
 import subprocess
 import shutil
 import tempfile
@@ -35,6 +36,44 @@ def extract_paragraphs(md_text: str) -> list[str]:
     return paragraphs
 
 
+_SENTENCE_RE = re.compile(r'(?<=[.!?])\s+')
+
+
+def _split_sentences(text: str) -> list[str]:
+    """Split text on sentence boundaries (.!?)."""
+    return [s for s in _SENTENCE_RE.split(text.strip()) if s]
+
+
+def _synth_with_fallback(
+    text: str,
+    voice: str,
+    synth: Callable[[str, str], tuple[np.ndarray, int]],
+) -> tuple[np.ndarray, int]:
+    """Synth a chunk; fall back to sentence-wise synth on phoneme-overflow errors."""
+    try:
+        return synth(text, voice)
+    except Exception as e:
+        msg = str(e).lower()
+        if "out of bounds" not in msg and "phoneme" not in msg:
+            raise
+        pieces = _split_sentences(text)
+        if len(pieces) <= 1:
+            raise RuntimeError(
+                f"paragraph too long and can't be sentence-split: {text[:80]!r}…"
+            ) from e
+        print(f"    (split long paragraph into {len(pieces)} sentences)", flush=True)
+        chunks: list[np.ndarray] = []
+        sample_rate: int | None = None
+        for piece in pieces:
+            samples, sr = _synth_with_fallback(piece, voice, synth)
+            if sample_rate is None:
+                sample_rate = sr
+            elif sr != sample_rate:
+                raise ValueError("sample rate mismatch mid-paragraph")
+            chunks.append(samples)
+        return np.concatenate(chunks), sample_rate
+
+
 def render_paragraphs(
     paragraphs: list[str],
     voice: str,
@@ -53,7 +92,7 @@ def render_paragraphs(
     cursor_samples = 0
 
     for idx, text in enumerate(paragraphs):
-        samples, sr = synth(text, voice)
+        samples, sr = _synth_with_fallback(text, voice, synth)
         if sample_rate is None:
             sample_rate = sr
         elif sr != sample_rate:

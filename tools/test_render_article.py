@@ -179,3 +179,44 @@ def test_encode_opus_smoke(tmp_path):
         capture_output=True, text=True,
     )
     assert probe.stdout.strip() == "opus"
+
+
+def test_render_paragraphs_splits_on_phoneme_limit():
+    """When synth raises 'out of bounds', fall back to sentence-wise synth."""
+    sr = 24000
+    call_count = [0]
+    def flaky_synth(text, voice):
+        call_count[0] += 1
+        if call_count[0] == 1:  # first call with full paragraph → fail
+            raise IndexError("index 510 is out of bounds for axis 0 with size 510")
+        # subsequent calls with sentences → succeed with 1s each
+        return np.zeros(sr, dtype=np.float32), sr
+
+    paragraph = "First sentence. Second sentence. Third sentence."
+    samples, sr_out, timings = render_paragraphs(
+        [paragraph], voice="bm_lewis", synth=flaky_synth,
+    )
+    # Three sentences, each 1s → 3s total
+    assert len(samples) == 3 * sr
+    assert timings == [{"idx": 0, "start": 0.0, "end": 3.0, "text": paragraph}]
+
+
+def test_render_paragraphs_single_sentence_too_long_raises():
+    """A single-sentence paragraph that still overflows should surface an error."""
+    def always_fails(text, voice):
+        raise IndexError("index 510 is out of bounds for axis 0 with size 510")
+
+    import pytest
+    with pytest.raises(RuntimeError, match="too long"):
+        render_paragraphs(["One giant unsplit sentence with no periods"],
+                          voice="bm_lewis", synth=always_fails)
+
+
+def test_render_paragraphs_non_phoneme_error_propagates():
+    """Unrelated errors from synth should NOT trigger the split fallback."""
+    def weird_error(text, voice):
+        raise RuntimeError("unrelated failure")
+
+    import pytest
+    with pytest.raises(RuntimeError, match="unrelated failure"):
+        render_paragraphs(["whatever"], voice="bm_lewis", synth=weird_error)
