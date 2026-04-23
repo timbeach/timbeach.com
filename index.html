@@ -3606,9 +3606,6 @@ God Mode: ON
       tts.isPlaying = true;
       tts.playIcon.innerHTML = PAUSE_SVG;
       tts.playBtn.classList.add('active');
-
-      // Small delay after cancel() to let Chromium reset its internal state
-      setTimeout(() => ttsSpeakCurrent(), 50);
     }
 
     // Pause
@@ -3627,13 +3624,6 @@ God Mode: ON
         if (tts._currentAudio._cancel) tts._currentAudio._cancel();
         if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
       }
-      // Clear queue
-      if (tts.queue.current?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.current.audio._blobUrl);
-      if (tts.queue.next?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
-      tts.queue.current = null;
-      tts.queue.next = null;
-      for (const entry of tts.queue.inflight.values()) entry.abort.cancelled = true;
-      tts.queue.inflight.clear();
 
       tts._currentAudio = null;
       tts.isPlaying = false;
@@ -3650,100 +3640,6 @@ God Mode: ON
       ttsUpdateProgress();
     }
 
-    // Speak the current paragraph
-    async function ttsSpeakCurrent() {
-      if (!tts.isPlaying || tts.currentIndex < 0) return;
-      if (tts.currentIndex >= tts.paragraphs.length) {
-        ttsStop();
-        tts.statusText.textContent = 'finished';
-        return;
-      }
-
-      const idx = tts.currentIndex;
-      const para = tts.paragraphs[idx];
-      const text = ttsGetText(para);
-      if (!text) {
-        tts.currentIndex++;
-        ttsSpeakCurrent();
-        return;
-      }
-
-      tts.paragraphs.forEach(p => p.classList.remove('tts-reading'));
-      para.classList.add('tts-reading');
-      para.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      tts.statusText.textContent = `reading paragraph ${idx + 1} of ${tts.paragraphs.length}`;
-      ttsUpdateProgress();
-
-      // Use preexisting audio from queue if this is an advance, else synthesize.
-      let audio;
-      if (tts.queue.next && tts.queue.next.idx === idx) {
-        audio = tts.queue.next.audio;
-        tts.queue.next = null;
-      } else {
-        // First paragraph, cold start, or voice-changed mid-read.
-        const synthPromise = ttsSynth(idx, text);
-        // Show "synthesizing…" if synth takes longer than 500 ms.
-        const loadingTimer = setTimeout(() => {
-          if (tts.currentIndex === idx && tts.isPlaying) {
-            tts.statusText.textContent = 'synthesizing…';
-          }
-        }, 500);
-        try {
-          audio = await synthPromise;
-        } finally {
-          clearTimeout(loadingTimer);
-        }
-        if (!tts.isPlaying || tts.currentIndex !== idx) {
-          // Stopped or advanced while synth was running — drop this audio.
-          audio?._cancel?.();
-          if (audio?._blobUrl) URL.revokeObjectURL(audio._blobUrl);
-          return;
-        }
-      }
-
-      tts.queue.current = { idx, audio, text };
-      tts._currentAudio = audio;
-      audio.playbackRate = tts.rate;
-
-      // Kick off look-ahead for idx+1 (if it exists and isn't already queued).
-      const nextIdx = idx + 1;
-      if (nextIdx < tts.paragraphs.length && !tts.queue.next) {
-        const nextText = ttsGetText(tts.paragraphs[nextIdx]);
-        if (nextText) {
-          ttsSynth(nextIdx, nextText).then((nextAudio) => {
-            if (tts.currentIndex === idx && tts.isPlaying) {
-              // Still on the same paragraph — stash the look-ahead result.
-              tts.queue.next = { idx: nextIdx, audio: nextAudio, text: nextText };
-            } else {
-              // We already advanced past or stopped — discard.
-              nextAudio?._cancel?.();
-              if (nextAudio?._blobUrl) URL.revokeObjectURL(nextAudio._blobUrl);
-            }
-          }).catch((e) => {
-            console.warn('[tts] look-ahead synth failed for idx', nextIdx, e);
-          });
-        }
-      }
-
-      // Reset status text (synthesizing -> reading) in case it flashed.
-      tts.statusText.textContent = `reading paragraph ${idx + 1} of ${tts.paragraphs.length}`;
-
-      audio.addEventListener('ended', () => {
-        if (!tts.isPlaying || tts._currentAudio !== audio) return;
-        // If the next paragraph's audio isn't ready yet, surface "buffering next…".
-        if (!tts.queue.next || tts.queue.next.idx !== idx + 1) {
-          if (idx + 1 < tts.paragraphs.length) {
-            tts.statusText.textContent = 'buffering next…';
-          }
-        }
-        // Revoke this paragraph's blob URL (memory hygiene).
-        if (audio._blobUrl) URL.revokeObjectURL(audio._blobUrl);
-        tts.currentIndex++;
-        ttsSpeakCurrent();
-      });
-
-      audio.play();
-    }
 
     // Update progress bar
     function ttsUpdateProgress() {
@@ -3766,25 +3662,15 @@ God Mode: ON
       if (idx < 0) return;
       e.preventDefault();
 
-      // Cancel current playback
-      tts.engine.cancel();
+      // Cancel current playback and jump to paragraph
       if (tts._currentAudio) {
         tts._currentAudio._cancel?.();
         if (tts._currentAudio._blobUrl) URL.revokeObjectURL(tts._currentAudio._blobUrl);
       }
       tts._currentAudio = null;
 
-      // Clear look-ahead (stale, possibly for a different paragraph)
-      if (tts.queue.next?.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
-      tts.queue.next = null;
-
-      // Abort any inflight synths (look-ahead may have been for idx_old+1)
-      for (const entry of tts.queue.inflight.values()) entry.abort.cancelled = true;
-      tts.queue.inflight.clear();
-
       tts.currentIndex = idx;
       tts.isPaused = false;
-      setTimeout(() => ttsSpeakCurrent(), 50);
     });
 
     // Wire up controls
@@ -3804,11 +3690,6 @@ God Mode: ON
       tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
       if (tts._currentAudio) {
         tts._currentAudio.playbackRate = tts.rate;
-      }
-      // Invalidate look-ahead (was synthesized at old rate for native; Kokoro uses playbackRate anyway)
-      if (tts.queue.next) {
-        if (tts.queue.next.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
-        tts.queue.next = null;
       }
     });
 
