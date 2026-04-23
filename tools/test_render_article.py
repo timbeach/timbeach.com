@@ -1,6 +1,7 @@
 import json
+import subprocess
 import numpy as np
-from render_article import extract_paragraphs, render_paragraphs, write_timings_json, update_articles_json
+from render_article import extract_paragraphs, render_paragraphs, write_timings_json, update_articles_json, encode_opus
 
 
 def test_simple_paragraphs():
@@ -158,3 +159,23 @@ def test_update_articles_json_preserves_formatting(tmp_path):
     text = aj.read_text()
     assert text.endswith("\n")
     assert '  "foo.md"' in text  # 2-space indent preserved
+
+
+def test_encode_opus_smoke(tmp_path):
+    """End-to-end: sine-wave float32 → .ogg that ffprobe can read."""
+    sr = 24000
+    duration = 0.5
+    t = np.linspace(0, duration, int(sr * duration), endpoint=False)
+    samples = (0.3 * np.sin(2 * np.pi * 440 * t)).astype(np.float32)
+    out = tmp_path / "out.ogg"
+    encode_opus(samples, sr, out)
+    assert out.exists()
+    assert out.stat().st_size > 500  # sanity: non-empty output
+    # Verify ffprobe recognizes it as Opus
+    probe = subprocess.run(
+        ["ffprobe", "-v", "error", "-select_streams", "a:0",
+         "-show_entries", "stream=codec_name", "-of", "default=noprint_wrappers=1:nokey=1",
+         str(out)],
+        capture_output=True, text=True,
+    )
+    assert probe.stdout.strip() == "opus"

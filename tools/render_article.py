@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import shutil
+import tempfile
 from pathlib import Path
 from typing import Callable
 import numpy as np
+import soundfile as sf
 
 from markdown_it import MarkdownIt
 from bs4 import BeautifulSoup
@@ -98,3 +102,35 @@ def update_articles_json(
     data[filename]["voice"] = voice
     data[filename]["duration"] = round(duration, 3)
     Path(path).write_text(json.dumps(data, indent=2) + "\n")
+
+
+def encode_opus(samples: np.ndarray, sample_rate: int, out_path: Path) -> None:
+    """Write float32 samples to Opus/Ogg at 64 kbps mono, voip mode.
+
+    Raises RuntimeError if ffmpeg isn't available or encoding fails.
+    """
+    if shutil.which("ffmpeg") is None:
+        raise RuntimeError("ffmpeg not found in PATH — install via your package manager")
+
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
+        wav_path = Path(tmp.name)
+    try:
+        sf.write(str(wav_path), samples, sample_rate, subtype="PCM_16")
+        result = subprocess.run(
+            [
+                "ffmpeg", "-nostdin", "-y", "-loglevel", "error",
+                "-i", str(wav_path),
+                "-c:a", "libopus",
+                "-b:a", "64k",
+                "-ac", "1",
+                "-application", "voip",
+                "-vbr", "on",
+                str(out_path),
+            ],
+            capture_output=True,
+            text=True,
+        )
+        if result.returncode != 0:
+            raise RuntimeError(f"ffmpeg failed: {result.stderr}")
+    finally:
+        wav_path.unlink(missing_ok=True)
