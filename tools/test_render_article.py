@@ -220,3 +220,17 @@ def test_render_paragraphs_non_phoneme_error_propagates():
     import pytest
     with pytest.raises(RuntimeError, match="unrelated failure"):
         render_paragraphs(["whatever"], voice="bm_lewis", synth=weird_error)
+
+
+def test_tables_are_skipped_as_paragraphs():
+    """Markdown tables should NOT become TTS paragraphs (match client behavior)."""
+    md = (
+        "Before table.\n\n"
+        "| Col A | Col B |\n"
+        "|-------|-------|\n"
+        "| row1a | row1b |\n"
+        "| row2a | row2b |\n\n"
+        "After table."
+    )
+    result = extract_paragraphs(md)
+    assert result == ["Before table.", "After table."]

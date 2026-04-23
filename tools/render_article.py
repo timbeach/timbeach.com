@@ -21,7 +21,7 @@ PARAGRAPH_SELECTOR = "h2, h3, h4, p, li"
 
 def extract_paragraphs(md_text: str) -> list[str]:
     """Parse markdown, extract readable paragraphs matching client rules."""
-    md = MarkdownIt("commonmark", {"html": False, "linkify": False})
+    md = MarkdownIt("commonmark", {"html": False, "linkify": False}).enable("table")
     html = md.render(md_text)
     soup = BeautifulSoup(html, "html.parser")
 
