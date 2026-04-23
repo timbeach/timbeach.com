@@ -8,4 +8,5 @@ models/
 audition/
 tools/venv/
 tools/models/
+tools/__pycache__/
 

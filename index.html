@@ -1426,15 +1426,6 @@
       color: var(--background);
       border-color: var(--accent);
     }
-    .tts-btn:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-    .tts-btn:disabled:hover {
-      border-color: var(--border);
-      color: var(--foreground);
-      background: transparent;
-    }
     .tts-btn svg {
       width: 14px;
       height: 14px;
@@ -1502,10 +1493,6 @@
       border: none;
       cursor: pointer;
     }
-    .tts-speed-slider:disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
 
     /* Voice selector */
     .tts-voice-select {
@@ -1541,51 +1528,6 @@
       color: var(--highlight);
     }
 
-    /* HQ (high-quality neural voice) toggle button */
-    .tts-hq {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--foreground);
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      padding: 0.35rem 0.6rem;
-      border-radius: 4px;
-      cursor: pointer;
-      flex-shrink: 0;
-      letter-spacing: 0.03em;
-      transition: all 0.15s ease;
-      white-space: nowrap;
-    }
-    .tts-hq:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
-    }
-    .tts-hq.loading {
-      border-color: var(--highlight);
-      color: var(--highlight);
-      cursor: progress;
-    }
-    .tts-hq.ready {
-      background: var(--accent-dim);
-      border-color: var(--accent);
-      color: var(--accent);
-      box-shadow: 0 0 8px rgba(93, 228, 199, 0.25);
-    }
-    .tts-hq.promoted {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: var(--accent-dim);
-      animation: tts-pulse 2.5s ease-in-out infinite;
-    }
-    @keyframes tts-pulse {
-      0%, 100% { box-shadow: 0 0 4px rgba(93, 228, 199, 0.2); }
-      50% { box-shadow: 0 0 12px rgba(93, 228, 199, 0.5); }
-    }
-    .tts-hq:disabled {
-      cursor: not-allowed;
-      opacity: 0.8;
-    }
 
     /* ── Paragraph highlighting ── */
     .article-content.tts-active > * {
@@ -1721,10 +1663,6 @@
         <input type="range" class="tts-speed-slider" id="ttsSpeedSlider" min="0.5" max="2" step="0.1" value="1">
         <span class="tts-speed-label" id="ttsSpeedLabel">1.0x</span>
       </div>
-      <button class="tts-hq" id="ttsHqBtn" title="Load high-quality neural voice (~80 MB one-time download)">HQ · ~80MB</button>
-      <select class="tts-voice-select" id="ttsVoiceSelect" title="Voice">
-        <option>Loading...</option>
-      </select>
       <button class="tts-close" id="ttsClose" title="Close reader">&times;</button>
     </div>
   </div>
@@ -3585,270 +3523,6 @@ God Mode: ON
     // TTS Article Reader Engine
     // ═══════════════════════════════════════════
 
-    // =========================================================
-    // Engine interface: { name, init(), voices, synth(text, voiceId, rate), cancel() }
-    // =========================================================
-
-    const nativeEngine = {
-      name: 'native',
-      voices: [],
-      _synth: window.speechSynthesis,
-      _loaded: false,
-      _keepAlive: null,
-      _initInFlight: null,
-
-      _startKeepAlive() {
-        if (this._keepAlive) clearInterval(this._keepAlive);
-        this._keepAlive = setInterval(() => {
-          if (this._synth.speaking && !this._synth.paused) {
-            this._synth.pause();
-            this._synth.resume();
-          } else if (!this._synth.speaking) {
-            clearInterval(this._keepAlive);
-            this._keepAlive = null;
-          }
-        }, 10000);
-      },
-
-      _stopKeepAlive() {
-        if (this._keepAlive) {
-          clearInterval(this._keepAlive);
-          this._keepAlive = null;
-        }
-      },
-
-      async init() {
-        if (this._loaded) return;
-        if (this._initInFlight) return this._initInFlight;
-
-        const loadOnce = () => {
-          const raw = this._synth.getVoices();
-          if (!raw.length) return false;
-          const english = raw.filter(v => v.lang.startsWith('en'));
-          const sorted = english.sort((a, b) => {
-            const an = /natural|neural|enhanced|premium/i.test(a.name) ? 0 : 1;
-            const bn = /natural|neural|enhanced|premium/i.test(b.name) ? 0 : 1;
-            return an - bn || a.name.localeCompare(b.name);
-          });
-          const others = raw.filter(v => !v.lang.startsWith('en')).slice(0, 5);
-          this.voices = [...sorted, ...others].map(v => ({
-            id: v.name,
-            label: `${v.name.replace(/^(Microsoft |Google |Apple )/, '')} (${v.lang})`,
-            lang: v.lang,
-            _raw: v,
-          }));
-          this._loaded = true;
-          return true;
-        };
-
-        if (loadOnce()) return;
-
-        this._initInFlight = new Promise(resolve => {
-          const handler = () => { loadOnce(); resolve(); };
-          if (this._synth.onvoiceschanged !== undefined) {
-            this._synth.onvoiceschanged = handler;
-          }
-          setTimeout(() => resolve(), 1000);
-        });
-        try {
-          await this._initInFlight;
-        } finally {
-          this._initInFlight = null;
-        }
-      },
-
-      async synth(text, voiceId, rate) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.rate = rate;
-        const voice = this.voices.find(v => v.id === voiceId);
-        if (voice) utterance.voice = voice._raw;
-
-        let endCallbacks = [];
-        let started = false;
-
-        const handle = {
-          _utterance: utterance,
-          _cancelled: false,
-          playbackRate: rate,  // stored for interface uniformity; SpeechSynthesisUtterance.rate is immutable post-construction, so live-updates are a no-op on native
-          play() {
-            if (this._cancelled) return;
-            nativeEngine._synth.cancel();
-            setTimeout(() => {
-              if (this._cancelled) return;
-              nativeEngine._synth.speak(utterance);
-              nativeEngine._startKeepAlive();
-            }, 50);
-          },
-          pause() { nativeEngine._synth.pause(); },
-          resume() { nativeEngine._synth.resume(); },
-          addEventListener(evt, cb) {
-            if (evt === 'ended') endCallbacks.push(cb);
-          },
-          _cancel() {
-            this._cancelled = true;
-            nativeEngine._synth.cancel();
-            nativeEngine._stopKeepAlive();
-          },
-        };
-
-        utterance.onstart = () => { started = true; };
-        utterance.onend = () => {
-          // Chromium bug: onend can fire before onstart with no actual speech.
-          // Retry once; if cancel happens during the 50ms delay the retry
-          // is skipped, and a subsequent real onend is filtered by the
-          // controller's _currentAudio identity check.
-          if (!started && !handle._cancelled) {
-            setTimeout(() => {
-              if (!handle._cancelled) nativeEngine._synth.speak(utterance);
-            }, 50);
-            return;
-          }
-          nativeEngine._stopKeepAlive();
-          endCallbacks.forEach(cb => cb());
-        };
-        utterance.onerror = (e) => {
-          if (e.error === 'interrupted' || e.error === 'canceled') return;
-          endCallbacks.forEach(cb => cb());
-        };
-
-        return handle;
-      },
-
-      cancel() {
-        this._synth.cancel();
-        this._stopKeepAlive();
-      },
-    };
-
-    const kokoroEngine = {
-      name: 'kokoro',
-      voices: [
-        { id: 'af_bella',   label: 'Bella (US)',    lang: 'en-US' },
-        { id: 'am_michael', label: 'Michael (US)',  lang: 'en-US' },
-        { id: 'bm_george',  label: 'George (UK)',   lang: 'en-GB' },
-      ],
-      _worker: null,
-      _loaded: false,
-      _initPromise: null,    // Re-entrancy guard: second caller awaits same promise
-      _pending: new Map(),   // reqId -> { resolve, reject } for in-flight synth calls
-      _reqSeq: 0,
-
-      async init(onProgress) {
-        if (this._loaded) return;
-        if (this._initPromise) return this._initPromise;
-
-        this._initPromise = new Promise((resolve, reject) => {
-          let worker;
-          try {
-            worker = new Worker('tts-worker.js', { type: 'module' });
-          } catch (e) {
-            console.error('[tts] worker spawn failed', e);
-            reject(new Error('web worker unavailable: ' + (e.message || e)));
-            return;
-          }
-          console.log('[tts] worker spawned');
-          this._worker = worker;
-
-          worker.onmessage = (ev) => {
-            const msg = ev.data;
-            if (msg.type === 'progress') {
-              if (typeof onProgress === 'function') onProgress(msg);
-            } else if (msg.type === 'ready') {
-              console.log('[tts] worker ready');
-              this._loaded = true;
-              resolve();
-            } else if (msg.type === 'error') {
-              console.error('[tts] worker error event', msg.message);
-              reject(new Error(msg.message));
-            } else if (msg.type === 'synth') {
-              const entry = this._pending.get(msg.reqId);
-              if (entry) { this._pending.delete(msg.reqId); entry.resolve(msg); }
-            } else if (msg.type === 'synth-error') {
-              const entry = this._pending.get(msg.reqId);
-              if (entry) { this._pending.delete(msg.reqId); entry.reject(new Error(msg.message)); }
-            }
-          };
-          worker.onerror = (e) => {
-            console.error('[tts] worker onerror', e);
-            reject(new Error('worker error: ' + (e.message || 'unknown')));
-          };
-          worker.postMessage({ cmd: 'init' });
-        }).finally(() => { this._initPromise = null; });
-
-        return this._initPromise;
-      },
-
-      async synth(text, voiceId, rate) {
-        if (!this._loaded) throw new Error('kokoroEngine not initialized');
-        const reqId = ++this._reqSeq;
-        const { samples, sampleRate } = await new Promise((resolve, reject) => {
-          this._pending.set(reqId, { resolve, reject });
-          this._worker.postMessage({ cmd: 'synth', reqId, text, voiceId });
-        });
-        const wav = kokoroEngine._encodeWav(samples, sampleRate);
-        const blob = new Blob([wav], { type: 'audio/wav' });
-        const url = URL.createObjectURL(blob);
-        const el = new Audio(url);
-        el._blobUrl = url;
-        el.playbackRate = rate;
-        el._cancel = () => {
-          el.pause();
-          el.currentTime = 0;
-        };
-        return el;
-      },
-
-      cancel() {
-        // WASM generate() isn't interruptible. Stale results are discarded
-        // on arrival by queue-level staleness checks in ttsSpeakCurrent.
-      },
-
-      // Kill the worker and reject any pending synths. Used on load failure
-      // so the next HQ click starts clean.
-      _terminate() {
-        if (this._worker) {
-          try { this._worker.terminate(); } catch (_) {}
-          this._worker = null;
-        }
-        this._loaded = false;
-        for (const entry of this._pending.values()) {
-          try { entry.reject(new Error('worker terminated')); } catch (_) {}
-        }
-        this._pending.clear();
-      },
-
-      // Minimal WAV encoder: Float32Array PCM -> WAV ArrayBuffer.
-      _encodeWav(samples, sampleRate) {
-        const numChannels = 1;
-        const bytesPerSample = 2;  // int16
-        const buffer = new ArrayBuffer(44 + samples.length * bytesPerSample);
-        const view = new DataView(buffer);
-        const writeStr = (offset, str) => {
-          for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
-        };
-        writeStr(0, 'RIFF');
-        view.setUint32(4, 36 + samples.length * bytesPerSample, true);
-        writeStr(8, 'WAVE');
-        writeStr(12, 'fmt ');
-        view.setUint32(16, 16, true);
-        view.setUint16(20, 1, true);  // PCM
-        view.setUint16(22, numChannels, true);
-        view.setUint32(24, sampleRate, true);
-        view.setUint32(28, sampleRate * numChannels * bytesPerSample, true);
-        view.setUint16(32, numChannels * bytesPerSample, true);
-        view.setUint16(34, 16, true);  // bits per sample
-        writeStr(36, 'data');
-        view.setUint32(40, samples.length * bytesPerSample, true);
-        let offset = 44;
-        for (let i = 0; i < samples.length; i++) {
-          const s = Math.max(-1, Math.min(1, samples[i]));
-          view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
-          offset += 2;
-        }
-        return buffer;
-      },
-    };
-
     const tts = {
       bar: document.getElementById('ttsBar'),
       playBtn: document.getElementById('ttsPlayBtn'),
@@ -3859,46 +3533,18 @@ God Mode: ON
       statusText: document.getElementById('ttsStatusText'),
       speedSlider: document.getElementById('ttsSpeedSlider'),
       speedLabel: document.getElementById('ttsSpeedLabel'),
-      voiceSelect: document.getElementById('ttsVoiceSelect'),
       closeBtn: document.getElementById('ttsClose'),
-      hqBtn: document.getElementById('ttsHqBtn'),
 
-      engine: nativeEngine,
       paragraphs: [],       // DOM elements to read
       currentIndex: -1,
       isPlaying: false,
       isPaused: false,
       rate: 1.0,
-      selectedVoiceId: null,
-      queue: {
-        current: null,    // { idx, audio, text } or null
-        next: null,       // same shape
-        inflight: new Map(),  // idx -> { promise, abort: AbortController-like }
-      },
     };
 
     // SVG paths for play/pause icons
     const PLAY_SVG = '<polygon points="6,3 20,12 6,21"/>';
     const PAUSE_SVG = '<rect x="5" y="3" width="5" height="18" rx="1"/><rect x="14" y="3" width="5" height="18" rx="1"/>';
-
-    // Populate voice list
-    async function ttsLoadVoices() {
-      await nativeEngine.init();
-      tts.voiceSelect.innerHTML = '';
-      nativeEngine.voices.forEach((voice) => {
-        const opt = document.createElement('option');
-        opt.value = voice.id;
-        opt.textContent = voice.label;
-        tts.voiceSelect.appendChild(opt);
-      });
-      if (!tts.selectedVoiceId && nativeEngine.voices.length) {
-        tts.selectedVoiceId = nativeEngine.voices[0].id;
-      }
-      ttsApplyEngineState();
-    }
-
-    // Voices load asynchronously in some browsers — nativeEngine.init() handles onvoiceschanged internally
-    ttsLoadVoices();
 
     // Extract readable elements from .article-content
     function ttsCollectParagraphs() {
@@ -3916,126 +3562,6 @@ God Mode: ON
       return clone.textContent.trim();
     }
 
-    // Apply UI state based on whether any engine has voices available.
-    function ttsApplyEngineState() {
-      const hasNative = nativeEngine.voices.length > 0;
-      const hasKokoro = tts.engine.name === 'kokoro';
-      const hasAny = hasNative || hasKokoro;
-
-      // Transport controls
-      tts.playBtn.disabled = !hasAny;
-      tts.stopBtn.disabled = !hasAny;
-      tts.speedSlider.disabled = !hasAny;
-
-      // Voice dropdown + HQ button
-      if (tts.engine.name === 'kokoro') {
-        // Handled when kokoroEngine is introduced in Task 6 (ttsOnKokoroReady repopulates).
-      } else if (hasNative) {
-        tts.voiceSelect.disabled = false;
-        tts.hqBtn.classList.remove('promoted');
-        tts.hqBtn.textContent = 'HQ · ~80MB';
-      } else {
-        tts.voiceSelect.disabled = true;
-        tts.voiceSelect.innerHTML = '<option>(no voices)</option>';
-        tts.hqBtn.classList.add('promoted');
-        tts.hqBtn.textContent = 'load HQ · ~80MB';
-        tts.statusText.textContent = 'no system voices — click HQ to enable read-aloud';
-      }
-    }
-
-    async function loadKokoro() {
-      if (kokoroEngine._loaded) {
-        tts.engine = kokoroEngine;
-        ttsOnKokoroReady();
-        return;
-      }
-
-      // UI: downloading state
-      tts.hqBtn.classList.add('loading');
-      tts.hqBtn.classList.remove('promoted', 'ready');
-      tts.hqBtn.disabled = true;
-      tts.playBtn.disabled = true;
-      tts.stopBtn.disabled = true;
-      tts.speedSlider.disabled = true;
-      tts.statusText.textContent = 'downloading high-quality voice…';
-      tts.progress.style.width = '0%';
-
-      // Track aggregate progress across files
-      const fileTotals = new Map();
-      const fileLoaded = new Map();
-      const onProgress = ({ file, loaded, total }) => {
-        if (file === '__retry__') {
-          tts.statusText.textContent = 'huggingface unreachable, trying mirror…';
-          fileTotals.clear();
-          fileLoaded.clear();
-          tts.hqBtn.textContent = 'retrying…';
-          tts.progress.style.width = '0%';
-          return;
-        }
-        fileTotals.set(file, total);
-        fileLoaded.set(file, loaded);
-        let tAll = 0, lAll = 0;
-        for (const v of fileTotals.values()) tAll += v;
-        for (const v of fileLoaded.values()) lAll += v;
-        const pct = tAll > 0 ? Math.min(100, Math.floor(100 * lAll / tAll)) : 0;
-        tts.hqBtn.textContent = `loading… ${pct}%`;
-        tts.progress.style.width = pct + '%';
-        tts.statusText.textContent = `downloading high-quality voice… ${pct}%`;
-      };
-
-      try {
-        await kokoroEngine.init(onProgress);
-      } catch (e) {
-        console.error('[tts] kokoro load failed:', e);
-        // Kill the worker so the next HQ click starts with a fresh one.
-        kokoroEngine._terminate();
-        tts.hqBtn.classList.remove('loading');
-        tts.hqBtn.disabled = false;
-        tts.hqBtn.textContent = 'HQ · ~80MB';
-        tts.playBtn.disabled = false;
-        tts.stopBtn.disabled = false;
-        tts.speedSlider.disabled = false;
-        tts.statusText.textContent = 'voice download failed — try again later';
-        return;
-      }
-
-      tts.engine = kokoroEngine;
-      ttsOnKokoroReady();
-    }
-
-    function ttsOnKokoroReady() {
-      tts.hqBtn.classList.remove('loading', 'promoted');
-      tts.hqBtn.classList.add('ready');
-      tts.hqBtn.disabled = false;
-      tts.hqBtn.textContent = 'HQ ✓';
-      tts.playBtn.disabled = false;
-      tts.stopBtn.disabled = false;
-      tts.speedSlider.disabled = false;
-      tts.progress.style.width = '0%';
-
-      // Repopulate voice dropdown with Kokoro voices
-      tts.voiceSelect.innerHTML = '';
-      kokoroEngine.voices.forEach((voice) => {
-        const opt = document.createElement('option');
-        opt.value = voice.id;
-        opt.textContent = voice.label;
-        tts.voiceSelect.appendChild(opt);
-      });
-      tts.voiceSelect.disabled = false;
-      tts.selectedVoiceId = kokoroEngine.voices[0]?.id || 'af_bella';  // default: Bella
-      tts.statusText.textContent = 'ready';
-
-      // Restart playback from current paragraph if we were playing before the swap
-      if (tts._pendingResumeIdx !== undefined && tts._pendingResumeIdx >= 0) {
-        tts.currentIndex = tts._pendingResumeIdx;
-        tts._pendingResumeIdx = undefined;
-        tts.isPlaying = true;
-        tts.playIcon.innerHTML = PAUSE_SVG;
-        tts.playBtn.classList.add('active');
-        ttsSpeakCurrent();
-      }
-    }
-
     // Open the TTS bar
     function ttsOpen() {
       tts.paragraphs = ttsCollectParagraphs();
@@ -4046,7 +3572,6 @@ God Mode: ON
       tts.statusText.textContent = 'press play to start reading';
       tts.label.textContent = `article reader · ${tts.paragraphs.length} sections`;
       ttsUpdateProgress();
-      ttsApplyEngineState();
     }
 
     // Close and cleanup
@@ -4069,14 +3594,8 @@ God Mode: ON
         return;
       }
 
-      // Refuse to start if no engine is available.
-      if (tts.engine.name === 'native' && nativeEngine.voices.length === 0) {
-        tts.statusText.textContent = 'no system voices — click HQ to enable read-aloud';
-        return;
-      }
-
       // Chromium bug workaround: cancel any stale synth state before starting
-      tts.engine.cancel();
+      // (engine.cancel() will be rewired by T9)
 
       // Start fresh from current index or beginning
       if (tts.currentIndex < 0) tts.currentIndex = 0;
@@ -4103,8 +3622,6 @@ God Mode: ON
 
     // Stop completely
     function ttsStop() {
-      tts.engine.cancel();
-      if (tts._resumeInterval) clearInterval(tts._resumeInterval);
       if (tts._currentAudio) {
         tts._currentAudio.pause?.();
         if (tts._currentAudio._cancel) tts._currentAudio._cancel();
@@ -4131,18 +3648,6 @@ God Mode: ON
 
       tts.statusText.textContent = 'stopped';
       ttsUpdateProgress();
-    }
-
-    // Deduplicated synth — reuses an in-flight promise for the same idx
-    function ttsSynth(idx, text) {
-      if (tts.queue.inflight.has(idx)) {
-        return tts.queue.inflight.get(idx).promise;
-      }
-      const abort = { cancelled: false };
-      const promise = tts.engine.synth(text, tts.selectedVoiceId, tts.rate)
-        .finally(() => tts.queue.inflight.delete(idx));
-      tts.queue.inflight.set(idx, { promise, abort });
-      return promise;
     }
 
     // Speak the current paragraph
@@ -4294,44 +3799,6 @@ God Mode: ON
     tts.stopBtn.addEventListener('click', ttsStop);
     tts.closeBtn.addEventListener('click', ttsClose);
 
-    tts.hqBtn.addEventListener('click', () => {
-      if (tts.hqBtn.disabled) return;
-      if (tts.engine.name === 'kokoro') {
-        ttsRevertToNative();
-      } else {
-        // Capture resume idx so ttsOnKokoroReady can restart playback after load
-        if (tts.isPlaying) {
-          tts._pendingResumeIdx = tts.queue.current?.idx ?? tts.currentIndex;
-        }
-        loadKokoro();
-      }
-    });
-
-    function ttsRevertToNative() {
-      const wasPlaying = tts.isPlaying;
-      const resumeIdx = wasPlaying ? (tts.queue.current?.idx ?? tts.currentIndex) : -1;
-      ttsStop();
-      tts.engine = nativeEngine;
-      tts.hqBtn.classList.remove('ready');
-      tts.hqBtn.textContent = 'HQ · ~80MB';
-      tts.voiceSelect.innerHTML = '';
-      nativeEngine.voices.forEach((voice) => {
-        const opt = document.createElement('option');
-        opt.value = voice.id;
-        opt.textContent = voice.label;
-        tts.voiceSelect.appendChild(opt);
-      });
-      tts.selectedVoiceId = nativeEngine.voices[0]?.id || null;
-      tts.statusText.textContent = 'reverted to system voice';
-      if (resumeIdx >= 0) {
-        tts.currentIndex = resumeIdx;
-        tts.isPlaying = true;
-        tts.playIcon.innerHTML = PAUSE_SVG;
-        tts.playBtn.classList.add('active');
-        ttsSpeakCurrent();
-      }
-    }
-
     tts.speedSlider.addEventListener('input', (e) => {
       tts.rate = parseFloat(e.target.value);
       tts.speedLabel.textContent = tts.rate.toFixed(1) + 'x';
@@ -4343,23 +3810,6 @@ God Mode: ON
         if (tts.queue.next.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
         tts.queue.next = null;
       }
-    });
-
-    tts.voiceSelect.addEventListener('change', (e) => {
-      tts.selectedVoiceId = e.target.value;
-      // Invalidate look-ahead: the next-paragraph synth was done in the old voice.
-      if (tts.queue.next) {
-        if (tts.queue.next.audio?._blobUrl) URL.revokeObjectURL(tts.queue.next.audio._blobUrl);
-        tts.queue.next = null;
-      }
-      // Abort any inflight synth for the next paragraph so Task 9's look-ahead picks up fresh.
-      const nextIdx = tts.currentIndex + 1;
-      if (tts.queue.inflight.has(nextIdx)) {
-        tts.queue.inflight.get(nextIdx).abort.cancelled = true;
-        tts.queue.inflight.delete(nextIdx);
-      }
-      // Current paragraph intentionally finishes in the old voice (spec §5).
-      // The next advance will use the new voice.
     });
 
     // Close TTS when navigating away from article
