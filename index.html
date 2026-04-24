@@ -3653,6 +3653,16 @@ God Mode: ON
       tts.statusText.textContent = 'ready';
       tts.playIcon.innerHTML = PLAY_SVG;
       tts.progress.style.width = '0%';
+
+      // Auto-start: the "read aloud" click is a user gesture so autoplay
+      // policy allows it. If the browser still blocks it, fall through —
+      // the user can click play. No errors in the happy path.
+      audio.play().then(() => {
+        tts.playIcon.innerHTML = PAUSE_SVG;
+        tts.statusText.textContent = 'reading…';
+      }).catch((e) => {
+        console.warn('[tts] autoplay blocked — click play:', e);
+      });
     }
 
     // Close and cleanup
