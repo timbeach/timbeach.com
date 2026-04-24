@@ -234,3 +234,98 @@ def test_tables_are_skipped_as_paragraphs():
     )
     result = extract_paragraphs(md)
     assert result == ["Before table.", "After table."]
+
+
+def test_validate_article_ok(tmp_path, monkeypatch):
+    """When markdown and timings agree, validate returns (True, ...)."""
+    from render_article import validate_article, extract_paragraphs
+    # Set up fake repo layout under tmp_path
+    articles_dir = tmp_path / "articles"
+    audio_dir = tmp_path / "audio"
+    articles_dir.mkdir()
+    audio_dir.mkdir()
+    md = "Hello world.\n\nSecond paragraph."
+    (articles_dir / "demo.md").write_text(md)
+    paras = extract_paragraphs(md)
+    (audio_dir / "demo.timings.json").write_text(json.dumps({
+        "voice": "bm_lewis",
+        "duration": 5.0,
+        "paragraphs": [
+            {"idx": i, "start": i * 1.0, "end": (i + 1) * 1.0, "text": p}
+            for i, p in enumerate(paras)
+        ],
+    }))
+    monkeypatch.setattr("render_article.ARTICLES_DIR", articles_dir)
+    monkeypatch.setattr("render_article.AUDIO_DIR", audio_dir)
+    ok, msg = validate_article("demo")
+    assert ok, f"expected OK, got {msg}"
+
+
+def test_validate_article_paragraph_count_mismatch(tmp_path, monkeypatch):
+    """When counts differ, validate returns (False, ...)."""
+    from render_article import validate_article
+    articles_dir = tmp_path / "articles"
+    audio_dir = tmp_path / "audio"
+    articles_dir.mkdir()
+    audio_dir.mkdir()
+    # Markdown has 2 paragraphs; timings has 1 → mismatch
+    (articles_dir / "demo.md").write_text("A paragraph.\n\nAnother paragraph.")
+    (audio_dir / "demo.timings.json").write_text(json.dumps({
+        "voice": "bm_lewis",
+        "duration": 3.0,
+        "paragraphs": [{"idx": 0, "start": 0.0, "end": 3.0, "text": "A paragraph."}],
+    }))
+    monkeypatch.setattr("render_article.ARTICLES_DIR", articles_dir)
+    monkeypatch.setattr("render_article.AUDIO_DIR", audio_dir)
+    ok, msg = validate_article("demo")
+    assert not ok
+    assert "paragraph count" in msg.lower()
+
+
+def test_validate_article_first_text_mismatch(tmp_path, monkeypatch):
+    """When the first paragraph text differs, validate returns (False, ...)."""
+    from render_article import validate_article
+    articles_dir = tmp_path / "articles"
+    audio_dir = tmp_path / "audio"
+    articles_dir.mkdir()
+    audio_dir.mkdir()
+    (articles_dir / "demo.md").write_text("Changed first paragraph.")
+    (audio_dir / "demo.timings.json").write_text(json.dumps({
+        "voice": "bm_lewis",
+        "duration": 1.0,
+        "paragraphs": [{"idx": 0, "start": 0.0, "end": 1.0, "text": "Original first paragraph."}],
+    }))
+    monkeypatch.setattr("render_article.ARTICLES_DIR", articles_dir)
+    monkeypatch.setattr("render_article.AUDIO_DIR", audio_dir)
+    ok, msg = validate_article("demo")
+    assert not ok
+    assert "first-paragraph" in msg.lower()
+
+
+def test_validate_article_missing_markdown(tmp_path, monkeypatch):
+    """Missing markdown → False + helpful message."""
+    from render_article import validate_article
+    articles_dir = tmp_path / "articles"
+    audio_dir = tmp_path / "audio"
+    articles_dir.mkdir()
+    audio_dir.mkdir()
+    monkeypatch.setattr("render_article.ARTICLES_DIR", articles_dir)
+    monkeypatch.setattr("render_article.AUDIO_DIR", audio_dir)
+    ok, msg = validate_article("does-not-exist")
+    assert not ok
+    assert "markdown missing" in msg.lower() or "does not exist" in msg.lower()
+
+
+def test_validate_article_missing_timings(tmp_path, monkeypatch):
+    """Markdown present but no timings → False + helpful message."""
+    from render_article import validate_article
+    articles_dir = tmp_path / "articles"
+    audio_dir = tmp_path / "audio"
+    articles_dir.mkdir()
+    audio_dir.mkdir()
+    (articles_dir / "demo.md").write_text("Some text.")
+    monkeypatch.setattr("render_article.ARTICLES_DIR", articles_dir)
+    monkeypatch.setattr("render_article.AUDIO_DIR", audio_dir)
+    ok, msg = validate_article("demo")
+    assert not ok
+    assert "timings missing" in msg.lower() or "not rendered" in msg.lower()

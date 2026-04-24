@@ -205,6 +205,32 @@ def _kokoro_synth(kokoro, voice: str):
     return synth
 
 
+def validate_article(slug: str) -> tuple[bool, str]:
+    """Compare current markdown against committed timings.json.
+
+    Returns (ok, message). Catches "article edited after render" staleness.
+    """
+    md_path = ARTICLES_DIR / f"{slug}.md"
+    timings_path = AUDIO_DIR / f"{slug}.timings.json"
+
+    if not md_path.exists():
+        return (False, f"markdown missing: {md_path}")
+    if not timings_path.exists():
+        return (False, f"timings missing (not rendered yet?): {timings_path}")
+
+    paras = extract_paragraphs(md_path.read_text())
+    timings = json.loads(timings_path.read_text())
+    stored = timings.get("paragraphs", [])
+
+    if len(paras) != len(stored):
+        return (False, f"paragraph count mismatch: {len(paras)} in markdown vs {len(stored)} in timings")
+
+    if paras and paras[0] != stored[0].get("text", ""):
+        return (False, f"first-paragraph text differs — re-render needed")
+
+    return (True, f"OK ({len(paras)} paragraphs)")
+
+
 def render_article(slug: str, voice: str, force: bool, kokoro) -> bool:
     """Render one article. Returns True if rendered, False if skipped."""
     md_path = ARTICLES_DIR / f"{slug}.md"
@@ -257,12 +283,34 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--all", action="store_true", help="render every article in articles.json")
     parser.add_argument("--voice", default="bm_lewis", help="Kokoro voice ID (default: bm_lewis)")
     parser.add_argument("--force", action="store_true", help="re-render even if output is up-to-date")
+    parser.add_argument("--validate", action="store_true",
+                        help="check that timings.json is in sync with the markdown; don't render")
     args = parser.parse_args(argv)
 
-    if not args.slug and not args.all:
-        parser.error("either <slug> or --all is required")
+    if not args.slug and not args.all and not args.validate:
+        parser.error("either <slug>, --all, or --validate is required")
     if args.slug and args.all:
         parser.error("pass <slug> OR --all, not both")
+
+    if args.validate:
+        data = json.loads(ARTICLES_JSON.read_text())
+        if args.slug:
+            slugs = [args.slug]
+        else:
+            slugs = [n[:-3] for n in data if n.endswith(".md")]
+        errors = 0
+        for slug in slugs:
+            entry = data.get(f"{slug}.md", {})
+            if not entry.get("audio"):
+                print(f"  {slug}: no audio metadata, skipping")
+                continue
+            ok, msg = validate_article(slug)
+            marker = "OK " if ok else "FAIL"
+            print(f"  [{marker}] {slug}: {msg}")
+            if not ok:
+                errors += 1
+        print(f"validate: {len(slugs) - errors}/{len(slugs)} passed, {errors} errors")
+        return 1 if errors else 0
 
     kokoro = _load_kokoro()
 
