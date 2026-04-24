@@ -1,6 +1,6 @@
 {
   "voice": "bm_lewis",
-  "duration": 653.035,
+  "duration": 608.747,
   "paragraphs": [
     {
       "idx": 0,
@@ -191,415 +191,391 @@
     {
       "idx": 31,
       "start": 194.51733333333334,
-      "end": 205.632,
-      "text": "| Action | Keys |\n|---|---|\n| Move between panes | , then arrow keys |\n| Zoom one pane full-screen | , then  (toggle) |\n| Resize panes | , then  |\n| Click into a pane | Just click (if mouse mode is on) |"
-    },
-    {
-      "idx": 32,
-      "start": 205.632,
-      "end": 217.74933333333334,
+      "end": 206.63466666666667,
       "text": "You can read any teammate's output, and if you click into their pane, you can type messages directly to them. The team lead pane (your original session) is where you issue high-level instructions."
     },
     {
-      "idx": 33,
-      "start": 217.74933333333334,
-      "end": 218.77333333333334,
+      "idx": 32,
+      "start": 206.63466666666667,
+      "end": 207.65866666666668,
       "text": "How It Works"
     },
     {
-      "idx": 34,
-      "start": 218.77333333333334,
-      "end": 219.776,
+      "idx": 33,
+      "start": 207.65866666666668,
+      "end": 208.66133333333335,
       "text": "Architecture"
     },
     {
-      "idx": 35,
-      "start": 219.776,
-      "end": 221.01333333333332,
+      "idx": 34,
+      "start": 208.66133333333335,
+      "end": 209.89866666666666,
       "text": "Four moving parts:"
     },
     {
-      "idx": 36,
-      "start": 221.01333333333332,
-      "end": 235.2,
+      "idx": 35,
+      "start": 209.89866666666666,
+      "end": 224.08533333333332,
       "text": "Team lead \u2014 your original Claude session. It creates the team, defines tasks, spawns teammates, and synthesizes results. This is the only session you interact with directly (unless you click into a teammate's pane)."
     },
     {
-      "idx": 37,
-      "start": 235.2,
-      "end": 246.72,
+      "idx": 36,
+      "start": 224.08533333333332,
+      "end": 235.60533333333333,
       "text": "Teammates \u2014 independent Claude processes, each with its own context window. They don't share memory with the lead or with each other \u2014 they communicate through messages and the task list."
     },
     {
-      "idx": 38,
-      "start": 246.72,
-      "end": 258.79466666666667,
+      "idx": 37,
+      "start": 235.60533333333333,
+      "end": 247.68,
       "text": "Task list \u2014 JSON files on disk at . Every agent can read and write to it. Tasks have statuses (, , ), owners, dependencies, and descriptions. This is the coordination backbone."
     },
     {
-      "idx": 39,
-      "start": 258.79466666666667,
-      "end": 270.61333333333334,
+      "idx": 38,
+      "start": 247.68,
+      "end": 259.4986666666667,
       "text": "Messaging \u2014 agents send direct messages to each other by name. No polling, no shared state beyond the task list. The lead gets notified when teammates finish tasks or need help."
     },
     {
-      "idx": 40,
-      "start": 270.61333333333334,
-      "end": 273.216,
+      "idx": 39,
+      "start": 259.4986666666667,
+      "end": 262.10133333333334,
       "text": "What teammates inherit (and what they don't)"
     },
     {
-      "idx": 41,
-      "start": 273.216,
-      "end": 275.648,
+      "idx": 40,
+      "start": 262.10133333333334,
+      "end": 264.53333333333336,
       "text": "Each teammate automatically receives:"
     },
     {
-      "idx": 42,
-      "start": 275.648,
-      "end": 277.41866666666664,
+      "idx": 41,
+      "start": 264.53333333333336,
+      "end": 266.304,
       "text": "Your project's  instructions"
     },
     {
-      "idx": 43,
-      "start": 277.41866666666664,
-      "end": 279.5946666666667,
+      "idx": 42,
+      "start": 266.304,
+      "end": 268.48,
       "text": "Configured MCP servers"
     },
     {
-      "idx": 44,
-      "start": 279.5946666666667,
-      "end": 281.68533333333335,
+      "idx": 43,
+      "start": 268.48,
+      "end": 270.5706666666667,
       "text": "Available skills and plugins"
     },
     {
-      "idx": 45,
-      "start": 281.68533333333335,
-      "end": 285.07733333333334,
+      "idx": 44,
+      "start": 270.5706666666667,
+      "end": 273.9626666666667,
       "text": "The spawn prompt from the lead (their specific assignment)"
     },
     {
-      "idx": 46,
-      "start": 285.07733333333334,
-      "end": 303.744,
+      "idx": 45,
+      "start": 273.9626666666667,
+      "end": 292.6293333333333,
       "text": "What they do not get: the lead's conversation history. If context matters for a task, the lead needs to include it in the spawn prompt or in a message. This is by design \u2014 it keeps each teammate's context window focused on their specific job rather than polluted with unrelated conversation."
     },
     {
-      "idx": 47,
-      "start": 303.744,
-      "end": 304.87466666666666,
+      "idx": 46,
+      "start": 292.6293333333333,
+      "end": 293.76,
       "text": "Common Patterns"
     },
     {
-      "idx": 48,
-      "start": 304.87466666666666,
-      "end": 306.8586666666667,
+      "idx": 47,
+      "start": 293.76,
+      "end": 295.744,
       "text": "Parallel feature development"
     },
     {
-      "idx": 49,
-      "start": 306.8586666666667,
-      "end": 311.72266666666667,
+      "idx": 48,
+      "start": 295.744,
+      "end": 300.608,
       "text": "The most natural use case. You have a feature that spans multiple concerns:"
     },
     {
-      "idx": 50,
-      "start": 311.72266666666667,
-      "end": 328.2986666666667,
+      "idx": 49,
+      "start": 300.608,
+      "end": 317.184,
       "text": "The key phrase is \"agree on the schema before implementing.\" Teammates can message each other directly \u2014 the lead doesn't have to relay everything. The DB teammate can share the schema with the API and UI teammates, and they can coordinate without you in the loop."
     },
     {
-      "idx": 51,
-      "start": 328.2986666666667,
-      "end": 329.6426666666667,
+      "idx": 50,
+      "start": 317.184,
+      "end": 318.528,
       "text": "Parallel debugging"
     },
     {
-      "idx": 52,
-      "start": 329.6426666666667,
-      "end": 333.056,
+      "idx": 51,
+      "start": 318.528,
+      "end": 321.9413333333333,
       "text": "Four eyes are better than two. Twenty are better still:"
     },
     {
-      "idx": 53,
-      "start": 333.056,
-      "end": 344.27733333333333,
+      "idx": 52,
+      "start": 321.9413333333333,
+      "end": 333.16266666666667,
       "text": "Each investigator works a different angle simultaneously. When one finds something relevant, they message the others. The lead synthesizes the findings into a diagnosis."
     },
     {
-      "idx": 54,
-      "start": 344.27733333333333,
-      "end": 346.1333333333333,
+      "idx": 53,
+      "start": 333.16266666666667,
+      "end": 335.01866666666666,
       "text": "Multi-angle code review"
     },
     {
-      "idx": 55,
-      "start": 346.1333333333333,
-      "end": 352.5973333333333,
+      "idx": 54,
+      "start": 335.01866666666666,
+      "end": 341.48266666666666,
       "text": "A single reviewer catches bugs. Multiple reviewers with different mandates catch categories of bugs:"
     },
     {
-      "idx": 56,
-      "start": 352.5973333333333,
-      "end": 355.02933333333334,
+      "idx": 55,
+      "start": 341.48266666666666,
+      "end": 343.9146666666667,
       "text": "Research and design exploration"
     },
     {
-      "idx": 57,
-      "start": 355.02933333333334,
-      "end": 359.21066666666667,
+      "idx": 56,
+      "start": 343.9146666666667,
+      "end": 348.096,
       "text": "Not all teamwork is about code. Sometimes you need perspectives:"
     },
     {
-      "idx": 58,
-      "start": 359.21066666666667,
-      "end": 360.576,
+      "idx": 57,
+      "start": 348.096,
+      "end": 349.46133333333336,
       "text": "Controlling the Team"
     },
     {
-      "idx": 59,
-      "start": 360.576,
-      "end": 362.53866666666664,
+      "idx": 58,
+      "start": 349.46133333333336,
+      "end": 351.424,
       "text": "Message a specific teammate"
     },
     {
-      "idx": 60,
-      "start": 362.53866666666664,
-      "end": 364.3093333333333,
+      "idx": 59,
+      "start": 351.424,
+      "end": 353.19466666666665,
       "text": "Assign or reassign tasks"
     },
     {
-      "idx": 61,
-      "start": 364.3093333333333,
-      "end": 374.44266666666664,
+      "idx": 60,
+      "start": 353.19466666666665,
+      "end": 363.328,
       "text": "Tasks can also have dependencies \u2014 \"don't start the integration tests until the API endpoints are done\" \u2014 which the lead manages through the task list."
     },
     {
-      "idx": 62,
-      "start": 374.44266666666664,
-      "end": 376.128,
+      "idx": 61,
+      "start": 363.328,
+      "end": 365.0133333333333,
       "text": "Require plan approval"
     },
     {
-      "idx": 63,
-      "start": 376.128,
-      "end": 385.68533333333335,
+      "idx": 62,
+      "start": 365.0133333333333,
+      "end": 374.5706666666667,
       "text": "For high-stakes work, you can put teammates in plan mode. They research and propose a plan, then wait for your explicit approval before writing any code:"
     },
     {
-      "idx": 64,
-      "start": 385.68533333333335,
-      "end": 400.896,
+      "idx": 63,
+      "start": 374.5706666666667,
+      "end": 389.78133333333335,
       "text": "The teammate will explore the codebase, write up a plan, and send it to you. You review it, approve or reject with feedback, and only then do they start implementing. This gives you architectural control without micromanaging the implementation."
     },
     {
-      "idx": 65,
-      "start": 400.896,
-      "end": 402.28266666666667,
+      "idx": 64,
+      "start": 389.78133333333335,
+      "end": 391.168,
       "text": "Shut down teammates"
     },
     {
-      "idx": 66,
-      "start": 402.28266666666667,
-      "end": 403.56266666666664,
+      "idx": 65,
+      "start": 391.168,
+      "end": 392.448,
       "text": "When work is done:"
     },
     {
-      "idx": 67,
-      "start": 403.56266666666664,
-      "end": 405.312,
+      "idx": 66,
+      "start": 392.448,
+      "end": 394.19733333333335,
       "text": "Or wind down everything:"
     },
     {
-      "idx": 68,
-      "start": 405.312,
-      "end": 410.3466666666667,
+      "idx": 67,
+      "start": 394.19733333333335,
+      "end": 399.232,
       "text": "This removes the team config and task list files. The tmux panes close."
     },
     {
-      "idx": 69,
-      "start": 410.3466666666667,
-      "end": 412.13866666666667,
+      "idx": 68,
+      "start": 399.232,
+      "end": 401.024,
       "text": "Choose models for teammates"
     },
     {
-      "idx": 70,
-      "start": 412.13866666666667,
-      "end": 417.51466666666664,
+      "idx": 69,
+      "start": 401.024,
+      "end": 406.4,
       "text": "Not every task needs the most capable (and expensive) model. You can specify:"
     },
     {
-      "idx": 71,
-      "start": 417.51466666666664,
-      "end": 428.3093333333333,
+      "idx": 70,
+      "start": 406.4,
+      "end": 417.19466666666665,
       "text": "Use Opus for complex architectural work, Sonnet for straightforward implementation, Haiku for simple lookups and formatting. The lead can mix models across teammates."
     },
     {
-      "idx": 72,
-      "start": 428.3093333333333,
-      "end": 429.888,
+      "idx": 71,
+      "start": 417.19466666666665,
+      "end": 418.7733333333333,
       "text": "Tips and Troubleshooting"
     },
     {
-      "idx": 73,
-      "start": 429.888,
-      "end": 431.76533333333333,
+      "idx": 72,
+      "start": 418.7733333333333,
+      "end": 420.65066666666667,
       "text": "Getting the granularity right"
     },
     {
-      "idx": 74,
-      "start": 431.76533333333333,
-      "end": 449.536,
+      "idx": 73,
+      "start": 420.65066666666667,
+      "end": 438.42133333333334,
       "text": "Task size is the single biggest factor in team effectiveness. Too small and you drown in coordination overhead \u2014 agents spend more time messaging than working. Too large and teammates go dark for long stretches, potentially duplicating effort or heading in the wrong direction."
     },
     {
-      "idx": 75,
-      "start": 449.536,
-      "end": 468.9066666666667,
+      "idx": 74,
+      "start": 438.42133333333334,
+      "end": 457.792,
       "text": "The sweet spot: self-contained units of work. A module. A test file. An API endpoint with its route, controller, and validation. Aim for roughly 5\u20136 tasks per teammate per session. Each task should be something a teammate can complete without needing to ask three clarifying questions."
     },
     {
-      "idx": 76,
-      "start": 468.9066666666667,
-      "end": 470.336,
+      "idx": 75,
+      "start": 457.792,
+      "end": 459.22133333333335,
       "text": "Token economics"
     },
     {
-      "idx": 77,
-      "start": 470.336,
-      "end": 485.78133333333335,
+      "idx": 76,
+      "start": 459.22133333333335,
+      "end": 474.6666666666667,
       "text": "Each teammate gets its own context window. Three teammates means roughly 3x the token usage of a single session \u2014 there's no sharing or deduplication of context across agents. Factor this into your planning, especially for long sessions."
     },
     {
-      "idx": 78,
-      "start": 485.78133333333335,
-      "end": 486.93333333333334,
+      "idx": 77,
+      "start": 474.6666666666667,
+      "end": 475.8186666666667,
       "text": "Things to know"
     },
     {
-      "idx": 79,
-      "start": 486.93333333333334,
-      "end": 493.80266666666665,
+      "idx": 78,
+      "start": 475.8186666666667,
+      "end": 482.688,
       "text": "Teammates can DM each other. The lead sees a summary of peer messages but doesn't have to relay everything."
     },
     {
-      "idx": 80,
-      "start": 493.80266666666665,
-      "end": 499.072,
+      "idx": 79,
+      "start": 482.688,
+      "end": 487.95733333333334,
       "text": "One team per session. You can't nest teams or have a teammate lead its own sub-team."
     },
     {
-      "idx": 81,
-      "start": 499.072,
-      "end": 509.2266666666667,
+      "idx": 80,
+      "start": 487.95733333333334,
+      "end": 498.112,
       "text": "Sessions don't resume teammates. If you use  or , in-process teammates won't be restored. The team lead session resumes, but you'd need to re-spawn teammates."
     },
     {
-      "idx": 82,
-      "start": 509.2266666666667,
-      "end": 513.8773333333334,
+      "idx": 81,
+      "start": 498.112,
+      "end": 502.7626666666667,
       "text": "Orphaned tmux sessions happen if something crashes. Clean up with  and ."
     },
     {
-      "idx": 83,
-      "start": 513.8773333333334,
-      "end": 514.9653333333333,
+      "idx": 82,
+      "start": 502.7626666666667,
+      "end": 503.85066666666665,
       "text": "Common issues"
     },
     {
-      "idx": 84,
-      "start": 514.9653333333333,
-      "end": 538.0693333333334,
-      "text": "| Problem | Solution |\n|---|---|\n| No tmux panes appearing | You probably ran  outside a tmux session. Start tmux first. |\n| Teammate seems stuck | Message them directly \u2014 sometimes they need a nudge or clarification. |\n| Panes too small to read |  zooms a single pane full-screen. Toggle it again to return. |\n| Want to kill a specific pane | , then  confirms killing the active pane. |"
-    },
-    {
-      "idx": 85,
-      "start": 538.0693333333334,
-      "end": 539.8613333333333,
+      "idx": 83,
+      "start": 503.85066666666665,
+      "end": 505.6426666666667,
       "text": "In-process fallback keys"
     },
     {
-      "idx": 86,
-      "start": 539.8613333333333,
-      "end": 544.1706666666666,
+      "idx": 84,
+      "start": 505.6426666666667,
+      "end": 509.952,
       "text": "If you're not using tmux, teammates run in-process. Navigation:"
     },
     {
-      "idx": 87,
-      "start": 544.1706666666666,
-      "end": 549.6746666666667,
-      "text": "| Key | Action |\n|---|---|\n|  | Cycle through teammates |\n|  | Interrupt current teammate's turn |\n|  | Toggle task list view |"
-    },
-    {
-      "idx": 88,
-      "start": 549.6746666666667,
-      "end": 551.2533333333333,
+      "idx": 85,
+      "start": 509.952,
+      "end": 511.53066666666666,
       "text": "A Note on Safety"
     },
     {
-      "idx": 89,
-      "start": 551.2533333333333,
-      "end": 569.9626666666667,
+      "idx": 86,
+      "start": 511.53066666666666,
+      "end": 530.24,
       "text": "The  flag means what it says. Every agent in the team \u2014 lead and teammates alike \u2014 can execute arbitrary shell commands, edit any file in the project, and make destructive changes without asking permission. There is no confirmation step, no sandbox, no undo beyond what git provides."
     },
     {
-      "idx": 90,
-      "start": 569.9626666666667,
-      "end": 581.7386666666666,
+      "idx": 87,
+      "start": 530.24,
+      "end": 542.016,
       "text": "This is the tradeoff that makes autonomous parallel work possible. If every teammate had to ask before running  or editing a file, the coordination overhead would make teams impractical."
     },
     {
-      "idx": 91,
-      "start": 581.7386666666666,
-      "end": 583.0186666666667,
+      "idx": 88,
+      "start": 542.016,
+      "end": 543.296,
       "text": "Mitigate the risk:"
     },
     {
-      "idx": 92,
-      "start": 583.0186666666667,
-      "end": 590.6986666666667,
+      "idx": 89,
+      "start": 543.296,
+      "end": 550.976,
       "text": "Work in git-tracked directories with clean commit history. If a teammate breaks something,  shows what changed and  reverts it."
     },
     {
-      "idx": 93,
-      "start": 590.6986666666667,
-      "end": 599.8506666666667,
+      "idx": 90,
+      "start": 550.976,
+      "end": 560.128,
       "text": "Don't run teams in directories with sensitive files (credentials, production configs, private keys) unless you trust the prompts you're giving."
     },
     {
-      "idx": 94,
-      "start": 599.8506666666667,
-      "end": 607.36,
+      "idx": 91,
+      "start": 560.128,
+      "end": 567.6373333333333,
       "text": "Start small. Try a two-agent team on a low-stakes task before orchestrating six agents on your production codebase."
     },
     {
-      "idx": 95,
-      "start": 607.36,
-      "end": 612.032,
+      "idx": 92,
+      "start": 567.6373333333333,
+      "end": 572.3093333333334,
       "text": "For finer-grained control without the nuclear option, configure permissions in :"
     },
     {
-      "idx": 96,
-      "start": 612.032,
-      "end": 628.1173333333334,
+      "idx": 93,
+      "start": 572.3093333333334,
+      "end": 588.3946666666667,
       "text": "This lets you allow specific operations (running tests, committing, reading files, editing source) while blocking dangerous ones (force pushes, recursive deletes). It's more work to configure, but it lets you use teams without the global permission bypass."
     },
     {
-      "idx": 97,
-      "start": 628.1173333333334,
-      "end": 629.184,
+      "idx": 94,
+      "start": 588.3946666666667,
+      "end": 589.4613333333333,
       "text": "File Reference"
     },
     {
-      "idx": 98,
-      "start": 629.184,
-      "end": 633.7493333333333,
-      "text": "| What | Location |\n|---|---|\n| Team configuration |  |\n| Shared task list |  |\n| Claude settings |  |"
-    },
-    {
-      "idx": 99,
-      "start": 633.7493333333333,
-      "end": 653.0346666666667,
+      "idx": 95,
+      "start": 589.4613333333333,
+      "end": 608.7466666666667,
       "text": "One alias, one tmux session, one sentence describing what you want built. The agents handle the rest \u2014 splitting work, coordinating, reporting back. It won't replace thinking about architecture, but it will replace the tedium of context-switching between three files that all need to change at once."
     }
   ]

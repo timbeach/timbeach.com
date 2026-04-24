@@ -92,7 +92,7 @@
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
-    "duration": 653.035
+    "duration": 608.747
   },
   "trng-deep-dive.md": {
     "title": "True Random Number Generators: From Quantum Physics to Silicon",
