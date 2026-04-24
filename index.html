@@ -3443,8 +3443,6 @@ God Mode: ON
 
       // Update visible star count
       document.getElementById('visibleStars').textContent = visibleCount;
-
-      console.log(`LST: ${formatLST(lst)}, Visible stars: ${visibleCount}/${starCatalog.length}`);
     }
 
     // Update star positions every second
@@ -3554,8 +3552,11 @@ God Mode: ON
     function ttsCollectParagraphs() {
       const container = document.querySelector('.article-content');
       if (!container) return [];
-      // Select readable block-level elements, skip code blocks
-      return Array.from(container.querySelectorAll('h2, h3, h4, p, li'));
+      // Select readable block-level elements, skip code blocks.
+      // Filter out empties (image-only / code-only <p>s) to match the
+      // server-side extractor in tools/render_article.py:extract_paragraphs.
+      return Array.from(container.querySelectorAll('h2, h3, h4, p, li'))
+        .filter(el => ttsGetText(el).length > 0);
     }
 
     // Get plain text from an element (strip HTML)
