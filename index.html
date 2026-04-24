@@ -3552,10 +3552,13 @@ God Mode: ON
     function ttsCollectParagraphs() {
       const container = document.querySelector('.article-content');
       if (!container) return [];
-      // Select readable block-level elements, skip code blocks.
-      // Filter out empties (image-only / code-only <p>s) to match the
-      // server-side extractor in tools/render_article.py:extract_paragraphs.
-      return Array.from(container.querySelectorAll('h2, h3, h4, p, li'))
+      // Select readable block-level elements.
+      // h2 is the article title (client parser maps `#` → <h2>), which the
+      // server-side extractor skips since markdown-it-py maps `#` → <h1>.
+      // So: h3+h4+p+li here == h2+h3+h4+p+li on the server (offset by one
+      // heading level). Filter empties (image-only / code-only <p>s) for
+      // parity with tools/render_article.py:extract_paragraphs.
+      return Array.from(container.querySelectorAll('h3, h4, p, li'))
         .filter(el => ttsGetText(el).length > 0);
     }
 
