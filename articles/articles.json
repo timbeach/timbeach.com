@@ -206,5 +206,21 @@
     "timings": "audio/simplicity.timings.json",
     "voice": "bm_lewis",
     "duration": 40.0
+  },
+  "jungian-dream-notes.md": {
+    "title": "Jungian Dream Notes",
+    "date": "2026-04-23",
+    "tags": [
+      "dream",
+      "jung",
+      "journal",
+      "symbolism",
+      "red-book"
+    ],
+    "emoji": "\ud83c\udf19",
+    "audio": "audio/jungian-dream-notes.ogg",
+    "timings": "audio/jungian-dream-notes.timings.json",
+    "voice": "bm_lewis",
+    "duration": 407.915
   }
 }
