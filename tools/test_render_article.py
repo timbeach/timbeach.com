@@ -14,10 +14,17 @@ def test_skips_h1_keeps_h2_h3_h4():
     assert extract_paragraphs(md) == ["Section", "Body.", "Sub", "More.", "Deep", "End."]
 
 
-def test_strips_inline_code():
+def test_keeps_inline_code():
+    """Inline code is kept so identifiers get read aloud (no audible gaps)."""
     md = "Run `foo` now."
-    # matches client: removing <code> leaves adjacent spaces; textContent has two spaces.
-    assert extract_paragraphs(md) == ["Run  now."]
+    assert extract_paragraphs(md) == ["Run foo now."]
+
+
+def test_skips_block_code():
+    """Fenced code blocks render as <pre><code>...</code></pre>; <pre> is not in the
+    paragraph selector, so the whole block is skipped regardless of <code> handling."""
+    md = "Intro.\n\n```\nint main(){}\n```\n\nOutro."
+    assert extract_paragraphs(md) == ["Intro.", "Outro."]
 
 
 def test_strips_images():

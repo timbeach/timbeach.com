@@ -1,4 +1,4 @@
-# How to Configure Obsidian
+# How to Configure Obsidian the Agentic Way
 
 ![How to Configure Obsidian](pix/how-to-config-obsidian.png)
 

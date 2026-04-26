@@ -1,6 +1,6 @@
 {
   "how-to-config-obsidian.md": {
-    "title": "How to Configure Obsidian",
+    "title": "How to Configure Obsidian the Agentic Way",
     "date": "2026-04-21",
     "tags": [
       "obsidian",
@@ -14,7 +14,7 @@
     "audio": "audio/how-to-config-obsidian.ogg",
     "timings": "audio/how-to-config-obsidian.timings.json",
     "voice": "bm_lewis",
-    "duration": 162.197
+    "duration": 182.549
   },
   "dependency-hell.md": {
     "title": "Dependency Hell: Why Software Breaks When Everything Works",
@@ -30,7 +30,7 @@
     "audio": "audio/dependency-hell.ogg",
     "timings": "audio/dependency-hell.timings.json",
     "voice": "bm_lewis",
-    "duration": 891.051
+    "duration": 910.699
   },
   "custom-claude-skills.md": {
     "title": "How to Write a Custom Claude Code Skill",
@@ -45,7 +45,7 @@
     "audio": "audio/custom-claude-skills.ogg",
     "timings": "audio/custom-claude-skills.timings.json",
     "voice": "bm_lewis",
-    "duration": 373.056
+    "duration": 401.493
   },
   "software-delivery-sop.md": {
     "title": "Software Delivery and Deployment SOP",
@@ -61,7 +61,7 @@
     "audio": "audio/software-delivery-sop.ogg",
     "timings": "audio/software-delivery-sop.timings.json",
     "voice": "bm_lewis",
-    "duration": 587.797
+    "duration": 616.256
   },
   "releasing-music.md": {
     "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
@@ -92,7 +92,7 @@
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
-    "duration": 608.747
+    "duration": 655.339
   },
   "trng-deep-dive.md": {
     "title": "True Random Number Generators: From Quantum Physics to Silicon",
@@ -107,7 +107,7 @@
     "audio": "audio/trng-deep-dive.ogg",
     "timings": "audio/trng-deep-dive.timings.json",
     "voice": "bm_lewis",
-    "duration": 2563.008
+    "duration": 2581.312
   },
   "deploy-a-website.md": {
     "title": "Deploy a Website",
@@ -121,7 +121,7 @@
     "audio": "audio/deploy-a-website.ogg",
     "timings": "audio/deploy-a-website.timings.json",
     "voice": "bm_lewis",
-    "duration": 354.688
+    "duration": 398.443
   },
   "install-signal-on-aegix.md": {
     "title": "Install Signal Desktop on Aegix Linux",
@@ -135,7 +135,7 @@
     "audio": "audio/install-signal-on-aegix.ogg",
     "timings": "audio/install-signal-on-aegix.timings.json",
     "voice": "bm_lewis",
-    "duration": 21.013
+    "duration": 21.696
   },
   "how-tmux-works.md": {
     "title": "How tmux Works",
@@ -149,7 +149,7 @@
     "audio": "audio/how-tmux-works.ogg",
     "timings": "audio/how-tmux-works.timings.json",
     "voice": "bm_lewis",
-    "duration": 76.779
+    "duration": 81.749
   },
   "second-aegix-user.md": {
     "title": "Adding a Second Aegix User",
@@ -163,7 +163,7 @@
     "audio": "audio/second-aegix-user.ogg",
     "timings": "audio/second-aegix-user.timings.json",
     "voice": "bm_lewis",
-    "duration": 72.683
+    "duration": 74.475
   },
   "parsimony.md": {
     "title": "Parsimony and Aegix Linux",
@@ -191,7 +191,7 @@
     "audio": "audio/add-articles.ogg",
     "timings": "audio/add-articles.timings.json",
     "voice": "bm_lewis",
-    "duration": 284.821
+    "duration": 307.883
   },
   "simplicity.md": {
     "title": "Simplicity in Software Engineering",
@@ -222,5 +222,37 @@
     "timings": "audio/jungian-dream-notes.timings.json",
     "voice": "bm_lewis",
     "duration": 407.915
+  },
+  "how-my-blog-got-a-voice.md": {
+    "title": "How My Blog Got a Voice",
+    "date": "2026-04-26",
+    "tags": [
+      "tts",
+      "kokoro",
+      "engineering",
+      "retrospective",
+      "web-speech"
+    ],
+    "emoji": "\ud83c\udf99\ufe0f",
+    "audio": "audio/how-my-blog-got-a-voice.ogg",
+    "timings": "audio/how-my-blog-got-a-voice.timings.json",
+    "voice": "bm_lewis",
+    "duration": 577.387
+  },
+  "aegix-on-the-aur.md": {
+    "title": "From ~/.local/src to the AUR",
+    "date": "2026-05-01",
+    "tags": [
+      "aegix",
+      "aur",
+      "suckless",
+      "linux",
+      "git"
+    ],
+    "emoji": "\ud83d\udce6",
+    "audio": "audio/aegix-on-the-aur.ogg",
+    "timings": "audio/aegix-on-the-aur.timings.json",
+    "voice": "bm_lewis",
+    "duration": 254.336
   }
 }

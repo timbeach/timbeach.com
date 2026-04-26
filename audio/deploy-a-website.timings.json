@@ -1,6 +1,6 @@
 {
   "voice": "bm_lewis",
-  "duration": 354.688,
+  "duration": 398.443,
   "paragraphs": [
     {
       "idx": 0,
@@ -143,445 +143,445 @@
     {
       "idx": 23,
       "start": 93.86666666666666,
-      "end": 100.224,
-      "text": "represents the root domain (masonborchard.com) -> the @ you can leave out as blank works with Epik"
+      "end": 100.37333333333333,
+      "text": "@ represents the root domain (masonborchard.com) -> the @ you can leave out as blank works with Epik"
     },
     {
       "idx": 24,
-      "start": 100.224,
-      "end": 106.368,
-      "text": "creates the www subdomain (www.masonborchard.com)"
+      "start": 100.37333333333333,
+      "end": 108.032,
+      "text": "www creates the www subdomain (www.masonborchard.com)"
     },
     {
       "idx": 25,
-      "start": 106.368,
-      "end": 108.75733333333334,
+      "start": 108.032,
+      "end": 110.42133333333334,
       "text": "A records point to IPv4 addresses"
     },
     {
       "idx": 26,
-      "start": 108.75733333333334,
-      "end": 111.44533333333334,
+      "start": 110.42133333333334,
+      "end": 113.10933333333334,
       "text": "AAAA records point to IPv6 addresses"
     },
     {
       "idx": 27,
-      "start": 111.44533333333334,
-      "end": 116.50133333333333,
+      "start": 113.10933333333334,
+      "end": 118.16533333333334,
       "text": "TTL of 30 seconds allows for quick DNS updates during setup"
     },
     {
       "idx": 28,
-      "start": 116.50133333333333,
-      "end": 120.256,
+      "start": 118.16533333333334,
+      "end": 121.92,
       "text": "Step 3: Web Server Installation and Configuration"
     },
     {
       "idx": 29,
-      "start": 120.256,
-      "end": 121.89866666666667,
+      "start": 121.92,
+      "end": 123.56266666666667,
       "text": "Install nginx"
     },
     {
       "idx": 30,
-      "start": 121.89866666666667,
-      "end": 124.224,
+      "start": 123.56266666666667,
+      "end": 125.888,
       "text": "Create Website Directory Structure"
     },
     {
       "idx": 31,
-      "start": 124.224,
-      "end": 125.80266666666667,
+      "start": 125.888,
+      "end": 127.46666666666667,
       "text": "Upload Website Files"
     },
     {
       "idx": 32,
-      "start": 125.80266666666667,
-      "end": 128.27733333333333,
+      "start": 127.46666666666667,
+      "end": 129.94133333333335,
       "text": "Configure nginx Virtual Host"
     },
     {
       "idx": 33,
-      "start": 128.27733333333333,
-      "end": 131.09333333333333,
+      "start": 129.94133333333335,
+      "end": 132.75733333333332,
       "text": "Create nginx configuration file:"
     },
     {
       "idx": 34,
-      "start": 131.09333333333333,
-      "end": 133.248,
+      "start": 132.75733333333332,
+      "end": 134.912,
       "text": "Add the following configuration:"
     },
     {
       "idx": 35,
-      "start": 133.248,
-      "end": 134.37866666666667,
+      "start": 134.912,
+      "end": 136.04266666666666,
       "text": "Enable the site:"
     },
     {
       "idx": 36,
-      "start": 134.37866666666667,
-      "end": 136.768,
+      "start": 136.04266666666666,
+      "end": 138.432,
       "text": "Step 4: Firewall Configuration"
     },
     {
       "idx": 37,
-      "start": 136.768,
-      "end": 140.224,
+      "start": 138.432,
+      "end": 141.888,
       "text": "Configure UFW (Uncomplicated Firewall)"
     },
     {
       "idx": 38,
-      "start": 140.224,
-      "end": 144.704,
+      "start": 141.888,
+      "end": 146.368,
       "text": "Step 5: SSL Certificate Setup (Optional but Recommended)"
     },
     {
       "idx": 39,
-      "start": 144.704,
-      "end": 147.73333333333332,
+      "start": 146.368,
+      "end": 149.39733333333334,
       "text": "Install Certbot for Let's Encrypt SSL"
     },
     {
       "idx": 40,
-      "start": 147.73333333333332,
-      "end": 150.03733333333332,
+      "start": 149.39733333333334,
+      "end": 151.70133333333334,
       "text": "Important Prerequisites for Certbot:"
     },
     {
       "idx": 41,
-      "start": 150.03733333333332,
-      "end": 156.224,
+      "start": 151.70133333333334,
+      "end": 157.888,
       "text": "DNS must be working: Your domain must already be pointing to your server and resolving correctly"
     },
     {
       "idx": 42,
-      "start": 156.224,
-      "end": 163.41333333333333,
+      "start": 157.888,
+      "end": 165.07733333333334,
       "text": "HTTP must be accessible: Your nginx site must be working on port 80 before running certbot"
     },
     {
       "idx": 43,
-      "start": 163.41333333333333,
-      "end": 171.60533333333333,
+      "start": 165.07733333333334,
+      "end": 173.26933333333332,
       "text": "Firewall must allow HTTP/HTTPS: Ensure ports 80 and 443 are open"
     },
     {
       "idx": 44,
-      "start": 171.60533333333333,
-      "end": 172.94933333333333,
+      "start": 173.26933333333332,
+      "end": 174.61333333333334,
       "text": "How Certbot Works:"
     },
     {
       "idx": 45,
-      "start": 172.94933333333333,
-      "end": 178.368,
+      "start": 174.61333333333334,
+      "end": 180.032,
       "text": "Certbot creates temporary files in your web directory to verify domain ownership"
     },
     {
       "idx": 46,
-      "start": 178.368,
-      "end": 184.64,
+      "start": 180.032,
+      "end": 186.304,
       "text": "Let's Encrypt servers access these files via HTTP to confirm you control the domain"
     },
     {
       "idx": 47,
-      "start": 184.64,
-      "end": 188.62933333333334,
+      "start": 186.304,
+      "end": 190.29333333333332,
       "text": "Once verified, certbot downloads the SSL certificates"
     },
     {
       "idx": 48,
-      "start": 188.62933333333334,
-      "end": 194.112,
-      "text": "The  flag automatically updates your nginx configuration to use HTTPS"
+      "start": 190.29333333333332,
+      "end": 196.8,
+      "text": "The --nginx flag automatically updates your nginx configuration to use HTTPS"
     },
     {
       "idx": 49,
-      "start": 194.112,
-      "end": 198.12266666666667,
+      "start": 196.8,
+      "end": 200.81066666666666,
       "text": "Certbot sets up automatic renewal via systemd timer"
     },
     {
       "idx": 50,
-      "start": 198.12266666666667,
-      "end": 199.44533333333334,
+      "start": 200.81066666666666,
+      "end": 202.13333333333333,
       "text": "If Certbot Fails:"
     },
     {
       "idx": 51,
-      "start": 199.44533333333334,
-      "end": 203.49866666666668,
-      "text": "Verify domain resolution:  should return your server IP"
+      "start": 202.13333333333333,
+      "end": 207.65866666666668,
+      "text": "Verify domain resolution: dig masonborchard.com should return your server IP"
     },
     {
       "idx": 52,
-      "start": 203.49866666666668,
-      "end": 208.064,
-      "text": "Test HTTP access:  should return a 200 response"
+      "start": 207.65866666666668,
+      "end": 215.89333333333335,
+      "text": "Test HTTP access: curl -I http://masonborchard.com should return a 200 response"
     },
     {
       "idx": 53,
-      "start": 208.064,
-      "end": 209.81333333333333,
-      "text": "Check nginx logs:"
+      "start": 215.89333333333335,
+      "end": 222.336,
+      "text": "Check nginx logs: sudo tail /var/log/nginx/error.log"
     },
     {
       "idx": 54,
-      "start": 209.81333333333333,
-      "end": 212.992,
+      "start": 222.336,
+      "end": 225.51466666666667,
       "text": "Ensure no other services are using port 80"
     },
     {
       "idx": 55,
-      "start": 212.992,
-      "end": 214.67733333333334,
+      "start": 225.51466666666667,
+      "end": 227.2,
       "text": "This will automatically:"
     },
     {
       "idx": 56,
-      "start": 214.67733333333334,
-      "end": 217.70666666666668,
+      "start": 227.2,
+      "end": 230.22933333333333,
       "text": "Obtain SSL certificates from Let's Encrypt"
     },
     {
       "idx": 57,
-      "start": 217.70666666666668,
-      "end": 225.216,
+      "start": 230.22933333333333,
+      "end": 237.73866666666666,
       "text": "Update nginx configuration to use HTTPS and redirect HTTP to HTTPS"
     },
     {
       "idx": 58,
-      "start": 225.216,
-      "end": 230.35733333333334,
+      "start": 237.73866666666666,
+      "end": 242.88,
       "text": "Set up automatic certificate renewal (certificates expire every 90 days)"
     },
     {
       "idx": 59,
-      "start": 230.35733333333334,
-      "end": 232.96,
+      "start": 242.88,
+      "end": 245.48266666666666,
       "text": "Step 6: Verification and Testing"
     },
     {
       "idx": 60,
-      "start": 232.96,
-      "end": 235.072,
+      "start": 245.48266666666666,
+      "end": 247.59466666666665,
       "text": "Test Website Accessibility"
     },
     {
       "idx": 61,
-      "start": 235.072,
-      "end": 239.70133333333334,
-      "text": "DNS Propagation: Use tools like  or online DNS checkers"
+      "start": 247.59466666666665,
+      "end": 258.048,
+      "text": "DNS Propagation: Use tools like dig or online DNS checkers\ndig masonborchard.com\ndig www.masonborchard.com"
     },
     {
       "idx": 62,
-      "start": 239.70133333333334,
-      "end": 244.33066666666667,
-      "text": "DNS Propagation: Use tools like  or online DNS checkers"
+      "start": 258.048,
+      "end": 263.04,
+      "text": "DNS Propagation: Use tools like dig or online DNS checkers"
     },
     {
       "idx": 63,
-      "start": 244.33066666666667,
-      "end": 247.232,
-      "text": "HTTP Response: Test with curl"
+      "start": 263.04,
+      "end": 275.52,
+      "text": "HTTP Response: Test with curl\ncurl -I http://masonborchard.com\ncurl -I https://masonborchard.com  # if SSL configured"
     },
     {
       "idx": 64,
-      "start": 247.232,
-      "end": 250.13333333333333,
+      "start": 275.52,
+      "end": 278.42133333333334,
       "text": "HTTP Response: Test with curl"
     },
     {
       "idx": 65,
-      "start": 250.13333333333333,
-      "end": 253.86666666666667,
+      "start": 278.42133333333334,
+      "end": 282.1546666666667,
       "text": "Browser Testing: Visit the domain in multiple browsers"
     },
     {
       "idx": 66,
-      "start": 253.86666666666667,
-      "end": 257.6,
+      "start": 282.1546666666667,
+      "end": 285.888,
       "text": "Browser Testing: Visit the domain in multiple browsers"
     },
     {
       "idx": 67,
-      "start": 257.6,
-      "end": 259.75466666666665,
+      "start": 285.888,
+      "end": 288.04266666666666,
       "text": "Performance and Security Testing"
     },
     {
       "idx": 68,
-      "start": 259.75466666666665,
-      "end": 264.17066666666665,
+      "start": 288.04266666666666,
+      "end": 292.45866666666666,
       "text": "GTmetrix or PageSpeed Insights: Test loading performance"
     },
     {
       "idx": 69,
-      "start": 264.17066666666665,
-      "end": 269.7386666666667,
+      "start": 292.45866666666666,
+      "end": 298.02666666666664,
       "text": "SSL Labs: Test SSL configuration (if HTTPS enabled)"
     },
     {
       "idx": 70,
-      "start": 269.7386666666667,
-      "end": 273.4506666666667,
+      "start": 298.02666666666664,
+      "end": 301.7386666666667,
       "text": "Security Headers: Check security header implementation"
     },
     {
       "idx": 71,
-      "start": 273.4506666666667,
-      "end": 275.75466666666665,
+      "start": 301.7386666666667,
+      "end": 304.04266666666666,
       "text": "Step 7: Ongoing Maintenance"
     },
     {
       "idx": 72,
-      "start": 275.75466666666665,
-      "end": 277.056,
+      "start": 304.04266666666666,
+      "end": 305.344,
       "text": "Regular Tasks"
     },
     {
       "idx": 73,
-      "start": 277.056,
-      "end": 278.4,
-      "text": "System Updates:"
+      "start": 305.344,
+      "end": 309.824,
+      "text": "System Updates: sudo apt update && sudo apt upgrade"
     },
     {
       "idx": 74,
-      "start": 278.4,
-      "end": 281.408,
-      "text": "Log Monitoring: Check nginx logs in"
+      "start": 309.824,
+      "end": 315.8826666666667,
+      "text": "Log Monitoring: Check nginx logs in /var/log/nginx/"
     },
     {
       "idx": 75,
-      "start": 281.408,
-      "end": 286.272,
+      "start": 315.8826666666667,
+      "end": 320.74666666666667,
       "text": "SSL Renewal: Automated via certbot, but monitor for issues"
     },
     {
       "idx": 76,
-      "start": 286.272,
-      "end": 290.83733333333333,
+      "start": 320.74666666666667,
+      "end": 325.312,
       "text": "Backup: Regular backups of website files and server configuration"
     },
     {
       "idx": 77,
-      "start": 290.83733333333333,
-      "end": 291.6906666666667,
+      "start": 325.312,
+      "end": 326.1653333333333,
       "text": "Monitoring"
     },
     {
       "idx": 78,
-      "start": 291.6906666666667,
-      "end": 292.928,
+      "start": 326.1653333333333,
+      "end": 327.4026666666667,
       "text": "Cost Breakdown"
     },
     {
       "idx": 79,
-      "start": 292.928,
-      "end": 296.49066666666664,
+      "start": 327.4026666666667,
+      "end": 330.9653333333333,
       "text": "VPS: ~$5-6/month"
     },
     {
       "idx": 80,
-      "start": 296.49066666666664,
-      "end": 299.712,
+      "start": 330.9653333333333,
+      "end": 334.18666666666667,
       "text": "Domain: ~$10-15/year"
     },
     {
       "idx": 81,
-      "start": 299.712,
-      "end": 302.69866666666667,
+      "start": 334.18666666666667,
+      "end": 337.17333333333335,
       "text": "SSL Certificate: Free (Let's Encrypt)"
     },
     {
       "idx": 82,
-      "start": 302.69866666666667,
-      "end": 307.2853333333333,
+      "start": 337.17333333333335,
+      "end": 341.76,
       "text": "Total Annual Cost: ~$75-90/year"
     },
     {
       "idx": 83,
-      "start": 307.2853333333333,
-      "end": 309.16266666666667,
+      "start": 341.76,
+      "end": 343.63733333333334,
       "text": "Troubleshooting Common Issues"
     },
     {
       "idx": 84,
-      "start": 309.16266666666667,
-      "end": 311.04,
+      "start": 343.63733333333334,
+      "end": 345.51466666666664,
       "text": "DNS Not Resolving"
     },
     {
       "idx": 85,
-      "start": 311.04,
-      "end": 315.34933333333333,
+      "start": 345.51466666666664,
+      "end": 349.824,
       "text": "Check DNS record configuration in registrar panel"
     },
     {
       "idx": 86,
-      "start": 315.34933333333333,
-      "end": 321.3226666666667,
+      "start": 349.824,
+      "end": 355.7973333333333,
       "text": "Wait for DNS propagation (up to 48 hours) but it usually only takes a few minutes"
     },
     {
       "idx": 87,
-      "start": 321.3226666666667,
-      "end": 323.6906666666667,
+      "start": 355.7973333333333,
+      "end": 358.1653333333333,
       "text": "Use DNS checker tools online"
     },
     {
       "idx": 88,
-      "start": 323.6906666666667,
-      "end": 325.20533333333333,
+      "start": 358.1653333333333,
+      "end": 359.68,
       "text": "Website Not Loading"
     },
     {
       "idx": 89,
-      "start": 325.20533333333333,
-      "end": 327.50933333333336,
-      "text": "Verify nginx is running:"
+      "start": 359.68,
+      "end": 364.8213333333333,
+      "text": "Verify nginx is running: sudo systemctl status nginx"
     },
     {
       "idx": 90,
-      "start": 327.50933333333336,
-      "end": 329.77066666666667,
-      "text": "Check nginx configuration:"
+      "start": 364.8213333333333,
+      "end": 368.64,
+      "text": "Check nginx configuration: sudo nginx -t"
     },
     {
       "idx": 91,
-      "start": 329.77066666666667,
-      "end": 331.8826666666667,
-      "text": "Review nginx error logs:"
+      "start": 368.64,
+      "end": 375.63733333333334,
+      "text": "Review nginx error logs: sudo tail /var/log/nginx/error.log"
     },
     {
       "idx": 92,
-      "start": 331.8826666666667,
-      "end": 333.8453333333333,
+      "start": 375.63733333333334,
+      "end": 377.6,
       "text": "SSL Certificate Issues"
     },
     {
       "idx": 93,
-      "start": 333.8453333333333,
-      "end": 337.4293333333333,
+      "start": 377.6,
+      "end": 381.184,
       "text": "Ensure domain points to server before running certbot"
     },
     {
       "idx": 94,
-      "start": 337.4293333333333,
-      "end": 341.97333333333336,
+      "start": 381.184,
+      "end": 385.728,
       "text": "Check firewall allows HTTP/HTTPS traffic"
     },
     {
       "idx": 95,
-      "start": 341.97333333333336,
-      "end": 345.152,
+      "start": 385.728,
+      "end": 388.9066666666667,
       "text": "Verify nginx configuration is correct"
     },
     {
       "idx": 96,
-      "start": 345.152,
-      "end": 354.688,
+      "start": 388.9066666666667,
+      "end": 398.44266666666664,
       "text": "This deployment process provides a robust, scalable foundation for hosting static websites with professional-grade infrastructure and security."
     }
   ]

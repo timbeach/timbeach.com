@@ -1,6 +1,6 @@
 {
   "voice": "bm_lewis",
-  "duration": 76.779,
+  "duration": 81.749,
   "paragraphs": [
     {
       "idx": 0,
@@ -11,133 +11,133 @@
     {
       "idx": 1,
       "start": 1.6213333333333333,
-      "end": 4.266666666666667,
-      "text": "is a terminal multiplexer \u2014 it lets you:"
+      "end": 4.778666666666667,
+      "text": "tmux is a terminal multiplexer \u2014 it lets you:"
     },
     {
       "idx": 2,
-      "start": 4.266666666666667,
-      "end": 9.792,
+      "start": 4.778666666666667,
+      "end": 10.304,
       "text": "Start a terminal session that stays alive even if you disconnect (like over SSH)"
     },
     {
       "idx": 3,
-      "start": 9.792,
-      "end": 13.376,
+      "start": 10.304,
+      "end": 13.888,
       "text": "Split your terminal into multiple panes and windows"
     },
     {
       "idx": 4,
-      "start": 13.376,
-      "end": 17.6,
+      "start": 13.888,
+      "end": 18.112,
       "text": "Switch between tasks or commands without opening new terminals"
     },
     {
       "idx": 5,
-      "start": 17.6,
-      "end": 19.690666666666665,
+      "start": 18.112,
+      "end": 20.202666666666666,
       "text": "Reattach to sessions later"
     },
     {
       "idx": 6,
-      "start": 19.690666666666665,
-      "end": 21.205333333333332,
+      "start": 20.202666666666666,
+      "end": 21.717333333333332,
       "text": "\u2699\ufe0f Basic Concepts"
     },
     {
       "idx": 7,
-      "start": 21.205333333333332,
-      "end": 27.285333333333334,
+      "start": 21.717333333333332,
+      "end": 27.797333333333334,
       "text": "Session: A named (or unnamed) workspace. Think of it like a virtual terminal container."
     },
     {
       "idx": 8,
-      "start": 27.285333333333334,
-      "end": 30.741333333333333,
+      "start": 27.797333333333334,
+      "end": 31.253333333333334,
       "text": "Window: Like a tab in a terminal, inside a session."
     },
     {
       "idx": 9,
-      "start": 30.741333333333333,
-      "end": 34.986666666666665,
+      "start": 31.253333333333334,
+      "end": 35.498666666666665,
       "text": "Pane: A split view within a window (horizontal/vertical)."
     },
     {
       "idx": 10,
-      "start": 34.986666666666665,
-      "end": 37.525333333333336,
-      "text": "\ud83d\ude80 Using  with Explicit Session Names"
+      "start": 35.498666666666665,
+      "end": 38.784,
+      "text": "\ud83d\ude80 Using tmux with Explicit Session Names"
     },
     {
       "idx": 11,
-      "start": 37.525333333333336,
-      "end": 40.66133333333333,
+      "start": 38.784,
+      "end": 41.92,
       "text": "\u2705 Start a session with a name"
     },
     {
       "idx": 12,
-      "start": 40.66133333333333,
-      "end": 44.629333333333335,
-      "text": "This creates a new tmux session named  and attaches you to it."
+      "start": 41.92,
+      "end": 46.592,
+      "text": "This creates a new tmux session named mysession and attaches you to it."
     },
     {
       "idx": 13,
-      "start": 44.629333333333335,
-      "end": 48.21333333333333,
+      "start": 46.592,
+      "end": 50.176,
       "text": "\ud83d\udd04 Attach to a named session"
     },
     {
       "idx": 14,
-      "start": 48.21333333333333,
-      "end": 49.94133333333333,
+      "start": 50.176,
+      "end": 51.904,
       "text": "\ud83d\udccb List all sessions"
     },
     {
       "idx": 15,
-      "start": 49.94133333333333,
-      "end": 51.050666666666665,
+      "start": 51.904,
+      "end": 53.013333333333335,
       "text": "\ud83e\uddef Kill a session"
     },
     {
       "idx": 16,
-      "start": 51.050666666666665,
-      "end": 54.08,
+      "start": 53.013333333333335,
+      "end": 56.04266666666667,
       "text": "\u2328\ufe0f Inside tmux: Common Controls"
     },
     {
       "idx": 17,
-      "start": 54.08,
-      "end": 57.32266666666667,
-      "text": "All shortcuts use the  key, which is  by default"
+      "start": 56.04266666666667,
+      "end": 60.757333333333335,
+      "text": "All shortcuts use the prefix key, which is Ctrl+b by default"
     },
     {
       "idx": 18,
-      "start": 57.32266666666667,
-      "end": 61.73866666666667,
+      "start": 60.757333333333335,
+      "end": 65.17333333333333,
       "text": "You can detach from a session and leave it running, then reattach later."
     },
     {
       "idx": 19,
-      "start": 61.73866666666667,
-      "end": 63.488,
+      "start": 65.17333333333333,
+      "end": 66.92266666666667,
       "text": "\u2705 Tips"
     },
     {
       "idx": 20,
-      "start": 63.488,
-      "end": 67.072,
-      "text": "Use one session per project or task (e.g. )."
+      "start": 66.92266666666667,
+      "end": 72.04266666666666,
+      "text": "Use one session per project or task (e.g. tmux new -s rails)."
     },
     {
       "idx": 21,
-      "start": 67.072,
-      "end": 71.63733333333333,
+      "start": 72.04266666666666,
+      "end": 76.608,
       "text": "You can script tmux to auto-start with custom panes/windows."
     },
     {
       "idx": 22,
-      "start": 71.63733333333333,
-      "end": 76.77866666666667,
+      "start": 76.608,
+      "end": 81.74933333333334,
       "text": "Tmux works great with remote servers to avoid losing work if disconnected."
     }
   ]

@@ -1,6 +1,6 @@
 {
   "voice": "bm_lewis",
-  "duration": 21.013,
+  "duration": 21.696,
   "paragraphs": [
     {
       "idx": 0,
@@ -11,49 +11,49 @@
     {
       "idx": 1,
       "start": 2.112,
-      "end": 6.8053333333333335,
-      "text": "Or use  and start typing signal-desktop to launch it via dmenu."
+      "end": 7.488,
+      "text": "Or use Mod + d and start typing signal-desktop to launch it via dmenu."
     },
     {
       "idx": 2,
-      "start": 6.8053333333333335,
-      "end": 8.384,
+      "start": 7.488,
+      "end": 9.066666666666666,
       "text": "Notice the QR code."
     },
     {
       "idx": 3,
-      "start": 8.384,
-      "end": 11.690666666666667,
+      "start": 9.066666666666666,
+      "end": 12.373333333333333,
       "text": "Go to the Signal app on your phone and find Settings."
     },
     {
       "idx": 4,
-      "start": 11.690666666666667,
-      "end": 13.205333333333334,
+      "start": 12.373333333333333,
+      "end": 13.888,
       "text": "Tap \"Linked devices\""
     },
     {
       "idx": 5,
-      "start": 13.205333333333334,
-      "end": 14.933333333333334,
+      "start": 13.888,
+      "end": 15.616,
       "text": "Tap \"Link a new device\""
     },
     {
       "idx": 6,
-      "start": 14.933333333333334,
-      "end": 16.85333333333333,
+      "start": 15.616,
+      "end": 17.536,
       "text": "This will open up your camera."
     },
     {
       "idx": 7,
-      "start": 16.85333333333333,
-      "end": 19.605333333333334,
+      "start": 17.536,
+      "end": 20.288,
       "text": "Scan the QR code to link your device."
     },
     {
       "idx": 8,
-      "start": 19.605333333333334,
-      "end": 21.013333333333332,
+      "start": 20.288,
+      "end": 21.696,
       "text": "\ud83d\ude18"
     }
   ]

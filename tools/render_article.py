@@ -27,8 +27,11 @@ def extract_paragraphs(md_text: str) -> list[str]:
 
     paragraphs: list[str] = []
     for el in soup.select(PARAGRAPH_SELECTOR):
-        # Strip <code> and <img> descendants (client: clone.querySelectorAll('code, img').forEach(c => c.remove()))
-        for tag in el.select("code, img"):
+        # Strip <img> descendants (no readable text). Inline <code> is KEPT
+        # so identifiers like `currentTime` get read aloud rather than
+        # leaving audible gaps. Block code (<pre><code>) is already excluded
+        # by PARAGRAPH_SELECTOR not including <pre>.
+        for tag in el.select("img"):
             tag.decompose()
         text = el.get_text().strip()
         if text:

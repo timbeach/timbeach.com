@@ -1,0 +1,156 @@
+{
+  "voice": "bm_lewis",
+  "duration": 254.336,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 23.658666666666665,
+      "text": "If you run Aegix \u2014 or you're an Arch / Artix tinkerer who likes the suckless stack \u2014 you can now yay -S dwm-aegix-git (or st-aegix-git, dmenu-aegix-git, dwmblocks-aegix-git) and pull down the exact builds I run on my own machine. This post is the short story of how that pipeline got built, and a couple of small gotchas worth knowing if you publish your own."
+    },
+    {
+      "idx": 1,
+      "start": 23.658666666666665,
+      "end": 24.512,
+      "text": "The problem"
+    },
+    {
+      "idx": 2,
+      "start": 24.512,
+      "end": 40.576,
+      "text": "I edit my suckless tools the obvious way: in ~/.local/src/{dwm,st,dmenu,dwmblocks}, then sudo make clean install. That's the source of truth on this machine. Two things needed solving:"
+    },
+    {
+      "idx": 3,
+      "start": 40.576,
+      "end": 48.23466666666667,
+      "text": "Reflect those edits into the AEGIX monorepo so the project's submodule pins stay current \u2014 without needing me to remember."
+    },
+    {
+      "idx": 4,
+      "start": 48.23466666666667,
+      "end": 57.77066666666666,
+      "text": "Publish them to the AUR so anyone running Arch or Artix can install Aegix's flavor without cloning, patching, and make-ing four repos."
+    },
+    {
+      "idx": 5,
+      "start": 57.77066666666666,
+      "end": 60.224,
+      "text": "Different problems, same starting point."
+    },
+    {
+      "idx": 6,
+      "start": 60.224,
+      "end": 61.99466666666667,
+      "text": "Half one: the local sync"
+    },
+    {
+      "idx": 7,
+      "start": 61.99466666666667,
+      "end": 83.09333333333333,
+      "text": "The reflection part is a single post-commit hook in each ~/.local/src/<tool> repo. When I commit, the hook fast-forwards the corresponding submodule in ~/code/PROJECTS/AEGIX/<tool> to the new SHA and stages the submodule pointer bump in the parent. That's it."
+    },
+    {
+      "idx": 8,
+      "start": 83.09333333333333,
+      "end": 96.832,
+      "text": "It does not push anywhere. I tried an earlier design that auto-pushed to GitHub, and it bit me the first time my local was behind the remote \u2014 the hook happily force-shoved stale state over newer commits. The lesson:"
+    },
+    {
+      "idx": 9,
+      "start": 96.832,
+      "end": 101.03466666666667,
+      "text": "Live on this machine is truth. The network is a manual gesture."
+    },
+    {
+      "idx": 10,
+      "start": 101.03466666666667,
+      "end": 116.62933333333334,
+      "text": "So now there's exactly one place automation touches: my local filesystem. git push stays in my fingers, where it belongs. The whole sync is ~150 lines of bash with a 28-assert test harness. Boring on purpose."
+    },
+    {
+      "idx": 11,
+      "start": 116.62933333333334,
+      "end": 118.656,
+      "text": "Half two: the AUR side"
+    },
+    {
+      "idx": 12,
+      "start": 118.656,
+      "end": 131.392,
+      "text": "The four packages are all -git flavor, which means the PKGBUILD doesn't need editing when I tweak config.h. The pkgver() function auto-resolves against GitHub HEAD on every build:"
+    },
+    {
+      "idx": 13,
+      "start": 131.392,
+      "end": 135.488,
+      "text": "So my normal flow is now exactly two manual operations:"
+    },
+    {
+      "idx": 14,
+      "start": 135.488,
+      "end": 149.312,
+      "text": "Next time anyone runs yay -Syu, AUR resolves the new HEAD and they get the rebuild. The PKGBUILD itself only needs touching for real packaging changes (new dep, license fix, build-system tweak)."
+    },
+    {
+      "idx": 15,
+      "start": 149.312,
+      "end": 150.12266666666667,
+      "text": "The flow"
+    },
+    {
+      "idx": 16,
+      "start": 150.12266666666667,
+      "end": 153.62133333333333,
+      "text": "Two manual git operations, four published packages."
+    },
+    {
+      "idx": 17,
+      "start": 153.62133333333333,
+      "end": 155.37066666666666,
+      "text": "Two gotchas worth sharing"
+    },
+    {
+      "idx": 18,
+      "start": 155.37066666666666,
+      "end": 182.4,
+      "text": "1. AUR work-trees inside a parent repo. I wanted aur/<pkg>/PKGBUILD to be tracked by the outer monorepo and by the AUR's own remote. Nested .git directories make Git refuse to track the inner files in the outer repo. The fix: hold each AUR package's .git outside its work-tree, in a sibling aur/.aur-git/<pkg>/ dir, and run AUR-side git through a tiny wrapper:"
+    },
+    {
+      "idx": 19,
+      "start": 182.4,
+      "end": 188.65066666666667,
+      "text": "Now aur-git dwm-aegix-git push does the right thing without confusing the parent repo."
+    },
+    {
+      "idx": 20,
+      "start": 188.65066666666667,
+      "end": 212.13866666666667,
+      "text": "2. st's tic runs at install time. The stock st Makefile calls tic -sx st.info during make install, which writes to /usr/share/terminfo \u2014 fine on a real install, but inside makepkg's fakeroot it tries to write to the real filesystem and fails. The fix is a one-line prepare() step in the PKGBUILD:"
+    },
+    {
+      "idx": 21,
+      "start": 212.13866666666667,
+      "end": 217.19466666666668,
+      "text": "Both of these took longer to diagnose than to fix, which is the usual ratio."
+    },
+    {
+      "idx": 22,
+      "start": 217.19466666666668,
+      "end": 218.13333333333333,
+      "text": "Why bother"
+    },
+    {
+      "idx": 23,
+      "start": 218.13333333333333,
+      "end": 239.744,
+      "text": "Honestly? Mostly so I stop accidentally diverging between \"the dwm I actually use\" and \"the dwm I publish.\" When the publishing is one git push away from the editor, there's no excuse for them to drift. And as a side effect, anyone curious about Aegix's stack can try a piece of it without committing to the whole distro."
+    },
+    {
+      "idx": 24,
+      "start": 239.744,
+      "end": 254.336,
+      "text": "If you want to peek: the four packages are on the AUR under dwm-aegix-git, st-aegix-git, dmenu-aegix-git, dwmblocks-aegix-git. The build pipeline lives at github.com/aegixlinux."
+    }
+  ]
+}

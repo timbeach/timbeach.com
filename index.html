@@ -1918,7 +1918,7 @@ Directories:
       
       tree: () => {
         // Get recent articles for tree display
-        const recentArticles = getRecentArticles(3);
+        const recentArticles = getRecentArticles(5);
         const sortedArticles = Object.keys(articles).sort((a, b) => {
           const dateA = new Date(articles[a].date);
           const dateB = new Date(articles[b].date);
@@ -2060,8 +2060,14 @@ God Mode: ON
       }
     };
 
-    function getRecentArticles(count = 3) {
+    function isPublished(article) {
+      // 'en-CA' formats as YYYY-MM-DD in local time, so string compare matches the date field.
+      return article.date <= new Date().toLocaleDateString('en-CA');
+    }
+
+    function getRecentArticles(count = 5) {
       return Object.entries(articles)
+        .filter(([, a]) => isPublished(a))
         .sort(([,a], [,b]) => new Date(b.date) - new Date(a.date))
         .slice(0, count);
     }
@@ -2094,8 +2100,8 @@ God Mode: ON
         setTimeout(() => {
           isProgrammaticNavigation = false;
         }, 100);
-        // Get 3 most recent articles
-        const recentArticles = getRecentArticles(3);
+        // Get 5 most recent articles
+        const recentArticles = getRecentArticles(5);
 
         content.innerHTML = `
           <!-- HIRE ME SECTION - Commented out for future revamp
@@ -2164,12 +2170,14 @@ God Mode: ON
         setTimeout(() => {
           isProgrammaticNavigation = false;
         }, 100);
-        // Sort articles by date (newest first)
-        const sortedArticles = Object.keys(articles).sort((a, b) => {
-          const dateA = new Date(articles[a].date);
-          const dateB = new Date(articles[b].date);
-          return dateB - dateA; // Newest first
-        });
+        // Sort articles by date (newest first), hiding unpublished (future-dated) entries
+        const sortedArticles = Object.keys(articles)
+          .filter(a => isPublished(articles[a]))
+          .sort((a, b) => {
+            const dateA = new Date(articles[a].date);
+            const dateB = new Date(articles[b].date);
+            return dateB - dateA; // Newest first
+          });
         
         content.innerHTML = `
           <button class="back-btn" onclick="navigate('home')">← back</button>
@@ -2361,8 +2369,17 @@ God Mode: ON
         return placeholder;
       });
       
-      // Handle inline code
-      processedContent = processedContent.replace(/`([^`]+)`/g, '<code>$1</code>');
+      // Handle inline code — HTML-escape the content so backticks containing
+      // literal tags (e.g. `<audio>`, `<h2>`) render as text instead of being
+      // parsed as real elements by the browser. Order matters: escape & first
+      // so that subsequent &lt; / &gt; replacements don't get double-escaped.
+      processedContent = processedContent.replace(/`([^`]+)`/g, (_match, content) => {
+        const escaped = content
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        return `<code>${escaped}</code>`;
+      });
 
       // Handle markdown tables — replace with placeholders to protect from <p> wrapping
       const tablePlaceholders = [];
@@ -3564,9 +3581,13 @@ God Mode: ON
 
     // Get plain text from an element (strip HTML)
     function ttsGetText(el) {
-      // Skip elements that are only code/images
+      // Strip <img> only (no readable text). Inline <code> is KEPT so
+      // identifiers like `currentTime` get read aloud rather than leaving
+      // audible gaps. Block code (<pre><code>) is already excluded by the
+      // selector in ttsCollectParagraphs not including <pre>. Must stay
+      // symmetric with extract_paragraphs in tools/render_article.py.
       const clone = el.cloneNode(true);
-      clone.querySelectorAll('code, img').forEach(c => c.remove());
+      clone.querySelectorAll('img').forEach(c => c.remove());
       return clone.textContent.trim();
     }
 
