@@ -1856,7 +1856,7 @@ This project demonstrates how modern web technology can serve ancient spiritual 
       ls: () => {
         if (currentPath.length === 0) {
           return `Recent Articles:
-${getRecentArticles(3).map(([filename, article]) => `  ${article.emoji} ${article.title}`).join('\n')}
+${getRecentArticles(5).map(([filename, article]) => `  ${article.emoji} ${article.title}`).join('\n')}
 
 Projects:
   🐧 aegix-linux (external)
