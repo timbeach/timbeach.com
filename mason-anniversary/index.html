@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>For Mason</title>
+
+  <meta property="og:title" content="For Mason" />
+  <meta property="og:image" content="https://timbeach.com/pix/5_Years.png" />
+  <meta property="og:type" content="website" />
+
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-top:    #0a1428;
+      --bg-bottom: #1a0f24;
+      --gold:      #d4b06a;
+      --gold-soft: #b89a5a;
+      --ink:       #f4ead8;
+      --ink-soft:  rgba(244, 234, 216, 0.82);
+      --ink-faint: rgba(244, 234, 216, 0.35);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color: var(--ink);
+      font-family: 'Crimson Pro', Georgia, serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body { animation: fade-in 1.4s ease-out both; }
+
+    @keyframes fade-in {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    main {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 32px 20px 64px;
+    }
+
+    .hero {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 6px;
+      box-shadow:
+        0 4px 24px rgba(0, 0, 0, 0.6),
+        0 0 80px rgba(212, 176, 106, 0.12);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin: 48px auto 36px;
+      max-width: 320px;
+      color: var(--gold);
+    }
+    .divider::before,
+    .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+    }
+    .divider span {
+      font-size: 14px;
+      line-height: 1;
+    }
+
+    .message {
+      font-size: 19px;
+      line-height: 1.7;
+      color: var(--ink-soft);
+    }
+
+    .message p + p { margin-top: 1.1em; }
+
+    .greeting {
+      text-align: center;
+      color: var(--gold-soft);
+      font-size: 1.22em;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.6em;
+    }
+
+    .placeholder {
+      font-style: italic;
+      color: var(--ink-faint);
+      text-align: center;
+    }
+
+    .signature {
+      margin-top: 2.5em;
+      text-align: right;
+      font-style: italic;
+      color: var(--gold-soft);
+    }
+
+    @media (min-width: 600px) {
+      main { padding: 56px 32px 96px; }
+      .message { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <img class="hero"
+         src="../pix/5_Years.png"
+         alt="Happy Anniversary, Mason — April 29, 2021 — five years since we first met and hit it off" />
+
+    <div class="divider"><span>&#9829;</span></div>
+
+    <!-- MESSAGE: edit the contents of <article> below. Use <p>...</p> per paragraph.
+         Optional closing signature: <p class="signature">— Timothy</p> -->
+    <article class="message">
+      <p class="greeting">Happy 5th Anniversary, Beautiful Mason.</p>
+      <p>I am really living the dream.</p>
+      <p>You are the love of my life.</p>
+      <p>Thank you for the years we've shared in all their different forms, from being work colleagues, to email pen pals, to sometimes talking on the phone, to the beautiful connections on irc, to meeting for the first time when you hugged me twice and I literally fell down and worshipped at your feet, to holding hands for the first time, to our first kiss, to you visiting me in TN for the first time, to spending more time together, to buying a house together, to now.</p>
+      <p>I'm so grateful the stars aligned just right for us to be able to connect when we did.</p>
+      <p>You are the most beautiful, special, angelic creature in the world to me, and I will love you forever.</p>
+      <p class="signature">— Timothy</p>
+    </article>
+  </main>
+</body>
+</html>
