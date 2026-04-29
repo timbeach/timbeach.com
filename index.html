@@ -2381,6 +2381,16 @@ God Mode: ON
         return `<code>${escaped}</code>`;
       });
 
+      // Inline transforms reused by list/table builders. The main-flow bold/italic/
+      // image/link regexes below run on text containing __LIST_BLOCK__/__TABLE_BLOCK__
+      // placeholders, so they never reach list-item or table-cell content. Apply
+      // them here, before the placeholders swallow the raw markdown.
+      const applyInlines = (s) => s
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')
+        .replace(/!\[([^\]]*)\]\((.+?)\)/g, '<img src="$2" alt="$1" />')
+        .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
+
       // Handle markdown tables — replace with placeholders to protect from <p> wrapping
       const tablePlaceholders = [];
       let tableIndex = 0;
@@ -2391,12 +2401,12 @@ God Mode: ON
           const headers = rows[0].split('|').filter(c => c.trim()).map(c => c.trim());
           const bodyRows = rows.slice(2);
           let html = '<table><thead><tr>';
-          headers.forEach(h => { html += `<th>${h}</th>`; });
+          headers.forEach(h => { html += `<th>${applyInlines(h)}</th>`; });
           html += '</tr></thead><tbody>';
           bodyRows.forEach(row => {
             const cells = row.split('|').filter(c => c.trim()).map(c => c.trim());
             html += '<tr>';
-            cells.forEach(c => { html += `<td>${c}</td>`; });
+            cells.forEach(c => { html += `<td>${applyInlines(c)}</td>`; });
             html += '</tr>';
           });
           html += '</tbody></table>';
@@ -2422,17 +2432,17 @@ God Mode: ON
               const match = item.match(/^[-*] \[([ x])\] (.+)$/);
               if (match) {
                 const checked = match[1] === 'x';
-                const text = match[2];
+                const text = applyInlines(match[2]);
                 html += `<li><span class="task-checkbox${checked ? ' checked' : ''}"></span><span>${text}</span></li>`;
               } else {
-                const text = item.replace(/^[-*] /, '');
+                const text = applyInlines(item.replace(/^[-*] /, ''));
                 html += `<li><span>${text}</span></li>`;
               }
             });
           } else {
             html = '<ul>';
             items.forEach(item => {
-              const text = item.replace(/^[-*] /, '');
+              const text = applyInlines(item.replace(/^[-*] /, ''));
               html += `<li>${text}</li>`;
             });
           }
@@ -2451,7 +2461,7 @@ God Mode: ON
           const items = listBlock.trim().split('\n');
           let html = '<ol>';
           items.forEach(item => {
-            const text = item.replace(/^\d+\. /, '');
+            const text = applyInlines(item.replace(/^\d+\. /, ''));
             html += `<li>${text}</li>`;
           });
           html += '</ol>';
