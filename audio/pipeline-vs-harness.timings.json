@@ -1,0 +1,306 @@
+{
+  "voice": "bm_lewis",
+  "duration": 327.68,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 7.616,
+      "text": "Two words that sound similar, get used loosely, and actually mean different things. Short version up top, then the nuance."
+    },
+    {
+      "idx": 1,
+      "start": 7.616,
+      "end": 8.917333333333334,
+      "text": "TL;DR"
+    },
+    {
+      "idx": 2,
+      "start": 8.917333333333334,
+      "end": 15.530666666666667,
+      "text": "Pipeline = work moves through stages. The thing being processed flows; the stages are fixed."
+    },
+    {
+      "idx": 3,
+      "start": 15.530666666666667,
+      "end": 24.938666666666666,
+      "text": "Harness = the system stays put; the harness wraps it to run/test/drive it. The wrapper is active, the wrapped thing is acted upon."
+    },
+    {
+      "idx": 4,
+      "start": 24.938666666666666,
+      "end": 31.424,
+      "text": "A pipeline is a conveyor belt. A harness is a jig (or a horse's harness \u2014 same root metaphor)."
+    },
+    {
+      "idx": 5,
+      "start": 31.424,
+      "end": 32.23466666666667,
+      "text": "Pipeline"
+    },
+    {
+      "idx": 6,
+      "start": 32.23466666666667,
+      "end": 33.36533333333333,
+      "text": "Colloquial sense"
+    },
+    {
+      "idx": 7,
+      "start": 33.36533333333333,
+      "end": 48.72533333333333,
+      "text": "A series of stages where the output of one step is the input of the next. Linear, directional, often automated. Borrowed from oil/water pipelines: stuff goes in one end, comes out the other, transformed along the way."
+    },
+    {
+      "idx": 8,
+      "start": 48.72533333333333,
+      "end": 51.285333333333334,
+      "text": "Technical instances we actually use"
+    },
+    {
+      "idx": 9,
+      "start": 51.285333333333334,
+      "end": 61.013333333333335,
+      "text": "CI/CD pipeline \u2014 lint \u2192 build \u2192 test \u2192 deploy. GitHub Actions, Jenkins, GitLab CI."
+    },
+    {
+      "idx": 10,
+      "start": 61.013333333333335,
+      "end": 68.82133333333333,
+      "text": "Data pipeline / ETL \u2014 extract \u2192 transform \u2192 load. Airflow, dbt, Dagster."
+    },
+    {
+      "idx": 11,
+      "start": 68.82133333333333,
+      "end": 72.98133333333334,
+      "text": "Unix pipes \u2014 cat foo | grep bar | sort | uniq -c. The original."
+    },
+    {
+      "idx": 12,
+      "start": 72.98133333333334,
+      "end": 80.78933333333333,
+      "text": "ML training pipeline \u2014 ingest \u2192 featurize \u2192 train \u2192 evaluate \u2192 register."
+    },
+    {
+      "idx": 13,
+      "start": 80.78933333333333,
+      "end": 87.82933333333334,
+      "text": "Compiler pipeline \u2014 lex \u2192 parse \u2192 typecheck \u2192 optimize \u2192 codegen."
+    },
+    {
+      "idx": 14,
+      "start": 87.82933333333334,
+      "end": 93.248,
+      "text": "Render pipeline \u2014 vertex shader \u2192 fragment shader \u2192 framebuffer."
+    },
+    {
+      "idx": 15,
+      "start": 93.248,
+      "end": 94.592,
+      "text": "Defining traits"
+    },
+    {
+      "idx": 16,
+      "start": 94.592,
+      "end": 98.432,
+      "text": "Directional flow \u2014 work moves forward through ordered stages."
+    },
+    {
+      "idx": 17,
+      "start": 98.432,
+      "end": 103.936,
+      "text": "Stage isolation \u2014 each stage has a clear input contract and output contract."
+    },
+    {
+      "idx": 18,
+      "start": 103.936,
+      "end": 109.184,
+      "text": "Transformation-centric \u2014 the thing (data, code, artifacts) is what changes."
+    },
+    {
+      "idx": 19,
+      "start": 109.184,
+      "end": 113.94133333333333,
+      "text": "Often parallel-fan-out / fan-in \u2014 but still graph-shaped, not loopy."
+    },
+    {
+      "idx": 20,
+      "start": 113.94133333333333,
+      "end": 118.54933333333334,
+      "text": "Stateless-ish stages \u2014 re-runnable, cacheable, idempotent when done well."
+    },
+    {
+      "idx": 21,
+      "start": 118.54933333333334,
+      "end": 125.46133333333333,
+      "text": "When someone says \"the pipeline broke,\" they mean a stage failed and the artifact didn't make it to the next stage."
+    },
+    {
+      "idx": 22,
+      "start": 125.46133333333333,
+      "end": 126.208,
+      "text": "Harness"
+    },
+    {
+      "idx": 23,
+      "start": 126.208,
+      "end": 127.33866666666667,
+      "text": "Colloquial sense"
+    },
+    {
+      "idx": 24,
+      "start": 127.33866666666667,
+      "end": 140.24533333333332,
+      "text": "A thing that wraps around another thing to control it, hold it in place, or drive it. Horse harness, climbing harness, wiring harness. The harness doesn't become the horse \u2014 it constrains and directs the horse."
+    },
+    {
+      "idx": 25,
+      "start": 140.24533333333332,
+      "end": 142.80533333333332,
+      "text": "Technical instances we actually use"
+    },
+    {
+      "idx": 26,
+      "start": 142.80533333333332,
+      "end": 156.224,
+      "text": "Test harness \u2014 the scaffolding that sets up fixtures, invokes the code under test, captures output, asserts. JUnit, pytest, RSpec. The harness is what makes a function testable in isolation."
+    },
+    {
+      "idx": 27,
+      "start": 156.224,
+      "end": 172.07466666666667,
+      "text": "Agent / LLM harness \u2014 the loop and machinery around a language model: prompt assembly, tool dispatch, context management, retries, hooks. Claude Code is a harness around Claude. The model is the engine; the harness is the chassis."
+    },
+    {
+      "idx": 28,
+      "start": 172.07466666666667,
+      "end": 178.77333333333334,
+      "text": "Hardware test harness \u2014 physical bench rig that powers a board, drives its inputs, measures its outputs."
+    },
+    {
+      "idx": 29,
+      "start": 178.77333333333334,
+      "end": 184.0,
+      "text": "Wiring harness \u2014 bundled cables that connect a system together (cars, aircraft)."
+    },
+    {
+      "idx": 30,
+      "start": 184.0,
+      "end": 192.46933333333334,
+      "text": "Fuzzing harness \u2014 LLVMFuzzerTestOneInput(...) \u2014 a thin wrapper that hands fuzzer-generated bytes to the code being fuzzed."
+    },
+    {
+      "idx": 31,
+      "start": 192.46933333333334,
+      "end": 200.04266666666666,
+      "text": "Benchmark harness \u2014 JMH, criterion.rs. Wraps the code, runs it many times under measured conditions."
+    },
+    {
+      "idx": 32,
+      "start": 200.04266666666666,
+      "end": 201.38666666666666,
+      "text": "Defining traits"
+    },
+    {
+      "idx": 33,
+      "start": 201.38666666666666,
+      "end": 210.09066666666666,
+      "text": "Wraps a system under operation \u2014 the wrapped thing (function, model, board, binary) is the subject; the harness is the apparatus."
+    },
+    {
+      "idx": 34,
+      "start": 210.09066666666666,
+      "end": 216.36266666666666,
+      "text": "Control loop / driver \u2014 usually has its own event loop, timing, or invocation logic."
+    },
+    {
+      "idx": 35,
+      "start": 216.36266666666666,
+      "end": 220.01066666666668,
+      "text": "Instrumentation \u2014 captures, observes, asserts, measures."
+    },
+    {
+      "idx": 36,
+      "start": 220.01066666666668,
+      "end": 226.15466666666666,
+      "text": "Lifecycle ownership \u2014 sets up, tears down, isolates the system under test/run."
+    },
+    {
+      "idx": 37,
+      "start": 226.15466666666666,
+      "end": 231.168,
+      "text": "Often stateful \u2014 maintains context across invocations of the wrapped thing."
+    },
+    {
+      "idx": 38,
+      "start": 231.168,
+      "end": 239.97866666666667,
+      "text": "When someone says \"the harness is flaky,\" they mean the wrapper itself (setup, teardown, env) is broken \u2014 not the code being exercised."
+    },
+    {
+      "idx": 39,
+      "start": 239.97866666666667,
+      "end": 242.73066666666668,
+      "text": "The overlap zone (where people mix them up)"
+    },
+    {
+      "idx": 40,
+      "start": 242.73066666666668,
+      "end": 243.81866666666667,
+      "text": "Rule of thumb"
+    },
+    {
+      "idx": 41,
+      "start": 243.81866666666667,
+      "end": 250.47466666666668,
+      "text": "If you can draw it as a DAG of stages with artifacts moving left-to-right \u2192 pipeline."
+    },
+    {
+      "idx": 42,
+      "start": 250.47466666666668,
+      "end": 257.57866666666666,
+      "text": "If you can draw it as a box wrapping another box, with a control loop and instrumentation \u2192 harness."
+    },
+    {
+      "idx": 43,
+      "start": 257.57866666666666,
+      "end": 264.17066666666665,
+      "text": "They compose: a CI pipeline runs a stage that invokes a test harness to exercise the code."
+    },
+    {
+      "idx": 44,
+      "start": 264.17066666666665,
+      "end": 266.6453333333333,
+      "text": "Why the distinction matters for our work"
+    },
+    {
+      "idx": 45,
+      "start": 266.6453333333333,
+      "end": 284.16,
+      "text": "Debugging triage \u2014 \"the pipeline failed at the test stage\" vs \"the test harness is hanging\" point at very different failure modes. One is an artifact problem (build broken, deps missing), the other is an environmental/wrapper problem (fixture setup, teardown leaking)."
+    },
+    {
+      "idx": 46,
+      "start": 284.16,
+      "end": 302.63466666666665,
+      "text": "Design choices \u2014 when building automation, ask: am I moving artifacts through stages (pipeline) or driving a system to observe its behavior (harness)? The shapes are different. Pipelines want orchestrators (Airflow, GHA). Harnesses want runners and drivers (pytest, custom loops)."
+    },
+    {
+      "idx": 47,
+      "start": 302.63466666666665,
+      "end": 320.704,
+      "text": "LLM-era specifically \u2014 \"agent\" work is overwhelmingly harness work. Claude Code, Cursor, the Claude Agent SDK \u2014 they are all harnesses around a model. Calling them pipelines obscures that the central thing is a loop with state and tool dispatch, not a feed-forward flow."
+    },
+    {
+      "idx": 48,
+      "start": 320.704,
+      "end": 322.176,
+      "text": "One-line mnemonic"
+    },
+    {
+      "idx": 49,
+      "start": 322.176,
+      "end": 327.68,
+      "text": "A pipeline transforms what flows through it. A harness controls what sits inside it."
+    }
+  ]
+}

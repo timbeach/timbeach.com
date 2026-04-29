@@ -1,4 +1,21 @@
 {
+  "pipeline-vs-harness.md": {
+    "title": "Pipeline vs Harness",
+    "date": "2026-04-29",
+    "tags": [
+      "software-engineering",
+      "terminology",
+      "ci-cd",
+      "llm",
+      "agents",
+      "testing"
+    ],
+    "emoji": "\ud83d\udee4\ufe0f",
+    "audio": "audio/pipeline-vs-harness.ogg",
+    "timings": "audio/pipeline-vs-harness.timings.json",
+    "voice": "bm_lewis",
+    "duration": 327.68
+  },
   "how-to-config-obsidian.md": {
     "title": "How to Configure Obsidian the Agentic Way",
     "date": "2026-04-21",
