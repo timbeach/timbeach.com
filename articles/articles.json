@@ -1,4 +1,18 @@
 {
+  "osi-model-whiteboard.md": {
+    "title": "The OSI Model, Explained from a Whiteboard",
+    "date": "2026-05-02",
+    "tags": [
+      "networking",
+      "fundamentals",
+      "osi"
+    ],
+    "emoji": "\ud83c\udf10",
+    "audio": "audio/osi-model-whiteboard.ogg",
+    "timings": "audio/osi-model-whiteboard.timings.json",
+    "voice": "af_bella",
+    "duration": 339.691
+  },
   "pipeline-vs-harness.md": {
     "title": "Pipeline vs Harness",
     "date": "2026-04-29",
