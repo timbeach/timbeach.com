@@ -237,3 +237,110 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   border: none;
 }
 .more li a:hover { color: var(--link-hover); }
+
+/* === Article reading view === */
+
+.back-link {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+  border: none;
+  display: inline-block;
+  margin-bottom: 24px;
+}
+.back-link:hover { color: var(--fg); border: none; }
+
+.article {
+  max-width: var(--content-width);
+}
+.article-header { margin-bottom: 32px; }
+.article-header .meta { margin-bottom: 8px; }
+.article-header h1 {
+  font-size: clamp(28px, 4vw, 32px);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.article-body { font-size: 16px; line-height: 1.65; }
+.article-body p { margin: 0 0 1.1em; }
+.article-body h2 {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 1.6em 0 0.5em;
+}
+.article-body h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.25;
+  margin: 1.4em 0 0.5em;
+}
+.article-body h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 1.2em 0 0.4em;
+}
+.article-body ul, .article-body ol { padding-left: 1.4em; margin: 0 0 1.1em; }
+.article-body li { margin-bottom: 0.4em; }
+
+.article-body a { color: var(--fg); border-bottom: 1px solid var(--fg-muted); }
+.article-body a:hover { border-bottom-color: var(--fg); }
+
+.article-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1.2em 0;
+}
+
+.article-body code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--bg-elev);
+  padding: 1px 4px;
+  border-radius: 3px;
+}
+.article-body pre {
+  font-family: var(--font-mono);
+  background: var(--bg-elev);
+  padding: 16px;
+  overflow-x: auto;
+  font-size: 14px;
+  line-height: 1.55;
+  margin: 1.2em 0;
+  border-radius: 4px;
+}
+.article-body pre code { background: none; padding: 0; font-size: inherit; }
+
+.article-body blockquote {
+  border-left: 3px solid var(--divider);
+  padding-left: 16px;
+  margin: 1.2em 0;
+  color: var(--fg-muted);
+  font-style: italic;
+}
+
+.article-body table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 1.2em 0;
+  font-size: 14px;
+}
+.article-body th, .article-body td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--divider);
+}
+.article-body th {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+}
+.more li a:hover { color: var(--link-hover); }
