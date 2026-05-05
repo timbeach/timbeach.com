@@ -82,7 +82,10 @@ def test_feed_item_has_link_pubdate_guid(tmp_path):
     item = ET.parse(out).getroot().find("channel/item")
     assert item.findtext("link") == "https://timbeach.com/#/article/first-article"
     assert item.findtext("pubDate")  # RFC 822
-    assert item.findtext("guid") == "https://timbeach.com/#/article/first-article"
+    guid = item.find("guid")
+    assert guid is not None
+    assert guid.text == "https://timbeach.com/#/article/first-article"
+    assert guid.attrib.get("isPermaLink") == "false"
     assert item.findtext("description") == "The first one."
 
 
@@ -106,3 +109,20 @@ def test_render_article_html_strips_h1(tmp_path):
     assert "<h1>" not in html      # H1 stripped (it's the article title, in <title>)
     assert "<h2>A subsection</h2>" in html
     assert "<p>Body paragraph one.</p>" in html
+
+
+def test_render_article_html_no_h1_preserves_code_comments(tmp_path):
+    """When an article has no H1 title, code comments starting with # must not be stripped."""
+    articles = tmp_path / "articles"
+    articles.mkdir()
+    md = articles / "no-title.md"
+    md.write_text(
+        "## Section\n\n"
+        "```bash\n"
+        "# load the module\n"
+        "modprobe snd-usb-audio\n"
+        "```\n"
+    )
+    html = render_article_html(md)
+    assert "# load the module" in html
+    assert "modprobe snd-usb-audio" in html

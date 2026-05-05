@@ -2156,7 +2156,10 @@ def test_feed_item_has_link_pubdate_guid(tmp_path):
     item = ET.parse(out).getroot().find("channel/item")
     assert item.findtext("link") == "https://timbeach.com/#/article/first-article"
     assert item.findtext("pubDate")  # RFC 822
-    assert item.findtext("guid") == "https://timbeach.com/#/article/first-article"
+    guid = item.find("guid")
+    assert guid is not None
+    assert guid.text == "https://timbeach.com/#/article/first-article"
+    assert guid.attrib.get("isPermaLink") == "false"
     assert item.findtext("description") == "The first one."
 
 
@@ -2180,6 +2183,23 @@ def test_render_article_html_strips_h1(tmp_path):
     assert "<h1>" not in html      # H1 stripped (it's the article title, in <title>)
     assert "<h2>A subsection</h2>" in html
     assert "<p>Body paragraph one.</p>" in html
+
+
+def test_render_article_html_no_h1_preserves_code_comments(tmp_path):
+    """When an article has no H1 title, code comments starting with # must not be stripped."""
+    articles = tmp_path / "articles"
+    articles.mkdir()
+    md = articles / "no-title.md"
+    md.write_text(
+        "## Section\n\n"
+        "```bash\n"
+        "# load the module\n"
+        "modprobe snd-usb-audio\n"
+        "```\n"
+    )
+    html = render_article_html(md)
+    assert "# load the module" in html
+    assert "modprobe snd-usb-audio" in html
 ```
 
 - [ ] **Step 2: Run failing tests to confirm they fail**
@@ -2223,15 +2243,21 @@ _md = MarkdownIt("commonmark", {"html": False, "linkify": True}).enable("table")
 
 
 def render_article_html(md_path: Path) -> str:
-    """Render an article's markdown body to HTML, stripping the H1 title."""
+    """Render an article's markdown body to HTML, stripping the H1 title.
+
+    Tracks fenced code blocks (``` and ~~~) so a `# comment` inside a code
+    block is not mistaken for the article title.
+    """
     text = md_path.read_text()
-    # Strip the first H1 — articles use it as the title; we render that in
-    # the channel's <title> instead.
     lines = text.splitlines()
     out_lines = []
     skipped_h1 = False
+    in_fence = False
     for line in lines:
-        if not skipped_h1 and line.lstrip().startswith("# "):
+        stripped = line.strip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+        if not skipped_h1 and not in_fence and line.lstrip().startswith("# "):
             skipped_h1 = True
             continue
         out_lines.append(line)
@@ -2260,14 +2286,14 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
 
     parts: list[str] = []
     parts.append('<?xml version="1.0" encoding="UTF-8"?>')
-    parts.append(f'<rss version="2.0" xmlns:content="{CONTENT_NS}">')
+    parts.append(f'<rss version="2.0" xmlns:content="{CONTENT_NS}" xmlns:atom="http://www.w3.org/2005/Atom">')
     parts.append('  <channel>')
     parts.append(f'    <title>{escape(SITE_TITLE)}</title>')
     parts.append(f'    <link>{escape(site_url)}</link>')
     parts.append(f'    <description>{escape(SITE_DESC)}</description>')
     parts.append(f'    <lastBuildDate>{last_build}</lastBuildDate>')
     parts.append(f'    <language>en-us</language>')
-    parts.append(f'    <atom:link href="{escape(site_url)}/feed.xml" rel="self" type="application/rss+xml" xmlns:atom="http://www.w3.org/2005/Atom" />')
+    parts.append(f'    <atom:link href="{escape(site_url)}/feed.xml" rel="self" type="application/rss+xml" />')
 
     for filename, meta in items:
         slug = filename[:-3] if filename.endswith(".md") else filename
@@ -2284,7 +2310,7 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
         parts.append('    <item>')
         parts.append(f'      <title>{escape(title)}</title>')
         parts.append(f'      <link>{escape(link)}</link>')
-        parts.append(f'      <guid isPermaLink="true">{escape(link)}</guid>')
+        parts.append(f'      <guid isPermaLink="false">{escape(link)}</guid>')
         parts.append(f'      <pubDate>{pubdate}</pubDate>')
         parts.append(f'      <description>{escape(desc)}</description>')
         # CDATA wrapper keeps embedded HTML readable to RSS readers without

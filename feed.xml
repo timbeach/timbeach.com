@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Tue, 05 May 2026 14:04:12 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 05 May 2026 14:10:54 +0000</lastBuildDate>
     <language>en-us</language>
-    <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" xmlns:atom="http://www.w3.org/2005/Atom" />
+    <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>The OSI Model, Explained from a Whiteboard</title>
       <link>https://timbeach.com/#/article/osi-model-whiteboard</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/osi-model-whiteboard</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/osi-model-whiteboard</guid>
       <pubDate>Sat, 02 May 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>Sometimes the best way to lock in a concept is to grab a marker and start scribbling. I sketched out the OSI model recently — seven layers stacked top to bottom, with a few mnemonic hints squeezed into the margins. Here's the walk-through.</p>
@@ -66,7 +66,7 @@
     <item>
       <title>From ~/.local/src to the AUR</title>
       <link>https://timbeach.com/#/article/aegix-on-the-aur</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/aegix-on-the-aur</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/aegix-on-the-aur</guid>
       <pubDate>Fri, 01 May 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>If you run <a href="https://aegixlinux.org">Aegix</a> — or you're an Arch / Artix tinkerer who likes the suckless stack — you can now <code>yay -S dwm-aegix-git</code> (or <code>st-aegix-git</code>, <code>dmenu-aegix-git</code>, <code>dwmblocks-aegix-git</code>) and pull down the exact builds I run on my own machine. This post is the short story of how that pipeline got built, and a couple of small gotchas worth knowing if you publish your own.</p>
@@ -145,7 +145,7 @@ exec git &quot;$@&quot;
     <item>
       <title>Pipeline vs Harness</title>
       <link>https://timbeach.com/#/article/pipeline-vs-harness</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/pipeline-vs-harness</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/pipeline-vs-harness</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>Two words that sound similar, get used loosely, and actually mean different things. Short version up top, then the nuance.</p>
@@ -253,7 +253,7 @@ exec git &quot;$@&quot;
     <item>
       <title>How My Blog Got a Voice</title>
       <link>https://timbeach.com/#/article/how-my-blog-got-a-voice</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/how-my-blog-got-a-voice</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-my-blog-got-a-voice</guid>
       <pubDate>Sun, 26 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="pix/blog-got-a-voice.png" alt="How my blog got a voice" /></p>
@@ -298,7 +298,7 @@ exec git &quot;$@&quot;
     <item>
       <title>Jungian Dream Notes</title>
       <link>https://timbeach.com/#/article/jungian-dream-notes</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/jungian-dream-notes</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/jungian-dream-notes</guid>
       <pubDate>Thu, 23 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="pix/jungian-dream.png" alt="Jungian Dream" /></p>
@@ -359,7 +359,7 @@ exec git &quot;$@&quot;
     <item>
       <title>How to Configure Obsidian the Agentic Way</title>
       <link>https://timbeach.com/#/article/how-to-config-obsidian</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/how-to-config-obsidian</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-to-config-obsidian</guid>
       <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="pix/how-to-config-obsidian.png" alt="How to Configure Obsidian" /></p>
@@ -394,7 +394,7 @@ exec git &quot;$@&quot;
     <item>
       <title>Dependency Hell: Why Software Breaks When Everything Works</title>
       <link>https://timbeach.com/#/article/dependency-hell</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/dependency-hell</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/dependency-hell</guid>
       <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="pix/dependency_hell.png" alt="Dependency Hell" /></p>
@@ -484,7 +484,7 @@ exec git &quot;$@&quot;
     <item>
       <title>How to Write a Custom Claude Code Skill</title>
       <link>https://timbeach.com/#/article/custom-claude-skills</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/custom-claude-skills</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/custom-claude-skills</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>Claude Code can do a lot out of the box, but it doesn't know your workflows. It doesn't know that publishing an article to your website means copying a markdown file to a specific directory, adding an entry to a JSON registry, previewing locally, rsyncing to a VPS, and committing to git. Every time you ask, it has to explore your repo, discover the structure, and figure it out from scratch.</p>
@@ -624,7 +624,7 @@ Stage only the specific changed files. Commit and push.
     <item>
       <title>Software Delivery and Deployment SOP</title>
       <link>https://timbeach.com/#/article/software-delivery-sop</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/software-delivery-sop</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/software-delivery-sop</guid>
       <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><em>Co-authored with <a href="https://masonborchard.com/">Mason U Borchard</a></em></p>
@@ -1042,7 +1042,7 @@ git push origin main
     <item>
       <title>Releasing Music as a Human Being: From WAV Files to Spotify</title>
       <link>https://timbeach.com/#/article/releasing-music</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/releasing-music</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/releasing-music</guid>
       <pubDate>Mon, 02 Mar 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>You finished the music. Two tracks, mixed and mastered. You have album art. You have no idea what comes next.</p>
@@ -1537,7 +1537,7 @@ git push origin main
     <item>
       <title>Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes</title>
       <link>https://timbeach.com/#/article/claude-code-agent-teams</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/claude-code-agent-teams</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/claude-code-agent-teams</guid>
       <pubDate>Sat, 21 Feb 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="../pix/agent-teams-diagram.png" alt="Agent Teams" /></p>
@@ -1837,7 +1837,7 @@ Create a team to explore this:
     <item>
       <title>True Random Number Generators: From Quantum Physics to Silicon</title>
       <link>https://timbeach.com/#/article/trng-deep-dive</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/trng-deep-dive</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/trng-deep-dive</guid>
       <pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><img src="../pix/true-randomness.jpg" alt="True Randomness" /></p>
@@ -2030,7 +2030,7 @@ CSPRNG (fast, computationally indistinguishable from random)
     <item>
       <title>Deploy a Website</title>
       <link>https://timbeach.com/#/article/deploy-a-website</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/deploy-a-website</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/deploy-a-website</guid>
       <pubDate>Sun, 28 Sep 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>This document outlines the complete process used to deploy Mason Borchard's personal website from development to production on the internet.</p>
@@ -2283,7 +2283,7 @@ df -h
     <item>
       <title>Install Signal Desktop on Aegix Linux</title>
       <link>https://timbeach.com/#/article/install-signal-on-aegix</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/install-signal-on-aegix</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/install-signal-on-aegix</guid>
       <pubDate>Tue, 19 Aug 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<pre><code class="language-bash">yay -S signal-desktop --noconfirm
@@ -2304,7 +2304,7 @@ df -h
     <item>
       <title>How tmux Works</title>
       <link>https://timbeach.com/#/article/how-tmux-works</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/how-tmux-works</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-tmux-works</guid>
       <pubDate>Fri, 01 Aug 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<h2>🧠 How tmux Works</h2>
@@ -2328,6 +2328,7 @@ df -h
 <p>This creates a new tmux session named <code>mysession</code> and attaches you to it.</p>
 <h3>🔄 Attach to a named session</h3>
 <pre><code class="language-bash">tmux attach-session -t timothason 
+# or tmux a -t timothason
 </code></pre>
 <h3>📋 List all sessions</h3>
 <pre><code class="language-bash">tmux ls
@@ -2358,7 +2359,7 @@ df -h
     <item>
       <title>Adding a Second Aegix User</title>
       <link>https://timbeach.com/#/article/second-aegix-user</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/second-aegix-user</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/second-aegix-user</guid>
       <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>Let's say we want to create a secondary user on an <a href="https://aegixlinux.org">Aegix Linux</a> system. For this example the user we created during the installation process is called <code>borchard</code> and the secondary user we want to create will be called <code>timothy</code>.</p>
@@ -2400,7 +2401,8 @@ sudo -u timothy curl -Ls &quot;https://raw.githubusercontent.com/junegunn/vim-pl
 sudo -u timothy nvim -c &quot;PlugInstall|q|q&quot;
 </code></pre>
 <h2>9. Verify the setup:</h2>
-<pre><code class="language-bash">groups timothy
+<pre><code class="language-bash"># Check groups
+groups timothy
 
 # Check home directory
 ls -la /home/timothy
@@ -2422,7 +2424,7 @@ su - timothy
     <item>
       <title>Parsimony and Aegix Linux</title>
       <link>https://timbeach.com/#/article/parsimony</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/parsimony</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/parsimony</guid>
       <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p><strong>Parsimony</strong> refers to simplicity or frugality in design—favoring the fewest necessary components or complexities. In software engineering, it embodies minimalism, efficiency, and clarity, where complexity is deliberately avoided unless justified by necessity.</p>
@@ -2432,7 +2434,7 @@ su - timothy
     <item>
       <title>How to Add New Articles to timbeach.com</title>
       <link>https://timbeach.com/#/article/add-articles</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/add-articles</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/add-articles</guid>
       <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>This site uses a custom, lightweight article system that makes it easy to add new content without any complex build processes or databases.</p>
@@ -2590,7 +2592,7 @@ echo &quot;Hello, World!&quot;
     <item>
       <title>Simplicity in Software Engineering</title>
       <link>https://timbeach.com/#/article/simplicity</link>
-      <guid isPermaLink="true">https://timbeach.com/#/article/simplicity</guid>
+      <guid isPermaLink="false">https://timbeach.com/#/article/simplicity</guid>
       <pubDate>Fri, 10 Jan 2025 00:00:00 +0000</pubDate>
       <description></description>
       <content:encoded><![CDATA[<p>Simplicity is the cornerstone of effective software engineering. It leads to code that is easier to understand, maintain, and debug. By embracing straightforward logic, reducing unnecessary complexity, and adhering to well-defined standards, developers create software that's resilient and adaptable.</p>

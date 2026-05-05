@@ -28,15 +28,21 @@ _md = MarkdownIt("commonmark", {"html": False, "linkify": True}).enable("table")
 
 
 def render_article_html(md_path: Path) -> str:
-    """Render an article's markdown body to HTML, stripping the H1 title."""
+    """Render an article's markdown body to HTML, stripping the H1 title.
+
+    Tracks fenced code blocks (``` and ~~~) so a `# comment` inside a code
+    block is not mistaken for the article title.
+    """
     text = md_path.read_text()
-    # Strip the first H1 — articles use it as the title; we render that in
-    # the channel's <title> instead.
     lines = text.splitlines()
     out_lines = []
     skipped_h1 = False
+    in_fence = False
     for line in lines:
-        if not skipped_h1 and line.lstrip().startswith("# "):
+        stripped = line.strip()
+        if stripped.startswith("```") or stripped.startswith("~~~"):
+            in_fence = not in_fence
+        if not skipped_h1 and not in_fence and line.lstrip().startswith("# "):
             skipped_h1 = True
             continue
         out_lines.append(line)
@@ -65,14 +71,14 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
 
     parts: list[str] = []
     parts.append('<?xml version="1.0" encoding="UTF-8"?>')
-    parts.append(f'<rss version="2.0" xmlns:content="{CONTENT_NS}">')
+    parts.append(f'<rss version="2.0" xmlns:content="{CONTENT_NS}" xmlns:atom="http://www.w3.org/2005/Atom">')
     parts.append('  <channel>')
     parts.append(f'    <title>{escape(SITE_TITLE)}</title>')
     parts.append(f'    <link>{escape(site_url)}</link>')
     parts.append(f'    <description>{escape(SITE_DESC)}</description>')
     parts.append(f'    <lastBuildDate>{last_build}</lastBuildDate>')
     parts.append(f'    <language>en-us</language>')
-    parts.append(f'    <atom:link href="{escape(site_url)}/feed.xml" rel="self" type="application/rss+xml" xmlns:atom="http://www.w3.org/2005/Atom" />')
+    parts.append(f'    <atom:link href="{escape(site_url)}/feed.xml" rel="self" type="application/rss+xml" />')
 
     for filename, meta in items:
         slug = filename[:-3] if filename.endswith(".md") else filename
@@ -89,7 +95,7 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
         parts.append('    <item>')
         parts.append(f'      <title>{escape(title)}</title>')
         parts.append(f'      <link>{escape(link)}</link>')
-        parts.append(f'      <guid isPermaLink="true">{escape(link)}</guid>')
+        parts.append(f'      <guid isPermaLink="false">{escape(link)}</guid>')
         parts.append(f'      <pubDate>{pubdate}</pubDate>')
         parts.append(f'      <description>{escape(desc)}</description>')
         # CDATA wrapper keeps embedded HTML readable to RSS readers without
