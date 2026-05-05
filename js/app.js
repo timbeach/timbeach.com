@@ -107,8 +107,21 @@ async function renderHome() {
 }
 
 function renderMusic() {
-  // Filled in by Task 8.
-  app().innerHTML = `<p class="meta">[music placeholder]</p>`;
+  // Flip data-link-live to "true" once gutlens.net is live.
+  app().innerHTML = `
+    <section class="music-page">
+      <div class="music-cover">[cover art coming]</div>
+      <h1 class="music-title">TWO_ROOMS</h1>
+      <p class="music-artist">Gut Lens</p>
+      <p class="music-status">Coming Soon · May 2026</p>
+      <a class="music-link"
+         href="https://gutlens.net"
+         data-link-live="false"
+         target="_blank"
+         rel="noopener">gutlens.net</a>
+    </section>
+  `;
+  document.title = 'Music · Timothy D Beach';
 }
 
 function renderAbout() {
