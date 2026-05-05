@@ -502,6 +502,7 @@ body.tts-open .page { padding-bottom: 88px; }
   color: var(--fg-faint);
   border: none;
   pointer-events: none;
+  cursor: default;
   font-family: var(--font-sans);
   font-size: 13px;
 }

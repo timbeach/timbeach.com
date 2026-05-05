@@ -1656,6 +1656,7 @@ git commit -m "Restyle TTS bar to neutral palette; extract to js/tts.js
   color: var(--fg-faint);
   border: none;
   pointer-events: none;
+  cursor: default;
   font-family: var(--font-sans);
   font-size: 13px;
 }
@@ -1687,6 +1688,8 @@ function renderMusic() {
       <a class="music-link"
          href="https://gutlens.net"
          data-link-live="false"
+         tabindex="-1"
+         aria-disabled="true"
          target="_blank"
          rel="noopener">gutlens.net</a>
     </section>

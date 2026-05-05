@@ -117,6 +117,8 @@ function renderMusic() {
       <a class="music-link"
          href="https://gutlens.net"
          data-link-live="false"
+         tabindex="-1"
+         aria-disabled="true"
          target="_blank"
          rel="noopener">gutlens.net</a>
     </section>
