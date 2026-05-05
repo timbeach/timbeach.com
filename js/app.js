@@ -11,7 +11,7 @@ let articlesCache = null;
 
 async function loadArticles() {
   if (articlesCache) return articlesCache;
-  const res = await fetch('articles/articles.json');
+  const res = await fetch(`articles/articles.json?t=${Date.now()}`);
   if (!res.ok) throw new Error(`Failed to load articles.json: ${res.status}`);
   const map = await res.json();
   // Convert {slug.md: {meta}} into [{slug, ...meta}], sorted by date desc.

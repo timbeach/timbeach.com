@@ -787,7 +787,7 @@ let articlesCache = null;
 
 async function loadArticles() {
   if (articlesCache) return articlesCache;
-  const res = await fetch('articles/articles.json');
+  const res = await fetch(`articles/articles.json?t=${Date.now()}`);
   if (!res.ok) throw new Error(`Failed to load articles.json: ${res.status}`);
   const map = await res.json();
   // Convert {slug.md: {meta}} into [{slug, ...meta}], sorted by date desc.
@@ -1047,7 +1047,7 @@ let articlesIndex = null;
 
 async function loadIndex() {
   if (articlesIndex) return articlesIndex;
-  const res = await fetch('articles/articles.json');
+  const res = await fetch(`articles/articles.json?t=${Date.now()}`);
   if (!res.ok) throw new Error(`articles.json: ${res.status}`);
   articlesIndex = await res.json();
   return articlesIndex;
@@ -1127,9 +1127,21 @@ export async function renderArticle(slug, mountEl) {
   `;
 
   document.title = `${meta.title} · Timothy D Beach`;
-  // Update meta description for SEO/social previews on this page
-  const metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc && meta.summary) metaDesc.setAttribute('content', meta.summary);
+  // Update all three description meta tags for on-page + social previews.
+  // Currently dormant: no article in articles.json has a 'summary' field
+  // yet. When summaries land, all three locations (description /
+  // og:description / twitter:description) update together.
+  if (meta.summary) {
+    const selectors = [
+      'meta[name="description"]',
+      'meta[property="og:description"]',
+      'meta[name="twitter:description"]',
+    ];
+    for (const sel of selectors) {
+      const el = document.querySelector(sel);
+      if (el) el.setAttribute('content', meta.summary);
+    }
+  }
 
   if (meta.audio && meta.timings) {
     mountTtsBar({ ...meta, slug });
