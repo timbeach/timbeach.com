@@ -36,7 +36,15 @@ function parseHash(hash) {
 function dispatch() {
   const parsed = parseHash(location.hash);
   const handler = handlers.get(parsed.route) || handlers.get('404');
-  if (handler) handler(parsed);
+  if (handler) {
+    Promise.resolve(handler(parsed)).catch((err) => {
+      console.error('[router] handler error:', err);
+      const main = document.getElementById('app');
+      if (main) {
+        main.innerHTML = `<p class="meta">Something went wrong. Try refreshing.</p>`;
+      }
+    });
+  }
   updateActiveNav(parsed.route);
   window.scrollTo(0, 0);
 }

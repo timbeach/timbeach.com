@@ -579,7 +579,15 @@ function parseHash(hash) {
 function dispatch() {
   const parsed = parseHash(location.hash);
   const handler = handlers.get(parsed.route) || handlers.get('404');
-  if (handler) handler(parsed);
+  if (handler) {
+    Promise.resolve(handler(parsed)).catch((err) => {
+      console.error('[router] handler error:', err);
+      const main = document.getElementById('app');
+      if (main) {
+        main.innerHTML = `<p class="meta">Something went wrong. Try refreshing.</p>`;
+      }
+    });
+  }
   updateActiveNav(parsed.route);
   window.scrollTo(0, 0);
 }
@@ -805,7 +813,8 @@ function deriveSection(article) {
   if (article.section) return article.section;
   if (Array.isArray(article.tags) && article.tags.length) {
     const t = article.tags[0];
-    return t.charAt(0).toUpperCase() + t.slice(1);
+    // Convert "software-engineering" -> "Software engineering"
+    return t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, ' ');
   }
   return 'Writing';
 }
@@ -859,7 +868,7 @@ async function renderHome() {
       <ul>
         ${more.map((a) => `
           <li>
-            <time datetime="${escapeHtml(a.date)}">${escapeHtml(a.date)}</time>
+            <time datetime="${escapeHtml(a.date)}">${escapeHtml(formatDateShort(a.date))}</time>
             <a href="#/article/${encodeURIComponent(a.slug)}">${escapeHtml(a.title)}</a>
           </li>
         `).join('')}

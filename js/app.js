@@ -37,7 +37,8 @@ function deriveSection(article) {
   if (article.section) return article.section;
   if (Array.isArray(article.tags) && article.tags.length) {
     const t = article.tags[0];
-    return t.charAt(0).toUpperCase() + t.slice(1);
+    // Convert "software-engineering" -> "Software engineering"
+    return t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, ' ');
   }
   return 'Writing';
 }
@@ -93,7 +94,7 @@ async function renderHome() {
       <ul>
         ${more.map((a) => `
           <li>
-            <time datetime="${escapeHtml(a.date)}">${escapeHtml(a.date)}</time>
+            <time datetime="${escapeHtml(a.date)}">${escapeHtml(formatDateShort(a.date))}</time>
             <a href="#/article/${encodeURIComponent(a.slug)}">${escapeHtml(a.title)}</a>
           </li>
         `).join('')}
