@@ -127,6 +127,7 @@ function render(stars) {
 }
 
 export async function initStarfield() {
+  if (rootEl) return;   // already mounted; ignore re-entrant call
   rootEl = document.createElement('div');
   rootEl.className = 'starfield';
   document.body.appendChild(rootEl);

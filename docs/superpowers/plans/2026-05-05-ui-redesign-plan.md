@@ -1933,6 +1933,7 @@ function render(stars) {
 }
 
 export async function initStarfield(rootContainer) {
+  if (rootEl) return;   // already mounted; ignore re-entrant call
   rootEl = document.createElement('div');
   rootEl.className = 'starfield';
   document.body.appendChild(rootEl);
@@ -1996,7 +1997,7 @@ function renderNotFound() { ensureStarfieldOff(); /* …existing renderNotFound 
 
 function renderAbout() {
   if (!starfieldActive) {
-    initStarfield();
+    initStarfield().catch((err) => console.error('[starfield] init failed', err));
     starfieldActive = true;
   }
 

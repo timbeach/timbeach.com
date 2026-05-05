@@ -140,7 +140,7 @@ function renderMusic() {
 
 function renderAbout() {
   if (!starfieldActive) {
-    initStarfield();
+    initStarfield().catch((err) => console.error('[starfield] init failed', err));
     starfieldActive = true;
   }
 
