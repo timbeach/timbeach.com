@@ -1,36 +1,14 @@
-// js/tts.js — read-aloud bar, ported from pre-redesign index.html.
-// Behavior must not regress: paragraph highlighting via timings sidecar,
-// transport controls, voice select, speed slider, close-to-stop.
+// js/tts.js — read-aloud bar. Plays a per-article pre-rendered Opus track and
+// drives paragraph highlighting from the timings sidecar.
+//
+// Voice is fixed at publish time by tools/render_article.py (one voice per
+// article, picked at render). The bar exposes transport + speed only — no
+// voice picker, since alternate voices aren't rendered.
 //
 // API:
 //   mountTtsBar(article) — article = { slug, title, audio, timings, voice, duration }
 //                          Mounts the bar into <body> if not already present,
-//                          wires it to the article body, autoplays on click.
-
-const VOICES = [
-  // British male
-  { id: 'bm_daniel',  label: 'Daniel (UK)' },
-  { id: 'bm_fable',   label: 'Fable (UK)' },
-  { id: 'bm_george',  label: 'George (UK)' },
-  { id: 'bm_lewis',   label: 'Lewis (UK)' },
-  // British female
-  { id: 'bf_alice',   label: 'Alice (UK)' },
-  { id: 'bf_emma',    label: 'Emma (UK)' },
-  { id: 'bf_isabella',label: 'Isabella (UK)' },
-  { id: 'bf_lily',    label: 'Lily (UK)' },
-  // American female
-  { id: 'af_alloy',   label: 'Alloy (US)' },
-  { id: 'af_aoede',   label: 'Aoede (US)' },
-  { id: 'af_bella',   label: 'Bella (US)' },
-  { id: 'af_heart',   label: 'Heart (US)' },
-  { id: 'af_jessica', label: 'Jessica (US)' },
-  { id: 'af_kore',    label: 'Kore (US)' },
-  { id: 'af_nicole',  label: 'Nicole (US)' },
-  { id: 'af_nova',    label: 'Nova (US)' },
-  { id: 'af_river',   label: 'River (US)' },
-  { id: 'af_sarah',   label: 'Sarah (US)' },
-  { id: 'af_sky',     label: 'Sky (US)' },
-];
+//                          wires it to the article body, plays on click.
 
 let bar = null;
 let audio = null;
@@ -62,9 +40,6 @@ function buildBar() {
         <input class="tts-speed-slider" type="range" min="0.6" max="1.6" step="0.05" value="1.0" />
         <span class="tts-speed-value">1.00×</span>
       </div>
-      <select class="tts-voice-select" aria-label="Voice">
-        ${VOICES.map((v) => `<option value="${v.id}">${v.label}</option>`).join('')}
-      </select>
       <button class="tts-close" type="button" aria-label="Close">×</button>
     </div>
   `;
@@ -88,17 +63,6 @@ function wireBar() {
   bar.querySelector('.tts-speed-slider').addEventListener('input', (e) => {
     if (audio) audio.playbackRate = parseFloat(e.target.value);
     bar.querySelector('.tts-speed-value').textContent = `${parseFloat(e.target.value).toFixed(2)}×`;
-  });
-  bar.querySelector('.tts-voice-select').addEventListener('change', (e) => {
-    // Switching voices means switching to the corresponding audio file. We
-    // map by replacing the voice token in the audio path. Convention from the
-    // TTS pipeline: audio/<slug>.<voice>.ogg if voice != default; otherwise
-    // audio/<slug>.ogg. (Older articles only have the default voice rendered.)
-    if (!currentArticle) return;
-    const newVoice = e.target.value;
-    const newSrc = currentArticle.audio.replace(/\.ogg$/, `.${newVoice}.ogg`);
-    audio.src = newSrc;
-    audio.load();
   });
 
   audio.addEventListener('timeupdate', onTimeUpdate);
@@ -140,14 +104,25 @@ function togglePlay() {
 }
 
 function fmtTime(s) {
+  if (!Number.isFinite(s) || s < 0) return '--:--';
   const m = Math.floor(s / 60);
   const r = Math.floor(s % 60);
   return `${m}:${r.toString().padStart(2, '0')}`;
 }
 
+// Some Opus streams lack a duration header until the full file loads, so
+// audio.duration can read Infinity. Fall back to the duration recorded in
+// articles.json (which the renderer wrote at publish time).
+function totalDuration() {
+  const d = audio ? audio.duration : NaN;
+  if (Number.isFinite(d) && d > 0) return d;
+  if (currentArticle && Number.isFinite(currentArticle.duration)) return currentArticle.duration;
+  return 0;
+}
+
 function updateTimeLabel() {
   const el = bar.querySelector('.tts-status-time');
-  if (el) el.textContent = `${fmtTime(audio.currentTime || 0)} / ${fmtTime(audio.duration || 0)}`;
+  if (el) el.textContent = `${fmtTime(audio.currentTime || 0)} / ${fmtTime(totalDuration())}`;
 }
 
 function clearHighlight() {
@@ -157,8 +132,9 @@ function clearHighlight() {
 
 function onTimeUpdate() {
   updateTimeLabel();
-  // Progress bar
-  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  // Progress bar — uses the same duration fallback as the time label.
+  const total = totalDuration();
+  const pct = total > 0 ? (audio.currentTime / total) * 100 : 0;
   bar.querySelector('.tts-progress-fill').style.width = `${pct}%`;
 
   // Paragraph highlight: timings is an array of paragraph entries with start/end seconds.
@@ -210,10 +186,6 @@ export async function mountTtsBar(article) {
   buildBar();
   currentArticle = article;
   lastParagraphIdx = -1;
-
-  // Voice select reflects the rendered voice
-  const sel = bar.querySelector('.tts-voice-select');
-  if (article.voice) sel.value = article.voice;
 
   audio.src = article.audio;
   audio.load();

@@ -243,12 +243,15 @@ export async function renderArticle(slug, mountEl) {
   const bodyMd = md.replace(/^#\s+.*$/m, '').trimStart();
   const bodyHtml = parseMarkdown(bodyMd);
 
+  const hasAudio = !!(meta.audio && meta.timings);
+
   mountEl.innerHTML = `
     <a class="back-link" href="#/">← Writing</a>
     <article class="article">
       <header class="article-header">
         <p class="meta">${escapeHtml(formatLongDate(meta.date))} · ${escapeHtml(deriveSection(meta))}</p>
         <h1>${escapeHtml(meta.title)}</h1>
+        ${hasAudio ? '<button type="button" class="read-aloud" data-act="read-aloud">▶ Read aloud</button>' : ''}
       </header>
       <div class="article-body">${bodyHtml}</div>
     </article>
@@ -271,7 +274,13 @@ export async function renderArticle(slug, mountEl) {
     }
   }
 
-  if (meta.audio && meta.timings) {
-    mountTtsBar({ ...meta, slug });
+  // TTS bar opens only when the reader explicitly asks for it.
+  if (hasAudio) {
+    const btn = mountEl.querySelector('[data-act="read-aloud"]');
+    if (btn) {
+      btn.addEventListener('click', () => {
+        mountTtsBar({ ...meta, slug });
+      });
+    }
   }
 }

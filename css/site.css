@@ -13,9 +13,12 @@
   --link-hover:   #000000;
   --selection:    #d8d4cc;
 
-  /* Typography stacks */
-  --font-serif: "Source Serif 4", Charter, Georgia, "Times New Roman", serif;
-  --font-sans:  "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  /* Typography: Charter family (low-DPI laser-printer descendant — chunky and
+     newspaper-y) with sturdy fallbacks. Charis SIL is the free Google Fonts
+     equivalent of Bitstream Charter; "Iowan Old Style" is the macOS
+     near-equivalent; Georgia is the universal final fallback. */
+  --font-serif: "Charis SIL", Charter, "Bitstream Charter", "Iowan Old Style", Georgia, serif;
+  --font-sans:  -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
   --font-mono:  "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* Sizing */
@@ -61,7 +64,7 @@ body {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-serif);
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -265,7 +268,26 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   letter-spacing: -0.01em;
 }
 
-.article-body { font-size: 16px; line-height: 1.65; }
+.read-aloud {
+  background: transparent;
+  border: 1px solid var(--divider);
+  color: var(--fg-muted);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.read-aloud:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+
+.article-body { font-size: 17px; line-height: 1.65; }
 .article-body p { margin: 0 0 1.1em; }
 .article-body h2 {
   font-size: 22px;
@@ -426,17 +448,6 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
 .tts-speed { display: flex; align-items: center; gap: 6px; font-size: 11px; }
 .tts-speed-label { color: var(--fg-faint); }
 .tts-speed-slider { width: 80px; accent-color: var(--fg); }
-
-.tts-voice-select {
-  font-family: var(--font-sans);
-  font-size: 11px;
-  background: var(--bg);
-  color: var(--fg);
-  border: 1px solid var(--divider);
-  padding: 4px 6px;
-  border-radius: 4px;
-}
-.tts-voice-select:focus { outline: 1px solid var(--fg); }
 
 .tts-close {
   background: transparent;
