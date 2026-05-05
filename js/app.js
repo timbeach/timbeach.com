@@ -119,22 +119,58 @@ async function renderHome() {
 
 function renderMusic() {
   ensureStarfieldOff();
-  // Flip data-link-live to "true" once gutlens.net is live.
   app().innerHTML = `
     <section class="music-page">
-      <div class="music-cover">[cover art coming]</div>
+      <button type="button" class="music-cover" data-act="play-promo" aria-label="Play TWO_ROOMS promo video">
+        <img src="pix/TWO_ROOMS_1.jpeg" alt="TWO_ROOMS by Gut Lens — album art" />
+        <span class="music-cover-play" aria-hidden="true">▶</span>
+      </button>
       <h1 class="music-title">TWO_ROOMS</h1>
       <p class="music-artist">Gut Lens</p>
       <p class="music-status">Coming Soon · May 2026</p>
       <a class="music-link"
          href="https://gutlens.net"
-         data-link-live="false"
-         tabindex="-1"
-         aria-disabled="true"
+         data-link-live="true"
          target="_blank"
          rel="noopener">gutlens.net</a>
+
+      <div class="lightbox" data-act="lightbox" aria-hidden="true">
+        <button type="button" class="lightbox-close" aria-label="Close video">×</button>
+        <video class="lightbox-video" preload="metadata" controls loop playsinline>
+          <source src="video/gut-lens_lioness.mp4" type="video/mp4" />
+        </video>
+      </div>
     </section>
   `;
+
+  const cover = app().querySelector('[data-act="play-promo"]');
+  const lightbox = app().querySelector('[data-act="lightbox"]');
+  const video = lightbox.querySelector('.lightbox-video');
+  const closeBtn = lightbox.querySelector('.lightbox-close');
+
+  const onKey = (e) => { if (e.key === 'Escape') closePromo(); };
+
+  function openPromo() {
+    lightbox.classList.add('open');
+    lightbox.setAttribute('aria-hidden', 'false');
+    video.currentTime = 0;
+    video.play().catch(() => { /* browser blocked — controls still work */ });
+    document.addEventListener('keydown', onKey);
+  }
+  function closePromo() {
+    lightbox.classList.remove('open');
+    lightbox.setAttribute('aria-hidden', 'true');
+    video.pause();
+    document.removeEventListener('keydown', onKey);
+  }
+
+  cover.addEventListener('click', openPromo);
+  closeBtn.addEventListener('click', closePromo);
+  // Backdrop click closes; clicks on the video itself don't bubble out.
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closePromo();
+  });
+
   document.title = 'Music · Timothy D Beach';
 }
 
