@@ -2,12 +2,22 @@
 import { initTheme } from './theme.js';
 import { initRouter, registerRoute } from './router.js';
 import { renderArticle } from './article.js';
+import { initStarfield, destroyStarfield } from './starfield.js';
 
 const app = () => document.getElementById('app');
 
 // === Article helpers ===
 
 let articlesCache = null;
+
+let starfieldActive = false;
+
+function ensureStarfieldOff() {
+  if (starfieldActive) {
+    destroyStarfield();
+    starfieldActive = false;
+  }
+}
 
 async function loadArticles() {
   if (articlesCache) return articlesCache;
@@ -58,6 +68,7 @@ function escapeHtml(s) {
 // === Route renderers ===
 
 async function renderHome() {
+  ensureStarfieldOff();
   const all = await loadArticles();
   if (!all.length) {
     app().innerHTML = `<p class="meta">No articles yet.</p>`;
@@ -107,6 +118,7 @@ async function renderHome() {
 }
 
 function renderMusic() {
+  ensureStarfieldOff();
   // Flip data-link-live to "true" once gutlens.net is live.
   app().innerHTML = `
     <section class="music-page">
@@ -127,11 +139,26 @@ function renderMusic() {
 }
 
 function renderAbout() {
-  // Filled in by Task 9.
-  app().innerHTML = `<p class="meta">[about placeholder]</p>`;
+  if (!starfieldActive) {
+    initStarfield();
+    starfieldActive = true;
+  }
+
+  app().innerHTML = `
+    <section class="about-page">
+      <h1>About</h1>
+      <p>I'm Timothy. I write software, record music as Gut Lens, and run Aegix Linux. This site is where I write things down so I don't have to remember them twice.</p>
+      <p class="links">
+        <a href="mailto:beachtimothyd@gmail.com">Email</a>
+        <a href="https://github.com/timbeach" target="_blank" rel="noopener">GitHub</a>
+      </p>
+    </section>
+  `;
+  document.title = 'About · Timothy D Beach';
 }
 
 function renderNotFound() {
+  ensureStarfieldOff();
   app().innerHTML = `
     <p class="meta">404</p>
     <h1>Page not found</h1>
@@ -143,7 +170,10 @@ function renderNotFound() {
 export function bootstrap() {
   initTheme();
   registerRoute('home', renderHome);
-  registerRoute('article', ({ slug }) => renderArticle(slug, app()));
+  registerRoute('article', ({ slug }) => {
+    ensureStarfieldOff();
+    return renderArticle(slug, app());
+  });
   registerRoute('music', renderMusic);
   registerRoute('about', renderAbout);
   registerRoute('404', renderNotFound);

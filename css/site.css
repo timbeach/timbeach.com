@@ -516,3 +516,69 @@ body.tts-open .page { padding-bottom: 88px; }
   font-family: var(--font-sans);
   font-size: 13px;
 }
+
+/* === Starfield (only on /about) === */
+
+.starfield {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.star {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--fg-faint);
+  opacity: 0.6;
+  animation: twinkle 4s infinite ease-in-out;
+}
+.star.bright { opacity: 0.9; }
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50%      { opacity: 0.9; transform: scale(1.1); }
+}
+
+.sky-info {
+  position: fixed;
+  bottom: 16px;
+  left: 16px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--fg-faint);
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  border: 1px solid var(--divider);
+  padding: 6px 10px;
+  border-radius: 4px;
+  pointer-events: none;
+  line-height: 1.6;
+  z-index: 1;
+}
+
+/* === About page === */
+
+.about-page {
+  max-width: var(--content-width);
+}
+.about-page h1 {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 16px;
+}
+.about-page p {
+  font-size: 17px;
+  line-height: 1.6;
+  margin: 0 0 1em;
+}
+.about-page .links {
+  margin-top: 24px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+.about-page .links a { color: var(--fg-muted); border: none; margin-right: 16px; }
+.about-page .links a:hover { color: var(--fg); }
