@@ -1,0 +1,288 @@
+{
+  "voice": "bm_lewis",
+  "duration": 401.493,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 24.32,
+      "text": "Claude Code can do a lot out of the box, but it doesn't know your workflows. It doesn't know that publishing an article to your website means copying a markdown file to a specific directory, adding an entry to a JSON registry, previewing locally, rsyncing to a VPS, and committing to git. Every time you ask, it has to explore your repo, discover the structure, and figure it out from scratch."
+    },
+    {
+      "idx": 1,
+      "start": 24.32,
+      "end": 37.44,
+      "text": "Skills fix this. A skill is a markdown file that teaches Claude a procedure it can follow with the tools it already has. No plugins, no scripts, no MCP servers \u2014 just instructions."
+    },
+    {
+      "idx": 2,
+      "start": 37.44,
+      "end": 38.656,
+      "text": "Where Skills Live"
+    },
+    {
+      "idx": 3,
+      "start": 38.656,
+      "end": 41.898666666666664,
+      "text": "Claude Code discovers skills from two locations:"
+    },
+    {
+      "idx": 4,
+      "start": 41.898666666666664,
+      "end": 50.00533333333333,
+      "text": "Global (personal): ~/.claude/skills/<skill-name>/SKILL.md \u2014 available in every session"
+    },
+    {
+      "idx": 5,
+      "start": 50.00533333333333,
+      "end": 57.10933333333333,
+      "text": "Project-scoped: .claude/skills/<skill-name>/SKILL.md \u2014 available only in that project"
+    },
+    {
+      "idx": 6,
+      "start": 57.10933333333333,
+      "end": 71.76533333333333,
+      "text": "Each skill is a directory containing a SKILL.md file. The directory name becomes the slash command. So ~/.claude/skills/publish-article/SKILL.md gives you /publish-article."
+    },
+    {
+      "idx": 7,
+      "start": 71.76533333333333,
+      "end": 74.00533333333334,
+      "text": "Anatomy of a SKILL.md"
+    },
+    {
+      "idx": 8,
+      "start": 74.00533333333334,
+      "end": 80.61866666666667,
+      "text": "A skill file has two parts: YAML frontmatter for discovery, and markdown content for instructions."
+    },
+    {
+      "idx": 9,
+      "start": 80.61866666666667,
+      "end": 81.57866666666666,
+      "text": "Frontmatter"
+    },
+    {
+      "idx": 10,
+      "start": 81.57866666666666,
+      "end": 82.496,
+      "text": "Two fields:"
+    },
+    {
+      "idx": 11,
+      "start": 82.496,
+      "end": 87.91466666666666,
+      "text": "name \u2014 letters, numbers, hyphens only. This is what shows up in the skills list."
+    },
+    {
+      "idx": 12,
+      "start": 87.91466666666666,
+      "end": 98.688,
+      "text": "description \u2014 tells Claude when to use this skill. Start with \"Use when...\" and describe triggering conditions. Don't summarize what the skill does \u2014 just describe when it applies."
+    },
+    {
+      "idx": 13,
+      "start": 98.688,
+      "end": 113.42933333333333,
+      "text": "The description matters more than you'd think. Claude reads it to decide whether to load your skill for a given task. If the description says \"Use when publishing articles\" and you say \"add this post to my website,\" Claude connects the dots."
+    },
+    {
+      "idx": 14,
+      "start": 113.42933333333333,
+      "end": 114.21866666666666,
+      "text": "Content"
+    },
+    {
+      "idx": 15,
+      "start": 114.21866666666666,
+      "end": 128.53333333333333,
+      "text": "The rest of the file is the procedure Claude follows. Write it like you're explaining the workflow to a competent colleague who's never seen your project before. Be specific about paths, file formats, and the order of operations."
+    },
+    {
+      "idx": 16,
+      "start": 128.53333333333333,
+      "end": 130.88,
+      "text": "A Real Example: publish-article"
+    },
+    {
+      "idx": 17,
+      "start": 130.88,
+      "end": 150.89066666666668,
+      "text": "Here's a skill I built for publishing markdown articles to my personal website. The site is a vanilla SPA \u2014 no build step, no framework. Articles are markdown files in an articles/ directory with metadata in a single articles.json file. Deployment is an rsync to a VPS."
+    },
+    {
+      "idx": 18,
+      "start": 150.89066666666668,
+      "end": 168.10666666666665,
+      "text": "Without this skill, Claude would need to explore the repo every time: read the index.html to understand the rendering pipeline, examine the JSON format, figure out where images go, discover the deploy script. With the skill, it just follows the recipe."
+    },
+    {
+      "idx": 19,
+      "start": 168.10666666666665,
+      "end": 169.13066666666666,
+      "text": "The Full Skill"
+    },
+    {
+      "idx": 20,
+      "start": 169.13066666666666,
+      "end": 170.21866666666668,
+      "text": "Why This Works"
+    },
+    {
+      "idx": 21,
+      "start": 170.21866666666668,
+      "end": 172.90666666666667,
+      "text": "Notice what the skill does and doesn't do:"
+    },
+    {
+      "idx": 22,
+      "start": 172.90666666666667,
+      "end": 189.824,
+      "text": "It gives Claude facts it can't derive quickly. The repo path, the JSON schema, the image path convention, the deploy script's CWD requirement \u2014 these are things Claude would have to discover by reading the codebase. The skill front-loads that knowledge."
+    },
+    {
+      "idx": 23,
+      "start": 189.824,
+      "end": 201.70666666666668,
+      "text": "It sequences the workflow. Preview before deploy. Deploy before commit. Don't commit if deploy fails. This ordering encodes your actual process, not something Claude would guess."
+    },
+    {
+      "idx": 24,
+      "start": 201.70666666666668,
+      "end": 214.592,
+      "text": "It specifies interaction points. Propose metadata and wait. Preview and wait. These aren't things Claude would naturally pause for \u2014 it would just barrel through. The skill makes the human checkpoints explicit."
+    },
+    {
+      "idx": 25,
+      "start": 214.592,
+      "end": 226.53866666666667,
+      "text": "It doesn't over-specify. The skill doesn't tell Claude how to read a file or how to run a bash command. It already knows how to do that. The skill only teaches what's specific to your workflow."
+    },
+    {
+      "idx": 26,
+      "start": 226.53866666666667,
+      "end": 227.84,
+      "text": "Writing Your Own"
+    },
+    {
+      "idx": 27,
+      "start": 227.84,
+      "end": 237.54666666666665,
+      "text": "Pick a workflow you repeat. Something where you find yourself explaining the same sequence of steps to Claude across sessions. That's a skill waiting to be written."
+    },
+    {
+      "idx": 28,
+      "start": 237.54666666666665,
+      "end": 239.70133333333334,
+      "text": "Step 1: Map the procedure"
+    },
+    {
+      "idx": 29,
+      "start": 239.70133333333334,
+      "end": 256.02133333333336,
+      "text": "Write out every step you'd take manually. Include the file paths, the exact commands, the order. Don't abstract \u2014 be concrete. If you cd to a specific directory before running a script because the script uses $PWD, write that down."
+    },
+    {
+      "idx": 30,
+      "start": 256.02133333333336,
+      "end": 259.02933333333334,
+      "text": "Step 2: Identify what Claude can't infer"
+    },
+    {
+      "idx": 31,
+      "start": 259.02933333333334,
+      "end": 261.26933333333335,
+      "text": "Separate the steps into two buckets:"
+    },
+    {
+      "idx": 32,
+      "start": 261.26933333333335,
+      "end": 267.86133333333333,
+      "text": "Things Claude could figure out by reading your codebase (how your JSON is structured, what framework you use)"
+    },
+    {
+      "idx": 33,
+      "start": 267.86133333333333,
+      "end": 275.4986666666667,
+      "text": "Things Claude can't easily derive (your preferred workflow order, which fields to propose for approval, where to deploy)"
+    },
+    {
+      "idx": 34,
+      "start": 275.4986666666667,
+      "end": 285.20533333333333,
+      "text": "Your skill should focus on the second bucket. Include enough of the first bucket to save Claude the exploration time, but don't document your entire codebase."
+    },
+    {
+      "idx": 35,
+      "start": 285.20533333333333,
+      "end": 287.72266666666667,
+      "text": "Step 3: Define the interaction points"
+    },
+    {
+      "idx": 36,
+      "start": 287.72266666666667,
+      "end": 299.2,
+      "text": "Where should Claude pause and ask you? Metadata approval, preview confirmation, deploy authorization \u2014 these are places where your judgment matters and Claude shouldn't just proceed."
+    },
+    {
+      "idx": 37,
+      "start": 299.2,
+      "end": 301.568,
+      "text": "Step 4: Write the SKILL.md"
+    },
+    {
+      "idx": 38,
+      "start": 301.568,
+      "end": 316.75733333333335,
+      "text": "Put the frontmatter at the top with a good description. Write the procedure as numbered steps. Be specific about paths and commands. Include error handling for things that actually go wrong (port already in use, file already exists, deploy fails)."
+    },
+    {
+      "idx": 39,
+      "start": 316.75733333333335,
+      "end": 318.29333333333335,
+      "text": "Step 5: Test it"
+    },
+    {
+      "idx": 40,
+      "start": 318.29333333333335,
+      "end": 330.432,
+      "text": "Start a new Claude Code session. Run /your-skill-name and see if Claude follows the procedure correctly. If it misses a step or makes wrong assumptions, update the skill and restart."
+    },
+    {
+      "idx": 41,
+      "start": 330.432,
+      "end": 331.072,
+      "text": "Tips"
+    },
+    {
+      "idx": 42,
+      "start": 331.072,
+      "end": 341.80266666666665,
+      "text": "Keep it under 500 words if you can. The skill gets loaded into Claude's context. Long skills burn tokens. Write what's necessary, skip what's obvious."
+    },
+    {
+      "idx": 43,
+      "start": 341.80266666666665,
+      "end": 357.58933333333334,
+      "text": "Description is for when, not what. \"Use when deploying to production after tests pass\" is better than \"Runs the deploy pipeline with blue-green switching.\" Claude needs to know when to reach for the skill, not what it does \u2014 that's what the content is for."
+    },
+    {
+      "idx": 44,
+      "start": 357.58933333333334,
+      "end": 369.7493333333333,
+      "text": "Hardcode paths. Skills are your personal tools. Don't parameterize things that never change. If your repo is always at ~/code/myproject, write that path directly."
+    },
+    {
+      "idx": 45,
+      "start": 369.7493333333333,
+      "end": 384.2986666666667,
+      "text": "Include error handling for real failures. Port conflicts, existing files, failed deploys \u2014 these actually happen. \"Parse error in JSON? Warn and stop\" is more useful than pretending everything always works."
+    },
+    {
+      "idx": 46,
+      "start": 384.2986666666667,
+      "end": 401.49333333333334,
+      "text": "Global vs. project-scoped. If the skill only makes sense in one repo, put it in .claude/skills/ in that repo. If you'd use it from anywhere (like publishing articles from whatever directory you're working in), put it in ~/.claude/skills/."
+    }
+  ]
+}

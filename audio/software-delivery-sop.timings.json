@@ -1,0 +1,762 @@
+{
+  "voice": "bm_lewis",
+  "duration": 616.256,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 2.304,
+      "text": "Co-authored with Mason U Borchard"
+    },
+    {
+      "idx": 1,
+      "start": 2.304,
+      "end": 12.309333333333333,
+      "text": "A practical standard operating procedure for teams managing branching, releases, SQL changes, and deployments in a corporate software environment."
+    },
+    {
+      "idx": 2,
+      "start": 12.309333333333333,
+      "end": 14.912,
+      "text": "Philosophy: Every Feature is a \"Gift\""
+    },
+    {
+      "idx": 3,
+      "start": 14.912,
+      "end": 23.744,
+      "text": "Sometimes changing the language can change our perception. Imagine if a feature branch was called a gift. This idea comes from Ernie Gray."
+    },
+    {
+      "idx": 4,
+      "start": 23.744,
+      "end": 40.85333333333333,
+      "text": "A common challenge in software development is the gravity of the development environment. Engineers spend hours completing code that works locally, submit a PR, check that it works on the dev environment, and then feel the rest of the process is beyond their control."
+    },
+    {
+      "idx": 5,
+      "start": 40.85333333333333,
+      "end": 47.06133333333333,
+      "text": "Escaping the gravity of the development environment into outer orbits requires more energy."
+    },
+    {
+      "idx": 6,
+      "start": 47.06133333333333,
+      "end": 59.605333333333334,
+      "text": "A great team ensures their code is a polished, deployable package \u2014 a gift to the team working together toward a great release. These SOPs define what \"polished and deployable\" looks like."
+    },
+    {
+      "idx": 7,
+      "start": 59.605333333333334,
+      "end": 62.976,
+      "text": "1. Story/Feature-Level Definition of Done"
+    },
+    {
+      "idx": 8,
+      "start": 62.976,
+      "end": 73.06666666666666,
+      "text": "Quality parts make quality systems. A consistent definition of done at the story level prevents incomplete or undocumented code from entering the pipeline."
+    },
+    {
+      "idx": 9,
+      "start": 73.06666666666666,
+      "end": 76.608,
+      "text": "A story is not done until all of the following are true:"
+    },
+    {
+      "idx": 10,
+      "start": 76.608,
+      "end": 81.04533333333333,
+      "text": "[ ] Code Review: Pull request is reviewed and approved by a teammate"
+    },
+    {
+      "idx": 11,
+      "start": 81.04533333333333,
+      "end": 86.144,
+      "text": "[ ] Static Analysis: Developer has reviewed the scan and addressed all issues"
+    },
+    {
+      "idx": 12,
+      "start": 86.144,
+      "end": 96.27733333333333,
+      "text": "[ ] SQL Archival: All required SQL is committed to the release folder in the repository and linked in the Release Manifest (see Section 5)"
+    },
+    {
+      "idx": 13,
+      "start": 96.27733333333333,
+      "end": 102.54933333333334,
+      "text": "[ ] Ticket Linking: The ticket contains a comment with the direct URL to any SQL files"
+    },
+    {
+      "idx": 14,
+      "start": 102.54933333333334,
+      "end": 109.61066666666666,
+      "text": "[ ] Feature Toggle: If the feature is high-risk, a configuration flag is implemented for instant deactivation"
+    },
+    {
+      "idx": 15,
+      "start": 109.61066666666666,
+      "end": 117.52533333333334,
+      "text": "[ ] Test Case: A test case is drafted in comments or the test suite, including named test users in the QA environment"
+    },
+    {
+      "idx": 16,
+      "start": 117.52533333333334,
+      "end": 122.70933333333333,
+      "text": "[ ] Release Manifest: The story/feature is added to the Release Manifest"
+    },
+    {
+      "idx": 17,
+      "start": 122.70933333333333,
+      "end": 130.51733333333334,
+      "text": "[ ] Communication: All decisions and context are documented on the ticket \u2014 not in chat threads or verbal conversations"
+    },
+    {
+      "idx": 18,
+      "start": 130.51733333333334,
+      "end": 133.248,
+      "text": "2. Source Control and Branching Strategy"
+    },
+    {
+      "idx": 19,
+      "start": 133.248,
+      "end": 135.65866666666668,
+      "text": "2.1 Multi-Tier Branching Model"
+    },
+    {
+      "idx": 20,
+      "start": 135.65866666666668,
+      "end": 142.35733333333334,
+      "text": "Teams should follow a multi-tier branching model to isolate development, testing, and release preparation."
+    },
+    {
+      "idx": 21,
+      "start": 142.35733333333334,
+      "end": 154.26133333333334,
+      "text": "Important: Production artifacts are only built and deployed from release branches. The development branch deploys to DEV for early testing but is not a source for production artifacts."
+    },
+    {
+      "idx": 22,
+      "start": 154.26133333333334,
+      "end": 155.94666666666666,
+      "text": "2.2 Branch Naming"
+    },
+    {
+      "idx": 23,
+      "start": 155.94666666666666,
+      "end": 160.68266666666668,
+      "text": "All branches must include the ticket identifier from your project tracker."
+    },
+    {
+      "idx": 24,
+      "start": 160.68266666666668,
+      "end": 171.43466666666666,
+      "text": "Feature branches: feature/<developer>/PROJ-XXXX-short-description\nRelease branches: release/REL-XXXX (sequential numbering)"
+    },
+    {
+      "idx": 25,
+      "start": 171.43466666666666,
+      "end": 173.48266666666666,
+      "text": "2.3 Creating Branches"
+    },
+    {
+      "idx": 26,
+      "start": 173.48266666666666,
+      "end": 176.21333333333334,
+      "text": "All new branches must be created from main."
+    },
+    {
+      "idx": 27,
+      "start": 176.21333333333334,
+      "end": 185.92,
+      "text": "Why: Creating branches from main ensures that a release branch can be rebuilt easily from the sum of the individual branches included in the release."
+    },
+    {
+      "idx": 28,
+      "start": 185.92,
+      "end": 187.94666666666666,
+      "text": "2.4 Release Lifecycle"
+    },
+    {
+      "idx": 29,
+      "start": 187.94666666666666,
+      "end": 192.98133333333334,
+      "text": "A new release branch is created from main using the release naming convention"
+    },
+    {
+      "idx": 30,
+      "start": 192.98133333333334,
+      "end": 199.21066666666667,
+      "text": "Feature branches and bug fixes for that release are merged into the release branch via pull requests"
+    },
+    {
+      "idx": 31,
+      "start": 199.21066666666667,
+      "end": 203.75466666666668,
+      "text": "CI/CD builds and deploys artifacts from the release branch"
+    },
+    {
+      "idx": 32,
+      "start": 203.75466666666668,
+      "end": 210.24,
+      "text": "QA testing is performed against the deployed build; fixes go back into the same release branch"
+    },
+    {
+      "idx": 33,
+      "start": 210.24,
+      "end": 214.67733333333334,
+      "text": "Once the release passes QA, the release branch is merged into main"
+    },
+    {
+      "idx": 34,
+      "start": 214.67733333333334,
+      "end": 218.53866666666667,
+      "text": "A new release branch is created from main for the next cycle"
+    },
+    {
+      "idx": 35,
+      "start": 218.53866666666667,
+      "end": 220.52266666666668,
+      "text": "Creating a new release branch:"
+    },
+    {
+      "idx": 36,
+      "start": 220.52266666666668,
+      "end": 223.14666666666668,
+      "text": "Merging a completed release back to main:"
+    },
+    {
+      "idx": 37,
+      "start": 223.14666666666668,
+      "end": 234.048,
+      "text": "Tip: Use --no-ff (no fast-forward) merges to preserve release branch history in the git log. This makes it easy to trace which commits belonged to which release."
+    },
+    {
+      "idx": 38,
+      "start": 234.048,
+      "end": 235.94666666666666,
+      "text": "2.5 Branch Ownership"
+    },
+    {
+      "idx": 39,
+      "start": 235.94666666666666,
+      "end": 241.30133333333333,
+      "text": "Branch management is owned by the developer. Each developer is responsible for:"
+    },
+    {
+      "idx": 40,
+      "start": 241.30133333333333,
+      "end": 243.05066666666667,
+      "text": "Creating branches from main"
+    },
+    {
+      "idx": 41,
+      "start": 243.05066666666667,
+      "end": 244.992,
+      "text": "Keeping branches up to date"
+    },
+    {
+      "idx": 42,
+      "start": 244.992,
+      "end": 246.74133333333333,
+      "text": "Resolving merge conflicts"
+    },
+    {
+      "idx": 43,
+      "start": 246.74133333333333,
+      "end": 249.10933333333332,
+      "text": "Cleaning up stale branches after merge"
+    },
+    {
+      "idx": 44,
+      "start": 249.10933333333332,
+      "end": 250.83733333333333,
+      "text": "2.6 Do's and Don'ts"
+    },
+    {
+      "idx": 45,
+      "start": 250.83733333333333,
+      "end": 252.288,
+      "text": "3. Pull Requests"
+    },
+    {
+      "idx": 46,
+      "start": 252.288,
+      "end": 254.80533333333332,
+      "text": "3.1 PRs to Development"
+    },
+    {
+      "idx": 47,
+      "start": 254.80533333333332,
+      "end": 258.176,
+      "text": "Developers can PR to the development branch at will"
+    },
+    {
+      "idx": 48,
+      "start": 258.176,
+      "end": 263.8933333333333,
+      "text": "Merging to development triggers automated build and deploy to the DEV environment"
+    },
+    {
+      "idx": 49,
+      "start": 263.8933333333333,
+      "end": 270.12266666666665,
+      "text": "PRs to development do not require approval but are still required (no direct pushes)"
+    },
+    {
+      "idx": 50,
+      "start": 270.12266666666665,
+      "end": 272.66133333333335,
+      "text": "3.2 PRs to Integration"
+    },
+    {
+      "idx": 51,
+      "start": 272.66133333333335,
+      "end": 279.14666666666665,
+      "text": "When a feature is ready for formal QA, the developer merges it into the integration branch via PR"
+    },
+    {
+      "idx": 52,
+      "start": 279.14666666666665,
+      "end": 284.07466666666664,
+      "text": "The integration branch is what the QA team deploys to the QA environment"
+    },
+    {
+      "idx": 53,
+      "start": 284.07466666666664,
+      "end": 286.8693333333333,
+      "text": "PRs to integration require review"
+    },
+    {
+      "idx": 54,
+      "start": 286.8693333333333,
+      "end": 289.06666666666666,
+      "text": "3.3 PRs to Release"
+    },
+    {
+      "idx": 55,
+      "start": 289.06666666666666,
+      "end": 295.50933333333336,
+      "text": "Only features fully signed off by QA in the integration branch are merged into the release branch"
+    },
+    {
+      "idx": 56,
+      "start": 295.50933333333336,
+      "end": 301.71733333333333,
+      "text": "The release branch is cut from main and must remain pristine \u2014 no rejected or unapproved code"
+    },
+    {
+      "idx": 57,
+      "start": 301.71733333333333,
+      "end": 305.536,
+      "text": "PRs to release branches require review and approval"
+    },
+    {
+      "idx": 58,
+      "start": 305.536,
+      "end": 307.9893333333333,
+      "text": "3.4 General PR Guidelines"
+    },
+    {
+      "idx": 59,
+      "start": 307.9893333333333,
+      "end": 311.36,
+      "text": "PR title should include the ticket identifier"
+    },
+    {
+      "idx": 60,
+      "start": 311.36,
+      "end": 315.0933333333333,
+      "text": "PR description should summarize what changed and why"
+    },
+    {
+      "idx": 61,
+      "start": 315.0933333333333,
+      "end": 317.568,
+      "text": "Link the PR to the relevant ticket"
+    },
+    {
+      "idx": 62,
+      "start": 317.568,
+      "end": 319.5733333333333,
+      "text": "4. The Release Manifest"
+    },
+    {
+      "idx": 63,
+      "start": 319.5733333333333,
+      "end": 339.8826666666667,
+      "text": "A wonderful side-effect of the agentic AI trend is context as code in natural language. Scientific processes are good at \"breaking things into pieces\" at the expense of a holistic context. Version control and project trackers tend to atomize and disarticulate. Context is easy to lose sight of."
+    },
+    {
+      "idx": 64,
+      "start": 339.8826666666667,
+      "end": 355.968,
+      "text": "The Release Manifest is a living document that provides a collaborative, holistic, human-readable context of the work candidates for a given release. A human (or agent) should be able to understand intent and build your software using this document."
+    },
+    {
+      "idx": 65,
+      "start": 355.968,
+      "end": 357.5253333333333,
+      "text": "4.1 Lifecycle"
+    },
+    {
+      "idx": 66,
+      "start": 357.5253333333333,
+      "end": 365.16266666666667,
+      "text": "At the outset of a sprint (or following a release), a Release Manifest is created and cross-linked with the release ticket"
+    },
+    {
+      "idx": 67,
+      "start": 365.16266666666667,
+      "end": 369.04533333333336,
+      "text": "Deferred features from the previous manifest are copied forward"
+    },
+    {
+      "idx": 68,
+      "start": 369.04533333333336,
+      "end": 373.696,
+      "text": "The document is updated incrementally as features emerge from the sprint"
+    },
+    {
+      "idx": 69,
+      "start": 373.696,
+      "end": 377.4506666666667,
+      "text": "At standup, the team briefly reviews the Release Manifest"
+    },
+    {
+      "idx": 70,
+      "start": 377.4506666666667,
+      "end": 385.00266666666664,
+      "text": "At release assembly time, all features are either Approved or Deferred, and contents are transposed into the release ticket"
+    },
+    {
+      "idx": 71,
+      "start": 385.00266666666664,
+      "end": 393.04533333333336,
+      "text": "Important: Release tickets should not be cloned from the previous deployment. Use a clean template to avoid stale information."
+    },
+    {
+      "idx": 72,
+      "start": 393.04533333333336,
+      "end": 394.90133333333335,
+      "text": "4.2 Manifest Sections"
+    },
+    {
+      "idx": 73,
+      "start": 394.90133333333335,
+      "end": 397.20533333333333,
+      "text": "4.3 For Each Feature, Include:"
+    },
+    {
+      "idx": 74,
+      "start": 397.20533333333333,
+      "end": 405.29066666666665,
+      "text": "A meaningful title with the ticket key (e.g., \"PROJ-1144 - Temperature Configuration\")"
+    },
+    {
+      "idx": 75,
+      "start": 405.29066666666665,
+      "end": 412.3946666666667,
+      "text": "A short context explaining:\n\nWhat it is\nHow it works\nHow it's deployed (including any infrastructure components)"
+    },
+    {
+      "idx": 76,
+      "start": 412.3946666666667,
+      "end": 413.312,
+      "text": "What it is"
+    },
+    {
+      "idx": 77,
+      "start": 413.312,
+      "end": 414.336,
+      "text": "How it works"
+    },
+    {
+      "idx": 78,
+      "start": 414.336,
+      "end": 418.02666666666664,
+      "text": "How it's deployed (including any infrastructure components)"
+    },
+    {
+      "idx": 79,
+      "start": 418.02666666666664,
+      "end": 423.0826666666667,
+      "text": "Links to:\n\nThe tracker tickets\nThe feature branch\nAssociated SQL files"
+    },
+    {
+      "idx": 80,
+      "start": 423.0826666666667,
+      "end": 424.576,
+      "text": "The tracker tickets"
+    },
+    {
+      "idx": 81,
+      "start": 424.576,
+      "end": 425.87733333333335,
+      "text": "The feature branch"
+    },
+    {
+      "idx": 82,
+      "start": 425.87733333333335,
+      "end": 427.92533333333336,
+      "text": "Associated SQL files"
+    },
+    {
+      "idx": 83,
+      "start": 427.92533333333336,
+      "end": 430.5493333333333,
+      "text": "5. SQL Management Protocol"
+    },
+    {
+      "idx": 84,
+      "start": 430.5493333333333,
+      "end": 446.5706666666667,
+      "text": "Many organizations formally request all SQL processing via DBA tickets above the development environment. Well-organized SQL etiquette reinforces good habits and gives the acting DBA clear execution paths."
+    },
+    {
+      "idx": 85,
+      "start": 446.5706666666667,
+      "end": 456.98133333333334,
+      "text": "All SQL changes are version-controlled in the repository. The SQL folder serves as the source of truth, organized by release ticket ID."
+    },
+    {
+      "idx": 86,
+      "start": 456.98133333333334,
+      "end": 459.2,
+      "text": "5.1 Directory Structure"
+    },
+    {
+      "idx": 87,
+      "start": 459.2,
+      "end": 461.5253333333333,
+      "text": "5.2 Naming Convention"
+    },
+    {
+      "idx": 88,
+      "start": 461.5253333333333,
+      "end": 471.53066666666666,
+      "text": "Forward scripts: SequenceNumber_TicketCode_Action_Description.sql\nRollback scripts: SequenceNumber_TicketCode_UNDO_Description.sql"
+    },
+    {
+      "idx": 89,
+      "start": 471.53066666666666,
+      "end": 474.624,
+      "text": "5.3 Each SQL Script Must Include"
+    },
+    {
+      "idx": 90,
+      "start": 474.624,
+      "end": 477.0346666666667,
+      "text": "The primary DDL/DML"
+    },
+    {
+      "idx": 91,
+      "start": 477.0346666666667,
+      "end": 482.56,
+      "text": "A verification query (e.g., SELECT count(*)) to confirm success"
+    },
+    {
+      "idx": 92,
+      "start": 482.56,
+      "end": 484.5013333333333,
+      "text": "A corresponding rollback script"
+    },
+    {
+      "idx": 93,
+      "start": 484.5013333333333,
+      "end": 487.33866666666665,
+      "text": "Clear comments explaining what the script does"
+    },
+    {
+      "idx": 94,
+      "start": 487.33866666666665,
+      "end": 489.1093333333333,
+      "text": "5.4 Ticket Linking"
+    },
+    {
+      "idx": 95,
+      "start": 489.1093333333333,
+      "end": 495.424,
+      "text": "The ticket must contain a comment with the direct URL to the SQL files in the repository."
+    },
+    {
+      "idx": 96,
+      "start": 495.424,
+      "end": 502.63466666666665,
+      "text": "A feature is not considered complete if scripts only exist in a local environment or the development database."
+    },
+    {
+      "idx": 97,
+      "start": 502.63466666666665,
+      "end": 504.53333333333336,
+      "text": "6. Deployment Strategy"
+    },
+    {
+      "idx": 98,
+      "start": 504.53333333333336,
+      "end": 506.752,
+      "text": "6.1 Developer Ownership"
+    },
+    {
+      "idx": 99,
+      "start": 506.752,
+      "end": 512.3413333333333,
+      "text": "Deployment strategy is owned by the developer. Each developer is responsible for:"
+    },
+    {
+      "idx": 100,
+      "start": 512.3413333333333,
+      "end": 516.992,
+      "text": "Linking their story to the release ticket used for tracking the deployment"
+    },
+    {
+      "idx": 101,
+      "start": 516.992,
+      "end": 519.872,
+      "text": "Adding their feature to the Release Manifest"
+    },
+    {
+      "idx": 102,
+      "start": 519.872,
+      "end": 524.6506666666667,
+      "text": "Stories are not linked to the release ticket until the release branch is completed"
+    },
+    {
+      "idx": 103,
+      "start": 524.6506666666667,
+      "end": 526.528,
+      "text": "6.2 Release Checklist"
+    },
+    {
+      "idx": 104,
+      "start": 526.528,
+      "end": 529.5573333333333,
+      "text": "Before submitting the release for deployment approval:"
+    },
+    {
+      "idx": 105,
+      "start": 529.5573333333333,
+      "end": 536.3413333333333,
+      "text": "[ ] Build Artifact: Specific CI/CD artifact ID is listed (built from the release branch)"
+    },
+    {
+      "idx": 106,
+      "start": 536.3413333333333,
+      "end": 542.0373333333333,
+      "text": "[ ] Branch Integrity: The release branch contains only the features listed in the release ticket"
+    },
+    {
+      "idx": 107,
+      "start": 542.0373333333333,
+      "end": 548.6293333333333,
+      "text": "[ ] DBA Execution Order: A table lists every SQL script in exact order of execution"
+    },
+    {
+      "idx": 108,
+      "start": 548.6293333333333,
+      "end": 555.2426666666667,
+      "text": "[ ] QA Sign-off: Formal statement or checkbox from QA confirming the release candidate is stable"
+    },
+    {
+      "idx": 109,
+      "start": 555.2426666666667,
+      "end": 557.7173333333334,
+      "text": "[ ] Pre-Deployment Steps: Documented"
+    },
+    {
+      "idx": 110,
+      "start": 557.7173333333334,
+      "end": 560.2773333333333,
+      "text": "[ ] Post-Deployment Steps: Documented"
+    },
+    {
+      "idx": 111,
+      "start": 560.2773333333333,
+      "end": 564.8426666666667,
+      "text": "[ ] Static Analysis: Release branch is scanned and results are linked"
+    },
+    {
+      "idx": 112,
+      "start": 564.8426666666667,
+      "end": 567.7653333333334,
+      "text": "7. Handling Rejections and Rollbacks"
+    },
+    {
+      "idx": 113,
+      "start": 567.7653333333334,
+      "end": 570.1973333333333,
+      "text": "7.1 Rejection Protocol"
+    },
+    {
+      "idx": 114,
+      "start": 570.1973333333333,
+      "end": 573.696,
+      "text": "If a feature fails QA in the integration branch:"
+    },
+    {
+      "idx": 115,
+      "start": 573.696,
+      "end": 578.0266666666666,
+      "text": "Perform a git revert on the merge commit (preserves branch history)"
+    },
+    {
+      "idx": 116,
+      "start": 578.0266666666666,
+      "end": 584.9386666666667,
+      "text": "Move corresponding SQL scripts to the /deferred/ subfolder to prevent DBA execution"
+    },
+    {
+      "idx": 117,
+      "start": 584.9386666666667,
+      "end": 588.5013333333334,
+      "text": "Update the Release Manifest \u2014 move the feature to Deferred"
+    },
+    {
+      "idx": 118,
+      "start": 588.5013333333334,
+      "end": 590.7413333333334,
+      "text": "7.2 Rollback Protocol"
+    },
+    {
+      "idx": 119,
+      "start": 590.7413333333334,
+      "end": 595.52,
+      "text": "Every deployment plan must include a \"Point of No Return\" assessment."
+    },
+    {
+      "idx": 120,
+      "start": 595.52,
+      "end": 597.8026666666667,
+      "text": "If a failure occurs post-deployment:"
+    },
+    {
+      "idx": 121,
+      "start": 597.8026666666667,
+      "end": 601.856,
+      "text": "Operations redeploys the previous stable artifact ID"
+    },
+    {
+      "idx": 122,
+      "start": 601.856,
+      "end": 607.744,
+      "text": "DBA executes scripts in the /rollback/ folder in reverse sequence number order"
+    },
+    {
+      "idx": 123,
+      "start": 607.744,
+      "end": 612.672,
+      "text": "This restores the environment to its exact previous state without guesswork."
+    },
+    {
+      "idx": 124,
+      "start": 612.672,
+      "end": 615.1893333333334,
+      "text": "8. Responsibilities and Timing"
+    },
+    {
+      "idx": 125,
+      "start": 615.1893333333334,
+      "end": 616.256,
+      "text": "Quick Reference"
+    }
+  ]
+}

@@ -1,39 +1,289 @@
 {
-    "deploy-a-website.md": {
-      "title": "Deploy a Website",
-      "date": "2025-09-28",
-      "tags": ["tutorial", "deployment", "web"]
-    },
-    "install-signal-on-aegix.md": {
-      "title": "How to Install Signal on Aegix Linux",
-      "date": "2025-08-19",
-      "tags": ["signal", "tutorial", "linux"]
-    },
-    "how-tmux-works.md": {
-      "title": "How tmux Works",
-      "date": "2025-08-01",
-      "tags": ["tmux", "tutorial", "linux"]
-    },
-    "second-aegix-user.md": {
-      "title": "Adding a Second Aegix User",
-      "date": "2025-07-30",
-      "tags": ["aegix", "philosophy", "linux"]
-    },
-    "parsimony.md": {
-      "title": "Parsimony and Aegix Linux",
-      "date": "2025-07-29",
-      "tags": ["linux", "aegix", "philosophy"]
-    },
-    "add-articles.md": {
-      "title": "How to Add New Articles to timbeach.com",
-      "date": "2025-07-29",
-      "tags": ["tutorial", "meta", "example"]
-    },
-    "simplicity.md": {
-      "title": "Simplicity in Software Engineering",
-      "date": "2025-01-10",
-      "tags": ["aegix", "philosophy", "linux"]
-    }
+  "osi-model-whiteboard.md": {
+    "title": "The OSI Model, Explained from a Whiteboard",
+    "date": "2026-05-02",
+    "tags": [
+      "networking",
+      "fundamentals",
+      "osi"
+    ],
+    "emoji": "\ud83c\udf10",
+    "audio": "audio/osi-model-whiteboard.ogg",
+    "timings": "audio/osi-model-whiteboard.timings.json",
+    "voice": "af_bella",
+    "duration": 339.691
+  },
+  "pipeline-vs-harness.md": {
+    "title": "Pipeline vs Harness",
+    "date": "2026-04-29",
+    "tags": [
+      "software-engineering",
+      "terminology",
+      "ci-cd",
+      "llm",
+      "agents",
+      "testing"
+    ],
+    "emoji": "\ud83d\udee4\ufe0f",
+    "audio": "audio/pipeline-vs-harness.ogg",
+    "timings": "audio/pipeline-vs-harness.timings.json",
+    "voice": "bm_lewis",
+    "duration": 327.68
+  },
+  "how-to-config-obsidian.md": {
+    "title": "How to Configure Obsidian the Agentic Way",
+    "date": "2026-04-21",
+    "tags": [
+      "obsidian",
+      "claude-code",
+      "ai",
+      "skills",
+      "subagents",
+      "tutorial"
+    ],
+    "emoji": "\ud83d\uddd2\ufe0f",
+    "audio": "audio/how-to-config-obsidian.ogg",
+    "timings": "audio/how-to-config-obsidian.timings.json",
+    "voice": "bm_lewis",
+    "duration": 182.549
+  },
+  "dependency-hell.md": {
+    "title": "Dependency Hell: Why Software Breaks When Everything Works",
+    "date": "2026-04-06",
+    "tags": [
+      "software-engineering",
+      "dependencies",
+      "linux",
+      "devops",
+      "tutorial"
+    ],
+    "emoji": "\ud83d\udd25",
+    "audio": "audio/dependency-hell.ogg",
+    "timings": "audio/dependency-hell.timings.json",
+    "voice": "bm_lewis",
+    "duration": 910.699
+  },
+  "custom-claude-skills.md": {
+    "title": "How to Write a Custom Claude Code Skill",
+    "date": "2026-03-19",
+    "tags": [
+      "claude-code",
+      "ai",
+      "tutorial",
+      "skills"
+    ],
+    "emoji": "\ud83d\udee0\ufe0f",
+    "audio": "audio/custom-claude-skills.ogg",
+    "timings": "audio/custom-claude-skills.timings.json",
+    "voice": "bm_lewis",
+    "duration": 401.493
+  },
+  "software-delivery-sop.md": {
+    "title": "Software Delivery and Deployment SOP",
+    "date": "2026-03-18",
+    "tags": [
+      "software-engineering",
+      "deployment",
+      "git",
+      "devops",
+      "sop"
+    ],
+    "emoji": "\ud83d\udccb",
+    "audio": "audio/software-delivery-sop.ogg",
+    "timings": "audio/software-delivery-sop.timings.json",
+    "voice": "bm_lewis",
+    "duration": 616.256
+  },
+  "releasing-music.md": {
+    "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
+    "date": "2026-03-02",
+    "tags": [
+      "music",
+      "tutorial",
+      "indie",
+      "spotify"
+    ],
+    "emoji": "\ud83c\udfb5",
+    "audio": "audio/releasing-music.ogg",
+    "timings": "audio/releasing-music.timings.json",
+    "voice": "bm_lewis",
+    "duration": 930.731
+  },
+  "claude-code-agent-teams.md": {
+    "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
+    "date": "2026-02-21",
+    "tags": [
+      "claude-code",
+      "ai",
+      "tmux",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83e\udd16",
+    "audio": "audio/claude-code-agent-teams.ogg",
+    "timings": "audio/claude-code-agent-teams.timings.json",
+    "voice": "bm_lewis",
+    "duration": 655.339
+  },
+  "trng-deep-dive.md": {
+    "title": "True Random Number Generators: From Quantum Physics to Silicon",
+    "date": "2026-02-20",
+    "tags": [
+      "cryptography",
+      "quantum",
+      "security",
+      "hardware"
+    ],
+    "emoji": "\ud83c\udfb2",
+    "audio": "audio/trng-deep-dive.ogg",
+    "timings": "audio/trng-deep-dive.timings.json",
+    "voice": "bm_lewis",
+    "duration": 2581.312
+  },
+  "deploy-a-website.md": {
+    "title": "Deploy a Website",
+    "date": "2025-09-28",
+    "tags": [
+      "tutorial",
+      "deployment",
+      "web"
+    ],
+    "emoji": "\ud83d\ude80",
+    "audio": "audio/deploy-a-website.ogg",
+    "timings": "audio/deploy-a-website.timings.json",
+    "voice": "bm_lewis",
+    "duration": 398.443
+  },
+  "install-signal-on-aegix.md": {
+    "title": "Install Signal Desktop on Aegix Linux",
+    "date": "2025-08-19",
+    "tags": [
+      "signal",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83d\udcac",
+    "audio": "audio/install-signal-on-aegix.ogg",
+    "timings": "audio/install-signal-on-aegix.timings.json",
+    "voice": "bm_lewis",
+    "duration": 21.696
+  },
+  "how-tmux-works.md": {
+    "title": "How tmux Works",
+    "date": "2025-08-01",
+    "tags": [
+      "tmux",
+      "tutorial",
+      "linux"
+    ],
+    "emoji": "\ud83d\udda5\ufe0f",
+    "audio": "audio/how-tmux-works.ogg",
+    "timings": "audio/how-tmux-works.timings.json",
+    "voice": "bm_lewis",
+    "duration": 81.749
+  },
+  "second-aegix-user.md": {
+    "title": "Adding a Second Aegix User",
+    "date": "2025-07-30",
+    "tags": [
+      "aegix",
+      "philosophy",
+      "linux"
+    ],
+    "emoji": "\ud83d\udc65",
+    "audio": "audio/second-aegix-user.ogg",
+    "timings": "audio/second-aegix-user.timings.json",
+    "voice": "bm_lewis",
+    "duration": 74.475
+  },
+  "parsimony.md": {
+    "title": "Parsimony and Aegix Linux",
+    "date": "2025-07-29",
+    "tags": [
+      "linux",
+      "aegix",
+      "philosophy"
+    ],
+    "emoji": "\ud83e\uddd8",
+    "audio": "audio/parsimony.ogg",
+    "timings": "audio/parsimony.timings.json",
+    "voice": "bm_lewis",
+    "duration": 51.307
+  },
+  "add-articles.md": {
+    "title": "How to Add New Articles to timbeach.com",
+    "date": "2025-07-29",
+    "tags": [
+      "tutorial",
+      "meta",
+      "example"
+    ],
+    "emoji": "\ud83d\udcdd",
+    "audio": "audio/add-articles.ogg",
+    "timings": "audio/add-articles.timings.json",
+    "voice": "bm_lewis",
+    "duration": 307.883
+  },
+  "simplicity.md": {
+    "title": "Simplicity in Software Engineering",
+    "date": "2025-01-10",
+    "tags": [
+      "aegix",
+      "philosophy",
+      "linux"
+    ],
+    "emoji": "\u26a1",
+    "audio": "audio/simplicity.ogg",
+    "timings": "audio/simplicity.timings.json",
+    "voice": "bm_lewis",
+    "duration": 40.0
+  },
+  "jungian-dream-notes.md": {
+    "title": "Jungian Dream Notes",
+    "date": "2026-04-23",
+    "tags": [
+      "dream",
+      "jung",
+      "journal",
+      "symbolism",
+      "red-book"
+    ],
+    "emoji": "\ud83c\udf19",
+    "audio": "audio/jungian-dream-notes.ogg",
+    "timings": "audio/jungian-dream-notes.timings.json",
+    "voice": "bm_lewis",
+    "duration": 407.915
+  },
+  "how-my-blog-got-a-voice.md": {
+    "title": "How My Blog Got a Voice",
+    "date": "2026-04-26",
+    "tags": [
+      "tts",
+      "kokoro",
+      "engineering",
+      "retrospective",
+      "web-speech"
+    ],
+    "emoji": "\ud83c\udf99\ufe0f",
+    "audio": "audio/how-my-blog-got-a-voice.ogg",
+    "timings": "audio/how-my-blog-got-a-voice.timings.json",
+    "voice": "bm_lewis",
+    "duration": 577.387
+  },
+  "aegix-on-the-aur.md": {
+    "title": "From ~/.local/src to the AUR",
+    "date": "2026-05-01",
+    "tags": [
+      "aegix",
+      "aur",
+      "suckless",
+      "linux",
+      "git"
+    ],
+    "emoji": "\ud83d\udce6",
+    "audio": "audio/aegix-on-the-aur.ogg",
+    "timings": "audio/aegix-on-the-aur.timings.json",
+    "voice": "bm_lewis",
+    "duration": 254.336
+  }
 }
-
-

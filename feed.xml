@@ -1,0 +1,2603 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Timothy D Beach</title>
+    <link>https://timbeach.com</link>
+    <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
+    <lastBuildDate>Tue, 05 May 2026 14:10:54 +0000</lastBuildDate>
+    <language>en-us</language>
+    <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The OSI Model, Explained from a Whiteboard</title>
+      <link>https://timbeach.com/#/article/osi-model-whiteboard</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/osi-model-whiteboard</guid>
+      <pubDate>Sat, 02 May 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>Sometimes the best way to lock in a concept is to grab a marker and start scribbling. I sketched out the OSI model recently — seven layers stacked top to bottom, with a few mnemonic hints squeezed into the margins. Here's the walk-through.</p>
+<h2>What the OSI Model Actually Is</h2>
+<p>The Open Systems Interconnection model is a conceptual framework that breaks network communication into seven distinct layers. It was published by ISO back in the 1980s, and while the modern internet runs on the looser TCP/IP model, OSI is still the lingua franca for <em>talking about</em> networking. When somebody says &quot;that's a Layer 7 problem&quot; or &quot;Layer 2 broadcast storm,&quot; they're speaking OSI.</p>
+<p>Each layer has one job. Each layer talks to the layer above and the layer below — and in theory, only those. Data flows down the stack on the sending side, crosses the wire (or air), and flows back up the stack on the receiving side, getting unwrapped at each step.</p>
+<h2>Layer 7: Application</h2>
+<p><strong>HTTP, SMTP, DNS, SSH</strong></p>
+<p>This is the layer closest to the user. Your browser, your email client, your terminal — they all live here. When you type a URL and hit enter, you're generating an HTTP request that originates at Layer 7.</p>
+<p>Worth noting: &quot;Application Layer&quot; doesn't mean &quot;the app itself.&quot; It means the protocols apps use to talk to the network. Chrome isn't Layer 7. The HTTP protocol Chrome speaks <em>is</em>.</p>
+<h2>Layer 6: Presentation</h2>
+<p><strong>Encryption, compression, character encoding</strong></p>
+<p>This is the translator. It takes data from Layer 7 and reformats it for transmission — encrypting it (TLS lives here, conceptually), compressing it, converting between character sets like UTF-8 and ASCII.</p>
+<p>In the real-world TCP/IP stack, this layer often gets folded into Layer 7 or handled inline by libraries. But conceptually, it's the &quot;make this data ready to send&quot; step.</p>
+<h2>Layer 5: Session</h2>
+<p><strong>Conversation between two nodes — volleyball</strong></p>
+<p>The volleyball metaphor is the clearest one I've found. A session is a back-and-forth rally between two endpoints. Layer 5 sets up the volley, keeps it going, and ends it cleanly when the point is over.</p>
+<p>Think SSH login sessions, RPC calls, anything where state persists across multiple message exchanges. The session layer opens, maintains, and closes those conversations.</p>
+<h2>Layer 4: Transport</h2>
+<p><strong>Segmentation, acknowledgment, multiplexing — reliable</strong></p>
+<p>Now we're into the plumbing. Layer 4 is where TCP and UDP live. Its job is to break data into segments, deliver them, and — in TCP's case — make sure they actually arrived.</p>
+<ul>
+<li><strong>Segmentation:</strong> Break the message into chunks small enough to send.</li>
+<li><strong>Acknowledgment:</strong> TCP's &quot;did you get that?&quot; handshake.</li>
+<li><strong>Multiplexing:</strong> Multiple conversations sharing one connection, sorted by port number.</li>
+</ul>
+<p>When someone talks about &quot;port 443&quot; or &quot;port 22,&quot; that's a Layer 4 concept.</p>
+<h2>Layer 3: Network</h2>
+<p><strong>Packet / datagram — routing and addressing</strong></p>
+<p>This is IP. Layer 3 is responsible for getting a packet from Network A to Network B, possibly across a dozen routers along the way. It assigns logical addresses (IP addresses) and figures out the path.</p>
+<p>If Layer 4 says &quot;deliver this reliably,&quot; Layer 3 says &quot;deliver this to <em>that house, in that city, in that country.</em>&quot; Routers operate at this layer.</p>
+<h2>Layer 2: Data Link</h2>
+<p><strong>Data frames — two nodes physically connected</strong></p>
+<p>Layer 2 handles communication between two devices on the same physical network segment. Ethernet and Wi-Fi are Layer 2 protocols. MAC addresses are Layer 2 addresses.</p>
+<p>Where Layer 3 worries about routing a packet across the internet, Layer 2 worries about getting a frame across a single hop — your laptop to your router, your router to the cable modem. Switches operate here.</p>
+<h2>Layer 1: Physical</h2>
+<p><strong>Let's get physical — raw bitstreams</strong></p>
+<p>The wire. The radio wave. The fiber optic pulse. Layer 1 is the actual electrical, optical, or radio signal carrying ones and zeros.</p>
+<p>No addressing here, no framing, no protocol logic — just voltage, frequency, and timing. Cables, connectors, hubs, repeaters, and the spec of &quot;what does a 1 look like on this medium?&quot; all live at Layer 1.</p>
+<h2>Memorizing the Stack</h2>
+<p>The classic mnemonics:</p>
+<ul>
+<li><strong>Top down:</strong> All People Seem To Need Data Processing.</li>
+<li><strong>Bottom up:</strong> Please Do Not Throw Sausage Pizza Away.</li>
+</ul>
+<p><img src="pix/sausage_pizza.png" alt="Sausage pizza — Please Do Not Throw Sausage Pizza Away" /></p>
+<p>Pick whichever sticks. Personally, I find the pizza one harder to forget — and the bottom-up direction matches the way data actually arrives at your machine: photons and voltages first, application semantics last.</p>
+<h2>Why It Still Matters</h2>
+<p>Most production debugging is OSI-flavored, even when nobody calls it that. &quot;DNS isn't resolving&quot; is Layer 7. &quot;TLS handshake failing&quot; straddles 6 and 7. &quot;Connection refused&quot; is 4. &quot;No route to host&quot; is 3. &quot;Link is down&quot; is 1 or 2. Knowing which layer to investigate first is half the job.</p>
+<p>The OSI model isn't a precise description of how networks actually work — TCP/IP collapses some of these layers and ignores others. It's a thinking tool. A way to decompose a fundamentally messy problem into manageable slices. Once it clicks, you start seeing it everywhere.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>From ~/.local/src to the AUR</title>
+      <link>https://timbeach.com/#/article/aegix-on-the-aur</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/aegix-on-the-aur</guid>
+      <pubDate>Fri, 01 May 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>If you run <a href="https://aegixlinux.org">Aegix</a> — or you're an Arch / Artix tinkerer who likes the suckless stack — you can now <code>yay -S dwm-aegix-git</code> (or <code>st-aegix-git</code>, <code>dmenu-aegix-git</code>, <code>dwmblocks-aegix-git</code>) and pull down the exact builds I run on my own machine. This post is the short story of how that pipeline got built, and a couple of small gotchas worth knowing if you publish your own.</p>
+<h2>The problem</h2>
+<p>I edit my suckless tools the obvious way: in <code>~/.local/src/{dwm,st,dmenu,dwmblocks}</code>, then <code>sudo make clean install</code>. That's the source of truth on this machine. Two things needed solving:</p>
+<ol>
+<li><strong>Reflect those edits into the AEGIX monorepo</strong> so the project's submodule pins stay current — without needing me to remember.</li>
+<li><strong>Publish them to the AUR</strong> so anyone running Arch or Artix can install Aegix's flavor without cloning, patching, and <code>make</code>-ing four repos.</li>
+</ol>
+<p>Different problems, same starting point.</p>
+<h2>Half one: the local sync</h2>
+<p>The reflection part is a single <code>post-commit</code> hook in each <code>~/.local/src/&lt;tool&gt;</code> repo. When I commit, the hook fast-forwards the corresponding submodule in <code>~/code/PROJECTS/AEGIX/&lt;tool&gt;</code> to the new SHA and stages the submodule pointer bump in the parent. That's it.</p>
+<p>It does <strong>not</strong> push anywhere. I tried an earlier design that auto-pushed to GitHub, and it bit me the first time my local was behind the remote — the hook happily force-shoved stale state over newer commits. The lesson:</p>
+<blockquote>
+<p>Live on this machine is truth. The network is a manual gesture.</p>
+</blockquote>
+<p>So now there's exactly one place automation touches: my local filesystem. <code>git push</code> stays in my fingers, where it belongs. The whole sync is ~150 lines of bash with a 28-assert test harness. Boring on purpose.</p>
+<h2>Half two: the AUR side</h2>
+<p>The four packages are all <code>-git</code> flavor, which means the PKGBUILD doesn't need editing when I tweak <code>config.h</code>. The <code>pkgver()</code> function auto-resolves against GitHub HEAD on every build:</p>
+<pre><code class="language-bash">pkgver() {
+  cd &quot;$_pkgname&quot;
+  printf &quot;r%s.%s&quot; &quot;$(git rev-list --count HEAD)&quot; &quot;$(git rev-parse --short HEAD)&quot;
+}
+</code></pre>
+<p>So my normal flow is now exactly two manual operations:</p>
+<pre><code class="language-bash"># 1. Edit + test live
+vim ~/.local/src/dwm/config.h
+cd ~/.local/src/dwm &amp;&amp; sudo make clean install
+
+# 2. Commit (hook reflects to AEGIX automatically)
+git commit -am &quot;feat: new keybinding&quot;
+
+# 3. When ready, publish
+git push origin master
+</code></pre>
+<p>Next time anyone runs <code>yay -Syu</code>, AUR resolves the new HEAD and they get the rebuild. The PKGBUILD itself only needs touching for real packaging changes (new dep, license fix, build-system tweak).</p>
+<h2>The flow</h2>
+<pre><code>  ~/.local/src/&lt;tool&gt;/          ← edit + build + test
+           │
+           │ git commit
+           ▼
+  post-commit hook (local, no network)
+           │
+           └─► ~/code/PROJECTS/AEGIX/&lt;tool&gt;/   ← submodule advances
+           
+           │ git push            ← only manual network action
+           ▼
+  github.com/aegixlinux/&lt;tool&gt;
+           │
+           │ pkgver() resolves on yay -Syu
+           ▼
+  AUR users get fresh builds  ✨
+</code></pre>
+<p>Two manual git operations, four published packages.</p>
+<h2>Two gotchas worth sharing</h2>
+<p><strong>1. AUR work-trees inside a parent repo.</strong> I wanted <code>aur/&lt;pkg&gt;/PKGBUILD</code> to be tracked by the outer monorepo <em>and</em> by the AUR's own remote. Nested <code>.git</code> directories make Git refuse to track the inner files in the outer repo. The fix: hold each AUR package's <code>.git</code> outside its work-tree, in a sibling <code>aur/.aur-git/&lt;pkg&gt;/</code> dir, and run AUR-side git through a tiny wrapper:</p>
+<pre><code class="language-bash">#!/usr/bin/env bash
+PKG=&quot;$1&quot;; shift
+export GIT_DIR=&quot;$HOME/AEGIX_AGENTIC/aur/.aur-git/$PKG&quot;
+export GIT_WORK_TREE=&quot;$HOME/AEGIX_AGENTIC/aur/$PKG&quot;
+exec git &quot;$@&quot;
+</code></pre>
+<p>Now <code>aur-git dwm-aegix-git push</code> does the right thing without confusing the parent repo.</p>
+<p><strong>2. <code>st</code>'s <code>tic</code> runs at install time.</strong> The stock <code>st</code> Makefile calls <code>tic -sx st.info</code> during <code>make install</code>, which writes to <code>/usr/share/terminfo</code> — fine on a real install, but inside makepkg's fakeroot it tries to write to the real filesystem and fails. The fix is a one-line <code>prepare()</code> step in the PKGBUILD:</p>
+<pre><code class="language-bash">prepare() {
+  cd &quot;$_pkgname&quot;
+  sed -i 's|tic -sx st.info|tic -sx -o &quot;$(DESTDIR)/usr/share/terminfo&quot; st.info|' Makefile
+}
+</code></pre>
+<p>Both of these took longer to diagnose than to fix, which is the usual ratio.</p>
+<h2>Why bother</h2>
+<p>Honestly? Mostly so I stop accidentally diverging between &quot;the dwm I actually use&quot; and &quot;the dwm I publish.&quot; When the publishing is one <code>git push</code> away from the editor, there's no excuse for them to drift. And as a side effect, anyone curious about Aegix's stack can try a piece of it without committing to the whole distro.</p>
+<p>If you want to peek: the four packages are on the AUR under <code>dwm-aegix-git</code>, <code>st-aegix-git</code>, <code>dmenu-aegix-git</code>, <code>dwmblocks-aegix-git</code>. The build pipeline lives at <a href="https://github.com/aegixlinux">github.com/aegixlinux</a>.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Pipeline vs Harness</title>
+      <link>https://timbeach.com/#/article/pipeline-vs-harness</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/pipeline-vs-harness</guid>
+      <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>Two words that sound similar, get used loosely, and actually mean different things. Short version up top, then the nuance.</p>
+<h2>TL;DR</h2>
+<ul>
+<li><strong>Pipeline</strong> = work moves <em>through</em> stages. The thing being processed flows; the stages are fixed.</li>
+<li><strong>Harness</strong> = the system stays put; the harness <em>wraps</em> it to run/test/drive it. The wrapper is active, the wrapped thing is acted upon.</li>
+</ul>
+<p>A pipeline is a <em>conveyor belt</em>. A harness is a <em>jig</em> (or a horse's harness — same root metaphor).</p>
+<h2>Pipeline</h2>
+<h3>Colloquial sense</h3>
+<p>A series of stages where the output of one step is the input of the next. Linear, directional, often automated. Borrowed from oil/water pipelines: stuff goes in one end, comes out the other, transformed along the way.</p>
+<h3>Technical instances we actually use</h3>
+<ul>
+<li><strong>CI/CD pipeline</strong> — <code>lint → build → test → deploy</code>. GitHub Actions, Jenkins, GitLab CI.</li>
+<li><strong>Data pipeline / ETL</strong> — <code>extract → transform → load</code>. Airflow, dbt, Dagster.</li>
+<li><strong>Unix pipes</strong> — <code>cat foo | grep bar | sort | uniq -c</code>. The original.</li>
+<li><strong>ML training pipeline</strong> — <code>ingest → featurize → train → evaluate → register</code>.</li>
+<li><strong>Compiler pipeline</strong> — <code>lex → parse → typecheck → optimize → codegen</code>.</li>
+<li><strong>Render pipeline</strong> — vertex shader → fragment shader → framebuffer.</li>
+</ul>
+<h3>Defining traits</h3>
+<ol>
+<li><strong>Directional flow</strong> — work moves forward through ordered stages.</li>
+<li><strong>Stage isolation</strong> — each stage has a clear input contract and output contract.</li>
+<li><strong>Transformation-centric</strong> — the <em>thing</em> (data, code, artifacts) is what changes.</li>
+<li><strong>Often parallel-fan-out / fan-in</strong> — but still graph-shaped, not loopy.</li>
+<li><strong>Stateless-ish stages</strong> — re-runnable, cacheable, idempotent when done well.</li>
+</ol>
+<p>When someone says &quot;the pipeline broke,&quot; they mean a stage failed and the artifact didn't make it to the next stage.</p>
+<h2>Harness</h2>
+<h3>Colloquial sense</h3>
+<p>A thing that wraps around another thing to control it, hold it in place, or drive it. Horse harness, climbing harness, wiring harness. The harness doesn't <em>become</em> the horse — it constrains and directs the horse.</p>
+<h3>Technical instances we actually use</h3>
+<ul>
+<li><strong>Test harness</strong> — the scaffolding that sets up fixtures, invokes the code under test, captures output, asserts. JUnit, pytest, RSpec. The harness is what makes a function <em>testable in isolation</em>.</li>
+<li><strong>Agent / LLM harness</strong> — the loop and machinery around a language model: prompt assembly, tool dispatch, context management, retries, hooks. Claude Code is a harness around Claude. The model is the engine; the harness is the chassis.</li>
+<li><strong>Hardware test harness</strong> — physical bench rig that powers a board, drives its inputs, measures its outputs.</li>
+<li><strong>Wiring harness</strong> — bundled cables that connect a system together (cars, aircraft).</li>
+<li><strong>Fuzzing harness</strong> — <code>LLVMFuzzerTestOneInput(...)</code> — a thin wrapper that hands fuzzer-generated bytes to the code being fuzzed.</li>
+<li><strong>Benchmark harness</strong> — JMH, criterion.rs. Wraps the code, runs it many times under measured conditions.</li>
+</ul>
+<h3>Defining traits</h3>
+<ol>
+<li><strong>Wraps a system under operation</strong> — the wrapped thing (function, model, board, binary) is the subject; the harness is the apparatus.</li>
+<li><strong>Control loop / driver</strong> — usually has its own event loop, timing, or invocation logic.</li>
+<li><strong>Instrumentation</strong> — captures, observes, asserts, measures.</li>
+<li><strong>Lifecycle ownership</strong> — sets up, tears down, isolates the system under test/run.</li>
+<li><strong>Often stateful</strong> — maintains context across invocations of the wrapped thing.</li>
+</ol>
+<p>When someone says &quot;the harness is flaky,&quot; they mean the wrapper itself (setup, teardown, env) is broken — not the code being exercised.</p>
+<h2>The overlap zone (where people mix them up)</h2>
+<table>
+<thead>
+<tr>
+<th>Term you'll hear</th>
+<th>Which is it really?</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>&quot;Test pipeline&quot;</td>
+<td>A pipeline of stages (lint → unit → integration → e2e). Each stage may <em>use</em> a test harness.</td>
+</tr>
+<tr>
+<td>&quot;Test harness&quot;</td>
+<td>The framework that runs an individual test — fixtures, asserts, mocks.</td>
+</tr>
+<tr>
+<td>&quot;Inference pipeline&quot;</td>
+<td>Data flows: input → preprocess → model → postprocess → output.</td>
+</tr>
+<tr>
+<td>&quot;Agent harness&quot;</td>
+<td>Loop wrapping an LLM with tools and context. Not a pipeline — has cycles, branching, persistent state.</td>
+</tr>
+<tr>
+<td>&quot;Build pipeline&quot;</td>
+<td>Stages: compile → link → package → sign → publish.</td>
+</tr>
+<tr>
+<td>&quot;Build harness&quot;</td>
+<td>Less common; would mean the rig that <em>invokes</em> the build (e.g., a meta-builder driving many sub-builds).</td>
+</tr>
+</tbody>
+</table>
+<h3>Rule of thumb</h3>
+<ul>
+<li>If you can draw it as a <strong>DAG of stages</strong> with artifacts moving left-to-right → <strong>pipeline</strong>.</li>
+<li>If you can draw it as a <strong>box wrapping another box</strong>, with a control loop and instrumentation → <strong>harness</strong>.</li>
+<li>They compose: a CI <strong>pipeline</strong> runs a stage that invokes a test <strong>harness</strong> to exercise the code.</li>
+</ul>
+<h2>Why the distinction matters for our work</h2>
+<ol>
+<li><strong>Debugging triage</strong> — &quot;the pipeline failed at the test stage&quot; vs &quot;the test harness is hanging&quot; point at very different failure modes. One is an artifact problem (build broken, deps missing), the other is an environmental/wrapper problem (fixture setup, teardown leaking).</li>
+<li><strong>Design choices</strong> — when building automation, ask: am I moving artifacts through stages (pipeline) or driving a system to observe its behavior (harness)? The shapes are different. Pipelines want orchestrators (Airflow, GHA). Harnesses want runners and drivers (pytest, custom loops).</li>
+<li><strong>LLM-era specifically</strong> — &quot;agent&quot; work is overwhelmingly <em>harness</em> work. Claude Code, Cursor, the Claude Agent SDK — they are all harnesses around a model. Calling them pipelines obscures that the central thing is a loop with state and tool dispatch, not a feed-forward flow.</li>
+</ol>
+<h2>One-line mnemonic</h2>
+<blockquote>
+<p>A <strong>pipeline</strong> transforms what flows through it. A <strong>harness</strong> controls what sits inside it.</p>
+</blockquote>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How My Blog Got a Voice</title>
+      <link>https://timbeach.com/#/article/how-my-blog-got-a-voice</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-my-blog-got-a-voice</guid>
+      <pubDate>Sun, 26 Apr 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="pix/blog-got-a-voice.png" alt="How my blog got a voice" /></p>
+<p>Click <strong>▶ read aloud</strong> at the top of this article. A British man named Lewis is going to read it to you. He works for me now.</p>
+<p>This is a story about how I got there, and about all the wrong turns I took along the way. If you're considering adding text-to-speech to your site, please learn from my mistakes — there are at least four of them.</p>
+<h2>🎤 The first attempt: Web Speech</h2>
+<p>The Web Speech API has been built into browsers for over a decade. You hand <code>speechSynthesis.speak()</code> a string, the browser figures out a voice and reads it aloud. No download, no library, no API key. It is the easiest possible way to add TTS to a webpage.</p>
+<p>I wired it up in maybe twenty lines. It worked beautifully on macOS. It worked on Windows. It worked on Android. Then I opened my own site in my own browser — Brave, on Aegix Linux — and the voice list came back empty. No audio. No error. Just silence.</p>
+<p>It turns out that on Linux, the browser's &quot;speech synthesis&quot; is a thin wrapper around a system service called <code>speech-dispatcher</code>, which in turn shells out to <code>espeak-ng</code> (or Festival, if you're feeling vintage). If you don't have those installed — which most desktop Linux distros don't, by default — your browser knows zero voices, and the API politely returns nothing.</p>
+<p>This was annoying for me personally, because <em>I am the entire Linux audience for my own blog</em>, and I was apparently locked out of my own read-aloud feature. But it would have been annoying for any of my visitors on Linux too, and I wasn't about to ship &quot;install these three packages first&quot; as a UX.</p>
+<h2>🐌 The second attempt: WASM in the browser</h2>
+<p>Fine, I thought. If the browser's native TTS can't be relied upon, I'll bring my own. Kokoro is a lovely open-source neural TTS model — small (82 million parameters), fast for its size, and there's a JavaScript port that runs entirely in the browser via WebAssembly. No system dependencies. Works in any browser anywhere.</p>
+<p>The download is ~80 MB. That's a lot. But it's a one-time hit, cached in IndexedDB. Once you've heard one article, the rest are free. I added a button that said <code>HQ · ~80MB</code>, made the model load with a progress bar, and shipped it.</p>
+<p>It was sublime. For about thirty seconds.</p>
+<p>The first paragraph rendered fine. The model loaded, made some confident claims about what Lewis sounded like, and started reading. Then, somewhere in the middle of the second paragraph, Brave threw up a dialog that said <strong>&quot;This page is not responding.&quot;</strong> The model was synthesizing the <em>next</em> paragraph in the background — on the same thread the browser uses to fire audio events and repaint the screen — and the synthesis was taking long enough that the watchdog assumed the tab had hung.</p>
+<p>I moved the synthesis into a Web Worker. The unresponsive dialog went away. But now there were multi-second gaps between paragraphs, because synthesizing each new paragraph took about as long as the previous paragraph's audio took to play. The &quot;look-ahead&quot; pipeline that was supposed to prepare the next paragraph in advance couldn't get ahead. It was a real-time-factor problem: my laptop is fast, but it isn't <em>that</em> fast, and other people's laptops are often slower than mine.</p>
+<p>I sat with this for an evening, and eventually said it out loud: <em>I am asking every reader's CPU to do work that I should be doing once, on my own machine.</em></p>
+<h2>📼 The pivot: render once, ship the bytes</h2>
+<p>The realization is dumb in retrospect. Audio doesn't have to be live. I publish articles by hand, one at a time, on my own laptop. There is exactly one moment per article when I need TTS — at publish time — and exactly one machine that needs to do the work — mine.</p>
+<p>So now, when I publish an article, a Python script splits the markdown into paragraphs and feeds each one through Kokoro running locally. The samples get concatenated, encoded as Opus at 64 kbps mono, and saved as <code>audio/&lt;slug&gt;.ogg</code>. Alongside it, a tiny <code>audio/&lt;slug&gt;.timings.json</code> records the start and end timestamp of every paragraph. Both files get rsynced to the server with the rest of the site.</p>
+<p>The browser then does almost nothing. It sees the audio path in the article metadata, attaches a native <code>&lt;audio&gt;</code> element, and plays. As <code>currentTime</code> advances, a <code>timeupdate</code> listener finds which paragraph the playhead is in and adds a <code>tts-reading</code> class to its DOM element. That's how the highlighted line glows as Lewis reads it. There are no models, no workers, no WebAssembly. Just a 3 MB Opus file and a 13 KB JSON sidecar.</p>
+<p>It works on every browser on every operating system. No 80 MB download. No &quot;page not responding.&quot; The highlight is exact, because the timestamps were measured at synthesis time — not estimated client-side.</p>
+<p>The whole TTS-related code in the page is about 130 lines. The thing it replaced was almost 700.</p>
+<h2>🪤 The traps the parsers hid</h2>
+<p>Two bugs hit me on the way to shipping, and I want to flag them because they're shaped the same way: <em>two different markdown parsers disagreeing about what counts as a paragraph.</em></p>
+<p>The site has a custom JavaScript markdown parser, and the Python render pipeline uses <code>markdown-it-py</code>. They're supposed to produce the same paragraph structure for the same input, because the highlight needs <code>paragraphs[idx]</code> on the server side to refer to the same DOM element on the client side. They didn't always agree.</p>
+<p><strong>Trap one.</strong> My JS parser maps <code># Title</code> to <code>&lt;h2&gt;</code>, not <code>&lt;h1&gt;</code>. (I have no idea why past-me thought this was a good idea. Past-me is not available for comment.) <code>markdown-it-py</code>, being CommonMark-compliant, maps <code>#</code> to <code>&lt;h1&gt;</code>. So the article title was counted as a paragraph on the client and skipped on the server. One element off, every time. The fix was to make the client's TTS selector skip <code>&lt;h2&gt;</code>, mirroring the server skipping <code>&lt;h1&gt;</code> — which works because in this codebase, <code>&lt;h2&gt;</code> is <em>always</em> the article title.</p>
+<p><strong>Trap two.</strong> When I wrote the <a href="#articles/jungian-dream-notes.md">dream notes article</a>, I used a verse-style format with one short sentence per line, separated by single newlines. CommonMark treats those lines as one paragraph with soft breaks. My JS parser treats every line as its own paragraph. So Python saw 52 paragraphs and the browser saw 110, the runtime sanity check fired, and the read-aloud button silently refused to open. The fix was to rewrite the article using <code>\n\n</code> between every line. Both parsers now agree.</p>
+<p>The deeper lesson: when two systems both parse the same input, you eventually find out they parse it differently. I added a <code>--validate</code> mode to the render tool that flags timings vs. markdown drift, and a gate in <code>deploy.sh</code> that aborts if any article's audio is stale. That catches &quot;I edited an article and forgot to re-render,&quot; which is the most common future failure mode. It does <em>not</em> catch parser-disagreement bugs of the kind I just described — for that, you'd need to run both parsers from the same harness and diff their output. I'm leaving that as a future project.</p>
+<h2>🌟 Why this is actually better</h2>
+<p>I started out trying to give my Linux readers parity with my macOS readers. What I ended up with is something better than either.</p>
+<p>Every reader gets the same voice. Every paragraph highlights at exactly the right moment. The audio loads progressively from a static file, which the browser is excellent at. There's no compute on the reader's device, no model to download, no system service to install. The whole feature degrades gracefully — articles that don't have audio (because I haven't re-rendered them, or because rendering failed) simply don't show the read-aloud button.</p>
+<p>And the voice is <em>good</em>. <code>bm_lewis</code> is a British-accented neural TTS voice that takes itself seriously. It sounds like the audiobook narrator for a book on, say, Jungian dream interpretation. Which is convenient, because I just wrote one of those.</p>
+<h2>🐉 What I'd do differently</h2>
+<p>Less, mostly.</p>
+<p>The Web Speech experiment took a few hours. The WASM-in-browser experiment took several days, including an entire branch of work — engine abstractions, look-ahead queues, IndexedDB caching, jsDelivr fallbacks, <code>_pendingResumeIdx</code>, <code>_keepAlive</code> intervals to work around a Chrome bug — that I deleted in a single commit when I switched to pre-rendering. I built a sophisticated solution to the wrong problem. The correct realization — that I publish articles by hand and could just render them by hand too — was sitting there the whole time.</p>
+<p>The hard part wasn't the engineering. It was noticing that a constraint I'd accepted (TTS has to be live in the browser) was self-imposed. Once I let go of it, the implementation got smaller, faster, and more reliable in the same edit.</p>
+<p>If you're building something where you find yourself defending a complicated piece of infrastructure on someone else's behalf — <em>every reader's CPU should run inference so that...</em> — try the version where you do that work once, on your own machine, and ship the bytes. You will probably be surprised how often it's enough.</p>
+<p>Now press play, and let Lewis take it from here.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Jungian Dream Notes</title>
+      <link>https://timbeach.com/#/article/jungian-dream-notes</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/jungian-dream-notes</guid>
+      <pubDate>Thu, 23 Apr 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="pix/jungian-dream.png" alt="Jungian Dream" /></p>
+<p><em>Dream notes from the night of Earth Day 2026. This one hit different.</em></p>
+<h2>The House That Burns Before It Burns</h2>
+<p>I find myself returned to a life that is no longer mine. I walk within it as though it still holds me. The rooms are familiar, but they do not agree with memory. They are like recollection seen through water, true in essence, false in form.</p>
+<p>I knew I had come from a later time, and I had not come without purpose. The house stood whole, but it was already ash. I understood the past is not a fixed place, but a living chamber within the soul, which may be re-entered when inner knowledge ripens or expands.</p>
+<h2>The Vehicle of Borrowed Motion</h2>
+<p>I move through the night in a great vehicle, large and serviceable, yet I know it is not truly mine. It carries me forward with the weight of duty, and I accept its offices.</p>
+<p>Within myself I heard: This is how I once lived, borne along by structures I did not question, fulfilling roles that preceded me. I saw what we call “our life” is often a vessel inherited, and only later do we ask whether we were its driver or its cargo.</p>
+<h2>The Gathering of the Dogs</h2>
+<p>On the dark roadside I find animals waiting. Some I know, and others I do not, yet all come willingly with the turn of my head. They enter the vehicle and lay in quiet trust.</p>
+<p>I knew them to be companions of instinct, the faithful movements of the soul that bind themselves to us long before we understand them. I saw what is loyal in us does not ask whether it is recognized, but only whether it is received.</p>
+<h2>The Transformation into the Living Beast</h2>
+<p>Then the great vehicle dissolves, and in its place stands a creature of strength and patience, not unlike a yak. I mount it, and it bears me without resistance. I marvel, for I do not command it with force, yet it obeys.</p>
+<p>Then I understood that which was once mechanical in me had become alive. For when a man ceases to be carried by structure, he must learn to ride what lives within him, and if he is fortunate, it will not throw him.</p>
+<h2>The Crossing Between Worlds</h2>
+<p>I pass from place to place without passage. Familiar roads give way to distant lands, and yet no journey seems to occur.</p>
+<p>Then I saw the soul does not travel as the body travels. It moves by association, by memory, by likeness. And thus it binds together what the waking mind keeps apart. What we call distance is only the refusal to see continuity.</p>
+<h2>The House of Quiet Knowing</h2>
+<p>I come upon a place of stillness, where an old man tends a shop of subtle things. He speaks little, yet much was conveyed. I linger here, though I cannot say why.</p>
+<p>Then I knew this was the place within where knowledge gathers before it becomes speech. The old man was not other than myself, but the part of me that does not hurry, for wisdom does not announce itself loudly, but waits until the noise has passed.</p>
+<h2>The Knowledge of Fire</h2>
+<p>Then it is given to me to know: The houses would burn. Not one, but many. And though they stand intact, their destruction is already present, yet I do not panic. Instead, I feel the weight of what must be spoken.</p>
+<p>I saw, to know what is coming is not the same as to prevent it, and foresight does not grant dominion, only responsibility.</p>
+<h2>The Return to the House</h2>
+<p>I enter the house that was both past and present. Those within it move as though the day were ordinary. And I speak: “Fire is coming. You must prepare.” Some hear me. Others do not. And I repeat myself, calmly, as though repetition might bridge the gap between knowing and not knowing.</p>
+<p>Then I understood, truth does not enter all ears equally, and there are moments when one must speak even while knowing one will not be fully believed.</p>
+<h2>The Children of Uneven Time</h2>
+<p>Among those present are the young. One receives my words and holds them. Another can not yet grasp them.</p>
+<p>And I saw clearly within us are many ages. One part sees. Another part feels. Another part cannot yet know. And no argument will hasten what must ripen and expand. I learned, Patience is owed not only to others, but to the undeveloped regions of one’s own soul.</p>
+<h2>The Crowd and Their Doubt</h2>
+<p>I speak again and again. Some begin to act, though uncertainty clings to them. They move as those who half-believe.</p>
+<p>And I knew, when when truth is heard, it is often received in fragments. To accept fully what is coming is to surrender the comfort of what is, and few surrender quickly.</p>
+<h2>The Fire Already Begun</h2>
+<p>I step outside and behold the street. Flames are already taking hold in the distance. Voices rise. Vehicles gather. The event I have come to warn against is already unfolding.</p>
+<p>Then I saw awareness arrives within time, but events do not wait for awareness, and we are often late to what has long been in motion.</p>
+<h2>The Market of Letting Go</h2>
+<p>In the yard, people exchange their possessions. They barter lightly, as though the day were still ordinary. And I marvel, for the fire advances even as they trade.</p>
+<p>Then I understood we begin to release our lives before we admit they are ending, and what appears as casual exchange is often the first movement of dissolution.</p>
+<h2>The Relinquishing of Control</h2>
+<p>Then a knowing comes upon me: It is not mine to save them. It is not mine to compel belief. It is mine only to speak. And having spoken, to depart.</p>
+<p>I learned there is a boundary to responsibility. Beyond it lies illusion, the belief that one can govern what belongs to all.</p>
+<h2>The Return</h2>
+<p>I withdraw from that place. The path reverses, though no steps are retraced. The living beast gives way again to the vessel, and I find myself returned.</p>
+<p>I saw the past may be entered, but not inhabited, and one who lingers too long forgets which time is his own.</p>
+<h2>The Release of What Was Carried</h2>
+<p>I return the animals to their place. They do not resist. And I keep nothing for myself.</p>
+<p>Then I understood, that which accompanies us for a time is not therefore ours to keep, and care does not require possession.</p>
+<h2>The Token of Knowing</h2>
+<p>I am given a small object, a thing of no practical use. Yet I valued it. For it stood as proof, not to others, but to myself, that I had seen truly.</p>
+<p>I saw the soul does not trade in evidence, but in symbols. And what it gives is not for display, but for remembrance.</p>
+<h2>Final Word</h2>
+<p>And so I came away with this: That a man may come to know what is unfolding, yet he cannot hasten others into that knowing. He may speak truth, but he cannot command its reception. He may see the fire, but he does not own the flame.</p>
+<p>And if he is wise, he will do what is his to do, and leave the rest to what is greater than himself.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How to Configure Obsidian the Agentic Way</title>
+      <link>https://timbeach.com/#/article/how-to-config-obsidian</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-to-config-obsidian</guid>
+      <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="pix/how-to-config-obsidian.png" alt="How to Configure Obsidian" /></p>
+<p><strong>Step 1:</strong> Ask Claude.</p>
+<p><strong>Step 2:</strong> There is no step 2.</p>
+<p>OK fine, here's the long version.</p>
+<p>Obsidian, like most modern apps, keeps its settings in a pile of JSON files tucked away inside your vault (<code>.obsidian/</code>). You <em>could</em> go clicking through Settings panels, memorizing the difference between &quot;Editor → Display&quot; and &quot;Editor → Behavior,&quot; hunting for the one toggle that turns off that specific thing you hate. Or you could just say what you want out loud.</p>
+<p>The other day I got tired of the squiggly red underlines treating every third word as a typo. So I asked:</p>
+<blockquote>
+<p>how do we turn off spell check red underlining in obsidian? if you can find the config and update it directly, go ahead</p>
+</blockquote>
+<p>Claude found <code>.obsidian/app.json</code>, flipped <code>&quot;spellcheck&quot;: true</code> to <code>&quot;spellcheck&quot;: false</code>, and told me to reload the vault. Total time: maybe six seconds, most of which was me typing the question.</p>
+<p>No scavenger hunts through preference panels. No StackExchange threads from 2019 describing menus that no longer exist. No <code>sed</code> incantations with escaped quotes.</p>
+<p>You just describe the vibe you want, and a piece of software rearranges the other piece of software to match. The future is weird.</p>
+<h2>Then teach it to do this forever</h2>
+<p>One-off wins are nice. But if you're going to do this kind of thing a lot, the next move is to codify the trick into a skill. So I followed up with:</p>
+<blockquote>
+<p>thank you.. that was brilliant.. now let's take this one step further.. spin up subagents to look through .obsidian and one to go online and look at obsidian documentation.. then write a guide for future agents to understand how to interact with obsidian programmatically to change settings via claude code in natural language rather than clicking around in the interface.. if this goes well, also create a skill for this.. go into planning mode first if you need to</p>
+</blockquote>
+<p>Two parallel subagents went digging: one cataloged <code>.obsidian/</code> file by file, the other scraped <code>help.obsidian.md</code>, the forum, and vetted GitHub examples. They reported back, and Claude shipped <code>~/.claude/skills/configuring-obsidian/SKILL.md</code>.</p>
+<p><img src="pix/obsidian-skill-shipped.png" alt="Obsidian skill shipped" /></p>
+<p>The skill now knows the safety rules (close Obsidian first; <code>workspace.json</code> and <code>graph.json</code> are off-limits — Obsidian rewrites them constantly), the file map of which JSON controls what, and the cookbook recipes: toggling booleans in <code>app.json</code>, changing theme and font in <code>appearance.json</code>, enabling or disabling plugins, overriding hotkeys with <code>&quot;Mod&quot;</code> instead of <code>&quot;Ctrl&quot;</code> for portability, and reloading without a restart via the Command Palette.</p>
+<p>Next time I — or any future session — asks anything about Obsidian settings, the skill loads automatically and Claude already knows where to look.</p>
+<p>So the real loop is:</p>
+<ol>
+<li>Ask Claude to do the thing.</li>
+<li>Ask Claude to write down how it did the thing.</li>
+<li>Never think about the thing again.</li>
+</ol>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Dependency Hell: Why Software Breaks When Everything Works</title>
+      <link>https://timbeach.com/#/article/dependency-hell</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/dependency-hell</guid>
+      <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="pix/dependency_hell.png" alt="Dependency Hell" /></p>
+<p>You changed nothing. You tested it yesterday. You watched it pass. And now, on deployment day, everything is on fire.</p>
+<p>If you've spent any time building software, you've probably been dragged into a special kind of chaos that the industry has lovingly named <strong>dependency hell</strong>. It's the place where your code is fine, everyone else's code is fine, but the combination of all of it together is decidedly not fine.</p>
+<p>Let's talk about what it is, why it keeps happening, and what — if anything — you can do about it.</p>
+<h2>🧱 The Analogy</h2>
+<p>Imagine you're building a house. You need bricks, and each brick requires a specific mortar. Fine — you pick the right mortar. But the mortar requires a specific sand, and the sand is only compatible with a certain type of foundation aggregate. The foundation aggregate was updated last week and now requires a thinner mortar. But your bricks crack with thin mortar.</p>
+<p>Nobody changed your blueprint. Nobody touched your bricks. But the house won't stand because three levels deep in your supply chain, someone &quot;improved&quot; their sand.</p>
+<p>That's dependency hell. Your software depends on other software, which depends on other software, and somewhere in that chain, something shifted in a way that breaks the thing you're building — even though you didn't change a line of code.</p>
+<h2>🔥 The Taxonomy of Suffering</h2>
+<p>Not all dependency hell is the same. It comes in distinct flavors, each with its own special brand of misery.</p>
+<h3>The Diamond Dependency Problem</h3>
+<p>This is the classic. Your project depends on Library A and Library B. Both A and B depend on Library C — but they each require a <em>different version</em> of C. You can't install both versions simultaneously, so you're stuck. Your dependency graph forms a diamond shape, and at the bottom of that diamond is a conflict with no clean resolution.</p>
+<p>Your Project needs Lib A <em>and</em> Lib B. Lib A needs Lib C version 1. Lib B needs Lib C version 2. You can only install one version of Lib C. Deadlock.</p>
+<p>In some ecosystems, this is an unsolvable puzzle. In others, the tooling can deduplicate or isolate — but it's always a source of pain.</p>
+<h3>Transitive Dependency Sprawl</h3>
+<p>You install one package. That package pulls in 12 dependencies. Those 12 pull in 80 more. Before you know it, your <code>node_modules</code> directory weighs more than the application itself, and you're relying on code written by hundreds of strangers, any one of whom might push a breaking change, abandon their project, or delete their package entirely.</p>
+<p>The real problem isn't the count — it's that you didn't choose any of those transitive dependencies. You don't know what they do. You don't know who maintains them. But your software can't run without them.</p>
+<h3>Circular Dependencies</h3>
+<p>Package A depends on B. Package B depends on A. Now nothing can be built first because everything needs the other thing to already exist. It's a chicken-and-egg problem that confuses build systems, package managers, and humans alike.</p>
+<p>Circular dependencies are usually a design smell — they signal that two packages should either be merged or restructured — but they crop up in large codebases with organic growth.</p>
+<h3>System-Level Shared Library Hell</h3>
+<p>This is where things get truly nasty, especially on Linux.</p>
+<p>When you install a program on a Linux system, it typically links against shared libraries — <code>.so</code> files that live in <code>/usr/lib</code> or similar paths. Multiple programs share the same library to save memory and disk space. Beautiful in theory. In practice, it means that upgrading one library can break every program that depends on it.</p>
+<p>On Windows, this was historically called <strong>DLL Hell</strong> — the same fundamental problem with <code>.dll</code> files. On Linux, it manifests when a system update pulls in a new version of <code>libssl</code>, <code>glibc</code>, or some other foundational library, and suddenly half your installed software segfaults or refuses to start.</p>
+<p>Package managers like <code>apt</code> and <code>pacman</code> try to manage this with dependency metadata, but they can only protect you from conflicts they know about. If you've installed anything from source, compiled against a specific library version, or mixed repositories — you're on your own.</p>
+<p>The ABI (Application Binary Interface) is the invisible contract here. Source code might be &quot;compatible,&quot; but if the compiled binary layout changes — struct sizes, function signatures at the machine level — everything breaks silently and catastrophically.</p>
+<h3>The Vendoring Dilemma</h3>
+<p>One natural response to shared dependency chaos is <strong>vendoring</strong> — bundling your own copy of every dependency directly into your project. This gives you total control. Nothing changes unless you change it.</p>
+<p>The tradeoff? You're now responsible for updating everything yourself. Security patches don't flow downstream automatically. Your project bloats. And if everyone vendors everything, you end up with twelve different versions of OpenSSL running on the same machine, each with its own set of known vulnerabilities.</p>
+<p>Vendoring trades one kind of hell for another. It's a valid choice, but it's not a free lunch.</p>
+<h2>💀 War Stories</h2>
+<p>Theory is nice. Let's talk about the times dependency hell actually set things on fire.</p>
+<h3>&quot;It Worked Yesterday&quot; — A Laravel Deployment Nightmare</h3>
+<p>I've lived through many of these wars, including this one. We had an application deployment that was tested and verified the day before launch. Everything passed. Every check was green. Ship it tomorrow.</p>
+<p>Tomorrow came. The deployment broke.</p>
+<p>What happened? Overnight, a transitive dependency in the Composer ecosystem had updated. Laravel's dependency constraints were strict enough to notice the change but not strict enough to prevent it from being pulled in. The package that resolved perfectly at 4 PM was unresolvable by 8 AM because something three levels deep had pushed a new minor version that conflicted with another constraint.</p>
+<p>Nothing in our code changed. Nothing in Laravel's code changed. But the dependency graph that Composer had to solve was now different, and the solver couldn't find a valid resolution. Deployment day became debugging day.</p>
+<p>This is the insidious nature of dependency hell — it can be <em>time-dependent</em>. The same <code>composer install</code> can produce different results on different days if you aren't locking your dependencies aggressively. And even when you do lock them, the moment you need to update anything, you're re-entering the negotiation.</p>
+<h3><code>left-pad</code> and the Disappearing Package (npm, 2016)</h3>
+<p>In March 2016, a developer named Azer Koçulu unpublished a package called <code>left-pad</code> from npm. It was 11 lines of code. It padded strings with spaces on the left side. Trivial functionality.</p>
+<p>The problem was that thousands of packages depended on it, including heavy-hitters in the React ecosystem. When it vanished, builds broke worldwide. CI pipelines failed. Production deployments stalled. Thousands of developers scrambled to figure out why their code — which they hadn't touched — suddenly wouldn't build.</p>
+<p><code>left-pad</code> exposed a deeper truth: when an ecosystem incentivizes tiny, single-purpose packages, the web of transitive dependencies becomes so vast that removing any single thread can unravel the whole thing. Your project didn't depend on <code>left-pad</code>. But your project depended on something that depended on something that depended on <code>left-pad</code>. And that was enough.</p>
+<h3>Python's <code>pip</code> and the Resolver That Couldn't</h3>
+<p>For years, <code>pip</code> didn't have a proper dependency resolver. It installed packages in order, and if two packages needed conflicting versions of a shared dependency, <code>pip</code> would simply install whichever one it encountered last — silently overwriting the other. Your install would &quot;succeed,&quot; but your application would crash at runtime because it had the wrong version of something.</p>
+<p>In 2020, pip finally shipped a real resolver. The good news: it catches conflicts. The bad news: it catches conflicts. Upgrades that previously &quot;worked&quot; (by silently being broken) now fail loudly with resolution errors. The Python ecosystem is still working through the aftershocks.</p>
+<h3>Linux Shared Libraries: The <code>glibc</code> Trap</h3>
+<p>On Linux, <code>glibc</code> — the GNU C Library — is the foundation that almost everything is built on. It provides the basic system calls, memory allocation, string handling, and threading that virtually every compiled program relies on.</p>
+<p>Upgrading <code>glibc</code> can break programs compiled against an older version. Downgrading it can break your entire system. It's the one dependency where &quot;just update it&quot; and &quot;just don't update it&quot; are both dangerous advice.</p>
+<p>Rolling-release distributions like Arch (and its derivatives, including Artix and Aegix) feel this more acutely than point-release distros like Debian. When your entire system updates continuously, the window for ABI-breaking changes is always open. You gain cutting-edge software at the cost of living permanently on the frontier of compatibility.</p>
+<h2>🤔 Why This Keeps Happening</h2>
+<p>Dependency hell isn't a bug in any particular tool. It's an emergent property of how software is built.</p>
+<h3>Semantic Versioning Is a Social Contract, Not a Technical Guarantee</h3>
+<p>Semver says: bump the major version for breaking changes, the minor version for features, the patch version for fixes. In practice, people get it wrong constantly. A &quot;patch&quot; release introduces a subtle behavior change. A &quot;minor&quot; release deprecates something your code relies on. Semver only works if every maintainer in your entire dependency tree follows it perfectly, and they don't.</p>
+<h3>Ecosystems Incentivize Small Packages</h3>
+<p>npm's culture of micro-packages means your dependency tree is wide and shallow — lots of packages, each doing one tiny thing. Python's culture is more &quot;batteries included,&quot; leading to fewer but larger dependencies. Neither approach is immune. Wide trees have more points of failure; deep trees have more severe failures when they break.</p>
+<h3>Nobody Owns the Whole Stack</h3>
+<p>Your application sits on top of frameworks, which sit on top of libraries, which sit on top of system packages, which sit on top of a kernel. Each layer is maintained by different people with different priorities, release schedules, and opinions about backward compatibility. There's no central authority ensuring that the whole stack works together at any given point in time.</p>
+<h3>Time Is a Dimension of Your Dependency Graph</h3>
+<p>The same dependency resolution can produce different results on different days. Packages get published, yanked, deprecated. Registries have outages. Mirrors fall behind. Your build on Monday and your build on Friday might resolve to different dependency trees, even with the same input.</p>
+<h2>🛠️ Mitigation Strategies</h2>
+<p>You can't eliminate dependency hell, but you can build bunkers.</p>
+<h3>Lock Your Dependencies</h3>
+<p>Every modern package manager has a lockfile: <code>package-lock.json</code>, <code>Cargo.lock</code>, <code>poetry.lock</code>, <code>composer.lock</code>. <strong>Commit them.</strong> A lockfile records the exact versions that were resolved at a specific point in time. It turns your build from &quot;whatever resolves today&quot; into &quot;exactly what resolved when we last explicitly updated.&quot;</p>
+<p>If I had to give one piece of advice from this entire article, it would be this: <strong>use lockfiles and treat them as first-class artifacts.</strong></p>
+<h3>Pin Transitives When It Matters</h3>
+<p>Sometimes the lockfile isn't enough. If you're deploying to production, consider pinning your transitive dependencies explicitly. Tools like <code>pip-compile</code> (Python), <code>npm shrinkwrap</code> (Node), and <code>cargo lock</code> (Rust) give you varying degrees of control over the full dependency tree.</p>
+<h3>Reproducible Builds and Nix</h3>
+<p>The most rigorous approach to dependency management is <strong>Nix</strong>. Nix treats every package — including its exact dependencies, build flags, and compiler version — as a unique, content-addressed entity. Two builds with the same inputs will always produce the same outputs. There is no shared mutable state.</p>
+<p>Nix is powerful and philosophically sound. It's also a steep learning curve and a different way of thinking about your system. But if reproducibility is critical to you, nothing else comes close.</p>
+<h3>Containers: The Blunt Instrument</h3>
+<p>Docker and its kin solve dependency hell by side-stepping it entirely. Bundle everything — your app, your dependencies, your runtime, your system libraries — into a container image. Ship the whole thing. It works because it literally ships the machine.</p>
+<p>The tradeoff is that you're vendoring at the OS level. Every container image carries its own copies of system libraries, and keeping those updated for security is now your problem. You've traded system-level dependency conflicts for image-level maintenance burden.</p>
+<p>It works. It's pragmatic. It's not elegant.</p>
+<h3>Static Linking</h3>
+<p>Instead of relying on shared libraries at runtime, you can statically link everything at compile time. The resulting binary contains all its dependencies and runs anywhere (on the same OS/architecture) without caring what's installed on the system.</p>
+<p>Go does this by default, and it's one of the reasons Go binaries are praised for their deployment simplicity. Rust makes it straightforward with <code>musl</code> targets. C and C++ can do it, but it's more manual and sometimes legally complex (LGPL licensing requires dynamic linking in certain cases).</p>
+<p>The cost: larger binaries, no shared security updates across programs, and potential license headaches. But for deployment reliability, it's hard to beat.</p>
+<h2>🪢 The Fundamental Tension</h2>
+<p>At its core, dependency hell exists because of an unresolvable tension in software engineering: <strong>code reuse and independence are at odds with each other.</strong></p>
+<p>Every dependency you take on is a bet that someone else's code will continue to work the way you need it to, for as long as you need it to, without requiring changes on your end. Sometimes that bet pays off for years. Sometimes it blows up overnight.</p>
+<p>The industry keeps building better tools — smarter resolvers, content-addressed stores, hermetic builds — and they genuinely help. But the fundamental problem won't go away because it's not a tooling problem. It's a coordination problem among millions of independent developers who don't know each other, don't share priorities, and can't predict the future.</p>
+<p>The best you can do is understand the landscape, pick your tradeoffs deliberately, and always — <em>always</em> — check that lockfile.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How to Write a Custom Claude Code Skill</title>
+      <link>https://timbeach.com/#/article/custom-claude-skills</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/custom-claude-skills</guid>
+      <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>Claude Code can do a lot out of the box, but it doesn't know your workflows. It doesn't know that publishing an article to your website means copying a markdown file to a specific directory, adding an entry to a JSON registry, previewing locally, rsyncing to a VPS, and committing to git. Every time you ask, it has to explore your repo, discover the structure, and figure it out from scratch.</p>
+<p>Skills fix this. A skill is a markdown file that teaches Claude a procedure it can follow with the tools it already has. No plugins, no scripts, no MCP servers — just instructions.</p>
+<p><img src="pix/claude-custom-skills.jpg" alt="Custom Claude Skills" /></p>
+<h2>Where Skills Live</h2>
+<p>Claude Code discovers skills from two locations:</p>
+<ul>
+<li><strong>Global (personal):</strong> <code>~/.claude/skills/&lt;skill-name&gt;/SKILL.md</code> — available in every session</li>
+<li><strong>Project-scoped:</strong> <code>.claude/skills/&lt;skill-name&gt;/SKILL.md</code> — available only in that project</li>
+</ul>
+<p>Each skill is a directory containing a <code>SKILL.md</code> file. The directory name becomes the slash command. So <code>~/.claude/skills/publish-article/SKILL.md</code> gives you <code>/publish-article</code>.</p>
+<pre><code>~/.claude/skills/
+  publish-article/
+    SKILL.md              # Required entrypoint
+    template.md           # Optional supporting files
+</code></pre>
+<h2>Anatomy of a SKILL.md</h2>
+<p>A skill file has two parts: YAML frontmatter for discovery, and markdown content for instructions.</p>
+<h3>Frontmatter</h3>
+<pre><code class="language-yaml">---
+name: publish-article
+description: Use when publishing a markdown article to timbeach.com, adding content to the personal website, or when the user says &quot;publish article&quot;
+---
+</code></pre>
+<p>Two fields:</p>
+<ul>
+<li><strong>name</strong> — letters, numbers, hyphens only. This is what shows up in the skills list.</li>
+<li><strong>description</strong> — tells Claude <em>when</em> to use this skill. Start with &quot;Use when...&quot; and describe triggering conditions. Don't summarize what the skill does — just describe when it applies.</li>
+</ul>
+<p>The description matters more than you'd think. Claude reads it to decide whether to load your skill for a given task. If the description says &quot;Use when publishing articles&quot; and you say &quot;add this post to my website,&quot; Claude connects the dots.</p>
+<h3>Content</h3>
+<p>The rest of the file is the procedure Claude follows. Write it like you're explaining the workflow to a competent colleague who's never seen your project before. Be specific about paths, file formats, and the order of operations.</p>
+<h2>A Real Example: publish-article</h2>
+<p>Here's a skill I built for publishing markdown articles to my personal website. The site is a vanilla SPA — no build step, no framework. Articles are markdown files in an <code>articles/</code> directory with metadata in a single <code>articles.json</code> file. Deployment is an rsync to a VPS.</p>
+<p>Without this skill, Claude would need to explore the repo every time: read the index.html to understand the rendering pipeline, examine the JSON format, figure out where images go, discover the deploy script. With the skill, it just follows the recipe.</p>
+<h3>The Full Skill</h3>
+<pre><code class="language-yaml">---
+name: publish-article
+description: Use when publishing a markdown article to timbeach.com, adding content to the personal website, or when the user says &quot;publish article&quot; or references timbeach.com articles
+---
+</code></pre>
+<pre><code class="language-markdown"># Publish Article to timbeach.com
+
+Publish a markdown article to timbeach.com from any working directory.
+Accepts a file path or inline content.
+
+**Repo:** `~/code/PROJECTS/VULTR_0/sites/timbeach.com`
+
+## Procedure
+
+### 1. Acquire Content
+
+- **File path provided:** Read and validate it has at least one # heading.
+- **No file path:** Ask the user for content. Write it to a temp file.
+
+### 2. Handle Images
+
+Scan for ![alt](path) references in the markdown.
+
+For each image found:
+1. Resolve path relative to the source file's directory
+2. Check if file exists — warn and skip if not
+3. Check for name collision in pix/ — ask user: overwrite, rename, or skip
+4. Copy image to pix/
+5. Rewrite the markdown path to pix/filename.ext
+
+Then ask: &quot;Is there an additional image you'd like to include?&quot;
+
+### 3. Propose Metadata
+
+Infer all fields and present as one block for approval:
+
+  &quot;kebab-case-title.md&quot;: {
+    &quot;title&quot;: &quot;Inferred from first heading&quot;,
+    &quot;date&quot;: &quot;2026-03-18&quot;,
+    &quot;tags&quot;: [&quot;suggested&quot;, &quot;from&quot;, &quot;content&quot;],
+    &quot;emoji&quot;: &quot;suggested-emoji&quot;
+  }
+
+User approves or tweaks in one shot.
+
+### 4. Write Files
+
+1. Copy markdown (with rewritten image paths) to articles/{filename}.md
+2. Update articles/articles.json:
+   - Read and parse as JSON
+   - Verify filename key doesn't already exist
+   - Add new entry
+   - Write back with 2-space indentation
+
+### 5. Local Preview
+
+Start python3 -m http.server 8000 from the repo directory.
+Tell the user to preview. Wait for approval.
+
+### 6. Deploy
+
+Run ./deploy.sh from the repo root. Report output.
+If deploy fails, don't proceed to git commit.
+
+### 7. Git Commit + Push
+
+Stage only the specific changed files. Commit and push.
+</code></pre>
+<h3>Why This Works</h3>
+<p>Notice what the skill does and doesn't do:</p>
+<p><strong>It gives Claude facts it can't derive quickly.</strong> The repo path, the JSON schema, the image path convention, the deploy script's CWD requirement — these are things Claude would have to discover by reading the codebase. The skill front-loads that knowledge.</p>
+<p><strong>It sequences the workflow.</strong> Preview before deploy. Deploy before commit. Don't commit if deploy fails. This ordering encodes your actual process, not something Claude would guess.</p>
+<p><strong>It specifies interaction points.</strong> Propose metadata and wait. Preview and wait. These aren't things Claude would naturally pause for — it would just barrel through. The skill makes the human checkpoints explicit.</p>
+<p><strong>It doesn't over-specify.</strong> The skill doesn't tell Claude how to read a file or how to run a bash command. It already knows how to do that. The skill only teaches what's specific to <em>your</em> workflow.</p>
+<h2>Writing Your Own</h2>
+<p>Pick a workflow you repeat. Something where you find yourself explaining the same sequence of steps to Claude across sessions. That's a skill waiting to be written.</p>
+<h3>Step 1: Map the procedure</h3>
+<p>Write out every step you'd take manually. Include the file paths, the exact commands, the order. Don't abstract — be concrete. If you <code>cd</code> to a specific directory before running a script because the script uses <code>$PWD</code>, write that down.</p>
+<h3>Step 2: Identify what Claude can't infer</h3>
+<p>Separate the steps into two buckets:</p>
+<ul>
+<li>Things Claude could figure out by reading your codebase (how your JSON is structured, what framework you use)</li>
+<li>Things Claude can't easily derive (your preferred workflow order, which fields to propose for approval, where to deploy)</li>
+</ul>
+<p>Your skill should focus on the second bucket. Include enough of the first bucket to save Claude the exploration time, but don't document your entire codebase.</p>
+<h3>Step 3: Define the interaction points</h3>
+<p>Where should Claude pause and ask you? Metadata approval, preview confirmation, deploy authorization — these are places where your judgment matters and Claude shouldn't just proceed.</p>
+<h3>Step 4: Write the SKILL.md</h3>
+<p>Put the frontmatter at the top with a good description. Write the procedure as numbered steps. Be specific about paths and commands. Include error handling for things that actually go wrong (port already in use, file already exists, deploy fails).</p>
+<h3>Step 5: Test it</h3>
+<p>Start a new Claude Code session. Run <code>/your-skill-name</code> and see if Claude follows the procedure correctly. If it misses a step or makes wrong assumptions, update the skill and restart.</p>
+<h2>Tips</h2>
+<p><strong>Keep it under 500 words if you can.</strong> The skill gets loaded into Claude's context. Long skills burn tokens. Write what's necessary, skip what's obvious.</p>
+<p><strong>Description is for <em>when</em>, not <em>what</em>.</strong> &quot;Use when deploying to production after tests pass&quot; is better than &quot;Runs the deploy pipeline with blue-green switching.&quot; Claude needs to know when to reach for the skill, not what it does — that's what the content is for.</p>
+<p><strong>Hardcode paths.</strong> Skills are your personal tools. Don't parameterize things that never change. If your repo is always at <code>~/code/myproject</code>, write that path directly.</p>
+<p><strong>Include error handling for real failures.</strong> Port conflicts, existing files, failed deploys — these actually happen. &quot;Parse error in JSON? Warn and stop&quot; is more useful than pretending everything always works.</p>
+<p><strong>Global vs. project-scoped.</strong> If the skill only makes sense in one repo, put it in <code>.claude/skills/</code> in that repo. If you'd use it from anywhere (like publishing articles from whatever directory you're working in), put it in <code>~/.claude/skills/</code>.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Software Delivery and Deployment SOP</title>
+      <link>https://timbeach.com/#/article/software-delivery-sop</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/software-delivery-sop</guid>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><em>Co-authored with <a href="https://masonborchard.com/">Mason U Borchard</a></em></p>
+<p>A practical standard operating procedure for teams managing branching, releases, SQL changes, and deployments in a corporate software environment.</p>
+<p><img src="pix/team-software-sop.png" alt="Software Delivery SOP" /></p>
+<hr />
+<h2>Philosophy: Every Feature is a &quot;Gift&quot;</h2>
+<p>Sometimes changing the language can change our perception. Imagine if a feature branch was called a gift. This idea comes from <a href="https://erniegray.com">Ernie Gray</a>.</p>
+<p>A common challenge in software development is the gravity of the development environment. Engineers spend hours completing code that works locally, submit a PR, check that it works on the dev environment, and then feel the rest of the process is beyond their control.</p>
+<p>Escaping the gravity of the development environment into outer orbits requires more energy.</p>
+<p>A great team ensures their code is a polished, deployable package — a gift to the team working together toward a great release. These SOPs define what &quot;polished and deployable&quot; looks like.</p>
+<hr />
+<h2>1. Story/Feature-Level Definition of Done</h2>
+<p>Quality parts make quality systems. A consistent definition of done at the story level prevents incomplete or undocumented code from entering the pipeline.</p>
+<p>A story is not done until <strong>all</strong> of the following are true:</p>
+<ul>
+<li>[ ] <strong>Code Review:</strong> Pull request is reviewed and approved by a teammate</li>
+<li>[ ] <strong>Static Analysis:</strong> Developer has reviewed the scan and addressed all issues</li>
+<li>[ ] <strong>SQL Archival:</strong> All required SQL is committed to the release folder in the repository and linked in the Release Manifest (see <a href="#5-sql-management-protocol">Section 5</a>)</li>
+<li>[ ] <strong>Ticket Linking:</strong> The ticket contains a comment with the direct URL to any SQL files</li>
+<li>[ ] <strong>Feature Toggle:</strong> If the feature is high-risk, a configuration flag is implemented for instant deactivation</li>
+<li>[ ] <strong>Test Case:</strong> A test case is drafted in comments or the test suite, including named test users in the QA environment</li>
+<li>[ ] <strong>Release Manifest:</strong> The story/feature is added to the Release Manifest</li>
+<li>[ ] <strong>Communication:</strong> All decisions and context are documented on the ticket — not in chat threads or verbal conversations</li>
+</ul>
+<hr />
+<h2>2. Source Control and Branching Strategy</h2>
+<h3>2.1 Multi-Tier Branching Model</h3>
+<p>Teams should follow a multi-tier branching model to isolate development, testing, and release preparation.</p>
+<pre><code>feature/PROJ-XXXX ──► development ──► integration ──► release/REL-XXXX ──► main
+       │                  │                │                │                │
+  Individual work     DEV env          QA testing      CI/CD builds     Always = PROD
+                                       on QA env       &amp; deploys to
+                                                       PROD (pristine)
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Branch</th>
+<th>Purpose</th>
+<th>Deploy Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>feature/&lt;dev&gt;/PROJ-XXXX-desc</code></td>
+<td>Individual work</td>
+<td>Local / DEV</td>
+</tr>
+<tr>
+<td><code>development</code></td>
+<td>Automated builds, early integration testing</td>
+<td>DEV</td>
+</tr>
+<tr>
+<td><code>integration</code></td>
+<td>Formal QA testing of combined features</td>
+<td>QA</td>
+</tr>
+<tr>
+<td><code>release/REL-XXXX</code></td>
+<td>Pristine release candidate — only QA-approved code. <strong>CI/CD builds and deploys artifacts from this branch.</strong></td>
+<td>PROD (+ staging/perf)</td>
+</tr>
+<tr>
+<td><code>main</code></td>
+<td>Stable, production-ready code. Source of truth. Always reflects PROD.</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>Important:</strong> Production artifacts are <strong>only</strong> built and deployed from release branches. The <code>development</code> branch deploys to DEV for early testing but is <strong>not</strong> a source for production artifacts.</p>
+</blockquote>
+<h3>2.2 Branch Naming</h3>
+<p>All branches <strong>must</strong> include the ticket identifier from your project tracker.</p>
+<p><strong>Feature branches:</strong> <code>feature/&lt;developer&gt;/PROJ-XXXX-short-description</code>
+<strong>Release branches:</strong> <code>release/REL-XXXX</code> (sequential numbering)</p>
+<h3>2.3 Creating Branches</h3>
+<p>All new branches <strong>must</strong> be created from <code>main</code>.</p>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git checkout -b feature/&lt;developer&gt;/PROJ-XXXX-short-description
+</code></pre>
+<p><strong>Why:</strong> Creating branches from <code>main</code> ensures that a release branch can be rebuilt easily from the sum of the individual branches included in the release.</p>
+<h3>2.4 Release Lifecycle</h3>
+<ol>
+<li>A new release branch is created from <code>main</code> using the release naming convention</li>
+<li>Feature branches and bug fixes for that release are merged into the release branch via pull requests</li>
+<li>CI/CD builds and deploys artifacts from the release branch</li>
+<li>QA testing is performed against the deployed build; fixes go back into the same release branch</li>
+<li>Once the release passes QA, the release branch is merged into <code>main</code></li>
+<li>A new release branch is created from <code>main</code> for the next cycle</li>
+</ol>
+<p><strong>Creating a new release branch:</strong></p>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git checkout -b release/REL-XXXX
+git push -u origin release/REL-XXXX
+</code></pre>
+<p><strong>Merging a completed release back to main:</strong></p>
+<pre><code class="language-bash">git checkout main
+git pull origin main
+git merge --no-ff release/REL-XXXX
+git push origin main
+</code></pre>
+<blockquote>
+<p><strong>Tip:</strong> Use <code>--no-ff</code> (no fast-forward) merges to preserve release branch history in the git log. This makes it easy to trace which commits belonged to which release.</p>
+</blockquote>
+<h3>2.5 Branch Ownership</h3>
+<p>Branch management is <strong>owned by the developer</strong>. Each developer is responsible for:</p>
+<ul>
+<li>Creating branches from <code>main</code></li>
+<li>Keeping branches up to date</li>
+<li>Resolving merge conflicts</li>
+<li>Cleaning up stale branches after merge</li>
+</ul>
+<h3>2.6 Do's and Don'ts</h3>
+<table>
+<thead>
+<tr>
+<th>Do</th>
+<th>Don't</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch from <code>main</code></td>
+<td>Commit directly to <code>main</code> — all changes reach <code>main</code> through a release branch merge</td>
+</tr>
+<tr>
+<td>Follow naming conventions exactly</td>
+<td>Build or deploy production artifacts from <code>development</code> — it is for integration testing only</td>
+</tr>
+<tr>
+<td>Complete the current release merge into <code>main</code> before creating the next release branch</td>
+<td>Run parallel release branches — only one should be active at a time</td>
+</tr>
+<tr>
+<td>Use <code>--no-ff</code> merges when merging release branches back to <code>main</code></td>
+<td>Force push to <code>main</code></td>
+</tr>
+<tr>
+<td>Use pull requests for all merges to shared branches</td>
+<td>Merge unapproved features into the release branch</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>3. Pull Requests</h2>
+<h3>3.1 PRs to Development</h3>
+<ul>
+<li>Developers can PR to the <code>development</code> branch at will</li>
+<li>Merging to <code>development</code> triggers automated build and deploy to the DEV environment</li>
+<li>PRs to <code>development</code> do not require approval but are still required (no direct pushes)</li>
+</ul>
+<h3>3.2 PRs to Integration</h3>
+<ul>
+<li>When a feature is ready for formal QA, the developer merges it into the <code>integration</code> branch via PR</li>
+<li>The <code>integration</code> branch is what the QA team deploys to the QA environment</li>
+<li>PRs to <code>integration</code> require review</li>
+</ul>
+<h3>3.3 PRs to Release</h3>
+<ul>
+<li>Only features <strong>fully signed off by QA</strong> in the integration branch are merged into the release branch</li>
+<li>The release branch is cut from <code>main</code> and must remain pristine — no rejected or unapproved code</li>
+<li>PRs to release branches require review and approval</li>
+</ul>
+<h3>3.4 General PR Guidelines</h3>
+<ul>
+<li>PR title should include the ticket identifier</li>
+<li>PR description should summarize what changed and why</li>
+<li>Link the PR to the relevant ticket</li>
+</ul>
+<hr />
+<h2>4. The Release Manifest</h2>
+<p>A wonderful side-effect of the agentic AI trend is context as code in natural language. Scientific processes are good at &quot;breaking things into pieces&quot; at the expense of a holistic context. Version control and project trackers tend to atomize and disarticulate. Context is easy to lose sight of.</p>
+<p>The Release Manifest is a <strong>living document</strong> that provides a collaborative, holistic, human-readable context of the work candidates for a given release. A human (or agent) should be able to understand intent and build your software using this document.</p>
+<h3>4.1 Lifecycle</h3>
+<ol>
+<li>At the outset of a sprint (or following a release), a Release Manifest is created and cross-linked with the release ticket</li>
+<li>Deferred features from the previous manifest are copied forward</li>
+<li>The document is updated incrementally as features emerge from the sprint</li>
+<li>At standup, the team briefly reviews the Release Manifest</li>
+<li>At release assembly time, all features are either <strong>Approved</strong> or <strong>Deferred</strong>, and contents are transposed into the release ticket</li>
+</ol>
+<p><strong>Important:</strong> Release tickets should <strong>not</strong> be cloned from the previous deployment. Use a clean template to avoid stale information.</p>
+<h3>4.2 Manifest Sections</h3>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Proposed</strong></td>
+<td>Code complete and merged to integration branch</td>
+</tr>
+<tr>
+<td><strong>Approved</strong></td>
+<td>Approved by QA, static analysis reviewed, merged to release branch</td>
+</tr>
+<tr>
+<td><strong>Deferred</strong></td>
+<td>Not ready yet — wait until next release</td>
+</tr>
+</tbody>
+</table>
+<h3>4.3 For Each Feature, Include:</h3>
+<ul>
+<li>A meaningful title with the ticket key (e.g., &quot;PROJ-1144 - Temperature Configuration&quot;)</li>
+<li>A short context explaining:
+<ul>
+<li>What it is</li>
+<li>How it works</li>
+<li>How it's deployed (including any infrastructure components)</li>
+</ul>
+</li>
+<li>Links to:
+<ul>
+<li>The tracker tickets</li>
+<li>The feature branch</li>
+<li>Associated SQL files</li>
+</ul>
+</li>
+</ul>
+<hr />
+<h2>5. SQL Management Protocol</h2>
+<p>Many organizations formally request all SQL processing via DBA tickets above the development environment. Well-organized SQL etiquette reinforces good habits and gives the acting DBA clear execution paths.</p>
+<p>All SQL changes are version-controlled in the repository. The SQL folder serves as the <strong>source of truth</strong>, organized by release ticket ID.</p>
+<h3>5.1 Directory Structure</h3>
+<pre><code>/releases/REL-XXXX/
+├── 001_PROJ-101_DDL_CreateUserTable.sql
+├── 002_PROJ-101_DML_InsertDefaults.sql
+├── 003_PROJ-205_DDL_AddPrefsColumn.sql
+├── rollback/
+│   ├── 001_PROJ-101_UNDO_DropUserTable.sql
+│   ├── 002_PROJ-101_UNDO_DeleteDefaults.sql
+│   └── 003_PROJ-205_UNDO_RemovePrefsColumn.sql
+└── deferred/
+    └── (scripts moved here if feature is rejected by QA)
+</code></pre>
+<h3>5.2 Naming Convention</h3>
+<p><strong>Forward scripts:</strong> <code>SequenceNumber_TicketCode_Action_Description.sql</code>
+<strong>Rollback scripts:</strong> <code>SequenceNumber_TicketCode_UNDO_Description.sql</code></p>
+<h3>5.3 Each SQL Script Must Include</h3>
+<ul>
+<li>The <strong>primary DDL/DML</strong></li>
+<li>A <strong>verification query</strong> (e.g., <code>SELECT count(*)</code>) to confirm success</li>
+<li>A corresponding <strong>rollback script</strong></li>
+<li><strong>Clear comments</strong> explaining what the script does</li>
+</ul>
+<h3>5.4 Ticket Linking</h3>
+<p>The ticket <strong>must</strong> contain a comment with the direct URL to the SQL files in the repository.</p>
+<p>A feature is <strong>not considered complete</strong> if scripts only exist in a local environment or the development database.</p>
+<hr />
+<h2>6. Deployment Strategy</h2>
+<h3>6.1 Developer Ownership</h3>
+<p>Deployment strategy is <strong>owned by the developer</strong>. Each developer is responsible for:</p>
+<ul>
+<li>Linking their story to the release ticket used for tracking the deployment</li>
+<li>Adding their feature to the Release Manifest</li>
+<li>Stories are <strong>not linked to the release ticket until the release branch is completed</strong></li>
+</ul>
+<h3>6.2 Release Checklist</h3>
+<p>Before submitting the release for deployment approval:</p>
+<ul>
+<li>[ ] <strong>Build Artifact:</strong> Specific CI/CD artifact ID is listed (built from the release branch)</li>
+<li>[ ] <strong>Branch Integrity:</strong> The release branch contains <strong>only</strong> the features listed in the release ticket</li>
+<li>[ ] <strong>DBA Execution Order:</strong> A table lists every SQL script in exact order of execution</li>
+<li>[ ] <strong>QA Sign-off:</strong> Formal statement or checkbox from QA confirming the release candidate is stable</li>
+<li>[ ] <strong>Pre-Deployment Steps:</strong> Documented</li>
+<li>[ ] <strong>Post-Deployment Steps:</strong> Documented</li>
+<li>[ ] <strong>Static Analysis:</strong> Release branch is scanned and results are linked</li>
+</ul>
+<hr />
+<h2>7. Handling Rejections and Rollbacks</h2>
+<h3>7.1 Rejection Protocol</h3>
+<p>If a feature <strong>fails QA</strong> in the integration branch:</p>
+<ol>
+<li>Perform a <code>git revert</code> on the merge commit (preserves branch history)</li>
+<li>Move corresponding SQL scripts to the <code>/deferred/</code> subfolder to prevent DBA execution</li>
+<li>Update the Release Manifest — move the feature to <strong>Deferred</strong></li>
+</ol>
+<h3>7.2 Rollback Protocol</h3>
+<p>Every deployment plan must include a <strong>&quot;Point of No Return&quot;</strong> assessment.</p>
+<p>If a failure occurs post-deployment:</p>
+<ol>
+<li>Operations redeploys the previous stable artifact ID</li>
+<li>DBA executes scripts in the <code>/rollback/</code> folder in <strong>reverse sequence number order</strong></li>
+</ol>
+<p>This restores the environment to its exact previous state without guesswork.</p>
+<hr />
+<h2>8. Responsibilities and Timing</h2>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Responsible Party</th>
+<th>Timing</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Commit SQL + rollback scripts</td>
+<td>Developer</td>
+<td>During feature development</td>
+</tr>
+<tr>
+<td>Update Release Manifest</td>
+<td>Developer</td>
+<td>As features are completed</td>
+</tr>
+<tr>
+<td>Update release ticket</td>
+<td>Developer</td>
+<td>Upon merge to release candidate</td>
+</tr>
+<tr>
+<td>Verify artifact ID and scripts</td>
+<td>Lead / Scrum Master</td>
+<td>24 hours before submission</td>
+</tr>
+<tr>
+<td>Execute deployment and SQL</td>
+<td>Operations / DBA</td>
+<td>Scheduled release window</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Quick Reference</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Branch source</td>
+<td>Always branch from <code>main</code></td>
+</tr>
+<tr>
+<td>Branch naming</td>
+<td>Must include project ticket ID</td>
+</tr>
+<tr>
+<td>Post-release</td>
+<td>Merge release branch back to <code>main</code> with <code>--no-ff</code></td>
+</tr>
+<tr>
+<td>Branching model</td>
+<td><code>feature</code> → <code>development</code> → <code>integration</code> → <code>release</code> → <code>main</code></td>
+</tr>
+<tr>
+<td>Parallel releases</td>
+<td><strong>No</strong> — only one active release branch at a time</td>
+</tr>
+<tr>
+<td>Direct commits to main</td>
+<td><strong>Never</strong> — all changes reach <code>main</code> through release branch merge</td>
+</tr>
+<tr>
+<td>Production artifacts</td>
+<td>Built <strong>only</strong> from release branches</td>
+</tr>
+<tr>
+<td>PRs to development</td>
+<td>Required, no approval needed</td>
+</tr>
+<tr>
+<td>PRs to integration</td>
+<td>Required, reviewed — this is what QA tests</td>
+</tr>
+<tr>
+<td>PRs to release</td>
+<td>Required, approval needed — only QA-approved code</td>
+</tr>
+<tr>
+<td>SQL changes</td>
+<td>In repository <code>/releases/REL-XXXX/</code> with rollback scripts</td>
+</tr>
+<tr>
+<td>Release Manifest</td>
+<td>Living document, updated by each developer, reviewed at standup</td>
+</tr>
+<tr>
+<td>Release tickets</td>
+<td>Fresh template, not cloned — assembled from Release Manifest</td>
+</tr>
+<tr>
+<td>Definition of Done</td>
+<td>Code review + static analysis + SQL archived + test case + manifest updated</td>
+</tr>
+<tr>
+<td>Communication</td>
+<td>On the ticket</td>
+</tr>
+<tr>
+<td>Branch management</td>
+<td>Developer-owned</td>
+</tr>
+<tr>
+<td>Deployment strategy</td>
+<td>Developer-owned</td>
+</tr>
+</tbody>
+</table>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Releasing Music as a Human Being: From WAV Files to Spotify</title>
+      <link>https://timbeach.com/#/article/releasing-music</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/releasing-music</guid>
+      <pubDate>Mon, 02 Mar 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>You finished the music. Two tracks, mixed and mastered. You have album art. You have no idea what comes next.</p>
+<p>You are the songwriter. You are the producer. No label, no manager, no A&amp;R guy who &quot;believes in your vision.&quot; Just you and some WAV files. The goal is simple: get these tracks onto Spotify so anyone with a phone can press play.</p>
+<p>Turns out there is a surprisingly dense thicket of acronyms between you and that goal. PROs, ISRCs, UPCs, LUFS, the MLC. Each one is a small thing to learn, but nobody lays them all out in one place. This article does that. It is the checklist I wish I had before I started.</p>
+<h2>The Checklist</h2>
+<p>Here is everything you need to do, in order. Each item links to a deep-dive section below.</p>
+<ol>
+<li><strong>Register with a PRO</strong> — ASCAP or BMI. This is how you get paid when your song is played.</li>
+<li><strong>Register with the MLC</strong> — Free. Collects a separate stream of royalties most indie artists miss entirely.</li>
+<li><strong>Prepare your audio files</strong> — Right format, right sample rate, right loudness.</li>
+<li><strong>Prepare your album art</strong> — 3000x3000, square, sRGB. No exceptions.</li>
+<li><strong>Decide your release strategy</strong> — One single with two tracks? Two separate singles? It matters.</li>
+<li><strong>Choose a distributor</strong> — The company that actually puts your music on Spotify.</li>
+<li><strong>Fill out your metadata</strong> — Title, artist name, genre, credits. Get it right the first time.</li>
+<li><strong>Set a release date</strong> — 4-6 weeks out. Not tomorrow.</li>
+<li><strong>Pitch to Spotify editorial playlists</strong> — Free, built into Spotify for Artists, but time-sensitive.</li>
+<li><strong>Register your copyright</strong> — $45-65. Legal protection you will be glad you have.</li>
+<li><strong>(Optional) Set up admin publishing</strong> — Captures international royalties you would otherwise never see.</li>
+</ol>
+<p>Now let's walk through each one.</p>
+<hr />
+<h2>1. Register with a PRO</h2>
+<p>A PRO (Performance Rights Organization) collects <strong>performance royalties</strong> on your behalf. Every time your song is streamed on Spotify, played on the radio, performed live at a venue, or piped through the speakers at a coffee shop, a performance royalty is generated. Without a PRO, nobody is collecting that money for you. It just doesn't arrive.</p>
+<p>You have two real options: <strong>ASCAP</strong> and <strong>BMI</strong>. (SESAC exists but is invite-only — skip it.)</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>ASCAP</th>
+<th>BMI</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Writer registration</td>
+<td>$50 one-time</td>
+<td>Free</td>
+</tr>
+<tr>
+<td>Publisher registration</td>
+<td>$50 one-time</td>
+<td>$150 one-time</td>
+</tr>
+<tr>
+<td>Payment frequency</td>
+<td>Quarterly</td>
+<td>Quarterly</td>
+</tr>
+<tr>
+<td>Payment lag</td>
+<td>~6.5 months</td>
+<td>~5.5 months</td>
+</tr>
+<tr>
+<td>Contract term</td>
+<td>1 year</td>
+<td>2 years</td>
+</tr>
+</tbody>
+</table>
+<p>If you are only registering as a <strong>songwriter</strong> (not setting up a separate publisher entity), BMI is free and ASCAP costs $50. BMI wins on cost.</p>
+<p>If you are registering as <strong>both writer and publisher</strong> (a one-person operation where you wear both hats), ASCAP charges $100 total versus BMI's $150. ASCAP wins on combined cost.</p>
+<p>Both are reputable. Both collect from the same pool of performance income. The practical difference is minimal for most independent artists. Pick one and move on.</p>
+<p><strong>You cannot join both.</strong> One PRO per songwriter. Choose one.</p>
+<p>When you register, you will receive an <strong>IPI number</strong> — a unique international identifier for you as a songwriter. You will need this later when registering your works with the MLC and with your distributor. It is public information. Share it freely with collaborators.</p>
+<p><strong>Important:</strong> Register your songs (called &quot;works&quot;) in your PRO's portal as soon as they exist. Performance royalties do not collect retroactively for streams that happened before the work was registered. Register early.</p>
+<h2>2. Register with the MLC</h2>
+<p>The <strong>MLC (Mechanical Licensing Collective)</strong> collects <strong>mechanical royalties</strong> — a completely separate income stream from the performance royalties your PRO handles.</p>
+<p>A mechanical royalty is generated every time your <em>composition</em> is reproduced: streamed on Spotify, downloaded on iTunes, pressed onto vinyl. The word &quot;mechanical&quot; is a relic from the player piano era, but the money is real.</p>
+<p>Here is the thing most independent artists miss: roughly <strong>15% of US streaming songwriter income goes entirely unclaimed</strong> because artists are not registered with the MLC. This is real money sitting in a pool with nobody's name on it.</p>
+<p>The MLC is:</p>
+<ul>
+<li><strong>Free to register</strong> — no fees, no commission, no percentage taken</li>
+<li><strong>100% of royalties kept</strong> — they take nothing</li>
+<li>Open to <strong>self-administered songwriters</strong> — you do not need a publisher</li>
+<li>Pays out <strong>monthly</strong></li>
+</ul>
+<p>Go to <a href="https://www.themlc.com">themlc.com</a>, create a free account as a self-administered songwriter, register each of your songs, and link your bank account. That's it. Do this before your music goes live.</p>
+<p>The MLC only covers US digital mechanical royalties. International mechanicals require either an admin publishing service or direct registration with foreign collection societies — more on that in section 11.</p>
+<h2>3. Prepare Your Audio Files</h2>
+<p>Your distributor will deliver your audio to Spotify. Here is what to hand them:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Format</td>
+<td>FLAC preferred, WAV accepted</td>
+</tr>
+<tr>
+<td>Sample rate</td>
+<td>44.1 kHz minimum — submit at your native mastering rate</td>
+</tr>
+<tr>
+<td>Bit depth</td>
+<td>24-bit preferred, 16-bit minimum</td>
+</tr>
+<tr>
+<td>Channels</td>
+<td>Stereo only</td>
+</tr>
+<tr>
+<td>Loudness target</td>
+<td>-14 LUFS integrated</td>
+</tr>
+<tr>
+<td>True peak ceiling</td>
+<td>-1 dBTP</td>
+</tr>
+</tbody>
+</table>
+<p>A few notes on loudness: Spotify applies <strong>loudness normalization</strong> during playback, targeting <strong>-14 LUFS integrated</strong> (the ITU-R BS.1770 standard). Your master is not altered — Spotify just adjusts the playback volume. If your master is louder than -14 LUFS, the volume gets turned down. If it is quieter, it gets turned up.</p>
+<p>The practical implication: <strong>do not brick-wall your master for streaming.</strong> A master slammed to -8 LUFS will be turned down to -14 LUFS anyway, and it will sound worse than a dynamic master that was already sitting at -14 LUFS. Master for dynamics, not for volume.</p>
+<p>The <strong>-1 dBTP true peak ceiling</strong> prevents inter-sample distortion during Spotify's lossy transcoding to Ogg Vorbis. If your master is significantly louder than -14 LUFS, use <strong>-2 dBTP</strong> instead for extra headroom.</p>
+<p>Submit at your <strong>native mastering resolution</strong>. If you mastered at 48 kHz / 24-bit, submit that. Do not upsample a 44.1 kHz master to 96 kHz — it adds nothing. Do not downsample a 24-bit master to 16-bit — let Spotify handle the conversion.</p>
+<h2>4. Prepare Your Album Art</h2>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Requirement</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dimensions</td>
+<td>3000 x 3000 px recommended (640 min, 10000 max)</td>
+</tr>
+<tr>
+<td>Aspect ratio</td>
+<td>1:1 (square) — mandatory</td>
+</tr>
+<tr>
+<td>Format</td>
+<td>JPG or PNG</td>
+</tr>
+<tr>
+<td>Color space</td>
+<td>sRGB, 24-bit color</td>
+</tr>
+<tr>
+<td>Max file size</td>
+<td>Varies by distributor — 3000x3000 JPG is always fine</td>
+</tr>
+</tbody>
+</table>
+<p>Do not upscale a smaller image to hit 3000x3000. Spotify explicitly prohibits this and the blurriness is obvious. If your art was created at a lower resolution, you need new art.</p>
+<p>Your cover art <strong>cannot contain</strong>:</p>
+<ul>
+<li>URLs, email addresses, or social media handles</li>
+<li>Phone numbers or contact information</li>
+<li>References to pricing or retail</li>
+<li>Explicit imagery (unless the release is flagged explicit)</li>
+</ul>
+<p>The words &quot;Single&quot; or &quot;EP&quot; should <strong>not</strong> appear in your cover art or release title. Spotify classifies releases automatically based on track count and duration — more on that next.</p>
+<h2>5. Decide Your Release Strategy</h2>
+<p>Spotify classifies releases automatically. You cannot override it. The rules:</p>
+<table>
+<thead>
+<tr>
+<th>Release Type</th>
+<th>Tracks</th>
+<th>Duration Rules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Single</td>
+<td>1-3</td>
+<td>All tracks under 10 min, total under 30 min</td>
+</tr>
+<tr>
+<td>EP</td>
+<td>4-6</td>
+<td>Total under 30 min</td>
+</tr>
+<tr>
+<td>EP</td>
+<td>1-3</td>
+<td>At least one track is 10+ min</td>
+</tr>
+<tr>
+<td>Album</td>
+<td>7+</td>
+<td>Any duration</td>
+</tr>
+<tr>
+<td>Album</td>
+<td>Any</td>
+<td>Total over 30 min</td>
+</tr>
+</tbody>
+</table>
+<p>With two tracks both under 10 minutes, you are firmly in <strong>Single</strong> territory regardless of whether you release them together or separately.</p>
+<p>The strategic question: <strong>one 2-track single, or two separate singles?</strong></p>
+<p><strong>Two separate singles:</strong></p>
+<ul>
+<li>Two release dates = two moments of algorithmic visibility</li>
+<li>Each release gets its own pitch to Spotify's editorial playlist team</li>
+<li>More &quot;release events&quot; means more data points in Spotify's recommendation engine</li>
+<li>Stagger them 4-6 weeks apart for sustained presence</li>
+</ul>
+<p><strong>One 2-track single:</strong></p>
+<ul>
+<li>Simpler — one upload, one metadata entry, done</li>
+<li>Makes sense if the tracks are thematically linked (A-side / B-side feel)</li>
+<li>Listeners get both tracks at once</li>
+</ul>
+<p>For most independent artists releasing their first music, <strong>two separate singles</strong> is the stronger move. Each release is a chance to be discovered. You want to maximize those chances.</p>
+<h2>6. Choose a Distributor</h2>
+<p>A distributor is the company that takes your audio and metadata and delivers it to Spotify (and Apple Music, Tidal, Amazon Music, YouTube Music, and dozens of other platforms). You cannot upload directly to Spotify. You need a middleman.</p>
+<table>
+<thead>
+<tr>
+<th>Distributor</th>
+<th>Pricing</th>
+<th>You Keep</th>
+<th>Time to Spotify</th>
+<th>Notable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DistroKid</td>
+<td>$24.99/yr (unlimited)</td>
+<td>100%</td>
+<td>1-5 days</td>
+<td>Fastest processing</td>
+</tr>
+<tr>
+<td>CD Baby</td>
+<td>$9.99/single (one-time)</td>
+<td>91%</td>
+<td>1-14 days</td>
+<td>Pay once, stays forever</td>
+</tr>
+<tr>
+<td>TuneCore</td>
+<td>$29.99/yr (unlimited)</td>
+<td>100%</td>
+<td>1-7 days</td>
+<td>Publishing admin available</td>
+</tr>
+<tr>
+<td>Amuse</td>
+<td>$23.99/yr (unlimited)</td>
+<td>100%</td>
+<td>1-7 days</td>
+<td>Mobile-first platform</td>
+</tr>
+<tr>
+<td>LANDR</td>
+<td>$23.99/yr or $9/single</td>
+<td>100% while subscribed</td>
+<td>3-7 days</td>
+<td>Integrated AI mastering</td>
+</tr>
+</tbody>
+</table>
+<p>The core tradeoff: <strong>annual subscription vs. per-release fee.</strong></p>
+<p><strong>DistroKid</strong> ($24.99/year, unlimited uploads, 100% royalties) is the default recommendation if you plan to release music regularly. It is the fastest distributor and the most popular among independents. The catch: if you stop paying, your music comes down.</p>
+<p><strong>CD Baby</strong> ($9.99 per single, one-time, stays up forever) makes sense if you release rarely. The catch: they take a <strong>permanent 9% commission</strong> on all revenue from that release, forever. On a successful release, that 9% adds up quickly.</p>
+<p><strong>TuneCore</strong> is a solid middle ground with optional publishing administration built in.</p>
+<p>All of these distributors will assign your <strong>ISRC codes</strong> (one per track) and <strong>UPC code</strong> (one per release) automatically and for free. You do not need to purchase these separately.</p>
+<h2>7. Fill Out Your Metadata</h2>
+<p>When you upload to your distributor, you will fill out metadata fields. Get these right — they are hard to change after release and affect how your music is found and credited.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What It Is</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Release title</td>
+<td>Name of the single/EP/album</td>
+<td>Do not include &quot;Single&quot; or &quot;EP&quot;</td>
+</tr>
+<tr>
+<td>Track title(s)</td>
+<td>Name of each song</td>
+<td>Exact spelling matters</td>
+</tr>
+<tr>
+<td>Primary artist</td>
+<td>Your artist name</td>
+<td>Must be consistent across releases</td>
+</tr>
+<tr>
+<td>Genre</td>
+<td>Primary genre</td>
+<td>Pick one. You can usually add a sub-genre.</td>
+</tr>
+<tr>
+<td>Release date</td>
+<td>When it goes live</td>
+<td>YYYY-MM-DD format. Set 4-6 weeks out.</td>
+</tr>
+<tr>
+<td>Explicit</td>
+<td>Clean or Explicit</td>
+<td>Per track</td>
+</tr>
+<tr>
+<td>Language</td>
+<td>Lyrics language</td>
+<td>Required even for instrumentals (pick &quot;English&quot; if unsure)</td>
+</tr>
+<tr>
+<td>ISRC</td>
+<td>Per-track identifier</td>
+<td>Distributor assigns this free</td>
+</tr>
+<tr>
+<td>UPC</td>
+<td>Per-release barcode</td>
+<td>Distributor assigns this free</td>
+</tr>
+<tr>
+<td>P-line</td>
+<td>Sound recording copyright</td>
+<td>&quot;2026 Your Name&quot;</td>
+</tr>
+<tr>
+<td>C-line</td>
+<td>Composition copyright</td>
+<td>&quot;2026 Your Name&quot;</td>
+</tr>
+<tr>
+<td>Label</td>
+<td>Your label name</td>
+<td>&quot;Self-Released&quot; or whatever you want</td>
+</tr>
+<tr>
+<td>Songwriter</td>
+<td>Composition credits</td>
+<td>Your legal name</td>
+</tr>
+<tr>
+<td>Producer</td>
+<td>Production credits</td>
+<td>Your legal name (or artist name)</td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>ISRC</strong> (International Standard Recording Code) permanently identifies a specific recording. One per track. If you re-record or remix the track later, the new recording gets a new ISRC. The original keeps its code forever.</p>
+<p>The <strong>UPC</strong> (Universal Product Code) is the barcode for the release as a product. One per release, regardless of track count.</p>
+<p>Your distributor handles both of these. You do not need to think about them unless you want to own your own registrant codes for portability (see <a href="https://usisrc.org">usisrc.org</a> — $95 one-time if you want this).</p>
+<h2>8. Set a Release Date</h2>
+<p>Do not set your release date for tomorrow. Here is why:</p>
+<table>
+<thead>
+<tr>
+<th>Goal</th>
+<th>Lead Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Technical minimum (music goes live)</td>
+<td>3-5 business days</td>
+</tr>
+<tr>
+<td>Minimum for Spotify playlist pitching</td>
+<td>7 days</td>
+</tr>
+<tr>
+<td>Recommended</td>
+<td>4-6 weeks</td>
+</tr>
+<tr>
+<td>Full promotional campaign</td>
+<td>3 months</td>
+</tr>
+</tbody>
+</table>
+<p>The critical reason to submit early: <strong>Spotify editorial playlist pitching.</strong></p>
+<p>Once your distributor delivers your release, it will appear in <strong>Spotify for Artists</strong> as an upcoming release. From there, you can pitch <strong>one unreleased track</strong> to Spotify's editorial team for playlist consideration. This pitch must be submitted <strong>at least 7 days before your release date</strong> — and the earlier the better.</p>
+<p>You cannot pitch after the song goes live. The window only exists before release. This alone is reason enough to submit your music 4-6 weeks before you want it available.</p>
+<p>Set your release date. Submit your music. Then pitch while you wait.</p>
+<h2>9. Pitch to Spotify Editorial Playlists</h2>
+<p>This is free. It is built into Spotify for Artists. Most independent artists either do not know it exists or forget to do it.</p>
+<p>Here is the process:</p>
+<ol>
+<li>Your distributor delivers your release to Spotify</li>
+<li>The release appears as &quot;upcoming&quot; in your Spotify for Artists dashboard</li>
+<li>You select one track from the release to pitch</li>
+<li>You fill out a short form: genre, mood, instruments, story behind the song</li>
+<li>Submit at least 7 days before release (earlier = better)</li>
+<li>Wait</li>
+</ol>
+<p>There is no guarantee of placement. Most pitches do not result in editorial playlist adds. But the pitch is free, it takes five minutes, and the upside is enormous. A single editorial playlist placement can generate tens of thousands of streams. Do not skip this step.</p>
+<p>If you do not yet have a <strong>Spotify for Artists</strong> account, claim your artist profile at <a href="https://artists.spotify.com">artists.spotify.com</a> after your first release is delivered by your distributor.</p>
+<h2>10. Register Your Copyright</h2>
+<p>Copyright exists automatically the moment you record your song. You do not need to register it to own it. But <strong>registering with the US Copyright Office</strong> gives you legal tools you do not have otherwise:</p>
+<ul>
+<li>You <strong>cannot file a copyright infringement lawsuit</strong> without registration</li>
+<li>If registered <strong>before</strong> infringement occurs, you can claim <strong>statutory damages</strong> (up to $150,000 per work for willful infringement) and <strong>attorney's fees</strong></li>
+<li>Without registration, you can only sue for actual damages — which are hard to prove and usually small</li>
+</ul>
+<p>For a solo artist who wrote and produced everything, file <strong>Form SR</strong> (Sound Recording). This single form covers both the sound recording and the underlying composition when the same person owns both.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Detail</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Where</td>
+<td><a href="https://www.copyright.gov/registration/">copyright.gov</a> (eCO online system)</td>
+</tr>
+<tr>
+<td>Cost</td>
+<td>$45 (single author, single work) or $65 (standard)</td>
+</tr>
+<tr>
+<td>Processing time</td>
+<td>Several months — but your registration date is the date you <em>file</em></td>
+</tr>
+<tr>
+<td>What it covers</td>
+<td>Both your recording and your composition (Form SR, same owner)</td>
+</tr>
+</tbody>
+</table>
+<p>$45 for legal protection on a song you spent months creating. Do it.</p>
+<h2>11. (Optional) Admin Publishing</h2>
+<p>If you have done steps 1-10, you are collecting:</p>
+<ul>
+<li><strong>Performance royalties</strong> via your PRO (ASCAP or BMI)</li>
+<li><strong>US mechanical royalties</strong> via the MLC</li>
+<li><strong>Streaming/download revenue</strong> via your distributor</li>
+</ul>
+<p>The gap: <strong>international mechanical royalties.</strong> When someone in Germany or Japan streams your song, a mechanical royalty is generated in that country. Your PRO and the MLC do not collect those. That money goes to the local collection society in that territory and sits there unless someone claims it on your behalf.</p>
+<p>An <strong>admin publishing service</strong> (not a traditional publisher — no ownership transfer) registers your works with collection societies worldwide and collects that international income for you.</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Setup Cost</th>
+<th>Commission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Songtrust</td>
+<td>~$100</td>
+<td>15% performance / 20% mechanicals</td>
+</tr>
+<tr>
+<td>CD Baby Pro</td>
+<td>Per-release fee</td>
+<td>~15%</td>
+</tr>
+<tr>
+<td>TuneCore Publishing</td>
+<td>Annual fee</td>
+<td>~15%</td>
+</tr>
+</tbody>
+</table>
+<p>Is it worth it? Depends on your international stream volume. If 90% of your listeners are in the US, the MLC already handles your mechanicals for free. If you start seeing significant international streams, an admin publisher captures income you would otherwise leave on the table.</p>
+<p>For a first release, this is optional. Revisit it after you have streaming data to look at.</p>
+<hr />
+<h2>The Short Version</h2>
+<p>You made the music. Everything else is paperwork. Here it is again, compressed:</p>
+<ol>
+<li><strong>PRO</strong> — Join BMI (free) or ASCAP ($50). Register your songs.</li>
+<li><strong>MLC</strong> — Register at themlc.com (free). Do not skip this.</li>
+<li><strong>Audio</strong> — FLAC or WAV, 44.1+ kHz, 24-bit, -14 LUFS, -1 dBTP.</li>
+<li><strong>Art</strong> — 3000x3000, square, JPG/PNG, sRGB.</li>
+<li><strong>Strategy</strong> — Two separate singles beats one 2-track single for algorithmic reach.</li>
+<li><strong>Distributor</strong> — DistroKid ($25/yr, 100%) or CD Baby ($10, keeps 9%).</li>
+<li><strong>Metadata</strong> — Artist name, credits, explicit flag. Distributor handles ISRC/UPC.</li>
+<li><strong>Release date</strong> — Set 4-6 weeks out. Submit early.</li>
+<li><strong>Pitch</strong> — Use Spotify for Artists to pitch one track. Free. Do it.</li>
+<li><strong>Copyright</strong> — File Form SR at copyright.gov. $45.</li>
+<li><strong>Admin publishing</strong> — Optional. Revisit after you have data.</li>
+</ol>
+<p>Now go release something.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes</title>
+      <link>https://timbeach.com/#/article/claude-code-agent-teams</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/claude-code-agent-teams</guid>
+      <pubDate>Sat, 21 Feb 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="../pix/agent-teams-diagram.png" alt="Agent Teams" /></p>
+<p>You're staring at a feature that touches the API, the frontend, and the test suite. Three separate concerns, three separate contexts, and one of you. You could work through them sequentially — endpoint first, then component, then tests — context-switching each time, holding the whole architecture in your head at once. Or you could do what any reasonable engineering manager would do: delegate. Tell three specialists to work in parallel, coordinate through a shared task list, and synthesize the results when they're done.</p>
+<p>Claude Code agent teams let you do exactly that. You spawn multiple Claude instances — each in its own tmux pane, each with its own context window, each working on a discrete piece of the problem. They message each other, share a task board, and report back to you. It's pair programming scaled sideways.</p>
+<p>This guide walks you through setup, first launch, architecture, practical patterns, and the safety model. By the end, you'll have a one-word alias that turns a single Claude session into a coordinated team.</p>
+<h2>Prerequisites</h2>
+<p>You need three things:</p>
+<ol>
+<li><strong>Claude Code</strong> installed and working (<code>claude</code> command available in your shell)</li>
+<li><strong>tmux</strong> installed (<code>tmux -V</code> to check — any recent version works)</li>
+<li><strong>Two settings</strong> in your Claude configuration file</li>
+</ol>
+<p>Add the following to <code>~/.claude/settings.json</code> (create the file if it doesn't exist):</p>
+<pre><code class="language-json">{
+  &quot;env&quot;: {
+    &quot;CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS&quot;: &quot;1&quot;
+  },
+  &quot;skipDangerousModePermissionPrompt&quot;: true
+}
+</code></pre>
+<p>If the file already exists with other settings, merge these in. The <code>env</code> block enables the experimental teams feature. The <code>skipDangerousModePermissionPrompt</code> setting suppresses the confirmation dialog that appears each time you launch Claude with <code>--dangerously-skip-permissions</code> — without it, you'd have to click through a warning on every team session start. We'll discuss the safety implications of that flag at the end.</p>
+<h2>The Alias</h2>
+<p>The full launch command is verbose. Let's fix that. Add this alias to your shell configuration (e.g., <code>~/.bashrc</code>, <code>~/.zshrc</code>, or wherever you keep aliases):</p>
+<pre><code class="language-bash">alias teamz=&quot;claude --dangerously-skip-permissions --teammate-mode tmux&quot;
+</code></pre>
+<p>Two flags, each doing something specific:</p>
+<ul>
+<li><strong><code>--dangerously-skip-permissions</code></strong> — bypasses all permission prompts. Teammates inherit this, which means they can run commands, edit files, and take actions without asking you first. This is what makes autonomous parallel work possible.</li>
+<li><strong><code>--teammate-mode tmux</code></strong> — tells Claude to spawn each teammate as a separate process in its own tmux pane, rather than running them all in a single process.</li>
+</ul>
+<p>Reload your shell config (<code>source ~/.bashrc</code> or open a new terminal), and you're ready.</p>
+<h2>Quick Start</h2>
+<h3>1. Get into tmux</h3>
+<p>Teammates spawn as tmux panes, so you need to be inside a tmux session first:</p>
+<pre><code class="language-bash">tmux new -s work
+</code></pre>
+<p>Then navigate to your project:</p>
+<pre><code class="language-bash">cd ~/code/my-project
+teamz
+</code></pre>
+<blockquote>
+<p><strong>What if you're not in tmux?</strong> Claude falls back to in-process mode — all teammates run inside your single terminal. You can cycle through them with <code>Shift+Down</code> and toggle the task list with <code>Ctrl+T</code>. It works, but you lose the visual parallel layout that makes teams powerful.</p>
+</blockquote>
+<h3>2. Describe what you want</h3>
+<p>Once Claude is running, just tell it what you need in plain language:</p>
+<pre><code>Create an agent team with 3 teammates:
+- backend-dev: implement the REST API endpoints
+- frontend-dev: build the React components
+- tester: write integration tests for both
+
+Have them coordinate through the task list. Require plan approval before implementation.
+</code></pre>
+<p>Claude — now acting as team lead — will:</p>
+<ol>
+<li><strong>Create the team</strong> with a config file at <code>~/.claude/teams/{team-name}/config.json</code></li>
+<li><strong>Create a shared task list</strong> at <code>~/.claude/tasks/{team-name}/</code></li>
+<li><strong>Spawn each teammate</strong> in its own tmux pane</li>
+<li><strong>Assign initial tasks</strong> and begin coordinating</li>
+</ol>
+<p>Within seconds, your terminal splits into panes. Each teammate starts working.</p>
+<h3>3. Watch, navigate, intervene</h3>
+<p>Standard tmux navigation applies:</p>
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Keys</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Move between panes</td>
+<td><code>Ctrl+B</code>, then arrow keys</td>
+</tr>
+<tr>
+<td>Zoom one pane full-screen</td>
+<td><code>Ctrl+B</code>, then <code>z</code> (toggle)</td>
+</tr>
+<tr>
+<td>Resize panes</td>
+<td><code>Ctrl+B</code>, then <code>Alt+arrow</code></td>
+</tr>
+<tr>
+<td>Click into a pane</td>
+<td>Just click (if mouse mode is on)</td>
+</tr>
+</tbody>
+</table>
+<p>You can read any teammate's output, and if you click into their pane, you can type messages directly to them. The team lead pane (your original session) is where you issue high-level instructions.</p>
+<h2>How It Works</h2>
+<h3>Architecture</h3>
+<pre><code>Team Lead (your main Claude session)
+  ├── Teammate 1 (tmux pane) ──┐
+  ├── Teammate 2 (tmux pane) ──┼── Shared Task List (~/.claude/tasks/)
+  └── Teammate 3 (tmux pane) ──┘
+              ↕ messaging ↕
+</code></pre>
+<p>Four moving parts:</p>
+<ul>
+<li><strong>Team lead</strong> — your original Claude session. It creates the team, defines tasks, spawns teammates, and synthesizes results. This is the only session you interact with directly (unless you click into a teammate's pane).</li>
+<li><strong>Teammates</strong> — independent Claude processes, each with its own context window. They don't share memory with the lead or with each other — they communicate through messages and the task list.</li>
+<li><strong>Task list</strong> — JSON files on disk at <code>~/.claude/tasks/{team-name}/</code>. Every agent can read and write to it. Tasks have statuses (<code>pending</code>, <code>in_progress</code>, <code>completed</code>), owners, dependencies, and descriptions. This is the coordination backbone.</li>
+<li><strong>Messaging</strong> — agents send direct messages to each other by name. No polling, no shared state beyond the task list. The lead gets notified when teammates finish tasks or need help.</li>
+</ul>
+<h3>What teammates inherit (and what they don't)</h3>
+<p>Each teammate automatically receives:</p>
+<ul>
+<li>Your project's <code>CLAUDE.md</code> instructions</li>
+<li>Configured MCP servers</li>
+<li>Available skills and plugins</li>
+<li>The spawn prompt from the lead (their specific assignment)</li>
+</ul>
+<p>What they do <strong>not</strong> get: the lead's conversation history. If context matters for a task, the lead needs to include it in the spawn prompt or in a message. This is by design — it keeps each teammate's context window focused on their specific job rather than polluted with unrelated conversation.</p>
+<h2>Common Patterns</h2>
+<h3>Parallel feature development</h3>
+<p>The most natural use case. You have a feature that spans multiple concerns:</p>
+<pre><code>Build the notification system:
+- API teammate: design the notification service and REST endpoints
+- UI teammate: build the notification bell component and dropdown
+- DB teammate: create the migration and notification model
+
+Have them agree on the notification schema before implementing.
+</code></pre>
+<p>The key phrase is &quot;agree on the schema before implementing.&quot; Teammates can message each other directly — the lead doesn't have to relay everything. The DB teammate can share the schema with the API and UI teammates, and they can coordinate without you in the loop.</p>
+<h3>Parallel debugging</h3>
+<p>Four eyes are better than two. Twenty are better still:</p>
+<pre><code>Users report the app crashes on login. Spawn 4 teammates to investigate:
+- One checks the auth middleware
+- One examines recent database migrations
+- One reviews the session handling code
+- One searches error logs and stack traces
+
+Have them share findings and narrow down the root cause together.
+</code></pre>
+<p>Each investigator works a different angle simultaneously. When one finds something relevant, they message the others. The lead synthesizes the findings into a diagnosis.</p>
+<h3>Multi-angle code review</h3>
+<p>A single reviewer catches bugs. Multiple reviewers with different mandates catch categories of bugs:</p>
+<pre><code>Review PR #42 from three angles:
+- Security reviewer: check for injection, auth bypass, data exposure
+- Performance reviewer: check for N+1 queries, unnecessary re-renders, missing indexes
+- Test reviewer: verify coverage, edge cases, and assertion quality
+
+Synthesize their findings into a single review.
+</code></pre>
+<h3>Research and design exploration</h3>
+<p>Not all teamwork is about code. Sometimes you need perspectives:</p>
+<pre><code>I'm designing a CLI tool for managing environment variables across projects.
+Create a team to explore this:
+- UX researcher: how do developers actually manage env vars today? What's painful?
+- Architect: propose the data model, storage format, and CLI interface
+- Devil's advocate: find the edge cases, challenge assumptions, identify where this breaks
+</code></pre>
+<h2>Controlling the Team</h2>
+<h3>Message a specific teammate</h3>
+<pre><code>Message the backend-dev teammate: &quot;Prioritize the auth endpoints — the frontend needs them first.&quot;
+</code></pre>
+<h3>Assign or reassign tasks</h3>
+<pre><code>Assign the caching task to the backend-dev teammate.
+</code></pre>
+<p>Tasks can also have dependencies — &quot;don't start the integration tests until the API endpoints are done&quot; — which the lead manages through the task list.</p>
+<h3>Require plan approval</h3>
+<p>For high-stakes work, you can put teammates in plan mode. They research and propose a plan, then wait for your explicit approval before writing any code:</p>
+<pre><code>Spawn an architect teammate to refactor the auth module. Require plan approval before any changes.
+</code></pre>
+<p>The teammate will explore the codebase, write up a plan, and send it to you. You review it, approve or reject with feedback, and only then do they start implementing. This gives you architectural control without micromanaging the implementation.</p>
+<h3>Shut down teammates</h3>
+<p>When work is done:</p>
+<pre><code>Ask the tester teammate to shut down.
+</code></pre>
+<p>Or wind down everything:</p>
+<pre><code>Shut down the team and clean up.
+</code></pre>
+<p>This removes the team config and task list files. The tmux panes close.</p>
+<h3>Choose models for teammates</h3>
+<p>Not every task needs the most capable (and expensive) model. You can specify:</p>
+<pre><code>Create a team with 3 teammates using Sonnet for cost efficiency.
+</code></pre>
+<p>Use Opus for complex architectural work, Sonnet for straightforward implementation, Haiku for simple lookups and formatting. The lead can mix models across teammates.</p>
+<h2>Tips and Troubleshooting</h2>
+<h3>Getting the granularity right</h3>
+<p>Task size is the single biggest factor in team effectiveness. Too small and you drown in coordination overhead — agents spend more time messaging than working. Too large and teammates go dark for long stretches, potentially duplicating effort or heading in the wrong direction.</p>
+<p>The sweet spot: <strong>self-contained units of work</strong>. A module. A test file. An API endpoint with its route, controller, and validation. Aim for roughly 5–6 tasks per teammate per session. Each task should be something a teammate can complete without needing to ask three clarifying questions.</p>
+<h3>Token economics</h3>
+<p>Each teammate gets its own context window. Three teammates means roughly 3x the token usage of a single session — there's no sharing or deduplication of context across agents. Factor this into your planning, especially for long sessions.</p>
+<h3>Things to know</h3>
+<ul>
+<li><strong>Teammates can DM each other.</strong> The lead sees a summary of peer messages but doesn't have to relay everything.</li>
+<li><strong>One team per session.</strong> You can't nest teams or have a teammate lead its own sub-team.</li>
+<li><strong>Sessions don't resume teammates.</strong> If you use <code>/resume</code> or <code>/rewind</code>, in-process teammates won't be restored. The team lead session resumes, but you'd need to re-spawn teammates.</li>
+<li><strong>Orphaned tmux sessions</strong> happen if something crashes. Clean up with <code>tmux ls</code> and <code>tmux kill-session -t &lt;name&gt;</code>.</li>
+</ul>
+<h3>Common issues</h3>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Solution</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>No tmux panes appearing</td>
+<td>You probably ran <code>teamz</code> outside a tmux session. Start tmux first.</td>
+</tr>
+<tr>
+<td>Teammate seems stuck</td>
+<td>Message them directly — sometimes they need a nudge or clarification.</td>
+</tr>
+<tr>
+<td>Panes too small to read</td>
+<td><code>Ctrl+B, z</code> zooms a single pane full-screen. Toggle it again to return.</td>
+</tr>
+<tr>
+<td>Want to kill a specific pane</td>
+<td><code>Ctrl+B</code>, then <code>x</code> confirms killing the active pane.</td>
+</tr>
+</tbody>
+</table>
+<h3>In-process fallback keys</h3>
+<p>If you're not using tmux, teammates run in-process. Navigation:</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Shift+Down</code></td>
+<td>Cycle through teammates</td>
+</tr>
+<tr>
+<td><code>Escape</code></td>
+<td>Interrupt current teammate's turn</td>
+</tr>
+<tr>
+<td><code>Ctrl+T</code></td>
+<td>Toggle task list view</td>
+</tr>
+</tbody>
+</table>
+<h2>A Note on Safety</h2>
+<p>The <code>--dangerously-skip-permissions</code> flag means what it says. Every agent in the team — lead and teammates alike — can execute arbitrary shell commands, edit any file in the project, and make destructive changes without asking permission. There is no confirmation step, no sandbox, no undo beyond what git provides.</p>
+<p>This is the tradeoff that makes autonomous parallel work possible. If every teammate had to ask before running <code>npm test</code> or editing a file, the coordination overhead would make teams impractical.</p>
+<p>Mitigate the risk:</p>
+<ul>
+<li><strong>Work in git-tracked directories</strong> with clean commit history. If a teammate breaks something, <code>git diff</code> shows what changed and <code>git checkout</code> reverts it.</li>
+<li><strong>Don't run teams in directories with sensitive files</strong> (credentials, production configs, private keys) unless you trust the prompts you're giving.</li>
+<li><strong>Start small.</strong> Try a two-agent team on a low-stakes task before orchestrating six agents on your production codebase.</li>
+</ul>
+<p>For finer-grained control without the nuclear option, configure permissions in <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;allow&quot;: [
+      &quot;Bash(npm run *)&quot;,
+      &quot;Bash(git commit *)&quot;,
+      &quot;Read&quot;,
+      &quot;Edit(src/**)&quot;
+    ],
+    &quot;deny&quot;: [
+      &quot;Bash(git push *)&quot;,
+      &quot;Bash(rm -rf *)&quot;
+    ]
+  }
+}
+</code></pre>
+<p>This lets you allow specific operations (running tests, committing, reading files, editing source) while blocking dangerous ones (force pushes, recursive deletes). It's more work to configure, but it lets you use teams without the global permission bypass.</p>
+<h2>File Reference</h2>
+<table>
+<thead>
+<tr>
+<th>What</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Team configuration</td>
+<td><code>~/.claude/teams/{team-name}/config.json</code></td>
+</tr>
+<tr>
+<td>Shared task list</td>
+<td><code>~/.claude/tasks/{team-name}/</code></td>
+</tr>
+<tr>
+<td>Claude settings</td>
+<td><code>~/.claude/settings.json</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p>One alias, one tmux session, one sentence describing what you want built. The agents handle the rest — splitting work, coordinating, reporting back. It won't replace thinking about architecture, but it will replace the tedium of context-switching between three files that all need to change at once.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>True Random Number Generators: From Quantum Physics to Silicon</title>
+      <link>https://timbeach.com/#/article/trng-deep-dive</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/trng-deep-dive</guid>
+      <pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><img src="../pix/true-randomness.jpg" alt="True Randomness" /></p>
+<p>How do you get a genuinely unpredictable bit? Not a bit that <em>looks</em> random, not a bit computed from a seed, but a bit that did not exist in the universe until the moment you measured it. This article traces the answer from the foundations of quantum mechanics through circuit design, post-processing, standards, attacks, and the open philosophical questions that remain.</p>
+<h2>Why Randomness Matters</h2>
+<p>Cryptography, simulation, lotteries, statistical sampling, and security protocols all depend on unpredictable numbers. If an adversary can predict your random numbers, they can predict your encryption keys, forge your signatures, and break your protocols. The entire security of modern digital infrastructure rests on the assumption that certain numbers are genuinely unknowable in advance.</p>
+<p>A pseudorandom number generator (PRNG) produces numbers that <em>look</em> random but are entirely determined by an initial seed. Know the seed, know the sequence. A <strong>true random number generator (TRNG)</strong> produces numbers from a physical process where the outcome is not determined by any prior state of the universe. The distinction is not academic — it is the difference between security that holds against any adversary and security that holds only against adversaries who lack a specific piece of information.</p>
+<h2>What Is &quot;True&quot; Randomness?</h2>
+<h3>The Quantum Foundation</h3>
+<p>Classical physics is deterministic. Given the position and velocity of every particle, Newton's laws determine the entire future. In this framework, &quot;randomness&quot; is just a word for ignorance — we call a coin flip random because we can't track the air molecules, not because the outcome is undetermined.</p>
+<p>Quantum mechanics broke this picture. In 1926, Max Born proposed that the wave function describes not a trajectory but a <strong>probability amplitude</strong>. The probability of finding a particle in a particular state is the squared magnitude of its wave function: <code>P(x) = |ψ(x)|²</code>. This is not a statement about incomplete knowledge. Before measurement, a quantum system does not <em>have</em> a definite value for the measured property — it exists in a superposition of possibilities. The measurement outcome is <strong>intrinsically probabilistic</strong>. No hidden information, no deeper theory, no additional computation can predict it.</p>
+<h3>The Heisenberg Uncertainty Principle</h3>
+<p>Heisenberg's principle formalizes this. A particle cannot simultaneously have a precise position and a precise momentum: <code>Δx · Δp ≥ ℏ/2</code>. This is not an instrument limitation — the universe itself does not contain that information. In electronic circuits, this means electrons at finite temperature exhibit random fluctuations that cannot be eliminated even in principle.</p>
+<h3>Bell's Theorem: The Nail in the Coffin of Hidden Variables</h3>
+<p>The strongest argument for genuine randomness comes from John Bell's 1964 theorem.</p>
+<p><strong>The challenge (Einstein, 1935):</strong> Maybe quantum particles carry predetermined values we can't see — &quot;hidden variables&quot; — and the apparent randomness is just our ignorance.</p>
+<p><strong>Bell's answer:</strong> He derived a mathematical inequality that <em>any</em> hidden variable theory must satisfy. Quantum mechanics predicts correlations that <strong>violate</strong> this inequality.</p>
+<p><strong>The experiments:</strong> Starting with Alain Aspect (1982) and culminating in loophole-free Bell tests (Hensen et al. 2015, Giustina et al. 2015, Shalm et al. 2015), experiments consistently confirm quantum mechanics and violate Bell's inequality.</p>
+<p><strong>What this means:</strong> The randomness in quantum measurements is not due to hidden variables we've failed to discover. When a photon hits a beam splitter and is either reflected or transmitted, that outcome is <strong>genuinely undetermined</strong> before it occurs. This is the deepest foundation for TRNGs.</p>
+<h3>Quantum Indeterminacy vs Classical Chaos</h3>
+<p><strong>Classical Chaos</strong> is deterministic but sensitive to initial conditions. It is unpredictable <em>in practice</em> — think weather, turbulence, dice. With perfect information, it would be perfectly predictable.</p>
+<p><strong>Quantum Indeterminacy</strong> is fundamentally probabilistic. It is unpredictable <em>in principle</em> — think photon beam splitters, radioactive decay. Even with perfect information, the outcome remains unpredictable.</p>
+<p>TRNGs based on quantum phenomena tap into fundamental indeterminacy. Sources like atmospheric noise or lava lamp convection rely on classical chaos amplifying quantum-level noise — practically unpredictable, but not provably so in the same rigorous sense.</p>
+<h2>Physical Entropy Sources</h2>
+<p>Ordered from most rigorously quantum-random to most dependent on classical chaos.</p>
+<h3>Photon Beam Splitter QRNGs</h3>
+<p>The conceptually simplest TRNG: a single photon hits a 50/50 beam splitter. Quantum mechanics dictates exactly 50% probability of reflection vs transmission, and <strong>no property of the photon before the beam splitter determines which path it takes</strong>.</p>
+<p>One photon in, one genuinely random bit out. Bell's theorem guarantees no hidden variable determines the outcome. Modern implementations achieve Mbit/s to Gbit/s rates. <strong>ID Quantique</strong> (Geneva) pioneered commercial devices using this architecture.</p>
+<h3>Vacuum Fluctuation QRNGs</h3>
+<p>Even in a perfect vacuum, electromagnetic fields fluctuate — <strong>vacuum fluctuations</strong> are a direct consequence of the Heisenberg uncertainty principle applied to the EM field. A homodyne detection scheme combines a laser with a vacuum input on a beam splitter, and the difference signal between two photodetectors is dominated by quantum vacuum noise.</p>
+<p>No classical analog exists — this noise is purely quantum. The Australian National University (ANU) operates a public vacuum QRNG at qrng.anu.edu.au achieving 5.7 Gbit/s. It can be sampled at high frequencies since homodyne detection is continuous.</p>
+<h3>Radioactive Decay</h3>
+<p>A radioactive atom has a probability of decaying per unit time, but the exact moment is completely unpredictable. The nucleus exists in a superposition of &quot;decayed&quot; and &quot;not decayed&quot; states — the transition is genuinely stochastic.</p>
+<p><strong>Why it's the philosophical gold standard:</strong> No hidden variables (Bell's theorem applies). It is <strong>immune to environmental conditions</strong> — temperature, pressure, EM fields don't affect nuclear decay rates. Each decay is independent (Poisson process). John Walker's <strong>HotBits</strong> project (1996) used Cesium-137 plus a Geiger counter.</p>
+<p><strong>Practical limitations:</strong> Regulatory issues, low bit rates, source activity decreases over time, not suitable for consumer electronics.</p>
+<h3>Avalanche Noise (Zener Diodes)</h3>
+<p>When a p-n junction diode is reverse-biased near its breakdown voltage, two quantum phenomena generate noise. <strong>Zener breakdown</strong> (below 5V) involves electrons quantum-tunneling through the depletion region, where individual tunneling events are quantum mechanically random. <strong>Avalanche breakdown</strong> (above 5V) involves accelerated carriers ionizing lattice atoms, creating cascading secondary carriers where the multiplication factor per carrier is stochastic — quantum scattering processes determine when and where impact ionization occurs.</p>
+<p>The noise can be millivolts to volts — much larger than thermal noise — making these circuits practical and popular. Diodes in the 5-7V breakdown range are preferred because they operate primarily via avalanche multiplication.</p>
+<p><strong>Design note:</strong> Why avalanche over thermal noise? The signal is 1000x larger, requiring far less amplification and reducing the risk that amplifier noise dominates the entropy source.</p>
+<h3>Shot Noise</h3>
+<p>Walter Schottky described shot noise in 1918. When current flows across a potential barrier (p-n junction, tunnel junction), it's not a smooth flow — it's discrete electrons crossing at random, independent times. The power spectral density is <code>S_I = 2qI</code> where q is the electron charge and I is DC current. This gives white noise (flat across all frequencies). Each electron's barrier crossing is governed by quantum tunneling probabilities — fundamentally stochastic.</p>
+<h3>Thermal Noise (Johnson-Nyquist)</h3>
+<p>Every resistor above absolute zero generates random voltage fluctuations from the thermal motion of charge carriers. At room temperature across a 10kΩ resistor with 10kHz bandwidth, this amounts to about 1.3 μV RMS. Tiny, but measurable.</p>
+<p><strong>The quantum connection:</strong> At the deepest level, the thermal motion is governed by quantum statistical mechanics (Fermi-Dirac distribution). At very high frequencies or very low temperatures, the classical formula breaks down and Planck's quantum noise formula takes over.</p>
+<p><strong>Engineering reality:</strong> You need 60-80 dB of amplification to work with these signals, and your amplifier's own noise floor must be well below the signal level — a significant design challenge.</p>
+<h3>Ring Oscillator Jitter and Metastable Flip-Flops</h3>
+<p>A ring oscillator (an odd number of inverters in a loop) has propagation delays that fluctuate due to thermal noise, shot noise, and flicker noise in the transistors. This <strong>jitter</strong> accumulates over time, making the oscillator's phase drift in a random walk.</p>
+<p><strong>Why this matters enormously:</strong> Ring oscillator TRNGs require <strong>no special components</strong> — only standard digital logic gates. They work in any CMOS process, including FPGAs and ASICs. This is why they dominate in system-on-chip designs.</p>
+<p><strong>Metastable flip-flops:</strong> A flip-flop driven into metastability (input arrives exactly at the clock edge) must resolve to 0 or 1, with thermal noise determining which. Intel's RDRAND uses this principle — pairs of cross-coupled inverters are periodically forced to their metastable point.</p>
+<p><strong>Design note:</strong> Why ring oscillators for on-chip TRNGs? No analog components, no special fabrication steps, portable across process nodes. The tradeoff: susceptibility to electromagnetic injection locking (an external signal can lock the oscillators, destroying randomness).</p>
+<h3>Atmospheric Noise and Lava Lamps</h3>
+<p>About 2,000 thunderstorms are active at any moment, producing roughly 50 lightning flashes per second. A radio receiver tuned to an unused frequency picks up a chaotic superposition of these emissions. <strong>random.org</strong> has served over a billion random bits per day using this approach since 1998.</p>
+<p><strong>Cloudflare's LavaRand:</strong> A wall of about 100 lava lamps filmed by a camera. The Rayleigh-Bénard convection creates complex, never-repeating patterns driven by chaotic fluid dynamics with thermal noise at boundaries. Pixel data is hashed to extract entropy. Other Cloudflare offices use chaotic pendulum mobiles (London) and radioactive decay (Singapore).</p>
+<p><strong>Design note:</strong> Why lava lamps? Defense in depth. Even if an attacker could solve the intractable fluid dynamics, the entropy is mixed with other sources. The lava lamps are one layer, not the only layer.</p>
+<h2>From Analog Noise to Digital Bits</h2>
+<h3>The Amplification Problem</h3>
+<p>The central engineering challenge: raw entropy signals are typically <strong>microvolts</strong> in amplitude, while the noise floor of the measurement circuitry can be comparable or larger. If your entropy source produces 10 μV of genuine random noise but your amplifier's input noise is 15 μV, you're measuring the amplifier, not the entropy source.</p>
+<p><strong>A typical signal chain:</strong> First, a <strong>low-noise preamplifier</strong> — JFET-input op-amps with roughly 1 nV/√Hz input noise and 40-60 dB gain. Second, a <strong>bandpass filter</strong> — high-pass (1-10 kHz) removes DC drift and 1/f noise while low-pass (100 kHz to several MHz) limits bandwidth to Nyquist frequency and attenuates interference. Third, a <strong>second amplification stage</strong> bringing total gain to 60-80 dB. Finally, an <strong>anti-aliasing filter</strong> — a steep low-pass immediately before digitization.</p>
+<p>AC coupling between stages (via capacitors) is essential — without it, DC offset accumulates through the high-gain chain and saturates the amplifiers at the supply rails, producing a very deterministic output.</p>
+<h3>Digitization</h3>
+<p><strong>Comparator-based (1-bit):</strong> Amplified noise compared against a threshold. Above = 1, below = 0. Simple but the sampling rate must be much lower than the noise bandwidth to ensure independence between samples.</p>
+<p><strong>ADC-based (multi-bit):</strong> An ADC captures multiple bits per sample, but only the least significant bits carry genuine entropy (MSBs carry the deterministic signal shape). An 8-bit ADC might yield 2-4 bits of entropy per sample.</p>
+<p><strong>Design note:</strong> Why comparators over ADCs in many designs? Simplicity, low power, easy on-chip integration. The throughput penalty is accepted because conditioning and CSPRNG expansion provide the needed volume.</p>
+<h3>Sampling Rate</h3>
+<p>This is critical. If the noise bandwidth is B Hz, the autocorrelation time is roughly 1/(2B). Sampling faster than this produces correlated (non-independent) bits. Practical designs sample at B/5 to B/10 for good independence, accepting the throughput cost.</p>
+<h2>Conditioning Raw Entropy</h2>
+<h3>Why Raw Bits Aren't Uniform</h3>
+<p>No physical entropy source produces perfectly uniform, independent bits. The raw output suffers from <strong>bias</strong> — comparator offset, amplifier asymmetry, or DC leakage means P(1) ≠ 0.5. Even 1 mV of comparator offset against 100 mV noise RMS gives P(1) ≈ 0.496. It also suffers from <strong>autocorrelation</strong> — sampling too fast relative to noise bandwidth means successive bits are correlated. <strong>Non-stationarity</strong> means temperature, voltage, and aging shift the statistical properties over time. And <strong>deterministic components</strong> — clock signals, power supply switching noise, and nearby digital circuits — inject periodic patterns.</p>
+<p>A raw TRNG bit might carry only 0.7-0.99 bits of min-entropy rather than the ideal 1.0 bit. Conditioning transforms a stream with imperfect entropy density into a shorter stream with full entropy density.</p>
+<h3>Von Neumann Debiasing (1951)</h3>
+<p>Examine raw bits in pairs: (0, 1) outputs 0. (1, 0) outputs 1. (0, 0) or (1, 1) are discarded.</p>
+<p><strong>Why it works:</strong> If each bit independently has probability p of being 1, then P(0,1) = (1-p)·p = P(1,0). Equal regardless of p. The matched pairs are discarded because their probabilities <em>do</em> depend on p.</p>
+<p><strong>The cost:</strong> At best, 75% of input bits are wasted (only 25% of pairs are usable). With heavy bias (p=0.9), efficiency drops to about 9%. Output rate is variable, complicating downstream clocking.</p>
+<p><strong>Limitation:</strong> Assumes independence. If successive bits are correlated (which they are in practice), bias leaks through.</p>
+<h3>XOR Folding</h3>
+<p>XOR N consecutive bits to produce one output bit. For bias p, XOR of two bits has P(1) = 2p(1-p) — closer to 0.5. XORing more bits reduces bias exponentially. Simple but doesn't handle autocorrelation, and throughput drops N:1.</p>
+<h3>Cryptographic Conditioning</h3>
+<p>Modern TRNG designs use cryptographic hash functions as entropy condensers. This is what NIST SP 800-90B mandates.</p>
+<p><strong>Von Neumann</strong> uses pair comparison, gives at most 25% throughput, and removes first-order bias only. <strong>XOR folding</strong> uses N-to-1 XOR, gives 1/N throughput, and reduces bias but doesn't fix correlation. <strong>LFSR</strong> uses a linear hash over GF(2), gives roughly 100% throughput, but is not cryptographic and is vulnerable to algebraic attacks. <strong>SHA-256</strong> hashes 512 raw bits down to 256 output bits, giving roughly 50% throughput with full entropy if min-entropy rate exceeds 0.5. <strong>AES-CBC-MAC</strong> uses block cipher conditioning, gives variable throughput, and produces 128-bit conditioned output per block. <strong>HMAC-DRBG</strong> uses HMAC in a feedback construction, gives variable throughput, and is NIST SP 800-90A compliant.</p>
+<p><strong>Design note:</strong> Why hash-based conditioning over von Neumann? The hash function's avalanche property destroys any bias or correlation in the input. It provides a fixed output rate regardless of input statistics, and has a security proof under standard cryptographic assumptions.</p>
+<h2>Health Monitoring</h2>
+<h3>Why It's Critical</h3>
+<p>A TRNG is a physical device, and physical devices fail. When a TRNG fails, it may produce deterministic or predictable output — <strong>a catastrophic security failure invisible to software unless actively detected.</strong></p>
+<p>Failure modes include diode aging, amplifier rail saturation (stuck at all 0s or all 1s), EM frequency injection into ring oscillators, temperature extremes reducing thermal noise, and manufacturing defects producing biased output.</p>
+<h3>NIST SP 800-90B Mandatory Tests</h3>
+<p><strong>Repetition Count Test:</strong> Counts consecutive identical outputs. If the count exceeds a threshold C, declare failure. For 0.85 bits/sample min-entropy, C = 25 consecutive identical samples triggers the alarm.</p>
+<p><strong>Adaptive Proportion Test:</strong> Within a window of 1024 samples (binary), counts how many match the first sample. If the count exceeds a threshold, declare failure. This catches bias shifts the repetition test would miss.</p>
+<h3>Startup vs Continuous</h3>
+<p><strong>Startup tests</strong> run before any output is provided — collect and test a large initial sample (for example, 4096 samples). No output until tests pass. <strong>Continuous tests</strong> run on every sample during operation and must be lightweight (a counter and a comparison per sample).</p>
+<h3>When Tests Fail</h3>
+<p>The options range from most to least conservative: suppress output immediately, alarm and retry (wait, re-run startup tests), fall back to stored entropy on a time-limited basis, or degrade gracefully with notification — continue from a previously-seeded CSPRNG but flag that live entropy is unavailable (this is Linux's approach).</p>
+<p>Intel's RDRAND sets the carry flag (CF) to indicate success. CF=0 means the DRNG failed health tests — software must check this.</p>
+<h3>Statistical Test Suites</h3>
+<p>Used during design validation and certification, not online. <strong>NIST SP 800-22</strong> runs 15 tests (monobit, runs, FFT, matrix rank, etc.) on 1M-bit sequences. <strong>Diehard</strong> (Marsaglia, 1995) offers 18 tests including birthday spacings, parking lot, and squeeze. <strong>TestU01</strong> (L'Ecuyer) is the gold standard — SmallCrush (10 tests), Crush (96), BigCrush (160). <strong>NIST SP 800-90B entropy estimation</strong> uses 10 different min-entropy estimators; the final assessment is the minimum across all (conservative bound).</p>
+<h2>Real-World Implementations</h2>
+<h3>Intel RDRAND/RDSEED (Ivy Bridge, 2012+)</h3>
+<p>A three-stage pipeline. First, the <strong>entropy source:</strong> pairs of cross-coupled inverters forced to metastability, where thermal noise determines resolution. Raw output is roughly 3 Gbps with about 0.5 bits min-entropy per raw bit, including continuous health testing. Second, the <strong>conditioner:</strong> AES-CBC-MAC compresses roughly 512 raw bits into a 256-bit seed with full entropy. Third, the <strong>CSPRNG:</strong> AES-CTR-DRBG (SP 800-90A compliant) generates up to 512 values per seed.</p>
+<p><strong>RDRAND</strong> returns CSPRNG output (roughly 500 MB/s). <strong>RDSEED</strong> returns conditioned entropy directly (slower, can fail if entropy is consumed faster than generated).</p>
+<h3>Linux /dev/random and /dev/urandom</h3>
+<p><strong>Historical architecture (pre-5.17):</strong> An entropy pool accumulated entropy from interrupt timing, input devices, disk I/O, and RDRAND. SHA-1 mixing. <code>/dev/random</code> blocked when the entropy estimate hit zero; <code>/dev/urandom</code> never blocked.</p>
+<p><strong>Modern architecture (5.17+, Jason Donenfeld's overhaul):</strong> ChaCha20-based CSPRNG replaced the entropy pool. <code>/dev/random</code> and <code>/dev/urandom</code> are now <strong>functionally identical</strong> after initial seeding. blake2s is used for input mixing. Jitter entropy serves as backup. RDRAND/RDSEED are XORed in (never trusted alone). The <code>getrandom()</code> syscall is the preferred interface — blocks only until initial seeding, then never.</p>
+<p><strong>Design note:</strong> Why unify /dev/random and /dev/urandom? The blocking was based on a misconception that a CSPRNG &quot;uses up&quot; entropy. Once seeded with 256 bits, ChaCha20's output is computationally indistinguishable from random. Blocking caused real-world harm (GnuPG stalling, users installing dubious entropy daemons) with zero security benefit.</p>
+<h3>Hardware Security Modules (HSMs)</h3>
+<p>The highest-assurance implementations. Dedicated analog noise sources (thermal or shot noise) in tamper-responsive enclosures. If physical tampering is detected, all keys and entropy are zeroized. FIPS 140-3 Level 3/4 certified. Vendors include Thales Luna, Entrust nShield, and Utimaco.</p>
+<h3>Quantum RNG Chips</h3>
+<p><strong>ID Quantique Quantis:</strong> Photon beam-splitter architecture, 4-16 Mbps (chip), up to 240 Mbps (PCIe). Available as chip-scale modules for smartphones and IoT. <strong>Quside (Spain):</strong> Phase-diffusion QRNG, over 100 Gbps demonstrated in research.</p>
+<h3>Cloudflare LavaRand</h3>
+<p>Camera feeds a lava lamp wall, pixel data seeds the CSPRNG. One entropy source among several. London office uses chaotic pendulum mobiles. Singapore uses radioactive decay. Defense in depth.</p>
+<h2>The Hybrid Architecture: TRNG + CSPRNG</h2>
+<h3>Why This Dominates</h3>
+<p>Virtually every modern system uses the same pattern:</p>
+<pre><code>TRNG (slow, genuine entropy)
+    ↓ seed (128-512 bits)
+CSPRNG (fast, computationally indistinguishable from random)
+    ↓ output (GB/s)
+    ↑ periodic reseed from TRNG
+</code></pre>
+<p><strong>Throughput:</strong> CSPRNG runs at CPU speed (AES-NI: over 10 GB/s). No physical entropy source matches this. <strong>Unpredictability:</strong> TRNG seeding means even state compromise is temporary — the next reseed restores security. <strong>Resilience:</strong> If the TRNG temporarily fails, the CSPRNG continues securely from its current state.</p>
+<h3>Entropy Pools and Fortuna</h3>
+<p>An entropy pool accumulates entropy from multiple sources via a cryptographic mixing function.</p>
+<p><strong>Fortuna</strong> (Schneier and Ferguson) uses 32 separate pools. Each entropy source distributes input round-robin. Pool P0 is used at every reseed, P1 every 2nd, P2 every 4th, and so on. This guarantees recovery from state compromise within 2^31 reseeds, even if an attacker monitors some sources. Fortuna is used in FreeBSD and influenced Windows' CryptGenRandom.</p>
+<h3>The PRNG-to-TRNG Spectrum</h3>
+<p>At the weakest end sits a <strong>deterministic PRNG</strong> like Mersenne Twister — predictable with state knowledge and the fastest option. Next is a <strong>CSPRNG</strong> like AES-CTR or ChaCha20 — computationally hard to predict and very fast. Then a <strong>hybrid (TRNG+CSPRNG)</strong> like Linux RNG or Intel RDRAND — non-deterministic seed plus computational speed. Above that, a <strong>TRNG with conditioning</strong> (PTG.2 device) where every bit depends on fresh entropy at moderate speed. Then a <strong>raw TRNG</strong> (PTG.3 device) with information-theoretic security but slow. At the very top, a <strong>device-independent QRNG</strong> using Bell-test certification — provably unpredictable but very slow.</p>
+<h2>Standards and Certification</h2>
+<h3>NIST SP 800-90 Series (US)</h3>
+<p><strong>90A</strong> specifies DRBGs — Hash_DRBG, HMAC_DRBG, CTR_DRBG. (Dual_EC_DRBG was removed after the NSA backdoor scandal.) <strong>90B</strong> covers entropy sources — min-entropy estimation (10 different estimators, take the minimum), mandatory health tests, IID vs non-IID tracks. <strong>90C (draft)</strong> describes how to combine 90A + 90B into a complete random bit generator.</p>
+<h3>AIS 31 (German BSI)</h3>
+<p>A fundamentally different philosophy from NIST. <strong>NIST SP 800-90B</strong> is empirical and statistical — &quot;show me the output looks random.&quot; Its core requirement is statistical tests on collected samples. This is low-barrier and allows novel sources to be evaluated, but it can't detect a deterministic source that passes all tests.</p>
+<p><strong>AIS 31 (BSI)</strong> is model-based and physical — &quot;explain to me WHY it's random.&quot; Its core requirement is a stochastic model of the entropy source. This provides deeper assurance and catches sources that pass tests but aren't truly random, but it can only certify well-understood sources.</p>
+<p><strong>AIS 31 classes:</strong> <strong>PTG.1</strong> is a deterministic RNG (essentially a CSPRNG) that passes statistical tests, seeded from PTG.2+. <strong>PTG.2</strong> is a physical TRNG with conditioning that requires a stochastic model <em>plus</em> statistical tests — most hardware TRNGs certify here. <strong>PTG.3</strong> is a physical TRNG <em>without</em> conditioning — raw output must pass all tests. Extremely difficult, essentially requiring a quantum source with near-perfect uniformity.</p>
+<h3>FIPS 140-2/3</h3>
+<p>Security requirements for cryptographic modules. <strong>Level 1-2</strong> requires basic statistical testing. <strong>Level 3</strong> adds identity-based authentication and tamper-evident enclosures. <strong>Level 4</strong> adds environmental failure protection — the module zeroizes if temperature, voltage, or EM excursions are detected.</p>
+<p>FIPS 140-3 validation typically takes 12-24 months and costs $50K-$200K+.</p>
+<h2>Attacks and Security</h2>
+<h3>The Dual_EC_DRBG Scandal</h3>
+<p>The most consequential cryptographic scandal of the 21st century. The algorithm uses two elliptic curve points P and Q. If you know the discrete log relationship between them (Q = eP), you can recover the internal state from a single output block and predict all future output.</p>
+<p>In 2007, Shumow and Ferguson publicly noted this backdoor possibility. In 2013, Snowden documents confirmed the NSA had paid RSA Security $10M to make Dual_EC_DRBG the default in BSAFE. NIST removed it from SP 800-90A in 2014.</p>
+<p><strong>Lasting impact:</strong> Fundamental loss of trust in NIST-recommended algorithms (which NIST has worked to restore through more transparent processes). Motivated &quot;nothing up my sleeve&quot; number requirements in cryptographic designs.</p>
+<h3>The RDRAND Controversy</h3>
+<p>Intel's RDRAND is a black box on the CPU die. You cannot inspect the implementation, cannot access raw entropy, and external testing can only evaluate CSPRNG output (which passes all statistical tests regardless of entropy source quality, because AES-CTR-DRBG is strong).</p>
+<p>Theodore Ts'o (Linux kernel RNG maintainer): <em>&quot;I am so glad I resisted pressure from Intel engineers to let /dev/random rely only on the RDRAND instruction.&quot;</em></p>
+<p><strong>The 2019 AMD bug:</strong> Certain AMD processors had RDRAND always return 0xFFFFFFFF — a complete, silent failure demonstrating why you never trust a single source.</p>
+<p><strong>Current consensus:</strong> RDRAND is one input to an entropy pool, never the sole source. Linux XORs it with other sources — even a backdoored RDRAND cannot weaken the final output (XOR with an independent source can only help).</p>
+<h3>Environmental Manipulation</h3>
+<p><strong>Temperature:</strong> Cooling a chip to -40°C can reduce thermal noise entropy to near zero. <strong>Voltage:</strong> Lowering supply voltage reduces noise margins; voltage glitches can force deterministic behavior. <strong>EM injection:</strong> A focused EM field can lock ring oscillators in phase, eliminating jitter entirely. Bayon et al. (CHES 2014) reduced ring oscillator TRNG entropy to essentially zero from centimeters away.</p>
+<h3>Side-Channel Attacks</h3>
+<p><strong>Electromagnetic emanation:</strong> EM probes near the chip can observe jitter patterns and infer generated bits. Markettos and Moore (2009) extracted internal state from several commercial TRNGs. <strong>Power analysis:</strong> SPA/DPA on the TRNG's power consumption can reveal which bits were generated. <strong>Timing:</strong> If output rate is data-dependent (for example, von Neumann debiasing), timing reveals information about raw source values.</p>
+<h3>Supply Chain Attacks</h3>
+<p>A hardware Trojan inserted during fabrication can subtly weaken a TRNG — reducing noise bandwidth, adding a deterministic component to oscillators, or inserting a kill switch. Such trojans may involve changes to only a few transistors in a billion-transistor chip and pass all functional and statistical testing.</p>
+<h3>Never Trust a Single Source</h3>
+<p>This is the most important practical lesson. Hardware can fail silently (AMD RDRAND bug). Manufacturing variations mean your test chip is not your production chip. Environmental conditions differ between lab and deployment. Backdoors exist (Dual_EC_DRBG proved this). <strong>XOR with independent sources can only help, never hurt</strong> — mixing multiple sources means compromising the output requires compromising ALL sources simultaneously.</p>
+<h2>Historical Timeline</h2>
+<p><strong>~3000 BCE</strong> — Mesopotamian dice (sheep ankle bones). <strong>1655</strong> — Roulette wheel attributed to Pascal. <strong>1918</strong> — Schottky describes shot noise. <strong>1926</strong> — Born proposes probabilistic interpretation of QM; Johnson observes thermal noise. <strong>1927</strong> — Heisenberg uncertainty principle; Tippett publishes first random number tables. <strong>1928</strong> — Nyquist derives thermal noise formula. <strong>1940s</strong> — Monte Carlo methods (Ulam, von Neumann, Metropolis) at Los Alamos. <strong>1951</strong> — Von Neumann publishes debiasing technique. <strong>1955</strong> — RAND Corporation publishes &quot;A Million Random Digits.&quot; <strong>1957</strong> — <strong>ERNIE 1</strong> — neon tube discharge noise selects UK Premium Bond winners (built by Tommy Flowers' team). <strong>1964</strong> — Bell's theorem. <strong>1982</strong> — Aspect's Bell test experiments. <strong>1996</strong> — HotBits (radioactive decay RNG); SGI patents LavaRand. <strong>1998</strong> — random.org (atmospheric noise). <strong>1999</strong> — Intel i810 — first consumer CPU with on-chip TRNG. <strong>2007</strong> — Dual_EC_DRBG backdoor publicly noted. <strong>2012</strong> — Intel RDRAND/RDSEED (Ivy Bridge). <strong>2013</strong> — Snowden confirms NSA backdoor in Dual_EC_DRBG. <strong>2015</strong> — Loophole-free Bell tests (Delft, Vienna, NIST). <strong>2018</strong> — NIST SP 800-90B published; cosmic Bell test using quasar light. <strong>2019</strong> — ERNIE 5 (quantum RNG); AMD RDRAND bug discovered. <strong>2022</strong> — Linux 5.17 unifies /dev/random and /dev/urandom. <strong>2020s</strong> — Chip-scale QRNGs commercially available for smartphones and IoT.</p>
+<h2>Frontiers</h2>
+<h3>Device-Independent Quantum RNGs</h3>
+<p>The theoretical gold standard. Two entangled particles are measured by spatially separated devices. If the CHSH Bell inequality is violated (S &gt; 2), the outputs <strong>must</strong> contain genuine randomness — regardless of device trust. Even if every component was manufactured by an adversary, Bell violation certifies randomness.</p>
+<p>Current limitations: requires over 82.8% detector efficiency (to close the detection loophole), cryogenic detectors, low throughput (bits/second). Active research is pushing toward practical rates.</p>
+<h3>Randomness Expansion and Amplification</h3>
+<p><strong>Expansion:</strong> A short seed of n perfect random bits can generate 2^(poly(n)) certified random bits via Bell test protocols. Proven possible by Vazirani and Vidick (2012).</p>
+<p><strong>Amplification:</strong> Starting from <em>weak</em> randomness (each bit has bounded bias ε &lt; 1/2), you can arrive at perfect randomness. This is <strong>impossible classically</strong> (Santha-Vazirani, 1986) but <strong>possible quantumly</strong> (Colbeck-Renner, 2012). The profound implication: if <em>any</em> unpredictability exists in the universe, perfect randomness follows.</p>
+<h3>NIST Randomness Beacon and League of Entropy</h3>
+<p><strong>NIST Beacon:</strong> Publishes signed, chained 512-bit random values every 60 seconds from two independent quantum sources. Public, verifiable, unpredictable. Used for lotteries, audits, timestamping.</p>
+<p><strong>drand (League of Entropy):</strong> Cloudflare, Protocol Labs, and others operate a distributed beacon using threshold cryptography — no single participant can predict or bias output. More robust than any single-operator beacon.</p>
+<h3>Exotic Sources</h3>
+<p><strong>Cosmic microwave background:</strong> Quantum vacuum fluctuations from cosmic inflation, frozen 13.8 billion years ago. The 2018 &quot;cosmic Bell test&quot; used quasar photons (billions of light-years away) to choose measurement settings, closing the freedom-of-choice loophole. <strong>Brownian motion:</strong> Nanoparticle tracking gives well-characterized stochastic signals. <strong>Neural noise:</strong> Neurons fire with inherent stochasticity due to random ion channel behavior — speculative but theoretically sound.</p>
+<h2>Philosophy: The Deepest Questions</h2>
+<h3>What Does &quot;Random&quot; Actually Mean?</h3>
+<p><strong>Kolmogorov complexity:</strong> A string is random if it's incompressible — the shortest program that outputs it is approximately as long as the string itself. A PRNG output, no matter how long, has low Kolmogorov complexity (the algorithm plus seed is short). A truly random string of n bits has complexity roughly n. The fundamental problem: Kolmogorov complexity is <strong>uncomputable</strong> (halting problem), so you can never prove a specific finite string is random.</p>
+<p><strong>Martin-Löf randomness:</strong> An infinite sequence is random if no computable betting strategy can make unbounded money on it. Equivalent to saying no computable adversary can distinguish it from uniform.</p>
+<p><strong>Information-theoretic view:</strong> A TRNG produces genuine <em>information</em> in Shannon's sense. Each bit is irreducible — it didn't exist in the universe before measurement. A PRNG produces no new information; it merely stretches the information in its seed.</p>
+<h3>Can We Prove Randomness?</h3>
+<p><strong>For finite strings: No.</strong> It could have been generated by an unknown deterministic process. All statistical tests have finite power. AES-CTR output passes every known test but is entirely deterministic.</p>
+<p><strong>For processes: Conditionally yes.</strong> If you accept quantum mechanics (and reject superdeterminism), Bell inequality violations prove the outputs contain genuine randomness. This is the strongest known certification.</p>
+<h3>The Interpretations Problem</h3>
+<p><strong>Copenhagen:</strong> Measurement outcomes are fundamentally stochastic. TRNG randomness is real. <strong>Many-Worlds (Everett):</strong> All outcomes occur in different branches. No collapse, no randomness at the universal level. QRNGs produce different bits in different branches. <strong>Bohmian mechanics:</strong> Deterministic pilot wave guides particles. Randomness is epistemic (quantum equilibrium), like classical chaos but with stronger unpredictability. <strong>Superdeterminism:</strong> Everything was predetermined by initial conditions, including &quot;free&quot; measurement choices. Bell violations don't imply randomness.</p>
+<h3>The Practical Resolution</h3>
+<p>For engineering purposes, the debate is irrelevant. Quantum processes are the best known source of unpredictability. No known technology can predict quantum measurement outcomes. Bell tests can certify that outputs are at least as random as QM predicts. Whether the universe is &quot;really&quot; deterministic at some deeper level doesn't affect practical security — no adversary has access to that deeper level.</p>
+<p>The hierarchy for practical security: <strong>Weakest</strong> — Algorithmic (PRNG), predictable with state knowledge. <strong>Moderate</strong> — Classical physical (thermal noise, chaos), unpredictable in practice, deterministic in principle. <strong>Strongest</strong> — Quantum mechanical, unpredictable even in principle, certifiable via Bell tests.</p>
+<h2>Key Takeaways</h2>
+<p><strong>Quantum mechanics provides the foundation.</strong> Bell's theorem and its experimental confirmation establish that certain physical events are fundamentally undetermined. TRNGs exploit this.</p>
+<p><strong>No raw source is perfect.</strong> Every physical entropy source has bias, correlation, and non-stationarity. Conditioning is not optional.</p>
+<p><strong>The hybrid architecture won.</strong> TRNG seeds CSPRNG. You get genuine entropy for the seed and computational speed for bulk output. This is Linux, Windows, Intel, ARM — everyone.</p>
+<p><strong>Never trust a single source.</strong> The AMD RDRAND bug, Dual_EC_DRBG, and environmental manipulation attacks all prove this. Mix sources. XOR can only help.</p>
+<p><strong>Statistical tests cannot prove randomness.</strong> They detect non-randomness. Passing all tests is necessary but not sufficient. AES-CTR output passes everything but is deterministic.</p>
+<p><strong>Standards disagree on philosophy.</strong> NIST says &quot;show me it looks random.&quot; BSI says &quot;explain to me why it's random.&quot; Best practice: satisfy both.</p>
+<p><strong>The deepest randomness is certifiable.</strong> Device-independent QRNGs use Bell violations to prove randomness without trusting the device. This is the theoretical endpoint of the field.</p>
+<p><em>Further reading: NIST SP 800-90A/B/C, BSI AIS 31, Killmann and Schindler &quot;A Proposal for Functionality Classes for Random Number Generators&quot; (2011), Herrero-Collantes and Garcia-Escartin &quot;Quantum Random Number Generators&quot; (Rev. Mod. Phys. 2017), Ma et al. &quot;Quantum Random Number Generation&quot; (npj Quantum Information 2016)</em></p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Deploy a Website</title>
+      <link>https://timbeach.com/#/article/deploy-a-website</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/deploy-a-website</guid>
+      <pubDate>Sun, 28 Sep 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>This document outlines the complete process used to deploy Mason Borchard's personal website from development to production on the internet.</p>
+<p><img src="../pix/moon-man.jpeg" alt="Moon Man" /></p>
+<h2>Overview</h2>
+<p>This guide covers deploying a static HTML website using a VPS (Virtual Private Server), custom domain, and nginx web server. The process involves server setup, domain configuration, DNS management, web server configuration, and security considerations.</p>
+<h2>Step 1: VPS Setup</h2>
+<h3>Choosing a VPS Provider</h3>
+<ul>
+<li><strong>Provider</strong>: Vultr (vultr.com)</li>
+<li><strong>Plan</strong>: Basic/entry-level VPS instance</li>
+<li><strong>Specifications</strong>:
+<ul>
+<li>1 vCPU</li>
+<li>1GB RAM</li>
+<li>25GB SSD storage</li>
+<li>1TB bandwidth</li>
+</ul>
+</li>
+<li><strong>Operating System</strong>: Debian 12 (recommended for stability)</li>
+<li><strong>Cost</strong>: ~$5-6/month</li>
+<li>Add ssh keys to vultr and attach to instance before deploying it so you can connect easily later</li>
+</ul>
+<h2>Step 2: Domain Registration and DNS Configuration</h2>
+<h3>Domain Registration</h3>
+<ul>
+<li><strong>Registrar</strong>: Any reputable domain registrar (epik.com)</li>
+<li><strong>Domain</strong>: masonborchard.com</li>
+<li><strong>Cost</strong>: ~$10-15/year for .com domain</li>
+</ul>
+<h3>DNS Record Configuration</h3>
+<p>Configure the following DNS records in your domain registrar's control panel:</p>
+<pre><code>Type    Name    Value                   TTL
+A       @       YOUR_VPS_IPV4_ADDRESS   30
+A       www     YOUR_VPS_IPV4_ADDRESS   30
+AAAA    @       YOUR_VPS_IPV6_ADDRESS   30
+AAAA    www     YOUR_VPS_IPV6_ADDRESS   30
+</code></pre>
+<p><strong>Notes:</strong></p>
+<ul>
+<li><code>@</code> represents the root domain (masonborchard.com) -&gt; the @ you can leave out as blank works with Epik</li>
+<li><code>www</code> creates the www subdomain (www.masonborchard.com)</li>
+<li>A records point to IPv4 addresses</li>
+<li>AAAA records point to IPv6 addresses</li>
+<li>TTL of 30 seconds allows for quick DNS updates during setup</li>
+</ul>
+<h2>Step 3: Web Server Installation and Configuration</h2>
+<h3>Install nginx</h3>
+<pre><code class="language-bash"># Install nginx web server
+sudo apt install nginx -y
+
+# Start and enable nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+# Verify nginx is running
+sudo systemctl status nginx
+</code></pre>
+<h3>Create Website Directory Structure</h3>
+<pre><code class="language-bash"># Create directory for the website
+sudo mkdir -p /var/www/masonborchard.com
+
+# Set appropriate permissions
+sudo chmod -R 755 /var/www/masonborchard.com
+</code></pre>
+<h3>Upload Website Files</h3>
+<pre><code class="language-bash"># Copy your index.html to the web directory via rsync or w/e
+# Or create a quick &quot;hello world&quot; index.html
+vim /var/www/masonborchard.com/index.html
+</code></pre>
+<h3>Configure nginx Virtual Host</h3>
+<p>Create nginx configuration file:</p>
+<pre><code class="language-bash">sudo vim /etc/nginx/sites-available/masonborchard.com
+</code></pre>
+<p>Add the following configuration:</p>
+<pre><code class="language-nginx">server {
+    listen 80;
+    listen [::]:80;
+
+    server_name masonborchard.com www.masonborchard.com;
+
+    root /var/www/masonborchard.com;
+    index index.html index.htm;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Security headers
+    add_header X-Frame-Options &quot;SAMEORIGIN&quot; always;
+    add_header X-XSS-Protection &quot;1; mode=block&quot; always;
+    add_header X-Content-Type-Options &quot;nosniff&quot; always;
+    add_header Referrer-Policy &quot;no-referrer-when-downgrade&quot; always;
+
+    # Cache static assets
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
+        expires 1y;
+        add_header Cache-Control &quot;public, immutable&quot;;
+    }
+}
+</code></pre>
+<p>Enable the site:</p>
+<pre><code class="language-bash"># Create symbolic link to enable site
+sudo ln -s /etc/nginx/sites-available/masonborchard.com /etc/nginx/sites-enabled/
+
+# Remove default nginx site
+sudo rm /etc/nginx/sites-enabled/default
+
+# Test nginx configuration
+sudo nginx -t
+
+# Reload nginx
+sudo systemctl reload nginx
+</code></pre>
+<h2>Step 4: Firewall Configuration</h2>
+<h3>Configure UFW (Uncomplicated Firewall)</h3>
+<pre><code class="language-bash"># Install UFW if not already installed
+sudo apt install ufw -y
+
+# Set default policies
+sudo ufw default deny incoming
+sudo ufw default allow outgoing
+
+# Allow SSH (important - don't lock yourself out!)
+sudo ufw allow ssh
+
+# Allow HTTP and HTTPS traffic
+sudo ufw allow 'Nginx Full'
+
+# Enable firewall
+sudo ufw enable
+
+# Check firewall status
+sudo ufw status verbose
+</code></pre>
+<h2>Step 5: SSL Certificate Setup (Optional but Recommended)</h2>
+<h3>Install Certbot for Let's Encrypt SSL</h3>
+<pre><code class="language-bash"># Install certbot with nginx plugin via apt
+sudo apt install certbot python3-certbot-nginx -y
+
+# Obtain SSL certificate (make sure your domain is already pointing to your server)
+sudo certbot --nginx -d masonborchard.com -d www.masonborchard.com
+
+# Test automatic renewal
+sudo certbot renew --dry-run
+</code></pre>
+<p><strong>Important Prerequisites for Certbot:</strong></p>
+<ol>
+<li><strong>DNS must be working</strong>: Your domain must already be pointing to your server and resolving correctly</li>
+<li><strong>HTTP must be accessible</strong>: Your nginx site must be working on port 80 before running certbot</li>
+<li><strong>Firewall must allow HTTP/HTTPS</strong>: Ensure ports 80 and 443 are open</li>
+</ol>
+<p><strong>How Certbot Works:</strong></p>
+<ol>
+<li>Certbot creates temporary files in your web directory to verify domain ownership</li>
+<li>Let's Encrypt servers access these files via HTTP to confirm you control the domain</li>
+<li>Once verified, certbot downloads the SSL certificates</li>
+<li>The <code>--nginx</code> flag automatically updates your nginx configuration to use HTTPS</li>
+<li>Certbot sets up automatic renewal via systemd timer</li>
+</ol>
+<p><strong>If Certbot Fails:</strong></p>
+<ul>
+<li>Verify domain resolution: <code>dig masonborchard.com</code> should return your server IP</li>
+<li>Test HTTP access: <code>curl -I http://masonborchard.com</code> should return a 200 response</li>
+<li>Check nginx logs: <code>sudo tail /var/log/nginx/error.log</code></li>
+<li>Ensure no other services are using port 80</li>
+</ul>
+<p>This will automatically:</p>
+<ul>
+<li>Obtain SSL certificates from Let's Encrypt</li>
+<li>Update nginx configuration to use HTTPS and redirect HTTP to HTTPS</li>
+<li>Set up automatic certificate renewal (certificates expire every 90 days)</li>
+</ul>
+<h2>Step 6: Verification and Testing</h2>
+<h3>Test Website Accessibility</h3>
+<ol>
+<li>
+<p><strong>DNS Propagation</strong>: Use tools like <code>dig</code> or online DNS checkers</p>
+<pre><code class="language-bash">dig masonborchard.com
+dig www.masonborchard.com
+</code></pre>
+</li>
+<li>
+<p><strong>HTTP Response</strong>: Test with curl</p>
+<pre><code class="language-bash">curl -I http://masonborchard.com
+curl -I https://masonborchard.com  # if SSL configured
+</code></pre>
+</li>
+<li>
+<p><strong>Browser Testing</strong>: Visit the domain in multiple browsers</p>
+</li>
+</ol>
+<h3>Performance and Security Testing</h3>
+<ul>
+<li><strong>GTmetrix</strong> or <strong>PageSpeed Insights</strong>: Test loading performance</li>
+<li><strong>SSL Labs</strong>: Test SSL configuration (if HTTPS enabled)</li>
+<li><strong>Security Headers</strong>: Check security header implementation</li>
+</ul>
+<h2>Step 7: Ongoing Maintenance</h2>
+<h3>Regular Tasks</h3>
+<ul>
+<li><strong>System Updates</strong>: <code>sudo apt update &amp;&amp; sudo apt upgrade</code></li>
+<li><strong>Log Monitoring</strong>: Check nginx logs in <code>/var/log/nginx/</code></li>
+<li><strong>SSL Renewal</strong>: Automated via certbot, but monitor for issues</li>
+<li><strong>Backup</strong>: Regular backups of website files and server configuration</li>
+</ul>
+<h3>Monitoring</h3>
+<pre><code class="language-bash"># Check nginx status
+sudo systemctl status nginx
+
+# View nginx access logs
+sudo tail -f /var/log/nginx/access.log
+
+# View nginx error logs
+sudo tail -f /var/log/nginx/error.log
+
+# Check server resources
+htop
+df -h
+</code></pre>
+<h2>Cost Breakdown</h2>
+<ul>
+<li><strong>VPS</strong>: ~$5-6/month</li>
+<li><strong>Domain</strong>: ~$10-15/year</li>
+<li><strong>SSL Certificate</strong>: Free (Let's Encrypt)</li>
+<li><strong>Total Annual Cost</strong>: ~$75-90/year</li>
+</ul>
+<h2>Troubleshooting Common Issues</h2>
+<h3>DNS Not Resolving</h3>
+<ul>
+<li>Check DNS record configuration in registrar panel</li>
+<li>Wait for DNS propagation (up to 48 hours) but it usually only takes a few minutes</li>
+<li>Use DNS checker tools online</li>
+</ul>
+<h3>Website Not Loading</h3>
+<ul>
+<li>Verify nginx is running: <code>sudo systemctl status nginx</code></li>
+<li>Check nginx configuration: <code>sudo nginx -t</code></li>
+<li>Review nginx error logs: <code>sudo tail /var/log/nginx/error.log</code></li>
+</ul>
+<h3>SSL Certificate Issues</h3>
+<ul>
+<li>Ensure domain points to server before running certbot</li>
+<li>Check firewall allows HTTP/HTTPS traffic</li>
+<li>Verify nginx configuration is correct</li>
+</ul>
+<p>This deployment process provides a robust, scalable foundation for hosting static websites with professional-grade infrastructure and security.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Install Signal Desktop on Aegix Linux</title>
+      <link>https://timbeach.com/#/article/install-signal-on-aegix</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/install-signal-on-aegix</guid>
+      <pubDate>Tue, 19 Aug 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<pre><code class="language-bash">yay -S signal-desktop --noconfirm
+</code></pre>
+<p>Launch the app in a terminal with:</p>
+<pre><code class="language-bash">signal-desktop
+</code></pre>
+<p>Or use <code>Mod + d</code> and start typing signal-desktop to launch it via dmenu.</p>
+<p>Notice the QR code.</p>
+<p>Go to the Signal app on your phone and find Settings.</p>
+<p>Tap &quot;Linked devices&quot;</p>
+<p>Tap &quot;Link a new device&quot;</p>
+<p>This will open up your camera.</p>
+<p>Scan the QR code to link your device.</p>
+<p>😘</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How tmux Works</title>
+      <link>https://timbeach.com/#/article/how-tmux-works</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-tmux-works</guid>
+      <pubDate>Fri, 01 Aug 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<h2>🧠 How tmux Works</h2>
+<p><code>tmux</code> is a <strong>terminal multiplexer</strong> — it lets you:</p>
+<ul>
+<li>Start a terminal session that <strong>stays alive even if you disconnect</strong> (like over SSH)</li>
+<li><strong>Split your terminal</strong> into multiple panes and windows</li>
+<li><strong>Switch between tasks</strong> or commands without opening new terminals</li>
+<li><strong>Reattach</strong> to sessions later</li>
+</ul>
+<h2>⚙️ Basic Concepts</h2>
+<ul>
+<li><strong>Session</strong>: A named (or unnamed) workspace. Think of it like a virtual terminal container.</li>
+<li><strong>Window</strong>: Like a tab in a terminal, inside a session.</li>
+<li><strong>Pane</strong>: A split view within a window (horizontal/vertical).</li>
+</ul>
+<h2>🚀 Using <code>tmux</code> with Explicit Session Names</h2>
+<h3>✅ Start a session with a name</h3>
+<pre><code class="language-bash">tmux new-session -s timothason
+</code></pre>
+<p>This creates a new tmux session named <code>mysession</code> and attaches you to it.</p>
+<h3>🔄 Attach to a named session</h3>
+<pre><code class="language-bash">tmux attach-session -t timothason 
+# or tmux a -t timothason
+</code></pre>
+<h3>📋 List all sessions</h3>
+<pre><code class="language-bash">tmux ls
+</code></pre>
+<h3>🧯 Kill a session</h3>
+<pre><code class="language-bash">tmux kill-session -t mysession
+</code></pre>
+<h2>⌨️ Inside tmux: Common Controls</h2>
+<p>All shortcuts use the <code>prefix</code> key, which is <code>Ctrl+b</code> by default</p>
+<pre><code class="language-bash">| Action             | Key sequence             |
+| ------------------ | ------------------------ |
+| New window         | `Ctrl+b`, then `c`       |
+| Next window        | `Ctrl+b`, then `n`       |
+| Split vertically   | `Ctrl+b`, then `&quot;`       |
+| Split horizontally | `Ctrl+b`, then `%`       |
+| Move between panes | `Ctrl+b`, then arrow key |
+| Detach             | `Ctrl+b`, then `d`       |
+</code></pre>
+<p>You can <strong>detach</strong> from a session and leave it running, then <strong>reattach</strong> later.</p>
+<h2>✅ Tips</h2>
+<ul>
+<li>Use <strong>one session per project</strong> or task (e.g. <code>tmux new -s rails</code>).</li>
+<li>You can <strong>script tmux</strong> to auto-start with custom panes/windows.</li>
+<li>Tmux works great with <strong>remote servers</strong> to avoid losing work if disconnected.</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Adding a Second Aegix User</title>
+      <link>https://timbeach.com/#/article/second-aegix-user</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/second-aegix-user</guid>
+      <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>Let's say we want to create a secondary user on an <a href="https://aegixlinux.org">Aegix Linux</a> system. For this example the user we created during the installation process is called <code>borchard</code> and the secondary user we want to create will be called <code>timothy</code>.</p>
+<h2>1. First, check what groups &quot;borchard&quot; belongs to:</h2>
+<pre><code class="language-bash">groups borchard
+</code></pre>
+<p>or</p>
+<pre><code class="language-bash">id borchard
+</code></pre>
+<h2>2. Create the timothy user with home directory and zsh shell:</h2>
+<pre><code class="language-bash">sudo useradd -m -s /bin/zsh timothy
+</code></pre>
+<h2>3. Add timothy to the wheel group (most important for sudo access):</h2>
+<pre><code class="language-bash">sudo usermod -aG wheel timothy
+</code></pre>
+<h2>4. Set a password for timothy:</h2>
+<pre><code class="language-bash">sudo passwd timothy
+</code></pre>
+<h2>5. Copy the group memberships from borchard to timothy:</h2>
+<p>You can do this automatically with:</p>
+<pre><code class="language-bash">sudo usermod -G $(id -Gn borchard | tr ' ' ',') timothy
+</code></pre>
+<h2>6. Create the essential directories that Aegix expects:</h2>
+<pre><code class="language-bash">sudo -u timothy mkdir -p /home/timothy/{Downloads,Documents,Pictures,Music,Videos/obs,code,ss,Applications/vs-code-insider}
+sudo -u timothy mkdir -p /home/timothy/.cache/zsh/
+sudo -u timothy mkdir -p /home/timothy/.config/{abook,mpd/playlists}
+sudo -u timothy mkdir -p /home/timothy/.local/src
+</code></pre>
+<h2>7. Copy the Aegix dotfiles configuration:</h2>
+<p>Since Aegix uses the &quot;gohan&quot; dotfiles, you'll want to copy the configuration:</p>
+<pre><code class="language-bash">sudo cp -r /home/borchard/.config /home/timothy/
+sudo cp -r /home/borchard/.local /home/timothy/
+sudo cp /home/borchard/.* /home/timothy/ 2&gt;/dev/null || true
+sudo chown -R timothy:wheel /home/timothy
+</code></pre>
+<h2>8. Set up vim/neovim plugins for timothy:</h2>
+<pre><code class="language-bash">sudo -u timothy mkdir -p /home/timothy/.config/nvim/autoload
+sudo -u timothy curl -Ls &quot;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&quot; &gt; /home/timothy/.config/nvim/autoload/plug.vim
+sudo -u timothy nvim -c &quot;PlugInstall|q|q&quot;
+</code></pre>
+<h2>9. Verify the setup:</h2>
+<pre><code class="language-bash"># Check groups
+groups timothy
+
+# Check home directory
+ls -la /home/timothy
+
+# Test switching to the user
+su - timothy
+</code></pre>
+<p>The new timothy user should now have:</p>
+<ul>
+<li>A home directory with the standard Aegix directory structure</li>
+<li>The same group memberships as borchard (including wheel for sudo access)</li>
+<li>The Aegix dotfiles and configurations</li>
+<li>zsh as the default shell</li>
+<li>Neovim with plugins installed</li>
+</ul>
+<p>You can now log in as timothy or switch to that user with <code>su - timothy</code>.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Parsimony and Aegix Linux</title>
+      <link>https://timbeach.com/#/article/parsimony</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/parsimony</guid>
+      <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p><strong>Parsimony</strong> refers to simplicity or frugality in design—favoring the fewest necessary components or complexities. In software engineering, it embodies minimalism, efficiency, and clarity, where complexity is deliberately avoided unless justified by necessity.</p>
+<p>Aegix Linux exemplifies parsimony by employing a streamlined approach to its architecture and user experience. Built upon Artix Linux and utilizing the lightweight <strong>Runit</strong> init system instead of the more complex systemd, Aegix emphasizes performance, simplicity, and user control. By reducing dependencies, avoiding unnecessary layers, and adhering to straightforward POSIX-compliant scripting, Aegix Linux provides users with a clean, efficient operating environment that embodies the very principle of parsimony.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How to Add New Articles to timbeach.com</title>
+      <link>https://timbeach.com/#/article/add-articles</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/add-articles</guid>
+      <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>This site uses a custom, lightweight article system that makes it easy to add new content without any complex build processes or databases.</p>
+<h2>Use This System for Your Own Site</h2>
+<p>Want to build your own website with this article system? The complete source code is available on GitHub at <a href="https://github.com/timbeach/timbeach.com">https://github.com/timbeach/timbeach.com</a>. You can fork the repository and customize it for your own content while keeping the parsimonious design philosophy intact.</p>
+<h2>How It Works</h2>
+<p>The system consists of two simple components:</p>
+<ol>
+<li><strong>Markdown files</strong> - Your actual article content</li>
+<li><strong>JSON metadata</strong> - Article information like title, date, and tags</li>
+</ol>
+<h2>Adding a New Article</h2>
+<h3>Step 1: Create the Markdown File</h3>
+<p>Create a new markdown file in the <code>articles/</code> directory:</p>
+<pre><code class="language-bash"># Example: articles/my-new-article.md
+echo &quot;# My New Article&quot; &gt; articles/my-new-article.md
+</code></pre>
+<p>Write your article content using standard markdown syntax:</p>
+<pre><code class="language-markdown"># My New Article
+
+This is my new article content.
+</code></pre>
+<h2>Features</h2>
+<ul>
+<li><strong>Code blocks</strong> work perfectly</li>
+<li><strong>Bold</strong> and <em>italic</em> text</li>
+<li><a href="https://example.com">Links</a> to external sites</li>
+</ul>
+<h2>Code Example</h2>
+<pre><code class="language-bash"># This is a comment
+echo &quot;Hello, World!&quot;
+</code></pre>
+<p>The system supports all standard markdown features!</p>
+<h3>Step 2: Add Metadata to JSON</h3>
+<p>Add an entry to <code>articles/articles.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;my-new-article.md&quot;: {
+    &quot;title&quot;: &quot;My New Article&quot;,
+    &quot;date&quot;: &quot;2025-07-29&quot;,
+    &quot;tags&quot;: [&quot;tutorial&quot;, &quot;example&quot;, &quot;markdown&quot;]
+  }
+}
+</code></pre>
+<h3>Step 3: That's It!</h3>
+<p>The article will automatically appear in the articles list. No build process, no database, no complex CMS - just files and JSON.</p>
+<h2>System Features</h2>
+<h3>Automatic Loading</h3>
+<ul>
+<li>Articles load from markdown files when available</li>
+<li>Falls back to built-in content if files aren't accessible</li>
+<li>No server-side processing required</li>
+</ul>
+<h3>Markdown Support</h3>
+<ul>
+<li>Full markdown syntax support</li>
+<li>Code blocks with language highlighting</li>
+<li>Links, images, and formatting</li>
+<li>Lists, tables, and more</li>
+</ul>
+<h3>Simple Maintenance</h3>
+<ul>
+<li>Version control friendly (just text files)</li>
+<li>Easy to backup and restore</li>
+<li>No database migrations or complex deployments</li>
+</ul>
+<h2>File Structure</h2>
+<pre><code>timbeach.com/
+├── articles/
+│   ├── articles.json          # Article metadata
+│   ├── my-article.md          # Article content
+│   └── another-article.md     # More articles...
+└── index.html                 # The main site
+</code></pre>
+<h2>Benefits of This Approach</h2>
+<ul>
+<li><strong>Simplicity</strong> - Just markdown and JSON</li>
+<li><strong>Performance</strong> - Static files load fast</li>
+<li><strong>Reliability</strong> - No database dependencies</li>
+<li><strong>Portability</strong> - Easy to move or backup</li>
+<li><strong>Version Control</strong> - Text files work great with git</li>
+</ul>
+<h2>Advanced Features</h2>
+<h3>Terminal Integration</h3>
+<p>The site features a terminal-style navigation system with commands:</p>
+<ul>
+<li><code>ls</code> - List articles and directories</li>
+<li><code>cd articles</code> - Navigate to articles directory</li>
+<li><code>cat filename.md</code> - Display article content</li>
+<li><code>tree</code> - Show directory structure with articles sorted by date</li>
+<li><code>help</code> - Show all available commands</li>
+</ul>
+<h3>Dynamic Loading System</h3>
+<p>The JavaScript implementation includes:</p>
+<ul>
+<li><strong>Graceful fallback</strong> - If external files fail to load, built-in content is displayed</li>
+<li><strong>Cache busting</strong> - Timestamp parameters prevent browser caching issues</li>
+<li><strong>Smooth transitions</strong> - Content fades in/out during navigation</li>
+<li><strong>Direct linking</strong> - URLs like <code>#articles/filename.md</code> work for sharing specific articles</li>
+</ul>
+<h3>Markdown Parser</h3>
+<p>The custom markdown parser handles:</p>
+<ul>
+<li>Headers (H1, H2, H3)</li>
+<li>Code blocks with language highlighting</li>
+<li>Inline code formatting</li>
+<li>Bold and italic text</li>
+<li>Links with target=&quot;_blank&quot;</li>
+<li>Paragraph wrapping</li>
+<li>Preserves formatting within code blocks</li>
+</ul>
+<h3>Search Functionality</h3>
+<p>When viewing the articles directory:</p>
+<ul>
+<li>Real-time search by title or filename</li>
+<li>Case-insensitive matching</li>
+<li>Instant filtering of article list</li>
+</ul>
+<h2>Technical Implementation Details</h2>
+<h3>Data Flow</h3>
+<ol>
+<li><strong>Page Load</strong>: JavaScript fetches <code>articles/articles.json</code></li>
+<li><strong>Article Request</strong>: When user clicks an article, JavaScript fetches the <code>.md</code> file</li>
+<li><strong>Parsing</strong>: Custom markdown parser converts content to HTML</li>
+<li><strong>Display</strong>: Content appears with terminal-style navigation</li>
+</ol>
+<h3>Error Handling</h3>
+<ul>
+<li><strong>Network failures</strong>: Falls back to built-in article content</li>
+<li><strong>Missing files</strong>: Shows &quot;Article Not Found&quot; message with error details</li>
+<li><strong>JSON parse errors</strong>: Gracefully handles malformed metadata</li>
+</ul>
+<h3>Performance Optimizations</h3>
+<ul>
+<li><strong>Lazy loading</strong>: Articles only load when requested</li>
+<li><strong>Minimal dependencies</strong>: No external JavaScript libraries</li>
+<li><strong>Efficient caching</strong>: Browser caches static files naturally</li>
+<li><strong>Small footprint</strong>: Entire site is a single HTML file + articles</li>
+</ul>
+<h2>File Naming Conventions</h2>
+<p>Use lowercase with hyphens for readability:</p>
+<ul>
+<li>✅ <code>my-article-title.md</code></li>
+<li>✅ <code>linux-tutorial.md</code></li>
+<li>❌ <code>MyArticleTitle.md</code></li>
+<li>❌ <code>my_article_title.md</code></li>
+</ul>
+<h2>Deployment</h2>
+<p>The deployment is equally simple:</p>
+<pre><code class="language-bash">./deploy.sh
+</code></pre>
+<p>This rsync script pushes all changes to the production server, excluding <code>.git/</code>, <code>archive/</code>, and <code>.well-known/</code> directories.</p>
+<p>This system proves that you don't need complex tools to create a beautiful, functional website. Sometimes the simplest solution is the best solution - and this custom article system exemplifies the philosophy of parsimony in web development.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Simplicity in Software Engineering</title>
+      <link>https://timbeach.com/#/article/simplicity</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/simplicity</guid>
+      <pubDate>Fri, 10 Jan 2025 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<p>Simplicity is the cornerstone of effective software engineering. It leads to code that is easier to understand, maintain, and debug. By embracing straightforward logic, reducing unnecessary complexity, and adhering to well-defined standards, developers create software that's resilient and adaptable.</p>
+<p>At its heart, simplicity respects the user's and developer's time and attention, focusing efforts on clarity and essential functionality. Whether through minimal dependencies, clear documentation, or intuitive design, prioritizing simplicity results in robust, elegant software solutions that endure.</p>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>

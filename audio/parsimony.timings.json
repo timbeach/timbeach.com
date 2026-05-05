@@ -1,0 +1,18 @@
+{
+  "voice": "bm_lewis",
+  "duration": 51.307,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 17.813333333333333,
+      "text": "Parsimony refers to simplicity or frugality in design\u2014favoring the fewest necessary components or complexities. In software engineering, it embodies minimalism, efficiency, and clarity, where complexity is deliberately avoided unless justified by necessity."
+    },
+    {
+      "idx": 1,
+      "start": 17.813333333333333,
+      "end": 51.306666666666665,
+      "text": "Aegix Linux exemplifies parsimony by employing a streamlined approach to its architecture and user experience. Built upon Artix Linux and utilizing the lightweight Runit init system instead of the more complex systemd, Aegix emphasizes performance, simplicity, and user control. By reducing dependencies, avoiding unnecessary layers, and adhering to straightforward POSIX-compliant scripting, Aegix Linux provides users with a clean, efficient operating environment that embodies the very principle of parsimony."
+    }
+  ]
+}

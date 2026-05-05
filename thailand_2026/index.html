@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thailand 2026 - Timothy D Beach</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link href="https://api.fontshare.com/v2/css?f%5B%5D=satoshi@300,400,500,700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #0a0a0a;
+  color: #c8c8c8;
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+}
+
+header {
+  padding: 1.5rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid #1e1e1e;
+}
+
+header h1 {
+  font-size: 1.4rem;
+  color: #e8a87c;
+  font-weight: 400;
+}
+
+header h1 a {
+  color: #5de4c7;
+  text-decoration: none;
+}
+
+header h1 a:hover {
+  text-decoration: underline;
+}
+
+.controls {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.controls button, .lb-download, #download-bar button {
+  background: transparent;
+  border: 1px solid #5de4c7;
+  color: #5de4c7;
+  padding: 0.5rem 1rem;
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s ease;
+}
+
+.controls button:hover, .lb-download:hover, #download-bar button:hover {
+  background: rgba(93, 228, 199, 0.12);
+  box-shadow: 0 0 8px rgba(93, 228, 199, 0.3);
+}
+
+.controls button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.controls button:disabled:hover {
+  background: transparent;
+  box-shadow: none;
+}
+
+#gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+}
+
+.photo-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid #1e1e1e;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.photo-card:hover {
+  border-color: #5de4c7;
+  box-shadow: 0 0 12px rgba(93, 228, 199, 0.2);
+}
+
+.photo-card.selected {
+  border-color: #e8a87c;
+  box-shadow: 0 0 12px rgba(232, 168, 124, 0.3);
+}
+
+.photo-card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.photo-card:hover img {
+  transform: scale(1.03);
+}
+
+.photo-card .checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.photo-card:hover .checkbox,
+.photo-card.selected .checkbox {
+  opacity: 1;
+}
+
+.photo-card.selected .checkbox {
+  background: #e8a87c;
+  border-color: #e8a87c;
+}
+
+.photo-card.selected .checkbox::after {
+  content: '\2713';
+  color: #0a0a0a;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.photo-card .caption {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+#lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.95);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+#lightbox.hidden { display: none; }
+
+#lb-img {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+#lb-caption {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: center;
+  min-height: 1.2em;
+}
+
+.lb-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2.5rem;
+  cursor: pointer;
+  z-index: 10000;
+  line-height: 1;
+}
+
+.lb-prev, .lb-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 3rem;
+  cursor: pointer;
+  padding: 1rem;
+  z-index: 10000;
+  transition: color 0.2s;
+}
+
+.lb-prev:hover, .lb-next:hover { color: white; }
+.lb-prev { left: 1rem; }
+.lb-next { right: 1rem; }
+
+.lb-download {
+  margin-top: 0.5rem;
+}
+
+#download-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 10, 10, 0.95);
+  border-top: 1px solid #e8a87c;
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9000;
+}
+
+#download-bar.hidden { display: none; }
+
+#bar-count {
+  color: #e8a87c;
+  font-size: 0.9rem;
+}
+
+#zip-progress {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #111111;
+  border: 1px solid #5de4c7;
+  border-radius: 6px;
+  padding: 2rem;
+  z-index: 10001;
+  text-align: center;
+  min-width: 300px;
+}
+
+#zip-progress.hidden { display: none; }
+
+#zip-progress-text {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+#zip-progress-bar {
+  height: 4px;
+  background: rgba(93, 228, 199, 0.2);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+#zip-progress-fill {
+  height: 100%;
+  background: #5de4c7;
+  width: 0%;
+  transition: width 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+  #gallery { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  header { padding: 1rem; flex-direction: column; align-items: flex-start; }
+  header h1 { font-size: 1.1rem; }
+  #gallery { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); padding: 1rem; gap: 0.75rem; }
+  .photo-card img { height: 150px; }
+  .photo-card .checkbox { opacity: 1; }
+  .lb-prev, .lb-next { font-size: 2rem; }
+}
+  </style>
+</head>
+<body>
+  <header>
+    <h1><a href="../">timbeach.com</a> / Thailand 2026</h1>
+    <div class="controls">
+      <button id="selectAllBtn" onclick="toggleSelectAll()">Select All</button>
+      <button id="downloadBtn" onclick="downloadSelected()" disabled>Download Selected (0)</button>
+    </div>
+  </header>
+  <div id="gallery"></div>
+  <div id="lightbox" class="hidden">
+    <button class="lb-close" onclick="closeLightbox()">&times;</button>
+    <button class="lb-prev" onclick="navLightbox(-1)">&#8249;</button>
+    <button class="lb-next" onclick="navLightbox(1)">&#8250;</button>
+    <img id="lb-img" src="" alt="" />
+    <div id="lb-caption"></div>
+    <button class="lb-download" onclick="downloadCurrent()">Download</button>
+  </div>
+  <div id="download-bar" class="hidden">
+    <span id="bar-count">0 photos selected</span>
+    <button onclick="downloadSelected()">Download .zip</button>
+  </div>
+  <div id="zip-progress" class="hidden">
+    <div id="zip-progress-text">Zipping...</div>
+    <div id="zip-progress-bar"><div id="zip-progress-fill"></div></div>
+  </div>
+  <script>
+let photos = [];
+let selected = new Set();
+let currentLightboxIndex = -1;
+
+function esc(str) {
+  const d = document.createElement('div');
+  d.textContent = str;
+  return d.innerHTML;
+}
+
+async function init() {
+  try {
+    const res = await fetch('photos.json');
+    photos = await res.json();
+  } catch (e) {
+    photos = [];
+  }
+  renderGallery();
+}
+
+function renderGallery() {
+  const gallery = document.getElementById('gallery');
+  if (photos.length === 0) {
+    gallery.innerHTML = '<p style="color: rgba(255,255,255,0.4); grid-column: 1/-1; text-align: center; padding: 4rem 0;">Photos coming soon...</p>';
+    return;
+  }
+  gallery.innerHTML = photos.map((photo, i) => `
+    <div class="photo-card${selected.has(i) ? ' selected' : ''}" data-index="${i}">
+      <div class="checkbox" onclick="event.stopPropagation(); toggleSelect(${i})"></div>
+      <img src="thumbs/${esc(photo.file)}" alt="${esc(photo.caption || '')}" loading="lazy" onclick="openLightbox(${i})" />
+      ${photo.caption ? `<div class="caption">${esc(photo.caption)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function updateSelectionUI() {
+  const count = selected.size;
+  const downloadBtn = document.getElementById('downloadBtn');
+  const downloadBar = document.getElementById('download-bar');
+  const barCount = document.getElementById('bar-count');
+  const selectAllBtn = document.getElementById('selectAllBtn');
+
+  downloadBtn.disabled = count === 0;
+  downloadBtn.textContent = `Download Selected (${count})`;
+  barCount.textContent = `${count} photo${count !== 1 ? 's' : ''} selected`;
+
+  if (count > 0) {
+    downloadBar.classList.remove('hidden');
+  } else {
+    downloadBar.classList.add('hidden');
+  }
+
+  selectAllBtn.textContent = count === photos.length ? 'Deselect All' : 'Select All';
+
+  document.querySelectorAll('.photo-card').forEach(card => {
+    const idx = parseInt(card.dataset.index);
+    card.classList.toggle('selected', selected.has(idx));
+  });
+}
+
+function toggleSelect(index) {
+  if (selected.has(index)) {
+    selected.delete(index);
+  } else {
+    selected.add(index);
+  }
+  updateSelectionUI();
+}
+
+function toggleSelectAll() {
+  if (selected.size === photos.length) {
+    selected.clear();
+  } else {
+    photos.forEach((_, i) => selected.add(i));
+  }
+  updateSelectionUI();
+}
+
+init();
+
+function openLightbox(index) {
+  currentLightboxIndex = index;
+  const photo = photos[index];
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lb-img');
+  const caption = document.getElementById('lb-caption');
+
+  img.src = `photos/${photo.file}`;
+  img.alt = photo.caption || '';
+  caption.textContent = photo.caption || '';
+  lb.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+  document.body.style.overflow = '';
+  currentLightboxIndex = -1;
+}
+
+function navLightbox(direction) {
+  if (photos.length === 0) return;
+  currentLightboxIndex = (currentLightboxIndex + direction + photos.length) % photos.length;
+  const photo = photos[currentLightboxIndex];
+  document.getElementById('lb-img').src = `photos/${photo.file}`;
+  document.getElementById('lb-img').alt = photo.caption || '';
+  document.getElementById('lb-caption').textContent = photo.caption || '';
+}
+
+function downloadCurrent() {
+  if (currentLightboxIndex < 0) return;
+  const photo = photos[currentLightboxIndex];
+  const a = document.createElement('a');
+  a.href = `photos/${photo.file}`;
+  a.download = photo.file;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (document.getElementById('lightbox').classList.contains('hidden')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') navLightbox(-1);
+  if (e.key === 'ArrowRight') navLightbox(1);
+});
+
+// Close lightbox on backdrop click
+document.getElementById('lightbox').addEventListener('click', (e) => {
+  if (e.target === document.getElementById('lightbox')) closeLightbox();
+});
+
+// Touch swipe support for lightbox
+let touchStartX = 0;
+let touchEndX = 0;
+
+document.getElementById('lightbox').addEventListener('touchstart', (e) => {
+  touchStartX = e.changedTouches[0].screenX;
+}, { passive: true });
+
+document.getElementById('lightbox').addEventListener('touchend', (e) => {
+  touchEndX = e.changedTouches[0].screenX;
+  const diff = touchStartX - touchEndX;
+  if (Math.abs(diff) > 50) {
+    navLightbox(diff > 0 ? 1 : -1);
+  }
+});
+
+async function downloadSelected() {
+  if (selected.size === 0) return;
+
+  if (typeof JSZip === 'undefined') {
+    alert('Zip library not loaded. Please try again or download photos individually from the lightbox.');
+    return;
+  }
+
+  const progress = document.getElementById('zip-progress');
+  const progressText = document.getElementById('zip-progress-text');
+  const progressFill = document.getElementById('zip-progress-fill');
+  progress.classList.remove('hidden');
+
+  const zip = new JSZip();
+  const selectedPhotos = [...selected].map(i => photos[i]);
+  let completed = 0;
+
+  for (const photo of selectedPhotos) {
+    completed++;
+    progressText.textContent = `Zipping ${completed} of ${selectedPhotos.length}...`;
+    progressFill.style.width = `${(completed / selectedPhotos.length) * 100}%`;
+
+    try {
+      const response = await fetch(`photos/${photo.file}`);
+      const blob = await response.blob();
+      zip.file(photo.file, blob);
+    } catch (e) {
+      console.error(`Failed to fetch ${photo.file}:`, e);
+    }
+  }
+
+  progressText.textContent = 'Creating zip file...';
+  progressFill.style.width = '100%';
+
+  try {
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'thailand_2026_photos.zip';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Failed to create zip file. Try downloading photos individually.');
+    console.error(e);
+  }
+
+  progress.classList.add('hidden');
+  progressFill.style.width = '0%';
+}
+  </script>
+</body>
+</html>

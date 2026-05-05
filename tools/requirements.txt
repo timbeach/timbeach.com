@@ -1,0 +1,5 @@
+kokoro-onnx>=0.4
+soundfile>=0.12
+markdown-it-py>=3.0
+beautifulsoup4>=4.12
+pytest>=8.0

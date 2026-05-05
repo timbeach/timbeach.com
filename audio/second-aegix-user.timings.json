@@ -1,0 +1,126 @@
+{
+  "voice": "bm_lewis",
+  "duration": 74.475,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 13.845333333333333,
+      "text": "Let's say we want to create a secondary user on an Aegix Linux system. For this example the user we created during the installation process is called borchard and the secondary user we want to create will be called timothy."
+    },
+    {
+      "idx": 1,
+      "start": 13.845333333333333,
+      "end": 17.152,
+      "text": "1. First, check what groups \"borchard\" belongs to:"
+    },
+    {
+      "idx": 2,
+      "start": 17.152,
+      "end": 17.664,
+      "text": "or"
+    },
+    {
+      "idx": 3,
+      "start": 17.664,
+      "end": 22.421333333333333,
+      "text": "2. Create the timothy user with home directory and zsh shell:"
+    },
+    {
+      "idx": 4,
+      "start": 22.421333333333333,
+      "end": 26.816,
+      "text": "3. Add timothy to the wheel group (most important for sudo access):"
+    },
+    {
+      "idx": 5,
+      "start": 26.816,
+      "end": 28.842666666666666,
+      "text": "4. Set a password for timothy:"
+    },
+    {
+      "idx": 6,
+      "start": 28.842666666666666,
+      "end": 32.36266666666667,
+      "text": "5. Copy the group memberships from borchard to timothy:"
+    },
+    {
+      "idx": 7,
+      "start": 32.36266666666667,
+      "end": 34.368,
+      "text": "You can do this automatically with:"
+    },
+    {
+      "idx": 8,
+      "start": 34.368,
+      "end": 38.336,
+      "text": "6. Create the essential directories that Aegix expects:"
+    },
+    {
+      "idx": 9,
+      "start": 38.336,
+      "end": 41.49333333333333,
+      "text": "7. Copy the Aegix dotfiles configuration:"
+    },
+    {
+      "idx": 10,
+      "start": 41.49333333333333,
+      "end": 46.42133333333334,
+      "text": "Since Aegix uses the \"gohan\" dotfiles, you'll want to copy the configuration:"
+    },
+    {
+      "idx": 11,
+      "start": 46.42133333333334,
+      "end": 49.984,
+      "text": "8. Set up vim/neovim plugins for timothy:"
+    },
+    {
+      "idx": 12,
+      "start": 49.984,
+      "end": 51.776,
+      "text": "9. Verify the setup:"
+    },
+    {
+      "idx": 13,
+      "start": 51.776,
+      "end": 54.208,
+      "text": "The new timothy user should now have:"
+    },
+    {
+      "idx": 14,
+      "start": 54.208,
+      "end": 58.304,
+      "text": "A home directory with the standard Aegix directory structure"
+    },
+    {
+      "idx": 15,
+      "start": 58.304,
+      "end": 62.976,
+      "text": "The same group memberships as borchard (including wheel for sudo access)"
+    },
+    {
+      "idx": 16,
+      "start": 62.976,
+      "end": 65.856,
+      "text": "The Aegix dotfiles and configurations"
+    },
+    {
+      "idx": 17,
+      "start": 65.856,
+      "end": 67.968,
+      "text": "zsh as the default shell"
+    },
+    {
+      "idx": 18,
+      "start": 67.968,
+      "end": 70.05866666666667,
+      "text": "Neovim with plugins installed"
+    },
+    {
+      "idx": 19,
+      "start": 70.05866666666667,
+      "end": 74.47466666666666,
+      "text": "You can now log in as timothy or switch to that user with su - timothy."
+    }
+  ]
+}
