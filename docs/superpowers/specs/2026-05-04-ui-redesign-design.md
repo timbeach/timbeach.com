@@ -35,7 +35,7 @@ Defaults selected autonomously (override on review):
 | Backward compatibility | Old `#articles/<slug>.md` URLs redirect to new `#/article/<slug>` form via JS shim | Avoid breaking shared/indexed links. |
 | About page bio | One short paragraph. Email, GitHub links. Starfield as a subtle background element (not full-screen). | "Super short or leave it out" — bias toward short. |
 | RSS generation | Build-time (`tools/build_feed.py`), wired into `deploy.sh` between `--validate` and `rsync` | Mirrors the existing TTS pipeline pattern. |
-| Music page TWO_ROOMS treatment | Centered placeholder cover + "TWO_ROOMS · Gut Lens · Coming Soon · 2026" + a link to gutlens.net set behind a `data-link-live="false"` attribute that's just disabled-looking text until the link is flipped on. | gutlens.net not live yet; no broken link in the meantime. |
+| Music page TWO_ROOMS treatment | Centered placeholder cover + "TWO_ROOMS · Gut Lens · Coming Soon · May 2026" + a link to gutlens.net set behind a `data-link-live="false"` attribute that's just disabled-looking text until the link is flipped on. | gutlens.net not live yet; no broken link in the meantime. |
 
 ## Routes
 
@@ -144,7 +144,7 @@ The lead-story area reserves a horizontal slot for a future optional hero image.
 │                                                              │
 │                    TWO_ROOMS                                 │  ← Source Serif 700, 32px, centered
 │                    Gut Lens                                  │  ← Plex Sans 14px, tracked, muted
-│                  COMING SOON · 2026                          │
+│                COMING SOON · MAY 2026                        │
 │                                                              │
 │                  gutlens.net (soon)                          │  ← disabled-looking link until live
 │                                                              │
@@ -320,8 +320,10 @@ The `publish-article` skill workflow updates to prompt for `summary` and `sectio
 
 `tools/build_feed.py` produces `feed.xml` at the project root.
 
-- Reads `articles/articles.json`.
-- Outputs RSS 2.0 with `<channel>` (title, link, description, lastBuildDate) and `<item>` per article (title, link, pubDate, description=summary, guid=permalink).
+- Reads `articles/articles.json` and each article's markdown source.
+- Outputs RSS 2.0 with `<channel>` (title, link, description, lastBuildDate) and `<item>` per article: `<title>`, `<link>`, `<pubDate>`, `<guid>`, `<description>` (the summary, plain text), and `<content:encoded>` (the article rendered to HTML, full-content). The `content:` namespace is declared on the `<rss>` element.
+- Article HTML rendering for the feed reuses the same markdown parser used by the site (the parser ships in both `js/article.js` for the browser and is duplicated in Python for `tools/build_feed.py` — or, simpler: invoke `markdown-it-py` in Python with the same plugins the TTS pipeline already uses, accepting that feed HTML may differ slightly from on-site HTML in edge cases).
+- Future enhancement: include `<itunes:>` namespace + `<enclosure>` per item pointing at the pre-rendered Opus audio, turning the feed into both a blog feed and a podcast feed. Out of scope for v1, but worth keeping the feed extensible.
 - Wired into `deploy.sh` after the existing `--validate` step:
 
   ```sh
@@ -387,17 +389,17 @@ These are explicitly *not* part of this redesign:
 5. **Section archive pages.** `#/writing/networking` etc. — not at launch. The dated list on the homepage shows everything.
 6. **Newsletter signup.** No.
 
-## Open Questions to Confirm on Review
+## Decisions Captured During Review (2026-05-05)
 
-These were defaulted autonomously while you were away:
+All open questions resolved by the author:
 
-1. **File split (B) confirmed?** The single-file vs split decision. Default: split. Strongly recommended.
-2. **Hash-based routes new form (`#/article/<slug>`) vs preserve exact existing form (`#articles/<slug>.md`)?** Default: new form, with old form redirected. The `.md` extension in URLs is a wart inherited from the terminal `cat <filename>` interface.
-3. **About-page bio length and content?** Default written above is a placeholder — please supply the bio text you want, or keep it minimal as proposed.
-4. **Footer items: any addition or removal?** Default: `© 2026 Timothy D Beach · RSS · GitHub · Email`. Some sites add "site source on GitHub" too.
-5. **TWO_ROOMS placeholder:** is "Coming Soon · 2026" right? Or do you want a specific date or "TBA"?
-6. **Theme toggle "match system" affordance.** Long-press? Separate button? Default: just a sun/moon toggle for v1; "match system" is a follow-up.
-7. **RSS feed scope.** All articles, full content vs summary-only. Default: summary + link only (no full body). Easier on storage and respects the read-aloud / on-site experience.
+1. **File split** — confirmed. Splitting `index.html` into separate CSS + JS modules.
+2. **Routes** — confirmed. New form `#/article/<slug>` with legacy `#articles/<slug>.md` redirected. Drop the `.md` wart.
+3. **About bio** — keep minimal as proposed. Author will tweak later if desired.
+4. **Footer** — `© 2026 Timothy D Beach · RSS · GitHub · Email`. Confirmed.
+5. **TWO_ROOMS placeholder** — "Coming Soon · May 2026" (specific month).
+6. **Theme toggle** — sun/moon only for v1. "Match system" affordance is a post-launch follow-up.
+7. **RSS feed scope** — full-content (`<content:encoded>` per item, with `<description>` as summary). Modern best practice; respects feed-reader users.
 
 ## Risks
 
