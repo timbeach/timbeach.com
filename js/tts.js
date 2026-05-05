@@ -38,6 +38,7 @@ let timings = null;
 let currentArticle = null;
 let lastParagraphIdx = -1;
 let hashListenerInstalled = false;
+let mountGeneration = 0;
 
 function buildBar() {
   if (bar) return bar;
@@ -130,8 +131,12 @@ function setPlayIcon(playing) {
 
 function togglePlay() {
   if (!audio) return;
-  if (audio.paused) { audio.play(); setPlayIcon(true); }
-  else { audio.pause(); setPlayIcon(false); }
+  if (audio.paused) {
+    audio.play().then(() => setPlayIcon(true)).catch(() => setPlayIcon(false));
+  } else {
+    audio.pause();
+    setPlayIcon(false);
+  }
 }
 
 function fmtTime(s) {
@@ -201,6 +206,7 @@ function closeBar() {
 }
 
 export async function mountTtsBar(article) {
+  const gen = ++mountGeneration;
   buildBar();
   currentArticle = article;
   lastParagraphIdx = -1;
@@ -213,12 +219,21 @@ export async function mountTtsBar(article) {
   audio.load();
   audio.playbackRate = parseFloat(bar.querySelector('.tts-speed-slider').value);
 
+  let loaded;
   try {
-    timings = await loadTimings(article.timings);
+    loaded = await loadTimings(article.timings);
   } catch (e) {
+    if (gen !== mountGeneration) return; // superseded by a later mountTtsBar call
     console.warn('[tts] failed to load timings; bar will play audio without highlight', e);
     timings = [];
+    bar.classList.add('visible');
+    document.body.classList.add('tts-open');
+    audio.play().then(() => setPlayIcon(true)).catch(() => setPlayIcon(false));
+    return;
   }
+
+  if (gen !== mountGeneration) return; // superseded by a later mountTtsBar call
+  timings = loaded;
 
   bar.classList.add('visible');
   document.body.classList.add('tts-open');
