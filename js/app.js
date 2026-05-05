@@ -147,7 +147,7 @@ function renderAbout() {
   app().innerHTML = `
     <section class="about-page">
       <h1>About</h1>
-      <p>I'm Timothy. I write software, record music as Gut Lens, and run Aegix Linux. This site is where I write things down so I don't have to remember them twice.</p>
+      <p>I'm Timothy. I write software professionally, record music as <a href="https://gutlens.net" target="_blank" rel="noopener">Gut Lens</a>, run <a href="https://aegixlinux.org" target="_blank" rel="noopener">Aegix Linux</a> with my soulmate <a href="https://masonborchard.com" target="_blank" rel="noopener">Mason</a>, and build websites for businesses as <a href="https://zenshinsuru.com" target="_blank" rel="noopener">Zenshin Suru</a>. This site is where I write things down so I don't have to remember them twice.</p>
       <p class="links">
         <a href="mailto:beachtimothyd@gmail.com">Email</a>
         <a href="https://github.com/timbeach" target="_blank" rel="noopener">GitHub</a>
