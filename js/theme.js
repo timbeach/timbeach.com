@@ -39,6 +39,8 @@ export function initTheme() {
   // Update icon if the OS preference changes while the page is open and the
   // user hasn't set an explicit theme.
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    if (!document.documentElement.hasAttribute(ATTR)) updateButtonIcon();
+    let stored = null;
+    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
+    if (stored !== 'light' && stored !== 'dark') updateButtonIcon();
   });
 }
