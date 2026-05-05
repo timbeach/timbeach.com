@@ -1068,7 +1068,8 @@ function deriveSection(meta) {
   if (meta.section) return meta.section;
   if (Array.isArray(meta.tags) && meta.tags.length) {
     const t = meta.tags[0];
-    return t.charAt(0).toUpperCase() + t.slice(1);
+    // Convert "software-engineering" -> "Software engineering"
+    return t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, ' ');
   }
   return 'Writing';
 }
