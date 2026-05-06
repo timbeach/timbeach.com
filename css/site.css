@@ -599,15 +599,19 @@ body.tts-open .page { padding-bottom: 88px; }
 .star {
   position: absolute;
   border-radius: 50%;
-  background: var(--fg-faint);
-  opacity: 0.6;
+  background: #f6f1e0;
+  opacity: 0.85;
+  box-shadow: 0 0 3px rgba(246, 241, 224, 0.45);
   animation: twinkle 4s infinite ease-in-out;
 }
-.star.bright { opacity: 0.9; }
+.star.bright {
+  opacity: 1;
+  box-shadow: 0 0 6px rgba(246, 241, 224, 0.7);
+}
 
 @keyframes twinkle {
-  0%, 100% { opacity: 0.4; transform: scale(0.9); }
-  50%      { opacity: 0.9; transform: scale(1.1); }
+  0%, 100% { opacity: 0.6; transform: scale(0.9); }
+  50%      { opacity: 1;   transform: scale(1.15); }
 }
 
 .sky-info {

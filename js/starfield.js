@@ -49,11 +49,11 @@ function projectFisheye(altDeg, azDeg) {
 
 function magnitudeToSize(mag) {
   // Brighter (lower mag) = larger pixel.
-  if (mag < 1) return 3;
-  if (mag < 2) return 2.5;
-  if (mag < 3) return 2;
-  if (mag < 4) return 1.5;
-  return 1;
+  if (mag < 1) return 4;
+  if (mag < 2) return 3.5;
+  if (mag < 3) return 3;
+  if (mag < 4) return 2.5;
+  return 2;
 }
 
 async function loadStars() {
