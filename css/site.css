@@ -26,7 +26,8 @@
   --content-width: 720px;
 }
 
-[data-theme="dark"] {
+[data-theme="dark"],
+body.starfield-active {
   --bg:        #0e0e0e;
   --bg-elev:   #1a1a18;
   --fg:        #e6e3da;
@@ -40,7 +41,12 @@
 }
 
 /* Default = light mode regardless of OS preference. Dark mode is opt-in
-   via the sun/moon toggle (persisted to localStorage). */
+   via the sun/moon toggle (persisted to localStorage). The /about route
+   renders as the "night sky" regardless of theme via .starfield-active. */
+
+/* Theme toggle is meaningless on /about (the night sky view ignores it),
+   so hide it there. */
+body.starfield-active .theme-toggle { display: none; }
 
 /* === Reset === */
 
