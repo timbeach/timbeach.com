@@ -7,7 +7,7 @@
       "fundamentals",
       "osi"
     ],
-    "emoji": "\ud83c\udf10",
+    "emoji": "🌐",
     "audio": "audio/osi-model-whiteboard.ogg",
     "timings": "audio/osi-model-whiteboard.timings.json",
     "voice": "af_bella",
@@ -24,7 +24,7 @@
       "agents",
       "testing"
     ],
-    "emoji": "\ud83d\udee4\ufe0f",
+    "emoji": "🛤️",
     "audio": "audio/pipeline-vs-harness.ogg",
     "timings": "audio/pipeline-vs-harness.timings.json",
     "voice": "bm_lewis",
@@ -41,7 +41,7 @@
       "subagents",
       "tutorial"
     ],
-    "emoji": "\ud83d\uddd2\ufe0f",
+    "emoji": "🗒️",
     "audio": "audio/how-to-config-obsidian.ogg",
     "timings": "audio/how-to-config-obsidian.timings.json",
     "voice": "bm_lewis",
@@ -57,7 +57,7 @@
       "devops",
       "tutorial"
     ],
-    "emoji": "\ud83d\udd25",
+    "emoji": "🔥",
     "audio": "audio/dependency-hell.ogg",
     "timings": "audio/dependency-hell.timings.json",
     "voice": "bm_lewis",
@@ -72,7 +72,7 @@
       "tutorial",
       "skills"
     ],
-    "emoji": "\ud83d\udee0\ufe0f",
+    "emoji": "🛠️",
     "audio": "audio/custom-claude-skills.ogg",
     "timings": "audio/custom-claude-skills.timings.json",
     "voice": "bm_lewis",
@@ -88,26 +88,11 @@
       "devops",
       "sop"
     ],
-    "emoji": "\ud83d\udccb",
+    "emoji": "📋",
     "audio": "audio/software-delivery-sop.ogg",
     "timings": "audio/software-delivery-sop.timings.json",
     "voice": "bm_lewis",
     "duration": 616.256
-  },
-  "releasing-music.md": {
-    "title": "Releasing Music as a Human Being: From WAV Files to Spotify",
-    "date": "2026-03-02",
-    "tags": [
-      "music",
-      "tutorial",
-      "indie",
-      "spotify"
-    ],
-    "emoji": "\ud83c\udfb5",
-    "audio": "audio/releasing-music.ogg",
-    "timings": "audio/releasing-music.timings.json",
-    "voice": "bm_lewis",
-    "duration": 930.731
   },
   "claude-code-agent-teams.md": {
     "title": "Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes",
@@ -119,7 +104,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83e\udd16",
+    "emoji": "🤖",
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
@@ -134,7 +119,7 @@
       "security",
       "hardware"
     ],
-    "emoji": "\ud83c\udfb2",
+    "emoji": "🎲",
     "audio": "audio/trng-deep-dive.ogg",
     "timings": "audio/trng-deep-dive.timings.json",
     "voice": "bm_lewis",
@@ -148,7 +133,7 @@
       "deployment",
       "web"
     ],
-    "emoji": "\ud83d\ude80",
+    "emoji": "🚀",
     "audio": "audio/deploy-a-website.ogg",
     "timings": "audio/deploy-a-website.timings.json",
     "voice": "bm_lewis",
@@ -162,7 +147,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83d\udcac",
+    "emoji": "💬",
     "audio": "audio/install-signal-on-aegix.ogg",
     "timings": "audio/install-signal-on-aegix.timings.json",
     "voice": "bm_lewis",
@@ -176,7 +161,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83d\udda5\ufe0f",
+    "emoji": "🖥️",
     "audio": "audio/how-tmux-works.ogg",
     "timings": "audio/how-tmux-works.timings.json",
     "voice": "bm_lewis",
@@ -190,7 +175,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "\ud83d\udc65",
+    "emoji": "👥",
     "audio": "audio/second-aegix-user.ogg",
     "timings": "audio/second-aegix-user.timings.json",
     "voice": "bm_lewis",
@@ -204,7 +189,7 @@
       "aegix",
       "philosophy"
     ],
-    "emoji": "\ud83e\uddd8",
+    "emoji": "🧘",
     "audio": "audio/parsimony.ogg",
     "timings": "audio/parsimony.timings.json",
     "voice": "bm_lewis",
@@ -218,7 +203,7 @@
       "meta",
       "example"
     ],
-    "emoji": "\ud83d\udcdd",
+    "emoji": "📝",
     "audio": "audio/add-articles.ogg",
     "timings": "audio/add-articles.timings.json",
     "voice": "bm_lewis",
@@ -232,7 +217,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "\u26a1",
+    "emoji": "⚡",
     "audio": "audio/simplicity.ogg",
     "timings": "audio/simplicity.timings.json",
     "voice": "bm_lewis",
@@ -248,7 +233,7 @@
       "symbolism",
       "red-book"
     ],
-    "emoji": "\ud83c\udf19",
+    "emoji": "🌙",
     "audio": "audio/jungian-dream-notes.ogg",
     "timings": "audio/jungian-dream-notes.timings.json",
     "voice": "bm_lewis",
@@ -264,7 +249,7 @@
       "retrospective",
       "web-speech"
     ],
-    "emoji": "\ud83c\udf99\ufe0f",
+    "emoji": "🎙️",
     "audio": "audio/how-my-blog-got-a-voice.ogg",
     "timings": "audio/how-my-blog-got-a-voice.timings.json",
     "voice": "bm_lewis",
@@ -280,7 +265,7 @@
       "linux",
       "git"
     ],
-    "emoji": "\ud83d\udce6",
+    "emoji": "📦",
     "audio": "audio/aegix-on-the-aur.ogg",
     "timings": "audio/aegix-on-the-aur.timings.json",
     "voice": "bm_lewis",
