@@ -60,7 +60,9 @@ async function loadStars() {
   try {
     const res = await fetch('stars.json');
     if (!res.ok) return [];
-    return await res.json();
+    const data = await res.json();
+    // stars.json is { "stars": [...] }; tolerate a bare array too.
+    return Array.isArray(data) ? data : (Array.isArray(data.stars) ? data.stars : []);
   } catch { return []; }
 }
 

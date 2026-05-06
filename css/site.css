@@ -13,6 +13,11 @@
   --link-hover:   #000000;
   --selection:    #d8d4cc;
 
+  /* Star palette — dimmer ink dots in light mode (stars on paper, more like
+     pencil marks against cream than literal stars). */
+  --star-color: #6a6760;
+  --star-glow:  rgba(0, 0, 0, 0.08);
+
   /* Typography: Charter family (low-DPI laser-printer descendant — chunky and
      newspaper-y) with sturdy fallbacks. Charis SIL is the free Google Fonts
      equivalent of Bitstream Charter; "Iowan Old Style" is the macOS
@@ -26,8 +31,7 @@
   --content-width: 720px;
 }
 
-[data-theme="dark"],
-body.starfield-active {
+[data-theme="dark"] {
   --bg:        #0e0e0e;
   --bg-elev:   #1a1a18;
   --fg:        #e6e3da;
@@ -38,15 +42,14 @@ body.starfield-active {
   --link:      #e6e3da;
   --link-hover: #ffffff;
   --selection: #3a3a36;
+
+  /* Stars become bright warm-white with a glow against the night sky. */
+  --star-color: #f6f1e0;
+  --star-glow:  rgba(246, 241, 224, 0.45);
 }
 
 /* Default = light mode regardless of OS preference. Dark mode is opt-in
-   via the sun/moon toggle (persisted to localStorage). The /about route
-   renders as the "night sky" regardless of theme via .starfield-active. */
-
-/* Theme toggle is meaningless on /about (the night sky view ignores it),
-   so hide it there. */
-body.starfield-active .theme-toggle { display: none; }
+   via the sun/moon toggle (persisted to localStorage). */
 
 /* === Reset === */
 
@@ -599,14 +602,14 @@ body.tts-open .page { padding-bottom: 88px; }
 .star {
   position: absolute;
   border-radius: 50%;
-  background: #f6f1e0;
+  background: var(--star-color);
   opacity: 0.85;
-  box-shadow: 0 0 3px rgba(246, 241, 224, 0.45);
+  box-shadow: 0 0 3px var(--star-glow);
   animation: twinkle 4s infinite ease-in-out;
 }
 .star.bright {
   opacity: 1;
-  box-shadow: 0 0 6px rgba(246, 241, 224, 0.7);
+  box-shadow: 0 0 6px var(--star-glow);
 }
 
 @keyframes twinkle {

@@ -15,7 +15,6 @@ let starfieldActive = false;
 function ensureStarfieldOff() {
   if (starfieldActive) {
     destroyStarfield();
-    document.body.classList.remove('starfield-active');
     starfieldActive = false;
   }
 }
@@ -177,7 +176,6 @@ function renderMusic() {
 
 function renderAbout() {
   if (!starfieldActive) {
-    document.body.classList.add('starfield-active');
     initStarfield().catch((err) => console.error('[starfield] init failed', err));
     starfieldActive = true;
   }
