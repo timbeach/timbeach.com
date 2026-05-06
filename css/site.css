@@ -628,15 +628,76 @@ body.tts-open .page { padding-bottom: 88px; }
   border: 1px solid var(--divider);
   padding: 6px 10px;
   border-radius: 4px;
-  pointer-events: none;
   line-height: 1.6;
-  z-index: 1;
+  z-index: 1000;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
 }
+.sky-info:hover { color: var(--fg-muted); background: var(--bg); }
+
+.sky-info-tooltip {
+  position: absolute;
+  left: 100%;
+  bottom: 0;
+  margin-left: 12px;
+  width: 280px;
+  background: var(--bg-elev);
+  border: 1px solid var(--divider);
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-family: var(--font-serif);
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 2;
+}
+.sky-info:hover .sky-info-tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+.sky-info-tooltip h4 {
+  margin: 0 0 6px;
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.sky-info-tooltip p { margin: 6px 0; color: var(--fg-muted); }
+.sky-info-tooltip .hint { margin-top: 10px; color: var(--fg-faint); font-style: italic; }
+
+/* Touch devices can't hover, so the tooltip is unreachable there.
+   Tap-to-toggle (the click handler) still works. */
+@media (hover: none) {
+  .sky-info-tooltip { display: none; }
+}
+
+/* Stars-only view: click the sky-info widget to fade out everything
+   except the starfield + the widget itself. Click again to return. */
+body.stars-view .masthead,
+body.stars-view #app,
+body.stars-view .site-footer {
+  opacity: 0;
+  pointer-events: none;
+}
+.masthead, #app, .site-footer { transition: opacity 0.5s ease; }
 
 /* === About page === */
 
+/* The about-page section gets an opaque pad so prose stays legible
+   against the starfield. Stars are still visible in the gutters
+   around it. */
 .about-page {
   max-width: var(--content-width);
+  background: var(--bg);
+  padding: 24px 28px;
+  border-radius: 4px;
 }
 .about-page h1 {
   font-size: 28px;

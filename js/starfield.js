@@ -120,11 +120,14 @@ function render(stars) {
     const hh = Math.floor(lstH);
     const mm = Math.floor((lstH - hh) * 60);
     const ss = Math.floor((((lstH - hh) * 60) - mm) * 60);
-    infoEl.innerHTML = `
-      LST ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}<br>
-      ${observerLat.toFixed(1)}°N ${Math.abs(observerLon).toFixed(1)}°W<br>
-      ${visible} stars visible
-    `;
+    const stats = infoEl.querySelector('.sky-info-stats');
+    if (stats) {
+      stats.innerHTML = `
+        LST ${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}:${String(ss).padStart(2,'0')}<br>
+        ${observerLat.toFixed(1)}°N ${Math.abs(observerLon).toFixed(1)}°W<br>
+        ${visible} stars visible
+      `;
+    }
   }
 }
 
@@ -136,6 +139,19 @@ export async function initStarfield() {
 
   infoEl = document.createElement('div');
   infoEl.className = 'sky-info';
+  infoEl.innerHTML = `
+    <div class="sky-info-stats"></div>
+    <div class="sky-info-tooltip">
+      <h4>Real star system</h4>
+      <p>The stars on this page represent the actual night sky based on your location and the current time.</p>
+      <p>Each star is positioned using real astronomical data; only stars currently above your horizon are shown.</p>
+      <p><strong>LST</strong> is Local Sidereal Time — astronomical time based on Earth's rotation relative to distant stars.</p>
+      <p class="hint">Click to toggle stars-only view</p>
+    </div>
+  `;
+  infoEl.addEventListener('click', () => {
+    document.body.classList.toggle('stars-view');
+  });
   document.body.appendChild(infoEl);
 
   // Try geolocation; ignore failures and stick with default.
@@ -166,6 +182,8 @@ export function destroyStarfield() {
   if (resizeListener) { window.removeEventListener('resize', resizeListener); resizeListener = null; }
   if (rootEl && rootEl.parentNode) rootEl.parentNode.removeChild(rootEl);
   if (infoEl && infoEl.parentNode) infoEl.parentNode.removeChild(infoEl);
+  // Don't let stars-only view leak to other pages.
+  document.body.classList.remove('stars-view');
   rootEl = null;
   infoEl = null;
   currentStars = [];
