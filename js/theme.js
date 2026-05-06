@@ -1,5 +1,8 @@
 // js/theme.js — theme toggle. The FOUC-prevention <script> in <head> already
 // applies localStorage.theme before CSS loads. This module wires the button.
+//
+// Default theme is light, regardless of OS preference. Dark mode is opt-in
+// via the sun/moon button and persisted to localStorage.
 
 const STORAGE_KEY = 'theme';
 const ATTR = 'data-theme';
@@ -7,7 +10,7 @@ const ATTR = 'data-theme';
 function effectiveTheme() {
   const explicit = document.documentElement.getAttribute(ATTR);
   if (explicit === 'light' || explicit === 'dark') return explicit;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  return 'light';
 }
 
 function applyTheme(next) {
@@ -35,12 +38,4 @@ export function initTheme() {
       applyTheme(effectiveTheme() === 'dark' ? 'light' : 'dark');
     });
   }
-
-  // Update icon if the OS preference changes while the page is open and the
-  // user hasn't set an explicit theme.
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-    let stored = null;
-    try { stored = localStorage.getItem(STORAGE_KEY); } catch (e) { /* ignore */ }
-    if (stored !== 'light' && stored !== 'dark') updateButtonIcon();
-  });
 }
