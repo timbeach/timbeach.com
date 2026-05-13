@@ -589,6 +589,24 @@ body.tts-open .page { padding-bottom: 88px; }
   font-family: var(--font-sans);
   font-size: 13px;
 }
+.music-streaming {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin: 0 0 18px;
+}
+.music-streaming a {
+  color: var(--fg);
+  border-bottom: 1px solid var(--fg-muted);
+  text-decoration: none;
+  padding-bottom: 1px;
+  transition: border-color 0.15s ease;
+}
+.music-streaming a:hover { border-bottom-color: var(--fg); }
+.music-streaming .sep {
+  margin: 0 0.55em;
+  color: var(--fg-faint);
+}
 
 /* === Starfield (only on /about) === */
 

@@ -121,13 +121,20 @@ function renderMusic() {
   ensureStarfieldOff();
   app().innerHTML = `
     <section class="music-page">
-      <button type="button" class="music-cover" data-act="play-promo" aria-label="Play TWO_ROOMS promo video">
-        <img src="pix/TWO_ROOMS_1.jpeg" alt="TWO_ROOMS by Gut Lens — album art" />
+      <button type="button" class="music-cover" data-act="play-promo" aria-label="Play GUT_LENS promo video">
+        <img src="pix/TWO_ROOMS_1.jpeg" alt="GUT_LENS by Gut Lens — single cover art" />
         <span class="music-cover-play" aria-hidden="true">▶</span>
       </button>
-      <h1 class="music-title">TWO_ROOMS</h1>
+      <h1 class="music-title">GUT_LENS</h1>
       <p class="music-artist">Gut Lens</p>
-      <p class="music-status">Coming Soon · May 2026</p>
+      <p class="music-status">Single · Out Now</p>
+      <p class="music-streaming">
+        <a href="https://music.youtube.com/playlist?list=OLAK5uy_k8GenqXSSx8jD0y6KBkRClx1o4yxc2S6M&si=K2RNckUVVjj1GX6L" target="_blank" rel="noopener">YouTube Music</a>
+        <span class="sep" aria-hidden="true">·</span>
+        <a href="https://open.spotify.com/album/1mTTLgGZDODcBT8wT0VN8u" target="_blank" rel="noopener">Spotify</a>
+        <span class="sep" aria-hidden="true">·</span>
+        <a href="https://music.apple.com/us/album/gut-lens-single/1896449537" target="_blank" rel="noopener">Apple Music</a>
+      </p>
       <a class="music-link"
          href="https://gutlens.net"
          data-link-live="true"
