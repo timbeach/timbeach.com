@@ -1,0 +1,618 @@
+{
+  "voice": "bm_lewis",
+  "duration": 886.613,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 3.3066666666666666,
+      "text": "\ud83e\uddf6 Future Me Has Receipts: Building circleback"
+    },
+    {
+      "idx": 1,
+      "start": 3.3066666666666666,
+      "end": 5.76,
+      "text": "Here's what a normal week looks like for me:"
+    },
+    {
+      "idx": 2,
+      "start": 5.76,
+      "end": 13.738666666666667,
+      "text": "A Claude Code session debugging an LTI enrollment query at work (Postgres, SQL diffs, 70-message thread)"
+    },
+    {
+      "idx": 3,
+      "start": 13.738666666666667,
+      "end": 21.376,
+      "text": "Another one prepping state-test contractor diffs (Python, xlsx files, waiting on partners to deliver data)"
+    },
+    {
+      "idx": 4,
+      "start": 21.376,
+      "end": 28.16,
+      "text": "A third one building a Rust CLI for personal use (totally different stack, totally different brain mode)"
+    },
+    {
+      "idx": 5,
+      "start": 28.16,
+      "end": 33.6,
+      "text": "A fourth one mid-audit, with a half-written message to a coworker that I haven't sent yet"
+    },
+    {
+      "idx": 6,
+      "start": 33.6,
+      "end": 37.312,
+      "text": "A fifth one I started three weeks ago and forgot existed"
+    },
+    {
+      "idx": 7,
+      "start": 37.312,
+      "end": 57.04533333333333,
+      "text": "These sessions are wildly unrelated. They live in different directories, touch different languages, follow different work streams. None of them know about each other. And they're all long-running \u2014 Claude Code holds context across days or weeks, which is amazing until you have a dozen of them and can't remember which is which."
+    },
+    {
+      "idx": 8,
+      "start": 57.04533333333333,
+      "end": 77.35466666666666,
+      "text": "The single hardest thing about working this way isn't building the stuff. It's finding my way back to each of these threads after a few hours away. After a reboot. After a long meeting. After two days on a completely different project. After (sometimes) the laptop dying mid-thought when its battery decides it's done for the afternoon."
+    },
+    {
+      "idx": 9,
+      "start": 77.35466666666666,
+      "end": 88.74666666666667,
+      "text": "So I built a thing. A small thing. Let me show you what it is, and along the way I'll point out some of the Linux/Unix gears that make it tick, because they're cool and you should know them."
+    },
+    {
+      "idx": 10,
+      "start": 88.74666666666667,
+      "end": 91.79733333333333,
+      "text": "\ud83c\udfaf What problem does it actually solve?"
+    },
+    {
+      "idx": 11,
+      "start": 91.79733333333333,
+      "end": 98.13333333333334,
+      "text": "Claude Code already lets you claude --resume <session-id> to jump back into a session. Cool. But:"
+    },
+    {
+      "idx": 12,
+      "start": 98.13333333333334,
+      "end": 115.94666666666667,
+      "text": "The session IDs are UUIDs \u2014 those 36-character monstrosities like fc8b09ad-e13b-42e7-b04b-fad59f47c97c. Try memorizing five of those at once."
+    },
+    {
+      "idx": 13,
+      "start": 115.94666666666667,
+      "end": 127.08266666666667,
+      "text": "Each session is scoped to its launch directory. You have to cd to exactly the right place before resume works. Not the parent dir. Not a sibling. The exact dir."
+    },
+    {
+      "idx": 14,
+      "start": 127.08266666666667,
+      "end": 141.504,
+      "text": "The sessions live in ~/.claude/projects/<some-encoded-cwd>/<uuid>.jsonl, which is great for Claude Code internally but unreadable as a top-down view of \"what am I working on.\""
+    },
+    {
+      "idx": 15,
+      "start": 141.504,
+      "end": 147.05066666666667,
+      "text": "If you don't write down what you were doing in each thread, future-you has no idea which session is which."
+    },
+    {
+      "idx": 16,
+      "start": 147.05066666666667,
+      "end": 155.56266666666667,
+      "text": "For a while I had a hand-curated markdown file at ~/CIRCLE_BACKS/CIRCLE-BACKS.md where I'd dump notes like:"
+    },
+    {
+      "idx": 17,
+      "start": 155.56266666666667,
+      "end": 159.76533333333333,
+      "text": "This was a start, but only sort of. To resume one I had to:"
+    },
+    {
+      "idx": 18,
+      "start": 159.76533333333333,
+      "end": 160.85333333333332,
+      "text": "Open the file"
+    },
+    {
+      "idx": 19,
+      "start": 160.85333333333332,
+      "end": 162.176,
+      "text": "Scan with my eyes"
+    },
+    {
+      "idx": 20,
+      "start": 162.176,
+      "end": 163.62666666666667,
+      "text": "Copy the UUID"
+    },
+    {
+      "idx": 21,
+      "start": 163.62666666666667,
+      "end": 165.248,
+      "text": "cd to the right path"
+    },
+    {
+      "idx": 22,
+      "start": 165.248,
+      "end": 166.86933333333334,
+      "text": "Paste the resume command"
+    },
+    {
+      "idx": 23,
+      "start": 166.86933333333334,
+      "end": 189.16266666666667,
+      "text": "And \u2014 equally important \u2014 I had to remember to write the entry in the first place. If I got pulled into something else and didn't park the thread, that whole working context dissolved when I switched away. Same outcome if the laptop powered off before I wrote the note. The capture step depended on me being disciplined, every single time, which is not a thing humans are good at."
+    },
+    {
+      "idx": 24,
+      "start": 189.16266666666667,
+      "end": 190.912,
+      "text": "\ud83d\udd27 The three new pieces"
+    },
+    {
+      "idx": 25,
+      "start": 190.912,
+      "end": 193.664,
+      "text": "Here's what I just built, in plain English:"
+    },
+    {
+      "idx": 26,
+      "start": 193.664,
+      "end": 204.13866666666667,
+      "text": "circleback \u2014 type that in any terminal, get a fuzzy-search picker over all your saved sessions, hit Enter, and you're back. Hit Ctrl-D to archive ones you're done with."
+    },
+    {
+      "idx": 27,
+      "start": 204.13866666666667,
+      "end": 224.832,
+      "text": "A \"SessionStart\" hook \u2014 the millisecond a Claude session opens, a stub entry gets written. No more \"oh wait, I forgot to log this thread.\" Every session shows up in the list automatically, and if the laptop dies before I can write a proper closing note, at least the entry is there, with a timestamp, telling future-me where to look."
+    },
+    {
+      "idx": 28,
+      "start": 224.832,
+      "end": 236.096,
+      "text": "A \"SessionEnd\" hook \u2014 when the session closes cleanly, the hook reads what was last said and replaces the stub's \"(in progress)\" placeholder with an actual closing thought."
+    },
+    {
+      "idx": 29,
+      "start": 236.096,
+      "end": 243.81866666666667,
+      "text": "Three pieces, ~500 lines of bash total, zero new dependencies. Let me walk through the technologies."
+    },
+    {
+      "idx": 30,
+      "start": 243.81866666666667,
+      "end": 248.02133333333333,
+      "text": "\u2728 fzf: the hero of every good terminal workflow"
+    },
+    {
+      "idx": 31,
+      "start": 248.02133333333333,
+      "end": 254.37866666666667,
+      "text": "If you don't know fzf yet, stop reading and sudo pacman -S fzf right now. I'll wait."
+    },
+    {
+      "idx": 32,
+      "start": 254.37866666666667,
+      "end": 261.99466666666666,
+      "text": "fzf is a fuzzy finder. You pipe it a list of strings, it pops up an interactive picker with type-ahead matching:"
+    },
+    {
+      "idx": 33,
+      "start": 261.99466666666666,
+      "end": 274.624,
+      "text": "That's it. Three lines, a beautiful TUI picker. fzf is the most-loved kind of Unix tool: it does one thing, it accepts text on stdin, and it composes with literally anything."
+    },
+    {
+      "idx": 34,
+      "start": 274.624,
+      "end": 276.032,
+      "text": "For circleback, I:"
+    },
+    {
+      "idx": 35,
+      "start": 276.032,
+      "end": 279.8933333333333,
+      "text": "Parse the markdown file into one display line per entry"
+    },
+    {
+      "idx": 36,
+      "start": 279.8933333333333,
+      "end": 285.12,
+      "text": "Pipe those lines to fzf with --multi (so I can mark several at once with Tab)"
+    },
+    {
+      "idx": 37,
+      "start": 285.12,
+      "end": 290.28266666666667,
+      "text": "Bind Ctrl-D to \"archive marked\", Ctrl-E to \"open in $EDITOR\""
+    },
+    {
+      "idx": 38,
+      "start": 290.28266666666667,
+      "end": 295.4026666666667,
+      "text": "On Enter, the script exec claude --resume <id>s from the entry's directory"
+    },
+    {
+      "idx": 39,
+      "start": 295.4026666666667,
+      "end": 306.048,
+      "text": "That exec is doing real work \u2014 it replaces the shell process with claude, so when you exit Claude you're back at your original prompt, no nested shell. The Unix way."
+    },
+    {
+      "idx": 40,
+      "start": 306.048,
+      "end": 308.6933333333333,
+      "text": "\ud83e\ude9d Hooks: how Claude Code hands off control"
+    },
+    {
+      "idx": 41,
+      "start": 308.6933333333333,
+      "end": 324.16,
+      "text": "Claude Code (the CLI) has a thing called hooks. You can wire little scripts to fire at lifecycle events like SessionStart, SessionEnd, PreCompact, PreToolUse. You configure them in ~/.claude/settings.json:"
+    },
+    {
+      "idx": 42,
+      "start": 324.16,
+      "end": 330.32533333333333,
+      "text": "When the event fires, Claude Code pipes a small JSON payload to your script's standard input:"
+    },
+    {
+      "idx": 43,
+      "start": 330.32533333333333,
+      "end": 332.6293333333333,
+      "text": "So in my hook, the first line is:"
+    },
+    {
+      "idx": 44,
+      "start": 332.6293333333333,
+      "end": 341.12,
+      "text": "The // empty is jq-speak for \"if the field is missing, give me an empty string instead of null\". Defensive coding."
+    },
+    {
+      "idx": 45,
+      "start": 341.12,
+      "end": 344.55466666666666,
+      "text": "\ud83d\udee0\ufe0f awk, sed, jq: the old reliable trio"
+    },
+    {
+      "idx": 46,
+      "start": 344.55466666666666,
+      "end": 358.48533333333336,
+      "text": "Big chunks of this codebase are awk pipelines. Why? Because the entries in CIRCLE-BACKS.md are structured text \u2014 four lines per entry, blank lines as separators \u2014 and awk is built for exactly this."
+    },
+    {
+      "idx": 47,
+      "start": 358.48533333333336,
+      "end": 361.19466666666665,
+      "text": "Here's the heart of the parser (simplified):"
+    },
+    {
+      "idx": 48,
+      "start": 361.19466666666665,
+      "end": 383.296,
+      "text": "awk processes one line at a time. When it sees a blank line, it checks whether the four-line accumulator looks like a valid entry and emits a tab-separated record if so. When it sees a section header like ## WORK/, it captures whatever name follows ##  \u2014 the parser doesn't hardcode any section names, which is what lets you define your own."
+    },
+    {
+      "idx": 49,
+      "start": 383.296,
+      "end": 387.54133333333334,
+      "text": "The output is one line per entry, fields separated by tabs:"
+    },
+    {
+      "idx": 50,
+      "start": 387.54133333333334,
+      "end": 401.152,
+      "text": "That's the internal format of the picker. Why TSV? Because tabs basically never appear in your prose, so they make a perfect delimiter that bash can IFS=$'\\t' read -r directly."
+    },
+    {
+      "idx": 51,
+      "start": 401.152,
+      "end": 412.65066666666667,
+      "text": "jq does the same job for JSON \u2014 it's the awk of structured data. And sed shows up for surgical text edits, like deleting exactly lines 3-6 from a file:"
+    },
+    {
+      "idx": 52,
+      "start": 412.65066666666667,
+      "end": 415.33866666666665,
+      "text": "\ud83e\uddea TDD caught real bugs"
+    },
+    {
+      "idx": 53,
+      "start": 415.33866666666665,
+      "end": 428.77866666666665,
+      "text": "I wrote this whole thing test-first. 46 tests, plain bash, no framework. (I considered bats-core but it would've required sudo, and the surface area is small enough that hand-rolled assertions are fine.)"
+    },
+    {
+      "idx": 54,
+      "start": 428.77866666666665,
+      "end": 430.7626666666667,
+      "text": "Two real bugs the tests caught:"
+    },
+    {
+      "idx": 55,
+      "start": 430.7626666666667,
+      "end": 433.4506666666667,
+      "text": "Bug 1: sort -r quietly doesn't reverse"
+    },
+    {
+      "idx": 56,
+      "start": 433.4506666666667,
+      "end": 444.43733333333336,
+      "text": "In my archive function I needed to delete multiple line ranges from the file, processing them bottom-up so earlier deletions don't shift later line numbers. I wrote:"
+    },
+    {
+      "idx": 57,
+      "start": 444.43733333333336,
+      "end": 454.95466666666664,
+      "text": "Reading that, you'd think: \"sort by column 1, numeric, reversed.\" Nope. The -r flag wasn't being applied because of how it interacts with -k. The correct form is:"
+    },
+    {
+      "idx": 58,
+      "start": 454.95466666666664,
+      "end": 462.5706666666667,
+      "text": "Bake the r into the key spec. The test for \"archive multiple ranges\" failed loudly and I caught it before shipping."
+    },
+    {
+      "idx": 59,
+      "start": 462.5706666666667,
+      "end": 464.64,
+      "text": "Bug 2: the missing blank line"
+    },
+    {
+      "idx": 60,
+      "start": 464.64,
+      "end": 472.02133333333336,
+      "text": "When the SessionStart hook inserted the very first BEACH entry into a freshly-skeletoned file, the result looked like this:"
+    },
+    {
+      "idx": 61,
+      "start": 472.02133333333336,
+      "end": 483.648,
+      "text": "The awk script was eating the blank line that should have lived between the section header and the first entry. Fixed by always emitting one \u2014 regardless of whether the section was previously empty."
+    },
+    {
+      "idx": 62,
+      "start": 483.648,
+      "end": 493.184,
+      "text": "The point: TDD is not about ceremony, it's about catching the dumb stuff before your hooks start running on your real workflow at 9am Monday."
+    },
+    {
+      "idx": 63,
+      "start": 493.184,
+      "end": 496.14933333333335,
+      "text": "\ud83c\udff7\ufe0f Friendly names, stable UUIDs"
+    },
+    {
+      "idx": 64,
+      "start": 496.14933333333335,
+      "end": 517.6106666666667,
+      "text": "You can rename a Claude session (/rename my-cool-name), and circleback picks that up automatically: the picker shows the friendly name as the row label instead of a UUID like c31187ad-\u2026. It reads the name live from the session log every time you open the picker, so it's always current."
+    },
+    {
+      "idx": 65,
+      "start": 517.6106666666667,
+      "end": 524.032,
+      "text": "Under the hood, though, the entry in my notes file still stores the UUID, not the name \u2014 on purpose:"
+    },
+    {
+      "idx": 66,
+      "start": 524.032,
+      "end": 529.92,
+      "text": "The UUID is globally unique and never changes: a rock-solid anchor for resuming."
+    },
+    {
+      "idx": 67,
+      "start": 529.92,
+      "end": 537.728,
+      "text": "Reading the name live means a re-rename just shows up next launch. Nothing to keep in sync, nothing to drift or corrupt."
+    },
+    {
+      "idx": 68,
+      "start": 537.728,
+      "end": 546.5386666666667,
+      "text": "Two sessions could end up sharing a name; a collision can never break resume, because the file always holds the unique UUID underneath."
+    },
+    {
+      "idx": 69,
+      "start": 546.5386666666667,
+      "end": 550.1653333333334,
+      "text": "Friendly name on the surface, stable ID underneath."
+    },
+    {
+      "idx": 70,
+      "start": 550.1653333333334,
+      "end": 569.1093333333333,
+      "text": "(Confession: I first convinced myself Claude Code didn't persist session names at all, and built a lesser version around that wrong assumption. It does \u2014 the name lands in the session log the instant you /rename. Filed under \"a grep that comes up empty is a fact about your search, not about reality.\")"
+    },
+    {
+      "idx": 71,
+      "start": 569.1093333333333,
+      "end": 571.4346666666667,
+      "text": "\ud83c\udfac What it looks like in action"
+    },
+    {
+      "idx": 72,
+      "start": 571.4346666666667,
+      "end": 584.6186666666666,
+      "text": "Arrow keys to scroll. Right pane shows full preview (session ID, cwd, status, summary, full closing thought). Enter resumes. Tab marks. Ctrl-D archives. Esc quits."
+    },
+    {
+      "idx": 73,
+      "start": 584.6186666666666,
+      "end": 585.856,
+      "text": "Test it yourself:"
+    },
+    {
+      "idx": 74,
+      "start": 585.856,
+      "end": 598.1013333333333,
+      "text": "The /tmp entry should be there as [auto][BEACH] /tmp \u2014 Goodbye. Mark it with Tab, Ctrl-D, type y, and it gets archived to CIRCLE-BACKS-ARCHIVE.md."
+    },
+    {
+      "idx": 75,
+      "start": 598.1013333333333,
+      "end": 599.872,
+      "text": "\ud83d\udcc5 The daily rollup"
+    },
+    {
+      "idx": 76,
+      "start": 599.872,
+      "end": 610.048,
+      "text": "Once every session was getting captured automatically, a second use fell out almost for free: what did I actually do today, across all these unrelated projects?"
+    },
+    {
+      "idx": 77,
+      "start": 610.048,
+      "end": 623.8506666666667,
+      "text": "So circleback now keeps a per-day file \u2014 ~/CIRCLE_BACKS/daily/2026-05-27_SUMMARY.md \u2014 with two regions that never step on each other:"
+    },
+    {
+      "idx": 78,
+      "start": 623.8506666666667,
+      "end": 641.3653333333333,
+      "text": "## Sessions (auto) \u2014 one line per session that ran that day, written by the very same SessionEnd/PreCompact hook that fills in closing thoughts. Section tag, directory, closing thought, and the resume command. Zero effort; it's just there by evening."
+    },
+    {
+      "idx": 79,
+      "start": 641.3653333333333,
+      "end": 659.8613333333333,
+      "text": "## Digest \u2014 prose, written only when I ask for it. I say \"update the daily summary\" and a small skill reads the day's session lines (and each session's own STATUS doc) and writes a skimmable, cross-project what-mattered-today. Standup notes, or the seed of an article like this one."
+    },
+    {
+      "idx": 80,
+      "start": 659.8613333333333,
+      "end": 668.1173333333334,
+      "text": "The hook owns the mechanical spine; the skill owns the prose. They share a file but not a region, so neither clobbers the other."
+    },
+    {
+      "idx": 81,
+      "start": 668.1173333333334,
+      "end": 672.448,
+      "text": "There's also a no-Claude accessor, so I never type the dated path:"
+    },
+    {
+      "idx": 82,
+      "start": 672.448,
+      "end": 683.776,
+      "text": "--rebuild is the safety net: the auto region is derived data, so if it ever drifts, you regenerate it from CIRCLE-BACKS.md \u2014 without touching your prose digest."
+    },
+    {
+      "idx": 83,
+      "start": 683.776,
+      "end": 685.7173333333334,
+      "text": "\ud83e\udea7 The nudge that made me write this"
+    },
+    {
+      "idx": 84,
+      "start": 685.7173333333334,
+      "end": 712.256,
+      "text": "Here's the part that closed the loop. I added one more hook \u2014 separate from circleback, living in my ~/.claude \u2014 on Claude Code's UserPromptSubmit event (it fires on every prompt and can inject context into that turn). After the fourth prompt of a session (so quick lookups are spared), exactly once, it plants a standing instruction: at the next natural stopping point, ask whether this work is worth showing people publicly."
+    },
+    {
+      "idx": 85,
+      "start": 712.256,
+      "end": 730.1333333333333,
+      "text": "Three answers: draft it now (\u2192 my publish-article skill), park it (\u2192 circle-back), or skip. It's a habit enforced by a turn counter and a marker file, not by willpower. Resume the session later and it won't re-ask \u2014 the marker is keyed by session id."
+    },
+    {
+      "idx": 86,
+      "start": 730.1333333333333,
+      "end": 733.2053333333333,
+      "text": "This article is what \"draft it now\" looks like."
+    },
+    {
+      "idx": 87,
+      "start": 733.2053333333333,
+      "end": 734.5066666666667,
+      "text": "\ud83e\udde0 The meta-point"
+    },
+    {
+      "idx": 88,
+      "start": 734.5066666666667,
+      "end": 747.0506666666666,
+      "text": "This whole thing is bash, awk, sed, jq, fzf, and one config-file edit. No new language, no framework, no daemon, nothing to compile. The total install footprint is:"
+    },
+    {
+      "idx": 89,
+      "start": 747.0506666666666,
+      "end": 752.2986666666667,
+      "text": "One executable script (~/.local/bin/circleback)"
+    },
+    {
+      "idx": 90,
+      "start": 752.2986666666667,
+      "end": 758.5066666666667,
+      "text": "Two hook scripts (~/.claude/hooks/circleback-session-*.sh)"
+    },
+    {
+      "idx": 91,
+      "start": 758.5066666666667,
+      "end": 769.5146666666667,
+      "text": "A few helper libraries (lib/parse.sh, lib/config.sh, lib/enrich.sh, lib/archive.sh, lib/daily.sh)"
+    },
+    {
+      "idx": 92,
+      "start": 769.5146666666667,
+      "end": 774.9546666666666,
+      "text": "One small config file (~/.config/circleback/config)"
+    },
+    {
+      "idx": 93,
+      "start": 774.9546666666666,
+      "end": 779.6053333333333,
+      "text": "One additive edit to ~/.claude/settings.json"
+    },
+    {
+      "idx": 94,
+      "start": 779.6053333333333,
+      "end": 786.8586666666666,
+      "text": "That's it. The whole thing is composable, debuggable, scriptable, and small enough to read top-to-bottom in an afternoon."
+    },
+    {
+      "idx": 95,
+      "start": 786.8586666666666,
+      "end": 801.5573333333333,
+      "text": "Linux gives you a stupid number of tiny, sharp tools. The trick is recognizing when you can compose them into something useful instead of reaching for a heavy framework. Every shell pipeline you write is a tiny essay in this style."
+    },
+    {
+      "idx": 96,
+      "start": 801.5573333333333,
+      "end": 812.8,
+      "text": "I've got a dozen Claude Code threads running across as many projects right now, and for the first time it feels like that's a feature instead of a liability. Future-me has receipts."
+    },
+    {
+      "idx": 97,
+      "start": 812.8,
+      "end": 815.8933333333333,
+      "text": "\ud83d\udcec Want to try it?"
+    },
+    {
+      "idx": 98,
+      "start": 815.8933333333333,
+      "end": 841.6426666666666,
+      "text": "circleback is built to be installed by anyone \u2014 config-driven sections, an install.sh that checks your dependencies, walks you through your sections (work / personal / research / whatever, or one flat list), symlinks the binary, and wires the Claude Code hooks into your settings.json (backing it up first, safe to re-run). uninstall.sh reverses all of it and leaves your data alone."
+    },
+    {
+      "idx": 99,
+      "start": 841.6426666666666,
+      "end": 866.7946666666667,
+      "text": "The repo's private for now \u2014 the installer touches your ~/.claude/settings.json, so I want it boringly reliable on a few machines that aren't mine before I point the whole internet at it. If you'd like early access to kick the tires, email me at beachtimothyd@gmail.com and I'll add you. It's Linux-first (built on Aegix) and wants bash, fzf, jq, and the claude CLI."
+    },
+    {
+      "idx": 100,
+      "start": 866.7946666666667,
+      "end": 870.016,
+      "text": "When it goes public I'll update this article with the link."
+    },
+    {
+      "idx": 101,
+      "start": 870.016,
+      "end": 886.6133333333333,
+      "text": "Built alongside Claude itself, using its superpowers brainstorm \u2192 spec \u2192 plan \u2192 TDD workflow \u2014 ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts."
+    }
+  ]
+}

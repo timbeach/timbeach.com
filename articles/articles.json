@@ -7,7 +7,7 @@
       "fundamentals",
       "osi"
     ],
-    "emoji": "🌐",
+    "emoji": "\ud83c\udf10",
     "audio": "audio/osi-model-whiteboard.ogg",
     "timings": "audio/osi-model-whiteboard.timings.json",
     "voice": "af_bella",
@@ -24,7 +24,7 @@
       "agents",
       "testing"
     ],
-    "emoji": "🛤️",
+    "emoji": "\ud83d\udee4\ufe0f",
     "audio": "audio/pipeline-vs-harness.ogg",
     "timings": "audio/pipeline-vs-harness.timings.json",
     "voice": "bm_lewis",
@@ -41,7 +41,7 @@
       "subagents",
       "tutorial"
     ],
-    "emoji": "🗒️",
+    "emoji": "\ud83d\uddd2\ufe0f",
     "audio": "audio/how-to-config-obsidian.ogg",
     "timings": "audio/how-to-config-obsidian.timings.json",
     "voice": "bm_lewis",
@@ -57,7 +57,7 @@
       "devops",
       "tutorial"
     ],
-    "emoji": "🔥",
+    "emoji": "\ud83d\udd25",
     "audio": "audio/dependency-hell.ogg",
     "timings": "audio/dependency-hell.timings.json",
     "voice": "bm_lewis",
@@ -72,7 +72,7 @@
       "tutorial",
       "skills"
     ],
-    "emoji": "🛠️",
+    "emoji": "\ud83d\udee0\ufe0f",
     "audio": "audio/custom-claude-skills.ogg",
     "timings": "audio/custom-claude-skills.timings.json",
     "voice": "bm_lewis",
@@ -88,7 +88,7 @@
       "devops",
       "sop"
     ],
-    "emoji": "📋",
+    "emoji": "\ud83d\udccb",
     "audio": "audio/software-delivery-sop.ogg",
     "timings": "audio/software-delivery-sop.timings.json",
     "voice": "bm_lewis",
@@ -104,7 +104,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "🤖",
+    "emoji": "\ud83e\udd16",
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
@@ -119,7 +119,7 @@
       "security",
       "hardware"
     ],
-    "emoji": "🎲",
+    "emoji": "\ud83c\udfb2",
     "audio": "audio/trng-deep-dive.ogg",
     "timings": "audio/trng-deep-dive.timings.json",
     "voice": "bm_lewis",
@@ -133,7 +133,7 @@
       "deployment",
       "web"
     ],
-    "emoji": "🚀",
+    "emoji": "\ud83d\ude80",
     "audio": "audio/deploy-a-website.ogg",
     "timings": "audio/deploy-a-website.timings.json",
     "voice": "bm_lewis",
@@ -147,7 +147,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "💬",
+    "emoji": "\ud83d\udcac",
     "audio": "audio/install-signal-on-aegix.ogg",
     "timings": "audio/install-signal-on-aegix.timings.json",
     "voice": "bm_lewis",
@@ -161,7 +161,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "🖥️",
+    "emoji": "\ud83d\udda5\ufe0f",
     "audio": "audio/how-tmux-works.ogg",
     "timings": "audio/how-tmux-works.timings.json",
     "voice": "bm_lewis",
@@ -175,7 +175,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "👥",
+    "emoji": "\ud83d\udc65",
     "audio": "audio/second-aegix-user.ogg",
     "timings": "audio/second-aegix-user.timings.json",
     "voice": "bm_lewis",
@@ -189,7 +189,7 @@
       "aegix",
       "philosophy"
     ],
-    "emoji": "🧘",
+    "emoji": "\ud83e\uddd8",
     "audio": "audio/parsimony.ogg",
     "timings": "audio/parsimony.timings.json",
     "voice": "bm_lewis",
@@ -203,7 +203,7 @@
       "meta",
       "example"
     ],
-    "emoji": "📝",
+    "emoji": "\ud83d\udcdd",
     "audio": "audio/add-articles.ogg",
     "timings": "audio/add-articles.timings.json",
     "voice": "bm_lewis",
@@ -217,7 +217,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "⚡",
+    "emoji": "\u26a1",
     "audio": "audio/simplicity.ogg",
     "timings": "audio/simplicity.timings.json",
     "voice": "bm_lewis",
@@ -233,7 +233,7 @@
       "symbolism",
       "red-book"
     ],
-    "emoji": "🌙",
+    "emoji": "\ud83c\udf19",
     "audio": "audio/jungian-dream-notes.ogg",
     "timings": "audio/jungian-dream-notes.timings.json",
     "voice": "bm_lewis",
@@ -249,7 +249,7 @@
       "retrospective",
       "web-speech"
     ],
-    "emoji": "🎙️",
+    "emoji": "\ud83c\udf99\ufe0f",
     "audio": "audio/how-my-blog-got-a-voice.ogg",
     "timings": "audio/how-my-blog-got-a-voice.timings.json",
     "voice": "bm_lewis",
@@ -265,10 +265,26 @@
       "linux",
       "git"
     ],
-    "emoji": "📦",
+    "emoji": "\ud83d\udce6",
     "audio": "audio/aegix-on-the-aur.ogg",
     "timings": "audio/aegix-on-the-aur.timings.json",
     "voice": "bm_lewis",
     "duration": 254.336
+  },
+  "circleback.md": {
+    "title": "Future Me Has Receipts: Building circleback",
+    "date": "2026-05-26",
+    "tags": [
+      "linux",
+      "claude-code",
+      "bash",
+      "cli",
+      "fzf"
+    ],
+    "emoji": "\ud83e\uddf6",
+    "audio": "audio/circleback.ogg",
+    "timings": "audio/circleback.timings.json",
+    "voice": "bm_lewis",
+    "duration": 886.613
   }
 }

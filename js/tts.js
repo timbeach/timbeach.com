@@ -125,9 +125,59 @@ function updateTimeLabel() {
   if (el) el.textContent = `${fmtTime(audio.currentTime || 0)} / ${fmtTime(totalDuration())}`;
 }
 
+// Match tools/render_article.py:extract_paragraphs — same selector, same empty filter
+// (strips elements whose text is empty after <img> removal, e.g. a hero image's <p>).
+function eligibleParagraphs() {
+  const body = document.querySelector('.article-body');
+  if (!body) return [];
+  const all = Array.from(body.querySelectorAll('p, h2, h3, h4, li'));
+  return all.filter((el) => {
+    const clone = el.cloneNode(true);
+    clone.querySelectorAll('img').forEach((img) => img.remove());
+    return clone.textContent.trim().length > 0;
+  });
+}
+
+function paragraphTimings() {
+  return (timings && Array.isArray(timings.paragraphs)) ? timings.paragraphs : [];
+}
+
 function clearHighlight() {
   document.querySelectorAll('.article-body .tts-reading').forEach((p) => p.classList.remove('tts-reading'));
   document.querySelector('.article-body')?.classList.remove('tts-active');
+}
+
+function clearParagraphClicks() {
+  document.querySelectorAll('.article-body [data-tts-wired]').forEach((el) => {
+    el.removeAttribute('data-tts-wired');
+    el.style.cursor = '';
+  });
+}
+
+function wireParagraphClicks() {
+  const paras = eligibleParagraphs();
+  const t = paragraphTimings();
+  if (!paras.length || !t.length) return;
+  if (paras.length !== t.length) {
+    console.warn(`[tts] paragraph count mismatch (${paras.length} DOM vs ${t.length} in timings) — click-to-seek may map to wrong paragraphs. Re-render with --force.`);
+  }
+  paras.forEach((el, idx) => {
+    if (el.dataset.ttsWired) return;
+    el.dataset.ttsWired = '1';
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', (ev) => {
+      // Don't hijack clicks on real links or interactive controls inside the paragraph.
+      const interactive = ev.target.closest('a, button, input, textarea, select, [contenteditable="true"]');
+      if (interactive) return;
+      if (!audio) return;
+      const entry = paragraphTimings()[idx];
+      if (!entry) return;
+      audio.currentTime = entry.start;
+      if (audio.paused) {
+        audio.play().then(() => setPlayIcon(true)).catch(() => setPlayIcon(false));
+      }
+    });
+  });
 }
 
 function onTimeUpdate() {
@@ -137,13 +187,13 @@ function onTimeUpdate() {
   const pct = total > 0 ? (audio.currentTime / total) * 100 : 0;
   bar.querySelector('.tts-progress-fill').style.width = `${pct}%`;
 
-  // Paragraph highlight: timings is an array of paragraph entries with start/end seconds.
-  if (!timings || !timings.length) return;
-  const t = audio.currentTime;
+  const t = paragraphTimings();
+  if (!t.length) return;
+  const now = audio.currentTime;
   let idx = -1;
-  for (let i = 0; i < timings.length; i++) {
-    const p = timings[i];
-    if (t >= p.start && t < p.end) { idx = i; break; }
+  for (let i = 0; i < t.length; i++) {
+    const p = t[i];
+    if (now >= p.start && now < p.end) { idx = i; break; }
   }
   if (idx === lastParagraphIdx) return;
   lastParagraphIdx = idx;
@@ -154,9 +204,7 @@ function onTimeUpdate() {
   body.querySelectorAll('.tts-reading').forEach((p) => p.classList.remove('tts-reading'));
 
   if (idx >= 0) {
-    // Identify paragraph elements eligible for TTS (matches what
-    // tools/render_article.py extracts: p, h2, h3, h4, li, td).
-    const eligible = body.querySelectorAll('p, h2, h3, h4, li, td');
+    const eligible = eligibleParagraphs();
     const target = eligible[idx];
     if (target) {
       target.classList.add('tts-reading');
@@ -176,6 +224,7 @@ function closeBar() {
   if (audio) { audio.pause(); audio.currentTime = 0; }
   setPlayIcon(false);
   clearHighlight();
+  clearParagraphClicks();
   bar.classList.remove('visible');
   document.body.classList.remove('tts-open');
   lastParagraphIdx = -1;
@@ -209,6 +258,7 @@ export async function mountTtsBar(article) {
 
   bar.classList.add('visible');
   document.body.classList.add('tts-open');
+  wireParagraphClicks();
 
   // Auto-play on user-gesture-initiated mount (link click counts as gesture).
   audio.play().then(() => setPlayIcon(true)).catch(() => setPlayIcon(false));
