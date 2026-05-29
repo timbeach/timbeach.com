@@ -4,9 +4,200 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Wed, 13 May 2026 15:52:38 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 29 May 2026 22:44:18 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Future Me Has Receipts: Building circleback</title>
+      <link>https://timbeach.com/#/article/circleback</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/circleback</guid>
+      <pubDate>Tue, 26 May 2026 00:00:00 +0000</pubDate>
+      <description></description>
+      <content:encoded><![CDATA[<h2>🧶 Future Me Has Receipts: Building <code>circleback</code></h2>
+<p><img src="pix/circleback.png" alt="circleback picker" /></p>
+<p>Here's what a normal week looks like for me:</p>
+<ul>
+<li>A Claude Code session debugging an LTI enrollment query at work (Postgres, SQL diffs, 70-message thread)</li>
+<li>Another one prepping state-test contractor diffs (Python, xlsx files, waiting on partners to deliver data)</li>
+<li>A third one building a Rust CLI for personal use (totally different stack, totally different brain mode)</li>
+<li>A fourth one mid-audit, with a half-written message to a coworker that I haven't sent yet</li>
+<li>A fifth one I started three weeks ago and forgot existed</li>
+</ul>
+<p>These sessions are <strong>wildly unrelated</strong>. They live in different directories, touch different languages, follow different work streams. None of them know about each other. And they're all <strong>long-running</strong> — Claude Code holds context across days or weeks, which is amazing until you have a dozen of them and can't remember which is which.</p>
+<p>The single hardest thing about working this way isn't building the stuff. It's <strong>finding my way back</strong> to each of these threads after a few hours away. After a reboot. After a long meeting. After two days on a completely different project. After (sometimes) the laptop dying mid-thought when its battery decides it's done for the afternoon.</p>
+<p>So I built a thing. A small thing. Let me show you what it is, and along the way I'll point out some of the Linux/Unix gears that make it tick, because they're cool and you should know them.</p>
+<h2>🎯 What problem does it actually solve?</h2>
+<p>Claude Code already lets you <code>claude --resume &lt;session-id&gt;</code> to jump back into a session. Cool. But:</p>
+<ol>
+<li>The session IDs are <strong>UUIDs</strong> — those 36-character monstrosities like <code>fc8b09ad-e13b-42e7-b04b-fad59f47c97c</code>. Try memorizing five of those at once.</li>
+<li>Each session is <strong>scoped to its launch directory</strong>. You have to <code>cd</code> to exactly the right place before resume works. Not the parent dir. Not a sibling. <strong>The exact dir.</strong></li>
+<li>The sessions live in <code>~/.claude/projects/&lt;some-encoded-cwd&gt;/&lt;uuid&gt;.jsonl</code>, which is great for Claude Code internally but unreadable as a top-down view of &quot;what am I working on.&quot;</li>
+<li>If you don't write down what you were doing in each thread, <strong>future-you has no idea which session is which</strong>.</li>
+</ol>
+<p>For a while I had a hand-curated markdown file at <code>~/CIRCLE_BACKS/CIRCLE-BACKS.md</code> where I'd dump notes like:</p>
+<pre><code>Resume this session with:
+claude --resume fc8b09ad-e13b-42e7-b04b-fad59f47c97c
+/home/trashh_panda/code/STRIDE/3_SQL/.../STATE_TEST_PREP
+State Test Prep is in wait-and-diff mode...
+</code></pre>
+<p>This was a start, but only sort of. To resume one I had to:</p>
+<ol>
+<li>Open the file</li>
+<li>Scan with my eyes</li>
+<li>Copy the UUID</li>
+<li><code>cd</code> to the right path</li>
+<li>Paste the resume command</li>
+</ol>
+<p>And — equally important — <strong>I had to remember to write the entry in the first place</strong>. If I got pulled into something else and didn't park the thread, that whole working context dissolved when I switched away. Same outcome if the laptop powered off before I wrote the note. The capture step depended on me being disciplined, every single time, which is not a thing humans are good at.</p>
+<h2>🔧 The three new pieces</h2>
+<p>Here's what I just built, in plain English:</p>
+<ol>
+<li><strong><code>circleback</code></strong> — type that in any terminal, get a fuzzy-search picker over all your saved sessions, hit Enter, and you're back. Hit Ctrl-D to archive ones you're done with.</li>
+<li><strong>A &quot;SessionStart&quot; hook</strong> — the <em>millisecond</em> a Claude session opens, a stub entry gets written. No more &quot;oh wait, I forgot to log this thread.&quot; Every session shows up in the list automatically, and if the laptop dies before I can write a proper closing note, at least the entry is <em>there</em>, with a timestamp, telling future-me where to look.</li>
+<li><strong>A &quot;SessionEnd&quot; hook</strong> — when the session closes cleanly, the hook reads what was last said and replaces the stub's &quot;(in progress)&quot; placeholder with an actual closing thought.</li>
+</ol>
+<p>Three pieces, ~500 lines of bash total, zero new dependencies. Let me walk through the technologies.</p>
+<h2>✨ fzf: the hero of every good terminal workflow</h2>
+<p>If you don't know <code>fzf</code> yet, stop reading and <code>sudo pacman -S fzf</code> right now. I'll wait.</p>
+<p><a href="https://github.com/junegunn/fzf">fzf</a> is a <strong>fuzzy finder</strong>. You pipe it a list of strings, it pops up an interactive picker with type-ahead matching:</p>
+<pre><code>echo -e &quot;alpha\nbeta\ngamma&quot; | fzf
+</code></pre>
+<p>That's it. Three lines, a beautiful TUI picker. fzf is the most-loved kind of Unix tool: it does <strong>one thing</strong>, it accepts text on stdin, and it composes with literally anything.</p>
+<p>For <code>circleback</code>, I:</p>
+<ul>
+<li>Parse the markdown file into one display line per entry</li>
+<li>Pipe those lines to fzf with <code>--multi</code> (so I can mark several at once with <code>Tab</code>)</li>
+<li>Bind <code>Ctrl-D</code> to &quot;archive marked&quot;, <code>Ctrl-E</code> to &quot;open in $EDITOR&quot;</li>
+<li>On <code>Enter</code>, the script <code>exec claude --resume &lt;id&gt;</code>s from the entry's directory</li>
+</ul>
+<p>That <code>exec</code> is doing real work — it <strong>replaces</strong> the shell process with <code>claude</code>, so when you exit Claude you're back at your original prompt, no nested shell. The Unix way.</p>
+<h2>🪝 Hooks: how Claude Code hands off control</h2>
+<p>Claude Code (the CLI) has a thing called <strong>hooks</strong>. You can wire little scripts to fire at lifecycle events like <code>SessionStart</code>, <code>SessionEnd</code>, <code>PreCompact</code>, <code>PreToolUse</code>. You configure them in <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">&quot;hooks&quot;: {
+  &quot;SessionStart&quot;: [
+    { &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;$HOME/.claude/hooks/circleback-session-start.sh&quot; }] }
+  ],
+  &quot;SessionEnd&quot;: [
+    { &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;$HOME/.claude/hooks/circleback-session-finish.sh&quot; }] }
+  ]
+}
+</code></pre>
+<p>When the event fires, Claude Code pipes a small JSON payload to your script's <strong>standard input</strong>:</p>
+<pre><code class="language-json">{&quot;session_id&quot;:&quot;70cbfbb4-c59e-40d0-a5c2-85b3764b405b&quot;,&quot;source&quot;:&quot;startup&quot;}
+</code></pre>
+<p>So in my hook, the first line is:</p>
+<pre><code class="language-bash">sid=$(jq -r '.session_id // empty')
+</code></pre>
+<p>The <code>// empty</code> is <code>jq</code>-speak for &quot;if the field is missing, give me an empty string instead of <code>null</code>&quot;. Defensive coding.</p>
+<h2>🛠️ awk, sed, jq: the old reliable trio</h2>
+<p>Big chunks of this codebase are awk pipelines. Why? Because the entries in CIRCLE-BACKS.md are <strong>structured text</strong> — four lines per entry, blank lines as separators — and awk is built for exactly this.</p>
+<p>Here's the heart of the parser (simplified):</p>
+<pre><code class="language-awk">/^## .+\/$/ { section = $0; sub(/^## /,&quot;&quot;,section); sub(/\/$/,&quot;&quot;,section); next }
+/^[[:space:]]*$/ {
+  if (acc_n == 4 &amp;&amp; acc[1] == &quot;Resume this session with:&quot;) {
+    # Emit a TSV record
+    printf &quot;%s\t%s\t%s\t%s\t%d\t%d\n&quot;, section, sid, cwd, thought, start, end
+  }
+  acc_n = 0; next
+}
+{ if (acc_n == 0) start = NR; acc_n++; acc[acc_n] = $0 }
+</code></pre>
+<p>awk processes one line at a time. When it sees a blank line, it checks whether the four-line accumulator looks like a valid entry and emits a tab-separated record if so. When it sees a section header like <code>## WORK/</code>, it captures whatever name follows <code>## </code> — the parser doesn't hardcode any section names, which is what lets <em>you</em> define your own.</p>
+<p>The output is one line per entry, fields separated by tabs:</p>
+<pre><code>WORK&lt;TAB&gt;aaaaaaaa-...&lt;TAB&gt;/path&lt;TAB&gt;thought&lt;TAB&gt;3&lt;TAB&gt;6
+</code></pre>
+<p>That's the <strong>internal format</strong> of the picker. Why TSV? Because tabs basically never appear in your prose, so they make a perfect delimiter that bash can <code>IFS=$'\t' read -r</code> directly.</p>
+<p><code>jq</code> does the same job for JSON — it's the awk of structured data. And <code>sed</code> shows up for surgical text edits, like deleting exactly lines 3-6 from a file:</p>
+<pre><code class="language-bash">sed -i &quot;3,6d&quot; file.md
+</code></pre>
+<h2>🧪 TDD caught real bugs</h2>
+<p>I wrote this whole thing test-first. 46 tests, plain bash, no framework. (I considered <code>bats-core</code> but it would've required <code>sudo</code>, and the surface area is small enough that hand-rolled assertions are fine.)</p>
+<p>Two real bugs the tests caught:</p>
+<h3>Bug 1: <code>sort -r</code> quietly doesn't reverse</h3>
+<p>In my archive function I needed to delete multiple line ranges from the file, processing them <strong>bottom-up</strong> so earlier deletions don't shift later line numbers. I wrote:</p>
+<pre><code class="language-bash">sort -k1,1n -r
+</code></pre>
+<p>Reading that, you'd think: &quot;sort by column 1, numeric, reversed.&quot; Nope. The <code>-r</code> flag wasn't being applied because of how it interacts with <code>-k</code>. The correct form is:</p>
+<pre><code class="language-bash">sort -k1,1nr
+</code></pre>
+<p>Bake the <code>r</code> into the key spec. The test for &quot;archive multiple ranges&quot; failed loudly and I caught it before shipping.</p>
+<h3>Bug 2: the missing blank line</h3>
+<p>When the SessionStart hook inserted the very first BEACH entry into a freshly-skeletoned file, the result looked like this:</p>
+<pre><code>## BEACH/
+Resume this session with:    ← no blank line between header and entry
+claude --resume ...
+</code></pre>
+<p>The awk script was eating the blank line that should have lived between the section header and the first entry. Fixed by always emitting one — regardless of whether the section was previously empty.</p>
+<p>The point: <strong>TDD is not about ceremony, it's about catching the dumb stuff before your hooks start running on your real workflow at 9am Monday.</strong></p>
+<h2>🏷️ Friendly names, stable UUIDs</h2>
+<p>You can rename a Claude session (<code>/rename my-cool-name</code>), and circleback picks that up automatically: the picker shows the friendly name as the row label instead of a UUID like <code>c31187ad-…</code>. It reads the name <strong>live</strong> from the session log every time you open the picker, so it's always current.</p>
+<p>Under the hood, though, the entry in my notes file still stores the <strong>UUID</strong>, not the name — on purpose:</p>
+<ul>
+<li>The UUID is globally unique and never changes: a rock-solid anchor for resuming.</li>
+<li>Reading the name live means a re-rename just shows up next launch. Nothing to keep in sync, nothing to drift or corrupt.</li>
+<li>Two sessions could end up sharing a name; a collision can never break resume, because the file always holds the unique UUID underneath.</li>
+</ul>
+<p>Friendly name on the surface, stable ID underneath.</p>
+<p>(Confession: I first convinced myself Claude Code didn't persist session names at all, and built a lesser version around that wrong assumption. It does — the name lands in the session log the instant you <code>/rename</code>. Filed under &quot;a grep that comes up empty is a fact about your search, not about reality.&quot;)</p>
+<h2>🎬 What it looks like in action</h2>
+<pre><code>$ circleback
+
+[STRIDE] …/STATE_TEST_PREP — wait-and-diff mode, LM xlsx incoming
+[STRIDE] ~/code/STRIDE/1_APPS — SBOP-7011 audit re-run done, draft to Ernie
+[STRIDE] …/2026-05-12_Tue — arcade-db-query skill round-tripped
+[auto][BEACH] /tmp — Goodbye.
+</code></pre>
+<p>Arrow keys to scroll. Right pane shows full preview (session ID, cwd, status, summary, full closing thought). <code>Enter</code> resumes. <code>Tab</code> marks. <code>Ctrl-D</code> archives. <code>Esc</code> quits.</p>
+<p>Test it yourself:</p>
+<pre><code class="language-bash"># Start a throwaway session
+cd /tmp &amp;&amp; claude
+# Type &quot;say goodbye&quot;
+# /exit
+# Check the file
+cat ~/CIRCLE_BACKS/CIRCLE-BACKS.md
+# Run the picker
+circleback
+</code></pre>
+<p>The <code>/tmp</code> entry should be there as <code>[auto][BEACH] /tmp — Goodbye.</code> Mark it with Tab, Ctrl-D, type <code>y</code>, and it gets archived to <code>CIRCLE-BACKS-ARCHIVE.md</code>.</p>
+<h2>📅 The daily rollup</h2>
+<p>Once every session was getting captured automatically, a second use fell out almost for free: <strong>what did I actually do today, across all these unrelated projects?</strong></p>
+<p>So circleback now keeps a per-day file — <code>~/CIRCLE_BACKS/daily/2026-05-27_SUMMARY.md</code> — with two regions that never step on each other:</p>
+<ul>
+<li><strong><code>## Sessions (auto)</code></strong> — one line per session that ran that day, written by the very same SessionEnd/PreCompact hook that fills in closing thoughts. Section tag, directory, closing thought, and the resume command. Zero effort; it's just <em>there</em> by evening.</li>
+<li><strong><code>## Digest</code></strong> — prose, written <em>only</em> when I ask for it. I say &quot;update the daily summary&quot; and a small skill reads the day's session lines (and each session's own STATUS doc) and writes a skimmable, cross-project <em>what-mattered-today</em>. Standup notes, or the seed of an article like this one.</li>
+</ul>
+<p>The hook owns the mechanical spine; the skill owns the prose. They share a file but not a region, so neither clobbers the other.</p>
+<p>There's also a no-Claude accessor, so I never type the dated path:</p>
+<pre><code>circleback daily              # open today's summary in $EDITOR
+circleback daily 2026-05-26   # a specific day
+circleback daily --list       # which days have summaries
+circleback daily --rebuild    # regenerate today's auto spine from the master list
+</code></pre>
+<p><code>--rebuild</code> is the safety net: the auto region is derived data, so if it ever drifts, you regenerate it from <code>CIRCLE-BACKS.md</code> — without touching your prose digest.</p>
+<h2>🪧 The nudge that made me write this</h2>
+<p>Here's the part that closed the loop. I added one more hook — separate from circleback, living in my <code>~/.claude</code> — on Claude Code's <code>UserPromptSubmit</code> event (it fires on every prompt and can inject context into that turn). After the fourth prompt of a session (so quick lookups are spared), exactly once, it plants a standing instruction: <em>at the next natural stopping point, ask whether this work is worth showing people publicly.</em></p>
+<p>Three answers: <strong>draft it now</strong> (→ my <code>publish-article</code> skill), <strong>park it</strong> (→ circle-back), or <strong>skip</strong>. It's a habit enforced by a turn counter and a marker file, not by willpower. Resume the session later and it won't re-ask — the marker is keyed by session id.</p>
+<p>This article is what &quot;draft it now&quot; looks like.</p>
+<h2>🧠 The meta-point</h2>
+<p>This whole thing is <strong>bash, awk, sed, jq, fzf, and one config-file edit</strong>. No new language, no framework, no daemon, nothing to compile. The total install footprint is:</p>
+<ul>
+<li>One executable script (<code>~/.local/bin/circleback</code>)</li>
+<li>Two hook scripts (<code>~/.claude/hooks/circleback-session-*.sh</code>)</li>
+<li>A few helper libraries (<code>lib/parse.sh</code>, <code>lib/config.sh</code>, <code>lib/enrich.sh</code>, <code>lib/archive.sh</code>, <code>lib/daily.sh</code>)</li>
+<li>One small config file (<code>~/.config/circleback/config</code>)</li>
+<li>One additive edit to <code>~/.claude/settings.json</code></li>
+</ul>
+<p>That's it. The whole thing is <strong>composable, debuggable, scriptable, and small enough to read top-to-bottom in an afternoon</strong>.</p>
+<p>Linux gives you a stupid number of tiny, sharp tools. The trick is recognizing when you can compose them into something useful instead of reaching for a heavy framework. Every shell pipeline you write is a tiny essay in this style.</p>
+<p>I've got a dozen Claude Code threads running across as many projects right now, and for the first time it feels like that's a feature instead of a liability. Future-me has receipts.</p>
+<h2>📬 Want to try it?</h2>
+<p>circleback is built to be installed by anyone — config-driven sections, an <code>install.sh</code> that checks your dependencies, walks you through your sections (work / personal / research / whatever, or one flat list), symlinks the binary, and wires the Claude Code hooks into your <code>settings.json</code> (backing it up first, safe to re-run). <code>uninstall.sh</code> reverses all of it and leaves your data alone.</p>
+<p>The repo's <strong>private for now</strong> — the installer touches your <code>~/.claude/settings.json</code>, so I want it boringly reliable on a few machines that aren't mine before I point the whole internet at it. If you'd like early access to kick the tires, email me at <strong>beachtimothyd@gmail.com</strong> and I'll add you. It's Linux-first (built on Aegix) and wants <code>bash</code>, <code>fzf</code>, <code>jq</code>, and the <code>claude</code> CLI.</p>
+<p>When it goes public I'll update this article with the link.</p>
+<hr />
+<p><em>Built alongside Claude itself, using its <a href="https://github.com/anthropics/claude-code">superpowers</a> brainstorm → spec → plan → TDD workflow — ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts.</em></p>
+]]></content:encoded>
+    </item>
     <item>
       <title>The OSI Model, Explained from a Whiteboard</title>
       <link>https://timbeach.com/#/article/osi-model-whiteboard</link>
