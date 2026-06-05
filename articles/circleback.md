@@ -86,6 +86,9 @@ Claude Code (the CLI) has a thing called **hooks**. You can wire little scripts 
   ],
   "SessionEnd": [
     { "hooks": [{ "type": "command", "command": "$HOME/.claude/hooks/circleback-session-finish.sh" }] }
+  ],
+  "PreCompact": [
+    { "hooks": [{ "type": "command", "command": "$HOME/.claude/hooks/circleback-session-finish.sh" }] }
   ]
 }
 ```
@@ -140,7 +143,7 @@ sed -i "3,6d" file.md
 
 ## 🧪 TDD caught real bugs
 
-I wrote this whole thing test-first. 46 tests, plain bash, no framework. (I considered `bats-core` but it would've required `sudo`, and the surface area is small enough that hand-rolled assertions are fine.)
+I wrote this whole thing test-first. ~110 tests, plain bash, no framework. (I considered `bats-core` but it would've required `sudo`, and the surface area is small enough that hand-rolled assertions are fine.)
 
 Two real bugs the tests caught:
 
@@ -272,4 +275,4 @@ When it goes public I'll update this article with the link.
 
 ---
 
-*Built alongside Claude itself, using its [superpowers](https://github.com/anthropics/claude-code) brainstorm → spec → plan → TDD workflow — ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts.*
+*Built alongside Claude itself, using its superpowers brainstorm → spec → plan → TDD workflow — ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts.*
