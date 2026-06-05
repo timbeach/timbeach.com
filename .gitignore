@@ -6,3 +6,8 @@ tools/venv/
 tools/models/
 tools/__pycache__/
 .superpowers/
+
+# Generated social share pages (a/<slug>/index.html + og.png) — rebuilt by
+# deploy.sh via tools/build_share_pages.py. Build artifact, like feed output.
+/a/
+

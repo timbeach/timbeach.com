@@ -265,7 +265,15 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   letter-spacing: -0.01em;
 }
 
-.read-aloud {
+.article-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.read-aloud,
+.share-link {
   background: transparent;
   border: 1px solid var(--divider);
   color: var(--fg-muted);
@@ -275,11 +283,15 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 6px 12px;
-  margin-top: 16px;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
 }
-.read-aloud:hover {
+.read-aloud:hover,
+.share-link:hover {
+  color: var(--fg);
+  border-color: var(--fg);
+}
+.share-link.copied {
   color: var(--fg);
   border-color: var(--fg);
 }

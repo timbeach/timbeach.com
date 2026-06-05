@@ -258,7 +258,10 @@ export async function renderArticle(slug, mountEl) {
       <header class="article-header">
         <p class="meta">${escapeHtml(formatLongDate(meta.date))} · ${escapeHtml(deriveSection(meta))}</p>
         <h1>${escapeHtml(meta.title)}</h1>
-        ${hasAudio ? '<button type="button" class="read-aloud" data-act="read-aloud">▶ Read aloud</button>' : ''}
+        <div class="article-actions">
+          ${hasAudio ? '<button type="button" class="read-aloud" data-act="read-aloud">▶ Read aloud</button>' : ''}
+          <button type="button" class="share-link" data-act="share" title="Copy a link with a rich social preview">⧉ Copy share link</button>
+        </div>
       </header>
       <div class="article-body">${bodyHtml}</div>
     </article>
@@ -279,6 +282,41 @@ export async function renderArticle(slug, mountEl) {
       const el = document.querySelector(sel);
       if (el) el.setAttribute('content', meta.summary);
     }
+  }
+
+  // Copy-share-link: copies the crawlable /a/<slug>/ URL (not the #-route),
+  // so the pasted link yields a per-article social preview. Always points at
+  // the production origin — the share pages only exist on timbeach.com.
+  const shareBtn = mountEl.querySelector('[data-act="share"]');
+  if (shareBtn) {
+    const shareUrl = `https://timbeach.com/a/${slug}/`;
+    shareBtn.addEventListener('click', async () => {
+      const flash = (label) => {
+        shareBtn.textContent = label;
+        shareBtn.classList.add('copied');
+        setTimeout(() => {
+          shareBtn.textContent = '⧉ Copy share link';
+          shareBtn.classList.remove('copied');
+        }, 1600);
+      };
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        flash('✓ Copied!');
+      } catch {
+        // Clipboard API unavailable (non-secure context / old browser):
+        // fall back to a hidden textarea + execCommand.
+        const ta = document.createElement('textarea');
+        ta.value = shareUrl;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        let ok = false;
+        try { ok = document.execCommand('copy'); } catch { ok = false; }
+        document.body.removeChild(ta);
+        flash(ok ? '✓ Copied!' : 'Copy failed');
+      }
+    });
   }
 
   // TTS bar opens only when the reader explicitly asks for it.

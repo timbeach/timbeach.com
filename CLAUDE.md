@@ -152,9 +152,13 @@ generates a crawlable page per article:
   `<meta http-equiv="refresh">` redirect into the SPA at `#/article/<slug>`.
 - **Share the `https://timbeach.com/a/<slug>/` URL**, not the `#` URL. Humans get
   redirected into the same reader view; crawlers read the baked-in tags.
-- **og:image**: the article's `hero` field if set, else an auto-generated branded
-  1200×630 card (`a/<slug>/og.png`, rendered with Pillow from the night-theme
-  palette). Add a `hero` to `articles.json` to override the card.
+- **og:image**: always a crisp **1200×630** `a/<slug>/og.png` (rendered with
+  Pillow). Handing crawlers an image already at OG dimensions avoids the blur/
+  crop they introduce when resampling an arbitrary-aspect source. Source
+  precedence: explicit `hero` in `articles.json` → first image embedded in the
+  article body → a branded text card (night-theme palette). Local images are
+  contain-fit (whole image visible — safe for diagrams/screenshots) onto the
+  dark canvas via Lanczos. A remote `hero` URL is passed through verbatim.
 - The article reading view also has a **⧉ Copy share link** button that copies
   the `/a/<slug>/` URL.
 - After deploying a new/edited article, re-scrape the URL in the
