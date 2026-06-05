@@ -1,11 +1,8 @@
 timbeach.com.code-workspace
 archive/arch-install.webm
-deploy.sh
-CLAUDE.md
 .claude/
 thailand_2026/photos/
 tools/venv/
 tools/models/
 tools/__pycache__/
 .superpowers/
-
