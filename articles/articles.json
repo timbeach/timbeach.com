@@ -1,4 +1,20 @@
 {
+  "claude-tips-complete-list.md": {
+    "title": "Claude /tips: The Complete List",
+    "date": "2026-06-04",
+    "tags": [
+      "claude-code",
+      "cli",
+      "tips",
+      "reverse-engineering"
+    ],
+    "emoji": "\ud83d\udca1",
+    "summary": "Every tip Claude Code ships with \u2014 extracted by pointing Claude at its own binary \u2014 plus the keyboard shortcuts and sigils that aren't in the rotation.",
+    "audio": "audio/claude-tips-complete-list.ogg",
+    "timings": "audio/claude-tips-complete-list.timings.json",
+    "voice": "bm_lewis",
+    "duration": 639.979
+  },
   "osi-model-whiteboard.md": {
     "title": "The OSI Model, Explained from a Whiteboard",
     "date": "2026-05-02",

@@ -163,6 +163,12 @@ function parseMarkdown(content) {
     }
   );
 
+  // Handle horizontal rules — a line of three or more dashes becomes an <hr>.
+  // Mirrors the server's markdown-it output (thematic_break), which is excluded
+  // from the TTS paragraph selector, so client/server paragraph parity holds.
+  // Runs after code blocks are placeholdered out, so --- inside fences is safe.
+  processedContent = processedContent.replace(/^-{3,}$/gm, '<hr />');
+
   // Handle headers (but not inside code blocks since they're now placeholders)
   processedContent = processedContent
     .replace(/^# (.+)$/gm, '<h2>$1</h2>')
@@ -187,6 +193,7 @@ function parseMarkdown(content) {
 
   // Clean up
   processedContent = processedContent
+    .replace(/<p>\s*<hr\s*\/?>\s*<\/p>/g, '<hr />')
     .replace(/<p><h/g, '<h')
     .replace(/<\/h([1-6])><\/p>/g, '</h$1>')
     .replace(/<p><pre>/g, '<pre>')

@@ -1,0 +1,570 @@
+{
+  "voice": "bm_lewis",
+  "duration": 639.979,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 1.3013333333333332,
+      "text": "TL;DR"
+    },
+    {
+      "idx": 1,
+      "start": 1.3013333333333332,
+      "end": 20.970666666666666,
+      "text": "You know those little italic tips that flicker at the bottom of Claude Code while it thinks \u2014 \"Double-tap esc to rewind,\" \"Hit Shift+Tab to cycle modes\"? There's no docs page that lists them, because they're compiled into the Claude Code binary itself. So I pointed Claude at its own executable and had it read them out."
+    },
+    {
+      "idx": 2,
+      "start": 20.970666666666666,
+      "end": 47.808,
+      "text": "The result: all 58 tips that Claude Code 2.1.162 ships with, below. You'll never see them all in normal use \u2014 each one is gated to a relevant context and put on cooldown after it shows, so the rotation is different for every project and every user. The complete list is right here, followed by a bonus round of keyboard shortcuts that aren't in the rotation, and \u2014 if you're curious \u2014 the story of how I extracted them at the end."
+    },
+    {
+      "idx": 3,
+      "start": 47.808,
+      "end": 62.44266666666667,
+      "text": "Every tip Claude Code 2.1.162 can show you, grouped by theme. (Two are fully dynamic \u2014 a server-supplied \"feature of the week\" and a team-artifacts summary \u2014 so they have no fixed text and are omitted.)"
+    },
+    {
+      "idx": 4,
+      "start": 62.44266666666667,
+      "end": 63.95733333333333,
+      "text": "Keyboard & input"
+    },
+    {
+      "idx": 5,
+      "start": 63.95733333333333,
+      "end": 69.97333333333333,
+      "text": "Press Shift+Enter (Option+Enter on Apple Terminal) to send a multi-line message"
+    },
+    {
+      "idx": 6,
+      "start": 69.97333333333333,
+      "end": 75.968,
+      "text": "Hit Shift+Tab to cycle between default mode, auto-accept edit mode, and plan mode"
+    },
+    {
+      "idx": 7,
+      "start": 75.968,
+      "end": 80.66133333333333,
+      "text": "Double-tap esc to rewind the conversation to a previous point in time"
+    },
+    {
+      "idx": 8,
+      "start": 80.66133333333333,
+      "end": 86.67733333333334,
+      "text": "Double-tap esc to rewind the code and/or conversation to a previous point in time"
+    },
+    {
+      "idx": 9,
+      "start": 86.67733333333334,
+      "end": 90.53866666666667,
+      "text": "Hit Enter to queue additional messages while Claude is working"
+    },
+    {
+      "idx": 10,
+      "start": 90.53866666666667,
+      "end": 94.69866666666667,
+      "text": "Send messages to Claude while it works to steer it in real-time"
+    },
+    {
+      "idx": 11,
+      "start": 94.69866666666667,
+      "end": 98.73066666666666,
+      "text": "Did you know you can drag and drop image files into your terminal?"
+    },
+    {
+      "idx": 12,
+      "start": 98.73066666666666,
+      "end": 104.064,
+      "text": "Paste images into Claude Code using Ctrl+V (not Cmd+V!)"
+    },
+    {
+      "idx": 13,
+      "start": 104.064,
+      "end": 106.09066666666666,
+      "text": "Slash commands & config"
+    },
+    {
+      "idx": 14,
+      "start": 106.09066666666666,
+      "end": 109.504,
+      "text": "Use /memory to view and manage Claude memory"
+    },
+    {
+      "idx": 15,
+      "start": 109.504,
+      "end": 112.27733333333333,
+      "text": "Use /theme to change the color theme"
+    },
+    {
+      "idx": 16,
+      "start": 112.27733333333333,
+      "end": 117.48266666666666,
+      "text": "Use /statusline to set up a custom status line beneath the input box"
+    },
+    {
+      "idx": 17,
+      "start": 117.48266666666666,
+      "end": 122.944,
+      "text": "Use /permissions to pre-approve and pre-deny bash, edit, and MCP tools"
+    },
+    {
+      "idx": 18,
+      "start": 122.944,
+      "end": 126.336,
+      "text": "Use /voice to enable push-to-talk dictation"
+    },
+    {
+      "idx": 19,
+      "start": 126.336,
+      "end": 129.45066666666668,
+      "text": "Use /feedback to help improve Claude Code"
+    },
+    {
+      "idx": 20,
+      "start": 129.45066666666668,
+      "end": 135.06133333333332,
+      "text": "Name your conversations with /rename to find them easily in /resume later"
+    },
+    {
+      "idx": 21,
+      "start": 135.06133333333332,
+      "end": 140.75733333333332,
+      "text": "Running multiple sessions? Use /color and /rename to tell them apart at a glance"
+    },
+    {
+      "idx": 22,
+      "start": 140.75733333333332,
+      "end": 147.22133333333332,
+      "text": "Try smoother rendering, lower memory, mouse support, and better copy formatting \u2014 /tui fullscreen"
+    },
+    {
+      "idx": 23,
+      "start": 147.22133333333332,
+      "end": 152.14933333333335,
+      "text": "New to Claude Code? Run /powerup for a quick interactive tutorial"
+    },
+    {
+      "idx": 24,
+      "start": 152.14933333333335,
+      "end": 159.12533333333334,
+      "text": "Run /terminal-setup to enable Shift+Enter (or Option+Enter) for new lines and more"
+    },
+    {
+      "idx": 25,
+      "start": 159.12533333333334,
+      "end": 161.216,
+      "text": "Agents, skills & workflows"
+    },
+    {
+      "idx": 26,
+      "start": 161.216,
+      "end": 171.98933333333332,
+      "text": "Create skills by adding .md files to .claude/skills/ in your project, or ~/.claude/skills/ for skills that work everywhere"
+    },
+    {
+      "idx": 27,
+      "start": 171.98933333333332,
+      "end": 179.136,
+      "text": "Use /agents to optimize specific tasks \u2014 e.g. Software Architect, Code Writer, Code Reviewer"
+    },
+    {
+      "idx": 28,
+      "start": 179.136,
+      "end": 184.08533333333332,
+      "text": "Use --agent <agent_name> to start a conversation directly with a subagent"
+    },
+    {
+      "idx": 29,
+      "start": 184.08533333333332,
+      "end": 189.952,
+      "text": "Say \"fan out subagents\" and Claude sends a team \u2014 each one digs deep so nothing gets missed"
+    },
+    {
+      "idx": 30,
+      "start": 189.952,
+      "end": 197.99466666666666,
+      "text": "/loop runs any prompt on a recurring schedule \u2014 great for monitoring deploys, babysitting PRs, or polling status"
+    },
+    {
+      "idx": 31,
+      "start": 197.99466666666666,
+      "end": 202.32533333333333,
+      "text": "Set an objective with /goal \u2014 Claude keeps working until it's met"
+    },
+    {
+      "idx": 32,
+      "start": 202.32533333333333,
+      "end": 209.38666666666666,
+      "text": "Use Plan Mode to prepare for a complex request before making changes \u2014 Shift+Tab twice to enable"
+    },
+    {
+      "idx": 33,
+      "start": 209.38666666666666,
+      "end": 215.85066666666665,
+      "text": "Ask Claude to create a todo list when working on complex tasks to track progress and stay on track"
+    },
+    {
+      "idx": 34,
+      "start": 215.85066666666665,
+      "end": 219.94666666666666,
+      "text": "Use git worktrees to run multiple Claude sessions in parallel"
+    },
+    {
+      "idx": 35,
+      "start": 219.94666666666666,
+      "end": 224.832,
+      "text": "/ultrareview runs a deep, multi-agent review of your changes"
+    },
+    {
+      "idx": 36,
+      "start": 224.832,
+      "end": 231.72266666666667,
+      "text": "Start with small features or bug fixes, tell Claude to propose a plan, and verify its suggested edits"
+    },
+    {
+      "idx": 37,
+      "start": 231.72266666666667,
+      "end": 234.00533333333334,
+      "text": "IDE & app integrations"
+    },
+    {
+      "idx": 38,
+      "start": 234.00533333333334,
+      "end": 236.69333333333333,
+      "text": "Connect Claude to your IDE \u2014 /ide"
+    },
+    {
+      "idx": 39,
+      "start": 236.69333333333333,
+      "end": 248.32,
+      "text": "In VS Code, open the Command Palette (Cmd+Shift+P) and run \"Shell Command: Install 'code' command in PATH\" to enable IDE integration"
+    },
+    {
+      "idx": 40,
+      "start": 248.32,
+      "end": 254.03733333333332,
+      "text": "Run /install-github-app to tag @claude right from your GitHub issues and PRs"
+    },
+    {
+      "idx": 41,
+      "start": 254.03733333333332,
+      "end": 257.57866666666666,
+      "text": "Run /install-slack-app to use Claude in Slack"
+    },
+    {
+      "idx": 42,
+      "start": 257.57866666666666,
+      "end": 264.14933333333335,
+      "text": "Run Claude Code locally or remotely using the Claude desktop app \u2014 clau.de/desktop"
+    },
+    {
+      "idx": 43,
+      "start": 264.14933333333335,
+      "end": 269.16266666666667,
+      "text": "Run tasks in the cloud while you keep coding locally \u2014 clau.de/web"
+    },
+    {
+      "idx": 44,
+      "start": 269.16266666666667,
+      "end": 273.3226666666667,
+      "text": "Continue your session in Claude Code Desktop with /desktop"
+    },
+    {
+      "idx": 45,
+      "start": 273.3226666666667,
+      "end": 280.49066666666664,
+      "text": "Working on UI? Claude Code Desktop has live preview and inline images \u2014 clau.de/desktop"
+    },
+    {
+      "idx": 46,
+      "start": 280.49066666666664,
+      "end": 284.37333333333333,
+      "text": "Control this session remotely \u2014 run /remote-control"
+    },
+    {
+      "idx": 47,
+      "start": 284.37333333333333,
+      "end": 290.41066666666666,
+      "text": "Get pinged on your phone when long tasks finish \u2014 enable push notifications in /config"
+    },
+    {
+      "idx": 48,
+      "start": 290.41066666666666,
+      "end": 296.2133333333333,
+      "text": "Build your AI product with Claude API \u2014 run /claude-api to get started"
+    },
+    {
+      "idx": 49,
+      "start": 296.2133333333333,
+      "end": 298.432,
+      "text": "Environment & plugin nudges"
+    },
+    {
+      "idx": 50,
+      "start": 298.432,
+      "end": 303.7866666666667,
+      "text": "Working with HTML/CSS? Install the frontend-design plugin"
+    },
+    {
+      "idx": 51,
+      "start": 303.7866666666667,
+      "end": 307.02933333333334,
+      "text": "Working with Vercel? Install the vercel plugin"
+    },
+    {
+      "idx": 52,
+      "start": 307.02933333333334,
+      "end": 310.0586666666667,
+      "text": "Working with Stripe? Install the stripe plugin"
+    },
+    {
+      "idx": 53,
+      "start": 310.0586666666667,
+      "end": 314.38933333333335,
+      "text": "Run claude --continue or claude --resume to resume a conversation"
+    },
+    {
+      "idx": 54,
+      "start": 314.38933333333335,
+      "end": 318.016,
+      "text": "Try setting COLORTERM=truecolor for richer colors"
+    },
+    {
+      "idx": 55,
+      "start": 318.016,
+      "end": 323.968,
+      "text": "Set CLAUDE_CODE_USE_POWERSHELL_TOOL=1 to enable the PowerShell tool (preview)"
+    },
+    {
+      "idx": 56,
+      "start": 323.968,
+      "end": 329.9626666666667,
+      "text": "Your default model is Opus Plan Mode \u2014 press Shift+Tab twice to plan with Claude Opus"
+    },
+    {
+      "idx": 57,
+      "start": 329.9626666666667,
+      "end": 331.3066666666667,
+      "text": "Sharing & growth"
+    },
+    {
+      "idx": 58,
+      "start": 331.3066666666667,
+      "end": 334.99733333333336,
+      "text": "Share Claude Code and earn usage credits \u2014 /passes"
+    },
+    {
+      "idx": 59,
+      "start": 334.99733333333336,
+      "end": 340.8213333333333,
+      "text": "Run /team-onboarding to turn your Claude usage into a shareable onboarding guide"
+    },
+    {
+      "idx": 60,
+      "start": 340.8213333333333,
+      "end": 343.616,
+      "text": "Bonus: shortcuts that aren't in the rotation"
+    },
+    {
+      "idx": 61,
+      "start": 343.616,
+      "end": 360.1066666666667,
+      "text": "Honestly, these are more valuable day-to-day than half the tips above \u2014 the keyboard shortcuts and input sigils pulled from the same binary's keybinding map. They mostly don't surface as tips, but they're the difference between poking at Claude and actually driving it."
+    },
+    {
+      "idx": 62,
+      "start": 360.1066666666667,
+      "end": 364.928,
+      "text": "The three input sigils \u2014 type these as the first character of your message:"
+    },
+    {
+      "idx": 63,
+      "start": 364.928,
+      "end": 376.896,
+      "text": "! runs the rest of the line as a shell command in your session, dropping the output right into the conversation. Perfect for an interactive login or a quick git status without leaving the chat."
+    },
+    {
+      "idx": 64,
+      "start": 376.896,
+      "end": 384.17066666666665,
+      "text": "@ mentions a file or directory \u2014 Claude pulls it into context. Start typing a path and it autocompletes."
+    },
+    {
+      "idx": 65,
+      "start": 384.17066666666665,
+      "end": 389.26933333333335,
+      "text": "# saves what follows as a memory, so Claude remembers it in future sessions."
+    },
+    {
+      "idx": 66,
+      "start": 389.26933333333335,
+      "end": 396.2026666666667,
+      "text": "Keyboard shortcuts (defaults \u2014 all rebindable in ~/.claude/keybindings.json):"
+    },
+    {
+      "idx": 67,
+      "start": 396.2026666666667,
+      "end": 401.6,
+      "text": "Shift+Tab \u2014 cycle through default / auto-accept-edits / plan mode"
+    },
+    {
+      "idx": 68,
+      "start": 401.6,
+      "end": 403.6053333333333,
+      "text": "Esc \u2014 interrupt Claude mid-task"
+    },
+    {
+      "idx": 69,
+      "start": 403.6053333333333,
+      "end": 409.28,
+      "text": "Esc Esc (double-tap) \u2014 rewind the conversation (and optionally code) to an earlier point"
+    },
+    {
+      "idx": 70,
+      "start": 409.28,
+      "end": 415.488,
+      "text": "Ctrl+G \u2014 pop your draft open in your $EDITOR for long or multi-line prompts"
+    },
+    {
+      "idx": 71,
+      "start": 415.488,
+      "end": 417.8346666666667,
+      "text": "Ctrl+L \u2014 clear the screen"
+    },
+    {
+      "idx": 72,
+      "start": 417.8346666666667,
+      "end": 423.936,
+      "text": "Ctrl+V \u2014 paste an image from your clipboard (note: not Cmd+V on Mac)"
+    },
+    {
+      "idx": 73,
+      "start": 423.936,
+      "end": 426.90133333333335,
+      "text": "Ctrl+S \u2014 stash your current input"
+    },
+    {
+      "idx": 74,
+      "start": 426.90133333333335,
+      "end": 429.48266666666666,
+      "text": "Alt+P \u2014 open the model picker"
+    },
+    {
+      "idx": 75,
+      "start": 429.48266666666666,
+      "end": 432.14933333333335,
+      "text": "Alt+T \u2014 toggle extended thinking"
+    },
+    {
+      "idx": 76,
+      "start": 432.14933333333335,
+      "end": 434.496,
+      "text": "Alt+O \u2014 toggle fast mode"
+    },
+    {
+      "idx": 77,
+      "start": 434.496,
+      "end": 437.99466666666666,
+      "text": "Alt+W \u2014 toggle workflow-keyword detection"
+    },
+    {
+      "idx": 78,
+      "start": 437.99466666666666,
+      "end": 442.51733333333334,
+      "text": "Ctrl+B \u2014 background a running tool call so you can keep working"
+    },
+    {
+      "idx": 79,
+      "start": 442.51733333333334,
+      "end": 446.3786666666667,
+      "text": "Ctrl+X Ctrl+K \u2014 kill running agents"
+    },
+    {
+      "idx": 80,
+      "start": 446.3786666666667,
+      "end": 468.75733333333335,
+      "text": "Slash commands worth knowing beyond the ones the tips mention: /resume and /clear to manage history, /compact to summarize and free up context, /export to save a transcript, /cost for session spend, /model to switch models, /vim for modal editing, and /init to generate a CLAUDE.md for a fresh project."
+    },
+    {
+      "idx": 81,
+      "start": 468.75733333333335,
+      "end": 471.5946666666667,
+      "text": "How I got this list: Claude reading itself"
+    },
+    {
+      "idx": 82,
+      "start": 471.5946666666667,
+      "end": 494.5493333333333,
+      "text": "Here's the fun part. There's no documentation page for the tips, they aren't in a config file you can cat, and they aren't fetched from a server. They're baked into the Claude Code executable \u2014 a single 233 MB binary sitting at ~/.local/share/claude/versions/2.1.162 on my machine."
+    },
+    {
+      "idx": 83,
+      "start": 494.5493333333333,
+      "end": 507.6053333333333,
+      "text": "But even compiled binaries are full of readable strings \u2014 the literal text of every message a program can print is sitting right there in the file. So the investigation was just a matter of knowing where to look."
+    },
+    {
+      "idx": 84,
+      "start": 507.6053333333333,
+      "end": 515.84,
+      "text": "First, find where the tips live. Tips fire an analytics event when shown, so I grepped the binary's strings for anything tip-shaped:"
+    },
+    {
+      "idx": 85,
+      "start": 515.84,
+      "end": 526.3146666666667,
+      "text": "That tengu_tip_shown event, with its tipId field, was the thread to pull. Each tip turned out to be a JavaScript object baked into the bundle, shaped like this:"
+    },
+    {
+      "idx": 86,
+      "start": 526.3146666666667,
+      "end": 543.1253333333333,
+      "text": "Find one, find the array. A grep for the content:async signature surfaced all of them, and a small Python parser walked each object to recover its text \u2014 including the ones whose content is built dynamically from keybinding helpers and the current terminal type."
+    },
+    {
+      "idx": 87,
+      "start": 543.1253333333333,
+      "end": 563.264,
+      "text": "The whole thing took about four tool calls. No decompiler, no reverse-engineering, no guessing \u2014 just Claude reading the strings table of the program it is. There's something pleasingly recursive about asking an AI assistant to introspect its own source and report back what advice it's been quietly trying to give you."
+    },
+    {
+      "idx": 88,
+      "start": 563.264,
+      "end": 564.8213333333333,
+      "text": "Why you never see them all"
+    },
+    {
+      "idx": 89,
+      "start": 564.8213333333333,
+      "end": 571.7333333333333,
+      "text": "Those two fields on each tip object \u2014 isRelevant() and cooldownSessions \u2014 explain the whole experience."
+    },
+    {
+      "idx": 90,
+      "start": 571.7333333333333,
+      "end": 592.8746666666667,
+      "text": "isRelevant() is a context check. The IDE-integration tip only fires when you're in an external terminal. The Stripe-plugin nudge only appears when your project actually depends on Stripe. The \"Opus Plan Mode\" reminder only shows if that's your configured default. Most tips are gated to a situation where they'd genuinely help."
+    },
+    {
+      "idx": 91,
+      "start": 592.8746666666667,
+      "end": 600.8533333333334,
+      "text": "cooldownSessions is a repeat suppressor, typically 3. Once you've seen a tip, it won't come back for at least that many sessions."
+    },
+    {
+      "idx": 92,
+      "start": 600.8533333333334,
+      "end": 618.752,
+      "text": "So the tip at the bottom of your screen is the result of: of all the tips whose context currently applies, which ones aren't on cooldown \u2014 pick one. That's why a fresh project surfaces different advice than a long-running one, and why power users and first-timers see different rotations."
+    },
+    {
+      "idx": 93,
+      "start": 618.752,
+      "end": 639.9786666666666,
+      "text": "The advice was never hidden, just compiled. If you want to re-extract these after your next update, the recipe is simple: strings the binary at ~/.local/share/claude/versions/<version> and grep for content:async near cooldownSessions. The tips evolve with each release \u2014 but now you know where they live."
+    }
+  ]
+}

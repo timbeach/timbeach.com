@@ -4,9 +4,145 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Fri, 29 May 2026 22:44:18 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 05 Jun 2026 00:18:14 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Claude /tips: The Complete List</title>
+      <link>https://timbeach.com/#/article/claude-tips-complete-list</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/claude-tips-complete-list</guid>
+      <pubDate>Thu, 04 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Every tip Claude Code ships with — extracted by pointing Claude at its own binary — plus the keyboard shortcuts and sigils that aren't in the rotation.</description>
+      <content:encoded><![CDATA[<p><img src="pix/claude-tips-complete-list.png" alt="Claude /tips: The Complete List — all 58 built-in tips, bonus shortcuts, and how we extracted them from the Claude Code binary" /></p>
+<h2>TL;DR</h2>
+<p>You know those little italic tips that flicker at the bottom of Claude Code while it thinks — <em>&quot;Double-tap esc to rewind,&quot;</em> <em>&quot;Hit Shift+Tab to cycle modes&quot;?</em> There's no docs page that lists them, because they're compiled into the Claude Code binary itself. So I pointed Claude at its own executable and had it read them out.</p>
+<p>The result: <strong>all 58 tips</strong> that Claude Code 2.1.162 ships with, below. You'll never see them all in normal use — each one is gated to a relevant context and put on cooldown after it shows, so the rotation is different for every project and every user. The complete list is right here, followed by a bonus round of keyboard shortcuts that <em>aren't</em> in the rotation, and — if you're curious — the story of how I extracted them at the end.</p>
+<hr />
+<h1><strong>The Complete List</strong></h1>
+<p>Every tip Claude Code 2.1.162 can show you, grouped by theme. (Two are fully dynamic — a server-supplied &quot;feature of the week&quot; and a team-artifacts summary — so they have no fixed text and are omitted.)</p>
+<h2>Keyboard &amp; input</h2>
+<ul>
+<li>Press <strong>Shift+Enter</strong> (Option+Enter on Apple Terminal) to send a multi-line message</li>
+<li>Hit <strong>Shift+Tab</strong> to cycle between default mode, auto-accept edit mode, and plan mode</li>
+<li><strong>Double-tap esc</strong> to rewind the conversation to a previous point in time</li>
+<li>Double-tap esc to rewind the <strong>code and/or conversation</strong> to a previous point in time</li>
+<li>Hit <strong>Enter to queue</strong> additional messages while Claude is working</li>
+<li>Send messages to Claude while it works to <strong>steer it in real-time</strong></li>
+<li>Did you know you can <strong>drag and drop image files</strong> into your terminal?</li>
+<li><strong>Paste images</strong> into Claude Code using Ctrl+V (not Cmd+V!)</li>
+</ul>
+<h2>Slash commands &amp; config</h2>
+<ul>
+<li>Use <strong>/memory</strong> to view and manage Claude memory</li>
+<li>Use <strong>/theme</strong> to change the color theme</li>
+<li>Use <strong>/statusline</strong> to set up a custom status line beneath the input box</li>
+<li>Use <strong>/permissions</strong> to pre-approve and pre-deny bash, edit, and MCP tools</li>
+<li>Use <strong>/voice</strong> to enable push-to-talk dictation</li>
+<li>Use <strong>/feedback</strong> to help improve Claude Code</li>
+<li>Name your conversations with <strong>/rename</strong> to find them easily in /resume later</li>
+<li>Running multiple sessions? Use <strong>/color</strong> and <strong>/rename</strong> to tell them apart at a glance</li>
+<li>Try smoother rendering, lower memory, mouse support, and better copy formatting — <strong>/tui fullscreen</strong></li>
+<li>New to Claude Code? Run <strong>/powerup</strong> for a quick interactive tutorial</li>
+<li>Run <strong>/terminal-setup</strong> to enable Shift+Enter (or Option+Enter) for new lines and more</li>
+</ul>
+<h2>Agents, skills &amp; workflows</h2>
+<ul>
+<li>Create skills by adding <code>.md</code> files to <code>.claude/skills/</code> in your project, or <code>~/.claude/skills/</code> for skills that work everywhere</li>
+<li>Use <strong>/agents</strong> to optimize specific tasks — e.g. Software Architect, Code Writer, Code Reviewer</li>
+<li>Use <strong><code>--agent &lt;agent_name&gt;</code></strong> to start a conversation directly with a subagent</li>
+<li>Say <strong>&quot;fan out subagents&quot;</strong> and Claude sends a team — each one digs deep so nothing gets missed</li>
+<li><strong>/loop</strong> runs any prompt on a recurring schedule — great for monitoring deploys, babysitting PRs, or polling status</li>
+<li>Set an objective with <strong>/goal</strong> — Claude keeps working until it's met</li>
+<li>Use <strong>Plan Mode</strong> to prepare for a complex request before making changes — Shift+Tab twice to enable</li>
+<li>Ask Claude to create a <strong>todo list</strong> when working on complex tasks to track progress and stay on track</li>
+<li>Use <strong>git worktrees</strong> to run multiple Claude sessions in parallel</li>
+<li><strong>/ultrareview</strong> runs a deep, multi-agent review of your changes</li>
+<li>Start with small features or bug fixes, tell Claude to propose a plan, and verify its suggested edits</li>
+</ul>
+<h2>IDE &amp; app integrations</h2>
+<ul>
+<li>Connect Claude to your IDE — <strong>/ide</strong></li>
+<li>In VS Code, open the Command Palette (Cmd+Shift+P) and run &quot;Shell Command: Install 'code' command in PATH&quot; to enable IDE integration</li>
+<li>Run <strong>/install-github-app</strong> to tag @claude right from your GitHub issues and PRs</li>
+<li>Run <strong>/install-slack-app</strong> to use Claude in Slack</li>
+<li>Run Claude Code locally or remotely using the Claude desktop app — <strong>clau.de/desktop</strong></li>
+<li>Run tasks in the cloud while you keep coding locally — <strong>clau.de/web</strong></li>
+<li>Continue your session in Claude Code Desktop with <strong>/desktop</strong></li>
+<li>Working on UI? Claude Code Desktop has live preview and inline images — clau.de/desktop</li>
+<li>Control this session remotely — run <strong>/remote-control</strong></li>
+<li>Get pinged on your phone when long tasks finish — enable push notifications in /config</li>
+<li>Build your AI product with Claude API — run <strong>/claude-api</strong> to get started</li>
+</ul>
+<h2>Environment &amp; plugin nudges</h2>
+<ul>
+<li>Working with HTML/CSS? Install the <strong>frontend-design</strong> plugin</li>
+<li>Working with Vercel? Install the <strong>vercel</strong> plugin</li>
+<li>Working with Stripe? Install the <strong>stripe</strong> plugin</li>
+<li>Run <code>claude --continue</code> or <code>claude --resume</code> to resume a conversation</li>
+<li>Try setting <code>COLORTERM=truecolor</code> for richer colors</li>
+<li>Set <code>CLAUDE_CODE_USE_POWERSHELL_TOOL=1</code> to enable the PowerShell tool (preview)</li>
+<li>Your default model is Opus Plan Mode — press Shift+Tab twice to plan with Claude Opus</li>
+</ul>
+<h2>Sharing &amp; growth</h2>
+<ul>
+<li>Share Claude Code and earn usage credits — <strong>/passes</strong></li>
+<li>Run <strong>/team-onboarding</strong> to turn your Claude usage into a shareable onboarding guide</li>
+</ul>
+<hr />
+<h2>Bonus: shortcuts that aren't in the rotation</h2>
+<p>Honestly, these are more valuable day-to-day than half the tips above — the keyboard shortcuts and input sigils pulled from the same binary's keybinding map. They mostly <em>don't</em> surface as tips, but they're the difference between poking at Claude and actually driving it.</p>
+<p><strong>The three input sigils</strong> — type these as the first character of your message:</p>
+<ul>
+<li><strong><code>!</code></strong> runs the rest of the line as a shell command in your session, dropping the output right into the conversation. Perfect for an interactive login or a quick <code>git status</code> without leaving the chat.</li>
+<li><strong><code>@</code></strong> mentions a file or directory — Claude pulls it into context. Start typing a path and it autocompletes.</li>
+<li><strong><code>#</code></strong> saves what follows as a memory, so Claude remembers it in future sessions.</li>
+</ul>
+<p><strong>Keyboard shortcuts</strong> (defaults — all rebindable in <code>~/.claude/keybindings.json</code>):</p>
+<ul>
+<li><strong>Shift+Tab</strong> — cycle through default / auto-accept-edits / plan mode</li>
+<li><strong>Esc</strong> — interrupt Claude mid-task</li>
+<li><strong>Esc Esc</strong> (double-tap) — rewind the conversation (and optionally code) to an earlier point</li>
+<li><strong>Ctrl+G</strong> — pop your draft open in your <code>$EDITOR</code> for long or multi-line prompts</li>
+<li><strong>Ctrl+L</strong> — clear the screen</li>
+<li><strong>Ctrl+V</strong> — paste an image from your clipboard (note: <em>not</em> Cmd+V on Mac)</li>
+<li><strong>Ctrl+S</strong> — stash your current input</li>
+<li><strong>Alt+P</strong> — open the model picker</li>
+<li><strong>Alt+T</strong> — toggle extended thinking</li>
+<li><strong>Alt+O</strong> — toggle fast mode</li>
+<li><strong>Alt+W</strong> — toggle workflow-keyword detection</li>
+<li><strong>Ctrl+B</strong> — background a running tool call so you can keep working</li>
+<li><strong>Ctrl+X Ctrl+K</strong> — kill running agents</li>
+</ul>
+<p><strong>Slash commands worth knowing</strong> beyond the ones the tips mention: <code>/resume</code> and <code>/clear</code> to manage history, <code>/compact</code> to summarize and free up context, <code>/export</code> to save a transcript, <code>/cost</code> for session spend, <code>/model</code> to switch models, <code>/vim</code> for modal editing, and <code>/init</code> to generate a <code>CLAUDE.md</code> for a fresh project.</p>
+<h2>How I got this list: Claude reading itself</h2>
+<p>Here's the fun part. There's no documentation page for the tips, they aren't in a config file you can <code>cat</code>, and they aren't fetched from a server. They're baked into the Claude Code executable — a single 233 MB binary sitting at <code>~/.local/share/claude/versions/2.1.162</code> on my machine.</p>
+<p>But even compiled binaries are full of readable strings — the literal text of every message a program can print is sitting right there in the file. So the investigation was just a matter of knowing where to look.</p>
+<p>First, find where the tips live. Tips fire an analytics event when shown, so I grepped the binary's strings for anything tip-shaped:</p>
+<pre><code class="language-bash">strings -n 6 claude-binary | grep -oiE &quot;tengu_[a-z_]*tip[a-z_]*&quot;
+# tengu_tip_shown
+# tipId
+# tipsHistory
+</code></pre>
+<p>That <code>tengu_tip_shown</code> event, with its <code>tipId</code> field, was the thread to pull. Each tip turned out to be a JavaScript object baked into the bundle, shaped like this:</p>
+<pre><code class="language-javascript">{
+  id: &quot;double-esc&quot;,
+  content: async () =&gt; &quot;Double-tap esc to rewind the conversation to a previous point in time&quot;,
+  cooldownSessions: 3,
+  isRelevant: async () =&gt; true
+}
+</code></pre>
+<p>Find one, find the array. A grep for the <code>content:async</code> signature surfaced all of them, and a small Python parser walked each object to recover its text — including the ones whose content is built dynamically from keybinding helpers and the current terminal type.</p>
+<p>The whole thing took about four tool calls. No decompiler, no reverse-engineering, no guessing — just Claude reading the strings table of the program it <em>is</em>. There's something pleasingly recursive about asking an AI assistant to introspect its own source and report back what advice it's been quietly trying to give you.</p>
+<h2>Why you never see them all</h2>
+<p>Those two fields on each tip object — <code>isRelevant()</code> and <code>cooldownSessions</code> — explain the whole experience.</p>
+<ul>
+<li><strong><code>isRelevant()</code></strong> is a context check. The IDE-integration tip only fires when you're in an external terminal. The Stripe-plugin nudge only appears when your project actually depends on Stripe. The &quot;Opus Plan Mode&quot; reminder only shows if that's your configured default. Most tips are gated to a situation where they'd genuinely help.</li>
+<li><strong><code>cooldownSessions</code></strong> is a repeat suppressor, typically <code>3</code>. Once you've seen a tip, it won't come back for at least that many sessions.</li>
+</ul>
+<p>So the tip at the bottom of your screen is the result of: <em>of all the tips whose context currently applies, which ones aren't on cooldown — pick one.</em> That's why a fresh project surfaces different advice than a long-running one, and why power users and first-timers see different rotations.</p>
+<p>The advice was never hidden, just compiled. If you want to re-extract these after your next update, the recipe is simple: <code>strings</code> the binary at <code>~/.local/share/claude/versions/&lt;version&gt;</code> and grep for <code>content:async</code> near <code>cooldownSessions</code>. The tips evolve with each release — but now you know where they live.</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>Future Me Has Receipts: Building circleback</title>
       <link>https://timbeach.com/#/article/circleback</link>
@@ -79,6 +215,9 @@ State Test Prep is in wait-and-diff mode...
   ],
   &quot;SessionEnd&quot;: [
     { &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;$HOME/.claude/hooks/circleback-session-finish.sh&quot; }] }
+  ],
+  &quot;PreCompact&quot;: [
+    { &quot;hooks&quot;: [{ &quot;type&quot;: &quot;command&quot;, &quot;command&quot;: &quot;$HOME/.claude/hooks/circleback-session-finish.sh&quot; }] }
   ]
 }
 </code></pre>
@@ -111,7 +250,7 @@ State Test Prep is in wait-and-diff mode...
 <pre><code class="language-bash">sed -i &quot;3,6d&quot; file.md
 </code></pre>
 <h2>🧪 TDD caught real bugs</h2>
-<p>I wrote this whole thing test-first. 46 tests, plain bash, no framework. (I considered <code>bats-core</code> but it would've required <code>sudo</code>, and the surface area is small enough that hand-rolled assertions are fine.)</p>
+<p>I wrote this whole thing test-first. ~110 tests, plain bash, no framework. (I considered <code>bats-core</code> but it would've required <code>sudo</code>, and the surface area is small enough that hand-rolled assertions are fine.)</p>
 <p>Two real bugs the tests caught:</p>
 <h3>Bug 1: <code>sort -r</code> quietly doesn't reverse</h3>
 <p>In my archive function I needed to delete multiple line ranges from the file, processing them <strong>bottom-up</strong> so earlier deletions don't shift later line numbers. I wrote:</p>
@@ -195,7 +334,7 @@ circleback daily --rebuild    # regenerate today's auto spine from the master li
 <p>The repo's <strong>private for now</strong> — the installer touches your <code>~/.claude/settings.json</code>, so I want it boringly reliable on a few machines that aren't mine before I point the whole internet at it. If you'd like early access to kick the tires, email me at <strong>beachtimothyd@gmail.com</strong> and I'll add you. It's Linux-first (built on Aegix) and wants <code>bash</code>, <code>fzf</code>, <code>jq</code>, and the <code>claude</code> CLI.</p>
 <p>When it goes public I'll update this article with the link.</p>
 <hr />
-<p><em>Built alongside Claude itself, using its <a href="https://github.com/anthropics/claude-code">superpowers</a> brainstorm → spec → plan → TDD workflow — ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts.</em></p>
+<p><em>Built alongside Claude itself, using its superpowers brainstorm → spec → plan → TDD workflow — ~110 passing bash tests at last count. Email me if you want early access. Future me has receipts.</em></p>
 ]]></content:encoded>
     </item>
     <item>

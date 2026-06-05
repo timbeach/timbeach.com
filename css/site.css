@@ -316,6 +316,13 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   margin: 1.2em 0;
 }
 
+.article-body hr {
+  border: 0;
+  height: 0;
+  border-top: 2px solid var(--rule-bold);
+  margin: 2.4em 0;
+}
+
 .article-body code {
   font-family: var(--font-mono);
   font-size: 0.9em;
