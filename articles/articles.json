@@ -336,7 +336,7 @@
       "fzf"
     ],
     "emoji": "🧶",
-    "summary": "A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread. The little fzf-picker-over-a-markdown-file I built to resume any session by name, plus the Unix gears that make it tick.",
+    "summary": "A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread.",
     "audio": "audio/circleback.ogg",
     "timings": "audio/circleback.timings.json",
     "voice": "bm_lewis",
