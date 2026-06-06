@@ -1,0 +1,222 @@
+{
+  "voice": "bm_lewis",
+  "duration": 563.328,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 18.069333333333333,
+      "text": "Paste a link to this site into LinkedIn, or Slack, or a text message, and a little card unfurls: a title, a sentence, and a picture. That card is doing a lot of quiet work \u2014 it's the difference between a friend tapping your link and a friend scrolling past a naked blue URL."
+    },
+    {
+      "idx": 1,
+      "start": 18.069333333333333,
+      "end": 35.733333333333334,
+      "text": "For a long time, every link to this site unfurled with the same picture \u2014 a generic photo of me that had nothing to do with whatever article I was actually sharing. This is the story of the protocol that fixes that, and the three traps I fell into making it work on a site like mine."
+    },
+    {
+      "idx": 2,
+      "start": 35.733333333333334,
+      "end": 38.50666666666667,
+      "text": "\ud83d\udd17 The protocol nobody told you about"
+    },
+    {
+      "idx": 3,
+      "start": 38.50666666666667,
+      "end": 63.232,
+      "text": "The technology is called the Open Graph protocol, and you've been looking at its output for years without knowing its name. Facebook published it in 2010 so that a shared link could carry a title, a description, and an image into the news feed. It caught on, and now essentially every platform that renders a \"link preview\" \u2014 LinkedIn, X, Slack, Discord, iMessage, WhatsApp, Signal \u2014 reads the same tags."
+    },
+    {
+      "idx": 4,
+      "start": 63.232,
+      "end": 68.30933333333333,
+      "text": "The tags live in the <head> of your HTML, and they're almost insultingly simple:"
+    },
+    {
+      "idx": 5,
+      "start": 68.30933333333333,
+      "end": 86.784,
+      "text": "That's it. og:title, og:description, and og:image are the three that matter; the others are polish. There is no JavaScript, no API, no SDK. You write five lines of HTML and the entire internet's worth of chat apps suddenly know how to show your link off."
+    },
+    {
+      "idx": 6,
+      "start": 86.784,
+      "end": 88.96,
+      "text": "\ud83d\udc26 Twitter wanted to be different"
+    },
+    {
+      "idx": 7,
+      "start": 88.96,
+      "end": 96.93866666666666,
+      "text": "X \u2014 Twitter, when this all started \u2014 decided it needed its own parallel set of tags, prefixed twitter: instead of og::"
+    },
+    {
+      "idx": 8,
+      "start": 96.93866666666666,
+      "end": 121.04533333333333,
+      "text": "The one that does real work is twitter:card. Set it to summary_large_image and you get the big edge-to-edge picture instead of a cramped thumbnail. The good news is that Twitter falls back to your Open Graph tags for anything it can't find a twitter: version of \u2014 so in practice you write the og: tags, add twitter:card on top, and you're covered everywhere. I emit both on every page, belt and suspenders."
+    },
+    {
+      "idx": 9,
+      "start": 121.04533333333333,
+      "end": 140.224,
+      "text": "One quirk worth knowing: since around 2023, X often renders link cards as just the image with the domain stamped on it, dropping the title and description text that LinkedIn shows. That's a display choice on their end, not a mistake in your tags. Your picture still shows up large."
+    },
+    {
+      "idx": 10,
+      "start": 140.224,
+      "end": 143.08266666666665,
+      "text": "\ud83e\udd16 The crawler doesn't run your code"
+    },
+    {
+      "idx": 11,
+      "start": 143.08266666666665,
+      "end": 153.30133333333333,
+      "text": "Here is the single most important fact about Open Graph, and the one that caused all my grief: the thing reading your tags is a dumb robot, not a browser."
+    },
+    {
+      "idx": 12,
+      "start": 153.30133333333333,
+      "end": 176.14933333333335,
+      "text": "When you paste a link, the platform sends out a crawler \u2014 LinkedIn's is called LinkedInBot, Twitter's is Twitterbot \u2014 to fetch your page. That crawler downloads the raw HTML and reads the meta tags. It does not run your JavaScript. It does not wait for your single-page app to boot, fetch data, and render. It reads what the server hands it, on the first byte, and leaves."
+    },
+    {
+      "idx": 13,
+      "start": 176.14933333333335,
+      "end": 186.73066666666668,
+      "text": "For a normal website with real HTML pages, this is fine. For my site, it was a disaster, and to explain why I have to admit how this site is built."
+    },
+    {
+      "idx": 14,
+      "start": 186.73066666666668,
+      "end": 189.52533333333332,
+      "text": "\ud83e\udea4 Trap one: the fragment that never arrives"
+    },
+    {
+      "idx": 15,
+      "start": 189.52533333333332,
+      "end": 207.552,
+      "text": "timbeach.com is a single-page app. Every article lives at a URL like timbeach.com/#/article/how-tmux-works. That # is a hash fragment, and the site's router watches it to decide which article to show \u2014 all in the browser, all in JavaScript."
+    },
+    {
+      "idx": 16,
+      "start": 207.552,
+      "end": 243.37066666666666,
+      "text": "Here's the problem, and it's baked into the web itself: the part of a URL after the # is never sent to the server. It's a client-side-only construct, by design, going back to the original purpose of fragments as \"jump to this anchor on the page.\" So when LinkedIn's crawler fetches timbeach.com/#/article/how-tmux-works, the server only ever sees a request for timbeach.com/. The crawler gets my homepage, reads the homepage's generic OG tags, and shows that same generic photo of me \u2014 no matter which article the link pointed to."
+    },
+    {
+      "idx": 17,
+      "start": 243.37066666666666,
+      "end": 258.58133333333336,
+      "text": "Two strikes, both fatal: the crawler can't run the JavaScript that would pick the right article, and it can't even see which article was requested. There is no clever tag I could add to fix this. The hash URL is a dead end at the protocol level."
+    },
+    {
+      "idx": 18,
+      "start": 258.58133333333336,
+      "end": 295.01866666666666,
+      "text": "The fix is to stop asking a hash URL to do a server's job. At deploy time, a script now walks every article and writes a real, honest HTML file at a real path \u2014 a/how-tmux-works/index.html \u2014 with that article's own Open Graph tags baked in. That's a page the crawler can actually fetch and read. A human who clicks it gets a one-line redirect into the usual single-page reader, so the experience is unchanged; only the URL you share is different. Crawlers read the static tags; people land in the app. Everybody gets what they came for."
+    },
+    {
+      "idx": 19,
+      "start": 295.01866666666666,
+      "end": 296.8106666666667,
+      "text": "\ud83c\udf2b\ufe0f Trap two: the blur"
+    },
+    {
+      "idx": 20,
+      "start": 296.8106666666667,
+      "end": 304.46933333333334,
+      "text": "I shipped the share pages, pasted a link, and there it was \u2014 the right article's image, finally. Except it was blurry."
+    },
+    {
+      "idx": 21,
+      "start": 304.46933333333334,
+      "end": 336.9386666666667,
+      "text": "The culprit was aspect ratio. Open Graph images want to be 1200\u00d7630 pixels \u2014 a specific, slightly-wider-than-2:1 rectangle. The image I'd handed it was a 1536\u00d71024 screenshot. When the crawler gets an image that isn't the right shape, it crops and resamples it to fit, then re-encodes the result as a compressed JPEG. For a screenshot full of small text, that round of squashing and recompression turns crisp pixels to mush."
+    },
+    {
+      "idx": 22,
+      "start": 336.9386666666667,
+      "end": 355.34933333333333,
+      "text": "Worse, a couple of my images were smaller than 1200 pixels wide, and platforms will quietly demote an undersized image \u2014 showing it as a tiny thumbnail off to the side instead of the big card. Same tags, completely different result, purely because of pixel dimensions."
+    },
+    {
+      "idx": 23,
+      "start": 355.34933333333333,
+      "end": 390.464,
+      "text": "The fix was to stop handing crawlers raw images and start handing them finished cards. Now the publish pipeline composites every article's image onto an exact 1200\u00d7630 canvas \u2014 the whole image, scaled to fit, centered on a dark background that matches the site, downsampled once with a good filter. The crawler receives something already the precise shape and size it wants, so it has nothing left to crop or resample. The blur is gone, and a square diagram or an undersized photo gets the same clean treatment as a perfect screenshot."
+    },
+    {
+      "idx": 24,
+      "start": 390.464,
+      "end": 393.792,
+      "text": "\u267b\ufe0f Trap three: the cache that never forgets"
+    },
+    {
+      "idx": 25,
+      "start": 393.792,
+      "end": 397.90933333333334,
+      "text": "This one is the cruelest, because everything was working when it bit me."
+    },
+    {
+      "idx": 26,
+      "start": 397.90933333333334,
+      "end": 421.71733333333333,
+      "text": "I'd been iterating \u2014 first a plain text card, then the real image, then the sharp composited version \u2014 and each time I redeployed and re-checked the preview. At one point the preview reverted to showing an old version I thought I'd deleted two iterations ago. The file on my server was unambiguously the new one; I checked the bytes by hand. And yet LinkedIn kept showing the stale one."
+    },
+    {
+      "idx": 27,
+      "start": 421.71733333333333,
+      "end": 452.352,
+      "text": "Platforms cache Open Graph images aggressively, and they cache them by URL. My image had lived at the same URL the whole time \u2014 .../og.png \u2014 while its contents changed underneath. LinkedIn had fetched that URL early, stored the bytes, and from then on it served its copy without ever asking my server whether the image had changed. Re-scraping the page refreshed the tags but not the cached image. The URL was the cache key, the URL never changed, so the cache never expired."
+    },
+    {
+      "idx": 28,
+      "start": 452.352,
+      "end": 482.6666666666667,
+      "text": "The fix is a trick as old as web development: put a fingerprint of the contents into the filename. The card is now named after a hash of its own bytes \u2014 og-de50d8b938.png \u2014 so the moment the image changes, its filename changes, and therefore its URL changes, and therefore every cache on earth treats it as a brand-new image it's never seen. When nothing changes, the name stays put and the cache stays valid. You only bust the cache exactly when you mean to."
+    },
+    {
+      "idx": 29,
+      "start": 482.6666666666667,
+      "end": 485.184,
+      "text": "\ud83c\udf1f The whole trick, in one breath"
+    },
+    {
+      "idx": 30,
+      "start": 485.184,
+      "end": 505.92,
+      "text": "Open Graph is a beautiful little protocol: five lines of HTML buy you a polished presence in every chat app and feed on the internet. But it rests on one assumption \u2014 that a crawler can fetch a real page and read real tags \u2014 and the moment your site bends that assumption, you find out exactly how much was riding on it."
+    },
+    {
+      "idx": 31,
+      "start": 505.92,
+      "end": 508.416,
+      "text": "If you take three things from my bruises:"
+    },
+    {
+      "idx": 32,
+      "start": 508.416,
+      "end": 520.2346666666666,
+      "text": "Crawlers don't run JavaScript. If your content only exists after your app boots, the crawler will never see it. Serve real HTML with real tags at a real URL."
+    },
+    {
+      "idx": 33,
+      "start": 520.2346666666666,
+      "end": 531.0293333333333,
+      "text": "Hand over a finished 1200\u00d7630 image, not a raw one. Let the crawler do as little as possible, and it can't make your picture worse."
+    },
+    {
+      "idx": 34,
+      "start": 531.0293333333333,
+      "end": 541.7173333333334,
+      "text": "Fingerprint the filename so the URL changes when \u2014 and only when \u2014 the image does. Otherwise some cache, somewhere, will haunt you with a picture you killed days ago."
+    },
+    {
+      "idx": 35,
+      "start": 541.7173333333334,
+      "end": 563.328,
+      "text": "I added a read-aloud voice to this blog last month and learned that two parsers will always eventually disagree. This month I learned that a crawler is just a very literal reader who refuses to run your code, resizes your art without asking, and never throws anything away. Build for that reader, and your links will finally look like they mean something."
+    }
+  ]
+}

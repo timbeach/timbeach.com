@@ -229,7 +229,15 @@ function parseMarkdown(content) {
   codeBlocks.forEach(({ placeholder, lang, code }) => {
     // Trim leading/trailing whitespace but preserve internal formatting
     const trimmedCode = code.replace(/^\n+|\n+$/g, '');
-    const codeElement = lang ? `<pre><code class="language-${lang}">${trimmedCode}</code></pre>` : `<pre><code>${trimmedCode}</code></pre>`;
+    // HTML-escape the content so fenced blocks containing literal tags
+    // (e.g. <meta>, <head>, <div>) render as visible text instead of being
+    // parsed as real elements by the browser. Mirrors the inline-code escape
+    // above; & must be escaped first so the &lt;/&gt; passes aren't doubled.
+    const escaped = trimmedCode
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+    const codeElement = lang ? `<pre><code class="language-${lang}">${escaped}</code></pre>` : `<pre><code>${escaped}</code></pre>`;
     processedContent = processedContent.replace(placeholder, codeElement);
   });
 
@@ -297,6 +305,10 @@ export async function renderArticle(slug, mountEl) {
       </header>
       <div class="article-body">${bodyHtml}</div>
     </article>
+    <div class="lightbox" data-act="img-lightbox" aria-hidden="true">
+      <button type="button" class="lightbox-close" aria-label="Close image">×</button>
+      <img class="lightbox-image" alt="" />
+    </div>
   `;
 
   document.title = `${meta.title} · Timothy D Beach`;
@@ -349,6 +361,35 @@ export async function renderArticle(slug, mountEl) {
         flash(ok ? '✓ Copied!' : 'Copy failed');
       }
     });
+  }
+
+  // Image lightbox: click any article image to view it full-size. Pure
+  // client-side enhancement — touches no markdown, so TTS parity is unaffected.
+  // Reuses the .lightbox backdrop/.lightbox-close styles from the music page.
+  const lightbox = mountEl.querySelector('[data-act="img-lightbox"]');
+  if (lightbox) {
+    const lbImg = lightbox.querySelector('.lightbox-image');
+    const lbClose = lightbox.querySelector('.lightbox-close');
+    const onKey = (e) => { if (e.key === 'Escape') closeLightbox(); };
+    function openLightbox(src, alt) {
+      lbImg.src = src;
+      lbImg.alt = alt || '';
+      lightbox.classList.add('open');
+      lightbox.setAttribute('aria-hidden', 'false');
+      document.addEventListener('keydown', onKey);
+    }
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      lightbox.setAttribute('aria-hidden', 'true');
+      lbImg.removeAttribute('src');
+      document.removeEventListener('keydown', onKey);
+    }
+    for (const img of mountEl.querySelectorAll('.article-body img')) {
+      img.addEventListener('click', () => openLightbox(img.currentSrc || img.src, img.alt));
+    }
+    lbClose.addEventListener('click', closeLightbox);
+    // Backdrop click closes; clicks on the image itself don't bubble out.
+    lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
   }
 
   // TTS bar opens only when the reader explicitly asks for it.

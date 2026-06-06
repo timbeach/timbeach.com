@@ -1,0 +1,38 @@
+# rsync --exclude-from rules for deploy.sh — things that must NEVER be published
+# to the public web root. A leading "/" anchors to the repo root; an unanchored
+# pattern matches that basename anywhere in the tree.
+#
+# Why this file exists: deploy.sh rsyncs the whole repo, so anything not listed
+# here goes public. Internal docs (CLAUDE.md, STATUS-*, docs/, etc.) leaked this
+# way once — keep this list current when you add internal files.
+
+# --- internal docs / notes (articles live in articles/, never at root) ---
+/*.md
+STATUS-*.md
+
+# --- scripts, editor, backups, vcs metadata ---
+/*.sh
+*.code-workspace
+*.bk
+.gitignore
+.gitattributes
+
+# --- internal / tooling trees ---
+/docs/
+.beads/
+.pytest_cache/
+.claude/
+.superpowers/
+
+# --- misc internal / dev artifacts ---
+/create-favicon.html
+/IDEAS.md
+/.deployignore
+
+# --- pre-existing deploy excludes (carried over from the old inline list) ---
+.well-known/
+irc.txt.gpg
+.git/
+archive/
+tools/
+audition/

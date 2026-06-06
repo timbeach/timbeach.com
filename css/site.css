@@ -326,6 +326,7 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
   height: auto;
   display: block;
   margin: 1.2em 0;
+  cursor: zoom-in;
 }
 
 .article-body hr {
@@ -541,13 +542,17 @@ body.tts-open .page { padding-bottom: 88px; }
   transition: opacity 0.25s ease;
 }
 .lightbox.open { display: flex; opacity: 1; }
-.lightbox-video {
+.lightbox-video,
+.lightbox-image {
   max-height: 90vh;
   max-width: 90vw;
   cursor: default;
   box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
   background: #000;
 }
+/* Lightboxed article images render at natural size; the zoom-in cursor hint
+   on the inline thumbnail doesn't apply to the enlarged view. */
+.lightbox-image { margin: 0; }
 .lightbox-close {
   position: absolute;
   top: 24px;

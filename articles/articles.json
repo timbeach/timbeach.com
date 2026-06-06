@@ -1,4 +1,21 @@
 {
+  "how-my-links-got-their-pictures.md": {
+    "title": "How My Links Got Their Pictures",
+    "date": "2026-06-10",
+    "tags": [
+      "web",
+      "open-graph",
+      "social",
+      "frontend"
+    ],
+    "emoji": "\ud83d\udd17",
+    "hero": "pix/open-graph-protocol.png",
+    "summary": "The Open Graph protocol gives every shared link its title, blurb, and picture \u2014 and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.",
+    "audio": "audio/how-my-links-got-their-pictures.ogg",
+    "timings": "audio/how-my-links-got-their-pictures.timings.json",
+    "voice": "bm_lewis",
+    "duration": 563.328
+  },
   "claude-code-permission-modes.md": {
     "title": "Why Claude Code Keeps Asking for Permission (and How to Make It Stop)",
     "date": "2026-06-06",
@@ -319,5 +336,21 @@
     "timings": "audio/circleback.timings.json",
     "voice": "bm_lewis",
     "duration": 886.613
+  },
+  "rss-still-really-simple.md": {
+    "title": "Still Really Simple: A Short History of RSS (and How This Site Uses It)",
+    "date": "2026-06-07",
+    "tags": [
+      "rss",
+      "web",
+      "feeds"
+    ],
+    "emoji": "\ud83d\udce1",
+    "section": "RSS",
+    "summary": "A short history of RSS \u2014 what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.",
+    "audio": "audio/rss-still-really-simple.ogg",
+    "timings": "audio/rss-still-really-simple.timings.json",
+    "voice": "bm_lewis",
+    "duration": 378.219
   }
 }

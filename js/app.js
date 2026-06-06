@@ -24,6 +24,11 @@ async function loadArticles() {
   const res = await fetch(`articles/articles.json?t=${Date.now()}`);
   if (!res.ok) throw new Error(`Failed to load articles.json: ${res.status}`);
   const map = await res.json();
+  // Today in the viewer's local calendar as YYYY-MM-DD. Future-dated articles
+  // (date > today) are hidden from the homepage until their date arrives; the
+  // string compare is chronological because both sides are ISO YYYY-MM-DD.
+  const now = new Date();
+  const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   // Convert {slug.md: {meta}} into [{slug, ...meta}], sorted by date desc.
   articlesCache = Object.entries(map)
     .map(([filename, meta]) => ({
@@ -31,7 +36,7 @@ async function loadArticles() {
       slug: filename.replace(/\.md$/, ''),
       ...meta,
     }))
-    .filter((a) => a.date && a.title)
+    .filter((a) => a.date && a.title && a.date <= todayLocal)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
   return articlesCache;
 }

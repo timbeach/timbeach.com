@@ -1,0 +1,186 @@
+{
+  "voice": "bm_lewis",
+  "duration": 378.219,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 22.4,
+      "text": "There's a small orange icon you don't see much anymore. For about a decade it lived in the corner of every browser's address bar, and then one day it quietly vanished. The technology behind it never did \u2014 you're using it right now if you listen to podcasts, and you can use it to read this site. No account, no app, no algorithm deciding what you get to see."
+    },
+    {
+      "idx": 1,
+      "start": 22.4,
+      "end": 30.101333333333333,
+      "text": "That technology is RSS. This is what it is, where it came from, and exactly how the feed for this website gets built."
+    },
+    {
+      "idx": 2,
+      "start": 30.101333333333333,
+      "end": 32.02133333333333,
+      "text": "What RSS actually is"
+    },
+    {
+      "idx": 3,
+      "start": 32.02133333333333,
+      "end": 48.53333333333333,
+      "text": "RSS is a plain-text file that a website publishes and keeps up to date. It lists the site's recent content \u2014 each entry with a title, a link, a short description, and a date \u2014 in a structured format that software can read. That's the whole idea."
+    },
+    {
+      "idx": 4,
+      "start": 48.53333333333333,
+      "end": 70.35733333333333,
+      "text": "You point a program called a feed reader at the file's address. The reader checks the file every so often, notices when new entries appear, and shows them to you in a tidy, chronological list. Subscribe to a dozen sites and your reader becomes a single inbox for everything you care about \u2014 in the order it was published, with nothing injected and nothing hidden."
+    },
+    {
+      "idx": 5,
+      "start": 70.35733333333333,
+      "end": 85.80266666666667,
+      "text": "The crucial part is who's in charge. There's no middleman. The site publishes the file; your reader fetches it directly. No company sits between you and the writer deciding what's worth your attention. You subscribed, so you get everything."
+    },
+    {
+      "idx": 6,
+      "start": 85.80266666666667,
+      "end": 87.744,
+      "text": "A short, contentious history"
+    },
+    {
+      "idx": 7,
+      "start": 87.744,
+      "end": 112.34133333333334,
+      "text": "RSS was born at Netscape in 1999 as a way to fill the \"channels\" on the My Netscape portal. The acronym has meant three different things over the years, which tells you something about how its history went: it started as RDF Site Summary, was softened to Rich Site Summary, and finally settled \u2014 thanks largely to Dave Winer of UserLand Software \u2014 as Really Simple Syndication."
+    },
+    {
+      "idx": 8,
+      "start": 112.34133333333334,
+      "end": 148.77866666666668,
+      "text": "That naming muddle was a symptom. Through the early 2000s, development splintered between camps with different technical philosophies, and the versions multiplied: 0.90, 0.91, 0.92, 1.0, and eventually RSS 2.0 in 2002, which froze the format and is what most feeds \u2014 including this one \u2014 still use today. The friction got bad enough that a rival format, Atom, was created in 2005 to do the same job more cleanly. Both still exist, readers support both, and the war is a museum piece now."
+    },
+    {
+      "idx": 9,
+      "start": 148.77866666666668,
+      "end": 166.208,
+      "text": "Then came the golden age. Google Reader launched in 2005 and, for a while, RSS was simply how the technical web read the technical web. And then, in 2013, Google shut Reader down. The headlines wrote themselves: RSS is dead."
+    },
+    {
+      "idx": 10,
+      "start": 166.208,
+      "end": 190.4,
+      "text": "It wasn't. It just got quiet. Every podcast on earth is distributed as an RSS feed \u2014 that's what a podcast is, underneath. Newsletters, news sites, and blogs still publish feeds. A healthy ecosystem of independent readers survived Reader's death and arguably got better for it. RSS didn't lose; it just stopped being fashionable, which on today's web is nearly a compliment."
+    },
+    {
+      "idx": 11,
+      "start": 190.4,
+      "end": 192.08533333333332,
+      "text": "Why it's still worth using"
+    },
+    {
+      "idx": 12,
+      "start": 192.08533333333332,
+      "end": 199.40266666666668,
+      "text": "The pitch is the same as it was in 2005, only more so now that the alternative is so much worse:"
+    },
+    {
+      "idx": 13,
+      "start": 199.40266666666668,
+      "end": 208.832,
+      "text": "No algorithm. You see every post from everyone you subscribed to, newest first. Nothing is boosted, throttled, or reordered to keep you scrolling."
+    },
+    {
+      "idx": 14,
+      "start": 208.832,
+      "end": 218.176,
+      "text": "No account, no tracking. Your reader fetches a file. The site doesn't know who subscribed, and there's no login standing between you and the words."
+    },
+    {
+      "idx": 15,
+      "start": 218.176,
+      "end": 229.33333333333334,
+      "text": "It's yours and it's portable. Your subscription list lives in your reader and exports as a small file (called OPML) you can carry to any other reader. Nobody can lock you in."
+    },
+    {
+      "idx": 16,
+      "start": 229.33333333333334,
+      "end": 236.096,
+      "text": "It's calm. No infinite scroll, no notifications begging for your time. You read what's new and you're done."
+    },
+    {
+      "idx": 17,
+      "start": 236.096,
+      "end": 246.37866666666667,
+      "text": "For a personal site like this one, RSS is the honest way to say \"here's how to follow along\" without asking anyone to make an account or trust a platform."
+    },
+    {
+      "idx": 18,
+      "start": 246.37866666666667,
+      "end": 248.256,
+      "text": "How the feed works on this site"
+    },
+    {
+      "idx": 19,
+      "start": 248.256,
+      "end": 258.92266666666666,
+      "text": "Here's the part specific to this site. It is fully static \u2014 no database, no backend \u2014 so the feed is generated ahead of time and served as a plain file at:"
+    },
+    {
+      "idx": 20,
+      "start": 258.92266666666666,
+      "end": 263.7866666666667,
+      "text": "https://timbeach.com/feed.xml"
+    },
+    {
+      "idx": 21,
+      "start": 263.7866666666667,
+      "end": 285.3333333333333,
+      "text": "Everything here, including the feed, is built from a single source of truth: a file called articles.json that lists every article with its title, date, tags, and a one-sentence summary. The homepage reads it to draw the article cards. A small Python script named build_feed.py reads the very same file to build the feed."
+    },
+    {
+      "idx": 22,
+      "start": 285.3333333333333,
+      "end": 308.032,
+      "text": "When the script runs, it sorts every article by date, newest first, and writes one entry per article \u2014 each carrying the title, the publish date, a permanent link, and the summary as its description. Then it does something many feeds don't: it embeds the full text of each article, not just an excerpt, so a reader can show you the whole piece without ever visiting the site."
+    },
+    {
+      "idx": 23,
+      "start": 308.032,
+      "end": 319.12533333333334,
+      "text": "That last point matters. Many feeds give you a teaser and make you click through. This one hands over the complete article, rendered from the same markdown the website itself uses."
+    },
+    {
+      "idx": 24,
+      "start": 319.12533333333334,
+      "end": 343.72266666666667,
+      "text": "The build runs automatically as part of deploying the site. The deploy script validates everything, regenerates the feed from the current articles.json, and ships it alongside the rest of the static files. There's no live server assembling the feed on request \u2014 by the time you fetch it, it's already a finished document sitting on disk. Fast, cacheable, and impossible to break at read time."
+    },
+    {
+      "idx": 25,
+      "start": 343.72266666666667,
+      "end": 363.136,
+      "text": "So when I publish something new, the feed updates itself as a side effect of the same command that updates the site. No separate step, nothing to forget. The orange icon may be gone from your browser, but the file it pointed to is still here, still really simple, and still the best way to follow along."
+    },
+    {
+      "idx": 26,
+      "start": 363.136,
+      "end": 364.1173333333333,
+      "text": "Subscribe"
+    },
+    {
+      "idx": 27,
+      "start": 364.1173333333333,
+      "end": 366.18666666666667,
+      "text": "Paste this into any feed reader:"
+    },
+    {
+      "idx": 28,
+      "start": 366.18666666666667,
+      "end": 371.05066666666664,
+      "text": "https://timbeach.com/feed.xml"
+    },
+    {
+      "idx": 29,
+      "start": 371.05066666666664,
+      "end": 378.21866666666665,
+      "text": "That's the whole setup. No account to make, nothing to install beyond a reader you like. Welcome to the quiet web."
+    }
+  ]
+}

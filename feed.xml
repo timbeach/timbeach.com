@@ -4,9 +4,177 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Fri, 05 Jun 2026 00:18:14 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2026 05:45:55 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How My Links Got Their Pictures</title>
+      <link>https://timbeach.com/#/article/how-my-links-got-their-pictures</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-my-links-got-their-pictures</guid>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 +0000</pubDate>
+      <description>The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.</description>
+      <content:encoded><![CDATA[<p><img src="pix/open-graph-protocol.png" alt="How My Links Got Their Pictures" /></p>
+<p>Paste a link to this site into LinkedIn, or Slack, or a text message, and a little card unfurls: a title, a sentence, and a picture. That card is doing a lot of quiet work — it's the difference between a friend tapping your link and a friend scrolling past a naked blue URL.</p>
+<p>For a long time, every link to this site unfurled with the <em>same</em> picture — a generic photo of me that had nothing to do with whatever article I was actually sharing. This is the story of the protocol that fixes that, and the three traps I fell into making it work on a site like mine.</p>
+<h2>🔗 The protocol nobody told you about</h2>
+<p>The technology is called the <strong>Open Graph protocol</strong>, and you've been looking at its output for years without knowing its name. Facebook published it in 2010 so that a shared link could carry a title, a description, and an image into the news feed. It caught on, and now essentially every platform that renders a &quot;link preview&quot; — LinkedIn, X, Slack, Discord, iMessage, WhatsApp, Signal — reads the same tags.</p>
+<p>The tags live in the <code>&lt;head&gt;</code> of your HTML, and they're almost insultingly simple:</p>
+<pre><code class="language-html">&lt;meta property=&quot;og:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;The protocol behind every link preview, and three traps I hit.&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/&quot; /&gt;
+&lt;meta property=&quot;og:type&quot; content=&quot;article&quot; /&gt;
+</code></pre>
+<p>That's it. <code>og:title</code>, <code>og:description</code>, and <code>og:image</code> are the three that matter; the others are polish. There is no JavaScript, no API, no SDK. You write five lines of HTML and the entire internet's worth of chat apps suddenly know how to show your link off.</p>
+<h2>🐦 Twitter wanted to be different</h2>
+<p>X — Twitter, when this all started — decided it needed its own parallel set of tags, prefixed <code>twitter:</code> instead of <code>og:</code>:</p>
+<pre><code class="language-html">&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot; /&gt;
+&lt;meta name=&quot;twitter:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
+&lt;meta name=&quot;twitter:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
+</code></pre>
+<p>The one that does real work is <code>twitter:card</code>. Set it to <code>summary_large_image</code> and you get the big edge-to-edge picture instead of a cramped thumbnail. The good news is that Twitter falls back to your Open Graph tags for anything it can't find a <code>twitter:</code> version of — so in practice you write the <code>og:</code> tags, add <code>twitter:card</code> on top, and you're covered everywhere. I emit both on every page, belt and suspenders.</p>
+<p>One quirk worth knowing: since around 2023, X often renders link cards as <em>just the image</em> with the domain stamped on it, dropping the title and description text that LinkedIn shows. That's a display choice on their end, not a mistake in your tags. Your picture still shows up large.</p>
+<h2>🤖 The crawler doesn't run your code</h2>
+<p>Here is the single most important fact about Open Graph, and the one that caused all my grief: <strong>the thing reading your tags is a dumb robot, not a browser.</strong></p>
+<p>When you paste a link, the platform sends out a crawler — LinkedIn's is called <code>LinkedInBot</code>, Twitter's is <code>Twitterbot</code> — to fetch your page. That crawler downloads the raw HTML and reads the meta tags. It does <strong>not</strong> run your JavaScript. It does not wait for your single-page app to boot, fetch data, and render. It reads what the server hands it, on the first byte, and leaves.</p>
+<p>For a normal website with real HTML pages, this is fine. For my site, it was a disaster, and to explain why I have to admit how this site is built.</p>
+<h2>🪤 Trap one: the fragment that never arrives</h2>
+<p>timbeach.com is a single-page app. Every article lives at a URL like <code>timbeach.com/#/article/how-tmux-works</code>. That <code>#</code> is a <em>hash fragment</em>, and the site's router watches it to decide which article to show — all in the browser, all in JavaScript.</p>
+<p>Here's the problem, and it's baked into the web itself: <strong>the part of a URL after the <code>#</code> is never sent to the server.</strong> It's a client-side-only construct, by design, going back to the original purpose of fragments as &quot;jump to this anchor on the page.&quot; So when LinkedIn's crawler fetches <code>timbeach.com/#/article/how-tmux-works</code>, the server only ever sees a request for <code>timbeach.com/</code>. The crawler gets my homepage, reads the homepage's generic OG tags, and shows that same generic photo of me — no matter which article the link pointed to.</p>
+<p>Two strikes, both fatal: the crawler can't run the JavaScript that would pick the right article, <em>and</em> it can't even see which article was requested. There is no clever tag I could add to fix this. The hash URL is a dead end at the protocol level.</p>
+<p>The fix is to stop asking a hash URL to do a server's job. At deploy time, a script now walks every article and writes a real, honest HTML file at a real path — <code>a/how-tmux-works/index.html</code> — with that article's own Open Graph tags baked in. That's a page the crawler can actually fetch and read. A human who clicks it gets a one-line redirect into the usual single-page reader, so the experience is unchanged; only the URL you <em>share</em> is different. Crawlers read the static tags; people land in the app. Everybody gets what they came for.</p>
+<h2>🌫️ Trap two: the blur</h2>
+<p>I shipped the share pages, pasted a link, and there it was — the right article's image, finally. Except it was <em>blurry</em>.</p>
+<p>The culprit was aspect ratio. Open Graph images want to be <strong>1200×630 pixels</strong> — a specific, slightly-wider-than-2:1 rectangle. The image I'd handed it was a 1536×1024 screenshot. When the crawler gets an image that isn't the right shape, it crops and resamples it to fit, then re-encodes the result as a compressed JPEG. For a screenshot full of small text, that round of squashing and recompression turns crisp pixels to mush.</p>
+<p>Worse, a couple of my images were smaller than 1200 pixels wide, and platforms will quietly <em>demote</em> an undersized image — showing it as a tiny thumbnail off to the side instead of the big card. Same tags, completely different result, purely because of pixel dimensions.</p>
+<p>The fix was to stop handing crawlers raw images and start handing them finished cards. Now the publish pipeline composites every article's image onto an exact 1200×630 canvas — the whole image, scaled to fit, centered on a dark background that matches the site, downsampled once with a good filter. The crawler receives something already the precise shape and size it wants, so it has nothing left to crop or resample. The blur is gone, and a square diagram or an undersized photo gets the same clean treatment as a perfect screenshot.</p>
+<h2>♻️ Trap three: the cache that never forgets</h2>
+<p>This one is the cruelest, because everything was <em>working</em> when it bit me.</p>
+<p>I'd been iterating — first a plain text card, then the real image, then the sharp composited version — and each time I redeployed and re-checked the preview. At one point the preview reverted to showing an <em>old</em> version I thought I'd deleted two iterations ago. The file on my server was unambiguously the new one; I checked the bytes by hand. And yet LinkedIn kept showing the stale one.</p>
+<p>Platforms cache Open Graph images aggressively, and they cache them <strong>by URL</strong>. My image had lived at the same URL the whole time — <code>.../og.png</code> — while its contents changed underneath. LinkedIn had fetched that URL early, stored the bytes, and from then on it served its copy without ever asking my server whether the image had changed. Re-scraping the <em>page</em> refreshed the tags but not the cached <em>image</em>. The URL was the cache key, the URL never changed, so the cache never expired.</p>
+<p>The fix is a trick as old as web development: put a fingerprint of the contents into the filename. The card is now named after a hash of its own bytes — <code>og-de50d8b938.png</code> — so the moment the image changes, its filename changes, and therefore its URL changes, and therefore every cache on earth treats it as a brand-new image it's never seen. When nothing changes, the name stays put and the cache stays valid. You only bust the cache exactly when you mean to.</p>
+<h2>🌟 The whole trick, in one breath</h2>
+<p>Open Graph is a beautiful little protocol: five lines of HTML buy you a polished presence in every chat app and feed on the internet. But it rests on one assumption — that a crawler can fetch a real page and read real tags — and the moment your site bends that assumption, you find out exactly how much was riding on it.</p>
+<p>If you take three things from my bruises:</p>
+<ul>
+<li><strong>Crawlers don't run JavaScript.</strong> If your content only exists after your app boots, the crawler will never see it. Serve real HTML with real tags at a real URL.</li>
+<li><strong>Hand over a finished 1200×630 image,</strong> not a raw one. Let the crawler do as little as possible, and it can't make your picture worse.</li>
+<li><strong>Fingerprint the filename</strong> so the URL changes when — and only when — the image does. Otherwise some cache, somewhere, will haunt you with a picture you killed days ago.</li>
+</ul>
+<p>I added a read-aloud voice to this blog last month and learned that two parsers will always eventually disagree. This month I learned that a crawler is just a very literal reader who refuses to run your code, resizes your art without asking, and never throws anything away. Build for that reader, and your links will finally look like they mean something.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Still Really Simple: A Short History of RSS (and How This Site Uses It)</title>
+      <link>https://timbeach.com/#/article/rss-still-really-simple</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/rss-still-really-simple</guid>
+      <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
+      <description>A short history of RSS — what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.</description>
+      <content:encoded><![CDATA[<p><img src="pix/rss.png" alt="The orange RSS feed icon — the quiet symbol of web syndication" /></p>
+<p>There's a small orange icon you don't see much anymore. For about a decade it lived in the corner of every browser's address bar, and then one day it quietly vanished. The technology behind it never did — you're using it right now if you listen to podcasts, and you can use it to read this site. No account, no app, no algorithm deciding what you get to see.</p>
+<p>That technology is RSS. This is what it is, where it came from, and exactly how the feed for this website gets built.</p>
+<h2>What RSS actually is</h2>
+<p>RSS is a plain-text file that a website publishes and keeps up to date. It lists the site's recent content — each entry with a title, a link, a short description, and a date — in a structured format that software can read. That's the whole idea.</p>
+<p>You point a program called a <em>feed reader</em> at the file's address. The reader checks the file every so often, notices when new entries appear, and shows them to you in a tidy, chronological list. Subscribe to a dozen sites and your reader becomes a single inbox for everything you care about — in the order it was published, with nothing injected and nothing hidden.</p>
+<p>The crucial part is who's in charge. There's no middleman. The site publishes the file; your reader fetches it directly. No company sits between you and the writer deciding what's worth your attention. You subscribed, so you get everything.</p>
+<h2>A short, contentious history</h2>
+<p>RSS was born at Netscape in 1999 as a way to fill the &quot;channels&quot; on the My Netscape portal. The acronym has meant three different things over the years, which tells you something about how its history went: it started as <strong>RDF Site Summary</strong>, was softened to <strong>Rich Site Summary</strong>, and finally settled — thanks largely to Dave Winer of UserLand Software — as <strong>Really Simple Syndication</strong>.</p>
+<p>That naming muddle was a symptom. Through the early 2000s, development splintered between camps with different technical philosophies, and the versions multiplied: 0.90, 0.91, 0.92, 1.0, and eventually RSS 2.0 in 2002, which froze the format and is what most feeds — including this one — still use today. The friction got bad enough that a rival format, <strong>Atom</strong>, was created in 2005 to do the same job more cleanly. Both still exist, readers support both, and the war is a museum piece now.</p>
+<p>Then came the golden age. Google Reader launched in 2005 and, for a while, RSS was simply how the technical web read the technical web. And then, in 2013, Google shut Reader down. The headlines wrote themselves: <em>RSS is dead.</em></p>
+<p>It wasn't. It just got quiet. Every podcast on earth is distributed as an RSS feed — that's what a podcast <em>is</em>, underneath. Newsletters, news sites, and blogs still publish feeds. A healthy ecosystem of independent readers survived Reader's death and arguably got better for it. RSS didn't lose; it just stopped being fashionable, which on today's web is nearly a compliment.</p>
+<h2>Why it's still worth using</h2>
+<p>The pitch is the same as it was in 2005, only more so now that the alternative is so much worse:</p>
+<ul>
+<li><strong>No algorithm.</strong> You see every post from everyone you subscribed to, newest first. Nothing is boosted, throttled, or reordered to keep you scrolling.</li>
+<li><strong>No account, no tracking.</strong> Your reader fetches a file. The site doesn't know who subscribed, and there's no login standing between you and the words.</li>
+<li><strong>It's yours and it's portable.</strong> Your subscription list lives in your reader and exports as a small file (called OPML) you can carry to any other reader. Nobody can lock you in.</li>
+<li><strong>It's calm.</strong> No infinite scroll, no notifications begging for your time. You read what's new and you're done.</li>
+</ul>
+<p>For a personal site like this one, RSS is the honest way to say &quot;here's how to follow along&quot; without asking anyone to make an account or trust a platform.</p>
+<h2>How the feed works on this site</h2>
+<p>Here's the part specific to this site. It is fully static — no database, no backend — so the feed is generated ahead of time and served as a plain file at:</p>
+<p><code>https://timbeach.com/feed.xml</code></p>
+<p>Everything here, including the feed, is built from a single source of truth: a file called <code>articles.json</code> that lists every article with its title, date, tags, and a one-sentence summary. The homepage reads it to draw the article cards. A small Python script named <code>build_feed.py</code> reads the very same file to build the feed.</p>
+<p>When the script runs, it sorts every article by date, newest first, and writes one entry per article — each carrying the title, the publish date, a permanent link, and the summary as its description. Then it does something many feeds don't: it embeds the <strong>full text</strong> of each article, not just an excerpt, so a reader can show you the whole piece without ever visiting the site.</p>
+<p>That last point matters. Many feeds give you a teaser and make you click through. This one hands over the complete article, rendered from the same markdown the website itself uses.</p>
+<p>The build runs automatically as part of deploying the site. The deploy script validates everything, regenerates the feed from the current <code>articles.json</code>, and ships it alongside the rest of the static files. There's no live server assembling the feed on request — by the time you fetch it, it's already a finished document sitting on disk. Fast, cacheable, and impossible to break at read time.</p>
+<p>So when I publish something new, the feed updates itself as a side effect of the same command that updates the site. No separate step, nothing to forget. The orange icon may be gone from your browser, but the file it pointed to is still here, still really simple, and still the best way to follow along.</p>
+<h2>Subscribe</h2>
+<p>Paste this into any feed reader:</p>
+<p><code>https://timbeach.com/feed.xml</code></p>
+<p>That's the whole setup. No account to make, nothing to install beyond a reader you like. Welcome to the quiet web.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Why Claude Code Keeps Asking for Permission (and How to Make It Stop)</title>
+      <link>https://timbeach.com/#/article/claude-code-permission-modes</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/claude-code-permission-modes</guid>
+      <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Permission mode is fixed at startup, so resumed sessions silently reset to prompting — and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.</description>
+      <content:encoded><![CDATA[<blockquote>
+<p><strong>Disclaimer:</strong> never do this. It's too dangerous, and I accept no responsibility for explaining how this works here 😉 — but for real, don't do this. This article is purely for academic interest.</p>
+</blockquote>
+<p><img src="pix/bypass-permissions.png" alt="A mock warning poster reading &quot;DON'T DO THIS — too dangerous&quot; beside a Claude Code terminal running claude --dangerously-skip-permissions in BYPASS MODE: no permissions, no prompts, no guardrails. A stop-hand sign and danger tape sit below icons reading can delete everything, runs any command, can destroy data, full access to the internet." /></p>
+<p>If you run Claude Code with <code>--dangerously-skip-permissions</code> every single launch, and you've noticed that <em>resumed</em> sessions are the worst offenders for nagging you to approve things — this one's for you. The behavior isn't a bug. It's a consequence of how permission <strong>mode</strong> works, and once you understand it the fix is one line of config.</p>
+<h2>The core idea: mode is set at startup, not per-turn</h2>
+<p>Claude Code has a few permission <strong>modes</strong>. The strongest is <code>bypassPermissions</code> — the true &quot;no guardrails, never ask&quot; mode. The critical thing to understand:</p>
+<blockquote>
+<p>A session's permission mode is locked in <strong>when the session starts</strong>. It is runtime state, not a setting that gets re-read on every action.</p>
+</blockquote>
+<p>There are exactly two ways a session enters <code>bypassPermissions</code>:</p>
+<ol>
+<li>You launch with the <code>--dangerously-skip-permissions</code> flag, or</li>
+<li>You set <code>permissions.defaultMode</code> to <code>bypassPermissions</code> in your settings, which is read <strong>at startup</strong>.</li>
+</ol>
+<p>That word <em>startup</em> is the whole story.</p>
+<h2>Why resumed sessions are the worst</h2>
+<p>Here's the pattern that drives people up the wall:</p>
+<ul>
+<li><strong>Fresh session with the flag</strong> → bypass mode → blissful silence.</li>
+<li><strong>Leave it open for hours</strong> → it asks <em>less and less</em>, because every &quot;yes, and don't ask again&quot; you click gets appended to your allow-list. The session is learning.</li>
+<li><strong>Exit, then <code>claude --resume</code> or <code>claude -c</code></strong> → the mode resets to <code>default</code>, and unless you re-type the flag, you're back to approving everything from scratch.</li>
+</ul>
+<p>So the sessions that feel the most annoying — the ones you're returning to from yesterday — are exactly the ones where the flag from the original launch no longer applies. You didn't do anything wrong. The flag just never persisted.</p>
+<h2>The fix: make bypass your default</h2>
+<p>Add this to <code>~/.claude/settings.json</code>:</p>
+<pre><code class="language-json">{
+  &quot;permissions&quot;: {
+    &quot;defaultMode&quot;: &quot;bypassPermissions&quot;
+  }
+}
+</code></pre>
+<p>Now <strong>every</strong> session — fresh, resumed, or background — starts in bypass mode with no flag required. You can stop typing <code>--dangerously-skip-permissions</code> entirely.</p>
+<p>One related setting worth knowing: <code>skipDangerousModePermissionPrompt: true</code> only suppresses the scary red &quot;are you sure you want bypass mode?&quot; <em>warning dialog</em>. It does <strong>not</strong> put you in bypass mode. People conflate the two and wonder why they're still being asked. Different knob.</p>
+<h2>The Shift+Tab trap</h2>
+<p>Here's where a lot of people (myself included) waste five minutes: <strong>Shift+Tab does not cycle to bypass.</strong></p>
+<p>Tap Shift+Tab at the prompt and you'll cycle through:</p>
+<ul>
+<li><strong>normal</strong> — prompts on everything</li>
+<li><strong>accept edits on</strong> — auto-approves file edits, still prompts on shell commands</li>
+<li><strong>plan mode on</strong> — read-only, proposes a plan first</li>
+<li><strong>auto mode on</strong> — a smart classifier that auto-approves anything it judges safe and only stops for genuinely destructive or irreversible actions</li>
+</ul>
+<p>Notice what's missing: <code>bypassPermissions</code>. It is <strong>deliberately excluded</strong> from the interactive cycle. It's the one mode with zero guardrails, so the designers made it reachable only via the launch flag or the startup setting — never a keystroke. If you're hammering Shift+Tab in a running session waiting for &quot;bypass permissions&quot; to show up, it never will. That's the safety boundary working as intended, not a broken session.</p>
+<h2>What to do with sessions that are already running</h2>
+<p>Because mode is fixed at startup, editing your settings <strong>does not</strong> retroactively flip a session that's already live. For those:</p>
+<ul>
+<li><strong>Want the most relief without restarting?</strong> Shift+Tab until it reads <strong>auto mode on</strong>. It kills the vast majority of prompts — auto-approving routine work and only pausing on the genuinely dangerous stuff (drops, wipes, <code>rm -rf</code>). For most workflows you won't feel the difference from bypass.</li>
+<li><strong>Want true zero-prompt bypass?</strong> Exit and bring the session back with <code>claude -c</code> or <code>claude --resume</code>. On relaunch it reads your new <code>defaultMode</code> and comes back in real bypass mode, with your full context intact.</li>
+</ul>
+<h2>One honest caveat</h2>
+<p><code>bypassPermissions</code> means <em>zero</em> prompts, including for genuinely destructive actions. If your day involves <code>sudo</code>, disk partitioning, or live database work, a fat-fingered command goes through with no &quot;are you sure?&quot; If you want a safer middle ground, set <code>defaultMode</code> to <code>acceptEdits</code> (auto-approves edits, still pauses on shell commands) or lean on <strong>auto mode</strong>, which is smart enough to auto-approve the safe 95% and stop on the scary 5%.</p>
+<h2>Seriously, though: do it in a sandbox</h2>
+<p>The permission prompt is a safety net, and turning it off entirely means you've removed the one thing standing between an agent and your real filesystem, your real credentials, your real production database. So if you're going to run with no guardrails, put a <em>different</em> set of guardrails around the whole thing: run it in a sandbox.</p>
+<p>That can mean a few things, in rough order of effort:</p>
+<ul>
+<li><strong>Claude Code's own sandbox.</strong> There's a <code>sandbox</code> block in settings that confines tool execution — filesystem write-jails, network allow/deny lists, the works. Bypassing <em>prompts</em> while still <em>sandboxing execution</em> is a genuinely reasonable combo: no nagging, but a fat-fingered <code>rm -rf /</code> can't escape the box.</li>
+<li><strong>A container or VM.</strong> Run the whole session inside Docker, a throwaway VM, or a dev container with only the project mounted and nothing sensitive in reach. If it all goes sideways, you <code>docker rm</code> the blast radius.</li>
+<li><strong>A scratch user / scratch machine.</strong> No prod creds in the environment, no SSH keys to your real infrastructure, nothing in <code>~</code> you'd cry over.</li>
+</ul>
+<p>The principle: <strong>never combine &quot;no prompts&quot; with &quot;full access to things you care about.&quot;</strong> Remove one or the other. Bypass mode is a lot less scary when the worst it can reach is a disposable container.</p>
+<p>But if you've already been launching with <code>--dangerously-skip-permissions</code> every time, setting <code>defaultMode: bypassPermissions</code> isn't <em>new</em> risk. It just makes your existing habit the default — and finally fixes the resumed-session nagging for good.</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>Claude /tips: The Complete List</title>
       <link>https://timbeach.com/#/article/claude-tips-complete-list</link>
