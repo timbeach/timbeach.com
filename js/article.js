@@ -163,6 +163,32 @@ function parseMarkdown(content) {
     }
   );
 
+  // Handle blockquotes — a run of consecutive lines starting with '>' becomes
+  // a <blockquote> wrapping a single <p>, mirroring markdown-it/commonmark
+  // (consecutive '>' lines with no internal blank line are ONE paragraph).
+  // Emitting the inner <p> is what preserves TTS parity: both the client
+  // selector (p, h2..h4, li) and server extract_paragraphs (h2..h4, p, li)
+  // pick up that <p>, so the quote is read aloud identically on both sides.
+  // Inner lines are joined with '\n' to match commonmark's <p>a\nb</p>
+  // get_text(). Replace with a placeholder to protect from <p> wrapping.
+  const quotePlaceholders = [];
+  let quoteIndex = 0;
+  processedContent = processedContent.replace(
+    /((?:^>.*$\n?)+)/gm,
+    (quoteBlock) => {
+      const inner = quoteBlock
+        .trim()
+        .split('\n')
+        .map((line) => line.replace(/^>\s?/, ''))
+        .join('\n');
+      const html = `<blockquote><p>${applyInlines(inner)}</p></blockquote>`;
+      const placeholder = `__QUOTE_BLOCK_${quoteIndex}__`;
+      quotePlaceholders.push({ placeholder, html });
+      quoteIndex++;
+      return placeholder;
+    }
+  );
+
   // Handle horizontal rules — a line of three or more dashes becomes an <hr>.
   // Mirrors the server's markdown-it output (thematic_break), which is excluded
   // from the TTS paragraph selector, so client/server paragraph parity holds.
@@ -215,6 +241,12 @@ function parseMarkdown(content) {
 
   // Restore list blocks
   listPlaceholders.forEach(({ placeholder, html }) => {
+    processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
+    processedContent = processedContent.replace(placeholder, html);
+  });
+
+  // Restore blockquote blocks
+  quotePlaceholders.forEach(({ placeholder, html }) => {
     processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
     processedContent = processedContent.replace(placeholder, html);
   });

@@ -1,4 +1,21 @@
 {
+  "claude-code-permission-modes.md": {
+    "title": "Why Claude Code Keeps Asking for Permission (and How to Make It Stop)",
+    "date": "2026-06-06",
+    "tags": [
+      "claude-code",
+      "cli",
+      "permissions",
+      "tips",
+      "workflow"
+    ],
+    "emoji": "\ud83d\udd13",
+    "summary": "Permission mode is fixed at startup, so resumed sessions silently reset to prompting \u2014 and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.",
+    "audio": "audio/claude-code-permission-modes.ogg",
+    "timings": "audio/claude-code-permission-modes.timings.json",
+    "voice": "bm_lewis",
+    "duration": 383.424
+  },
   "claude-tips-complete-list.md": {
     "title": "Claude /tips: The Complete List",
     "date": "2026-06-04",

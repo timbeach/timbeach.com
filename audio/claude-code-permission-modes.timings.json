@@ -1,0 +1,252 @@
+{
+  "voice": "bm_lewis",
+  "duration": 383.424,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 13.354666666666667,
+      "text": "Disclaimer: never do this. It's too dangerous, and I accept no responsibility for explaining how this works here \ud83d\ude09 \u2014 but for real, don't do this. This article is purely for academic interest."
+    },
+    {
+      "idx": 1,
+      "start": 13.354666666666667,
+      "end": 33.088,
+      "text": "If you run Claude Code with --dangerously-skip-permissions every single launch, and you've noticed that resumed sessions are the worst offenders for nagging you to approve things \u2014 this one's for you. The behavior isn't a bug. It's a consequence of how permission mode works, and once you understand it the fix is one line of config."
+    },
+    {
+      "idx": 2,
+      "start": 33.088,
+      "end": 36.736,
+      "text": "The core idea: mode is set at startup, not per-turn"
+    },
+    {
+      "idx": 3,
+      "start": 36.736,
+      "end": 46.57066666666667,
+      "text": "Claude Code has a few permission modes. The strongest is bypassPermissions \u2014 the true \"no guardrails, never ask\" mode. The critical thing to understand:"
+    },
+    {
+      "idx": 4,
+      "start": 46.57066666666667,
+      "end": 54.912,
+      "text": "A session's permission mode is locked in when the session starts. It is runtime state, not a setting that gets re-read on every action."
+    },
+    {
+      "idx": 5,
+      "start": 54.912,
+      "end": 58.794666666666664,
+      "text": "There are exactly two ways a session enters bypassPermissions:"
+    },
+    {
+      "idx": 6,
+      "start": 58.794666666666664,
+      "end": 62.464,
+      "text": "You launch with the --dangerously-skip-permissions flag, or"
+    },
+    {
+      "idx": 7,
+      "start": 62.464,
+      "end": 68.672,
+      "text": "You set permissions.defaultMode to bypassPermissions in your settings, which is read at startup."
+    },
+    {
+      "idx": 8,
+      "start": 68.672,
+      "end": 71.14666666666666,
+      "text": "That word startup is the whole story."
+    },
+    {
+      "idx": 9,
+      "start": 71.14666666666666,
+      "end": 73.344,
+      "text": "Why resumed sessions are the worst"
+    },
+    {
+      "idx": 10,
+      "start": 73.344,
+      "end": 76.24533333333333,
+      "text": "Here's the pattern that drives people up the wall:"
+    },
+    {
+      "idx": 11,
+      "start": 76.24533333333333,
+      "end": 81.64266666666667,
+      "text": "Fresh session with the flag \u2192 bypass mode \u2192 blissful silence."
+    },
+    {
+      "idx": 12,
+      "start": 81.64266666666667,
+      "end": 92.05333333333333,
+      "text": "Leave it open for hours \u2192 it asks less and less, because every \"yes, and don't ask again\" you click gets appended to your allow-list. The session is learning."
+    },
+    {
+      "idx": 13,
+      "start": 92.05333333333333,
+      "end": 101.61066666666666,
+      "text": "Exit, then claude --resume or claude -c \u2192 the mode resets to default, and unless you re-type the flag, you're back to approving everything from scratch."
+    },
+    {
+      "idx": 14,
+      "start": 101.61066666666666,
+      "end": 115.712,
+      "text": "So the sessions that feel the most annoying \u2014 the ones you're returning to from yesterday \u2014 are exactly the ones where the flag from the original launch no longer applies. You didn't do anything wrong. The flag just never persisted."
+    },
+    {
+      "idx": 15,
+      "start": 115.712,
+      "end": 118.10133333333333,
+      "text": "The fix: make bypass your default"
+    },
+    {
+      "idx": 16,
+      "start": 118.10133333333333,
+      "end": 122.02666666666667,
+      "text": "Add this to ~/.claude/settings.json:"
+    },
+    {
+      "idx": 17,
+      "start": 122.02666666666667,
+      "end": 133.03466666666668,
+      "text": "Now every session \u2014 fresh, resumed, or background \u2014 starts in bypass mode with no flag required. You can stop typing --dangerously-skip-permissions entirely."
+    },
+    {
+      "idx": 18,
+      "start": 133.03466666666668,
+      "end": 150.80533333333332,
+      "text": "One related setting worth knowing: skipDangerousModePermissionPrompt: true only suppresses the scary red \"are you sure you want bypass mode?\" warning dialog. It does not put you in bypass mode. People conflate the two and wonder why they're still being asked. Different knob."
+    },
+    {
+      "idx": 19,
+      "start": 150.80533333333332,
+      "end": 152.512,
+      "text": "The Shift+Tab trap"
+    },
+    {
+      "idx": 20,
+      "start": 152.512,
+      "end": 159.552,
+      "text": "Here's where a lot of people (myself included) waste five minutes: Shift+Tab does not cycle to bypass."
+    },
+    {
+      "idx": 21,
+      "start": 159.552,
+      "end": 162.79466666666667,
+      "text": "Tap Shift+Tab at the prompt and you'll cycle through:"
+    },
+    {
+      "idx": 22,
+      "start": 162.79466666666667,
+      "end": 164.69333333333333,
+      "text": "normal \u2014 prompts on everything"
+    },
+    {
+      "idx": 23,
+      "start": 164.69333333333333,
+      "end": 169.536,
+      "text": "accept edits on \u2014 auto-approves file edits, still prompts on shell commands"
+    },
+    {
+      "idx": 24,
+      "start": 169.536,
+      "end": 173.056,
+      "text": "plan mode on \u2014 read-only, proposes a plan first"
+    },
+    {
+      "idx": 25,
+      "start": 173.056,
+      "end": 182.86933333333334,
+      "text": "auto mode on \u2014 a smart classifier that auto-approves anything it judges safe and only stops for genuinely destructive or irreversible actions"
+    },
+    {
+      "idx": 26,
+      "start": 182.86933333333334,
+      "end": 208.93866666666668,
+      "text": "Notice what's missing: bypassPermissions. It is deliberately excluded from the interactive cycle. It's the one mode with zero guardrails, so the designers made it reachable only via the launch flag or the startup setting \u2014 never a keystroke. If you're hammering Shift+Tab in a running session waiting for \"bypass permissions\" to show up, it never will. That's the safety boundary working as intended, not a broken session."
+    },
+    {
+      "idx": 27,
+      "start": 208.93866666666668,
+      "end": 211.712,
+      "text": "What to do with sessions that are already running"
+    },
+    {
+      "idx": 28,
+      "start": 211.712,
+      "end": 219.648,
+      "text": "Because mode is fixed at startup, editing your settings does not retroactively flip a session that's already live. For those:"
+    },
+    {
+      "idx": 29,
+      "start": 219.648,
+      "end": 238.69866666666667,
+      "text": "Want the most relief without restarting? Shift+Tab until it reads auto mode on. It kills the vast majority of prompts \u2014 auto-approving routine work and only pausing on the genuinely dangerous stuff (drops, wipes, rm -rf). For most workflows you won't feel the difference from bypass."
+    },
+    {
+      "idx": 30,
+      "start": 238.69866666666667,
+      "end": 252.62933333333334,
+      "text": "Want true zero-prompt bypass? Exit and bring the session back with claude -c or claude --resume. On relaunch it reads your new defaultMode and comes back in real bypass mode, with your full context intact."
+    },
+    {
+      "idx": 31,
+      "start": 252.62933333333334,
+      "end": 254.16533333333334,
+      "text": "One honest caveat"
+    },
+    {
+      "idx": 32,
+      "start": 254.16533333333334,
+      "end": 283.008,
+      "text": "bypassPermissions means zero prompts, including for genuinely destructive actions. If your day involves sudo, disk partitioning, or live database work, a fat-fingered command goes through with no \"are you sure?\" If you want a safer middle ground, set defaultMode to acceptEdits (auto-approves edits, still pauses on shell commands) or lean on auto mode, which is smart enough to auto-approve the safe 95% and stop on the scary 5%."
+    },
+    {
+      "idx": 33,
+      "start": 283.008,
+      "end": 285.5466666666667,
+      "text": "Seriously, though: do it in a sandbox"
+    },
+    {
+      "idx": 34,
+      "start": 285.5466666666667,
+      "end": 305.4293333333333,
+      "text": "The permission prompt is a safety net, and turning it off entirely means you've removed the one thing standing between an agent and your real filesystem, your real credentials, your real production database. So if you're going to run with no guardrails, put a different set of guardrails around the whole thing: run it in a sandbox."
+    },
+    {
+      "idx": 35,
+      "start": 305.4293333333333,
+      "end": 308.5013333333333,
+      "text": "That can mean a few things, in rough order of effort:"
+    },
+    {
+      "idx": 36,
+      "start": 308.5013333333333,
+      "end": 329.9626666666667,
+      "text": "Claude Code's own sandbox. There's a sandbox block in settings that confines tool execution \u2014 filesystem write-jails, network allow/deny lists, the works. Bypassing prompts while still sandboxing execution is a genuinely reasonable combo: no nagging, but a fat-fingered rm -rf / can't escape the box."
+    },
+    {
+      "idx": 37,
+      "start": 329.9626666666667,
+      "end": 345.25866666666667,
+      "text": "A container or VM. Run the whole session inside Docker, a throwaway VM, or a dev container with only the project mounted and nothing sensitive in reach. If it all goes sideways, you docker rm the blast radius."
+    },
+    {
+      "idx": 38,
+      "start": 345.25866666666667,
+      "end": 355.6053333333333,
+      "text": "A scratch user / scratch machine. No prod creds in the environment, no SSH keys to your real infrastructure, nothing in ~ you'd cry over."
+    },
+    {
+      "idx": 39,
+      "start": 355.6053333333333,
+      "end": 368.5973333333333,
+      "text": "The principle: never combine \"no prompts\" with \"full access to things you care about.\" Remove one or the other. Bypass mode is a lot less scary when the worst it can reach is a disposable container."
+    },
+    {
+      "idx": 40,
+      "start": 368.5973333333333,
+      "end": 383.424,
+      "text": "But if you've already been launching with --dangerously-skip-permissions every time, setting defaultMode: bypassPermissions isn't new risk. It just makes your existing habit the default \u2014 and finally fixes the resumed-session nagging for good."
+    }
+  ]
+}
