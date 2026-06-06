@@ -8,9 +8,9 @@
       "social",
       "frontend"
     ],
-    "emoji": "\ud83d\udd17",
+    "emoji": "🔗",
     "hero": "pix/open-graph-protocol.png",
-    "summary": "The Open Graph protocol gives every shared link its title, blurb, and picture \u2014 and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.",
+    "summary": "The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.",
     "audio": "audio/how-my-links-got-their-pictures.ogg",
     "timings": "audio/how-my-links-got-their-pictures.timings.json",
     "voice": "bm_lewis",
@@ -26,8 +26,8 @@
       "tips",
       "workflow"
     ],
-    "emoji": "\ud83d\udd13",
-    "summary": "Permission mode is fixed at startup, so resumed sessions silently reset to prompting \u2014 and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.",
+    "emoji": "🔓",
+    "summary": "Permission mode is fixed at startup, so resumed sessions silently reset to prompting — and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.",
     "audio": "audio/claude-code-permission-modes.ogg",
     "timings": "audio/claude-code-permission-modes.timings.json",
     "voice": "bm_lewis",
@@ -42,8 +42,8 @@
       "tips",
       "reverse-engineering"
     ],
-    "emoji": "\ud83d\udca1",
-    "summary": "Every tip Claude Code ships with \u2014 extracted by pointing Claude at its own binary \u2014 plus the keyboard shortcuts and sigils that aren't in the rotation.",
+    "emoji": "💡",
+    "summary": "Every tip Claude Code ships with — extracted by pointing Claude at its own binary — plus the keyboard shortcuts and sigils that aren't in the rotation.",
     "audio": "audio/claude-tips-complete-list.ogg",
     "timings": "audio/claude-tips-complete-list.timings.json",
     "voice": "bm_lewis",
@@ -57,7 +57,8 @@
       "fundamentals",
       "osi"
     ],
-    "emoji": "\ud83c\udf10",
+    "emoji": "🌐",
+    "summary": "A whiteboard walk-through of the seven layers — what each one actually does, and why “that's a Layer 7 problem” still means something even though the modern internet runs on TCP/IP.",
     "audio": "audio/osi-model-whiteboard.ogg",
     "timings": "audio/osi-model-whiteboard.timings.json",
     "voice": "af_bella",
@@ -74,7 +75,8 @@
       "agents",
       "testing"
     ],
-    "emoji": "\ud83d\udee4\ufe0f",
+    "emoji": "🛤️",
+    "summary": "Two words that sound alike and get used loosely but mean opposite things — a pipeline is a conveyor belt that work flows through; a harness is a jig that wraps a fixed thing to drive it. The distinction, with the instances we actually use.",
     "audio": "audio/pipeline-vs-harness.ogg",
     "timings": "audio/pipeline-vs-harness.timings.json",
     "voice": "bm_lewis",
@@ -91,7 +93,7 @@
       "subagents",
       "tutorial"
     ],
-    "emoji": "\ud83d\uddd2\ufe0f",
+    "emoji": "🗒️",
     "audio": "audio/how-to-config-obsidian.ogg",
     "timings": "audio/how-to-config-obsidian.timings.json",
     "voice": "bm_lewis",
@@ -107,7 +109,7 @@
       "devops",
       "tutorial"
     ],
-    "emoji": "\ud83d\udd25",
+    "emoji": "🔥",
     "audio": "audio/dependency-hell.ogg",
     "timings": "audio/dependency-hell.timings.json",
     "voice": "bm_lewis",
@@ -122,7 +124,7 @@
       "tutorial",
       "skills"
     ],
-    "emoji": "\ud83d\udee0\ufe0f",
+    "emoji": "🛠️",
     "audio": "audio/custom-claude-skills.ogg",
     "timings": "audio/custom-claude-skills.timings.json",
     "voice": "bm_lewis",
@@ -138,7 +140,7 @@
       "devops",
       "sop"
     ],
-    "emoji": "\ud83d\udccb",
+    "emoji": "📋",
     "audio": "audio/software-delivery-sop.ogg",
     "timings": "audio/software-delivery-sop.timings.json",
     "voice": "bm_lewis",
@@ -154,7 +156,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83e\udd16",
+    "emoji": "🤖",
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
@@ -169,7 +171,7 @@
       "security",
       "hardware"
     ],
-    "emoji": "\ud83c\udfb2",
+    "emoji": "🎲",
     "audio": "audio/trng-deep-dive.ogg",
     "timings": "audio/trng-deep-dive.timings.json",
     "voice": "bm_lewis",
@@ -183,7 +185,7 @@
       "deployment",
       "web"
     ],
-    "emoji": "\ud83d\ude80",
+    "emoji": "🚀",
     "audio": "audio/deploy-a-website.ogg",
     "timings": "audio/deploy-a-website.timings.json",
     "voice": "bm_lewis",
@@ -197,7 +199,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83d\udcac",
+    "emoji": "💬",
     "audio": "audio/install-signal-on-aegix.ogg",
     "timings": "audio/install-signal-on-aegix.timings.json",
     "voice": "bm_lewis",
@@ -211,7 +213,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "\ud83d\udda5\ufe0f",
+    "emoji": "🖥️",
     "audio": "audio/how-tmux-works.ogg",
     "timings": "audio/how-tmux-works.timings.json",
     "voice": "bm_lewis",
@@ -225,7 +227,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "\ud83d\udc65",
+    "emoji": "👥",
     "audio": "audio/second-aegix-user.ogg",
     "timings": "audio/second-aegix-user.timings.json",
     "voice": "bm_lewis",
@@ -239,7 +241,7 @@
       "aegix",
       "philosophy"
     ],
-    "emoji": "\ud83e\uddd8",
+    "emoji": "🧘",
     "audio": "audio/parsimony.ogg",
     "timings": "audio/parsimony.timings.json",
     "voice": "bm_lewis",
@@ -253,7 +255,7 @@
       "meta",
       "example"
     ],
-    "emoji": "\ud83d\udcdd",
+    "emoji": "📝",
     "audio": "audio/add-articles.ogg",
     "timings": "audio/add-articles.timings.json",
     "voice": "bm_lewis",
@@ -267,7 +269,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "\u26a1",
+    "emoji": "⚡",
     "audio": "audio/simplicity.ogg",
     "timings": "audio/simplicity.timings.json",
     "voice": "bm_lewis",
@@ -283,7 +285,7 @@
       "symbolism",
       "red-book"
     ],
-    "emoji": "\ud83c\udf19",
+    "emoji": "🌙",
     "audio": "audio/jungian-dream-notes.ogg",
     "timings": "audio/jungian-dream-notes.timings.json",
     "voice": "bm_lewis",
@@ -299,7 +301,8 @@
       "retrospective",
       "web-speech"
     ],
-    "emoji": "\ud83c\udf99\ufe0f",
+    "emoji": "🎙️",
+    "summary": "Adding read-aloud to this blog took three tries — Web Speech that stays silent on Linux, in-browser WASM that hung the page — before the dumb-in-retrospect fix: render the audio once at publish time and ship the bytes. Plus the two parser bugs hiding on the way.",
     "audio": "audio/how-my-blog-got-a-voice.ogg",
     "timings": "audio/how-my-blog-got-a-voice.timings.json",
     "voice": "bm_lewis",
@@ -315,7 +318,8 @@
       "linux",
       "git"
     ],
-    "emoji": "\ud83d\udce6",
+    "emoji": "📦",
+    "summary": "How my suckless edits travel from ~/.local/src into the AEGIX monorepo and out to the AUR as installable -git packages — a post-commit hook, four packages, and one rule: live on this machine is truth, the network is a manual gesture.",
     "audio": "audio/aegix-on-the-aur.ogg",
     "timings": "audio/aegix-on-the-aur.timings.json",
     "voice": "bm_lewis",
@@ -331,7 +335,8 @@
       "cli",
       "fzf"
     ],
-    "emoji": "\ud83e\uddf6",
+    "emoji": "🧶",
+    "summary": "A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread. The little fzf-picker-over-a-markdown-file I built to resume any session by name, plus the Unix gears that make it tick.",
     "audio": "audio/circleback.ogg",
     "timings": "audio/circleback.timings.json",
     "voice": "bm_lewis",
@@ -345,9 +350,9 @@
       "web",
       "feeds"
     ],
-    "emoji": "\ud83d\udce1",
+    "emoji": "📡",
     "section": "RSS",
-    "summary": "A short history of RSS \u2014 what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.",
+    "summary": "A short history of RSS — what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.",
     "audio": "audio/rss-still-really-simple.ogg",
     "timings": "audio/rss-still-really-simple.timings.json",
     "voice": "bm_lewis",

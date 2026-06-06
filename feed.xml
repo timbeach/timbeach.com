@@ -4,7 +4,7 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Sat, 06 Jun 2026 05:45:55 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 06 Jun 2026 06:21:50 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -316,7 +316,7 @@
       <link>https://timbeach.com/#/article/circleback</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/circleback</guid>
       <pubDate>Tue, 26 May 2026 00:00:00 +0000</pubDate>
-      <description></description>
+      <description>A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread. The little fzf-picker-over-a-markdown-file I built to resume any session by name, plus the Unix gears that make it tick.</description>
       <content:encoded><![CDATA[<h2>🧶 Future Me Has Receipts: Building <code>circleback</code></h2>
 <p><img src="pix/circleback.png" alt="circleback picker" /></p>
 <p>Here's what a normal week looks like for me:</p>
@@ -510,7 +510,7 @@ circleback daily --rebuild    # regenerate today's auto spine from the master li
       <link>https://timbeach.com/#/article/osi-model-whiteboard</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/osi-model-whiteboard</guid>
       <pubDate>Sat, 02 May 2026 00:00:00 +0000</pubDate>
-      <description></description>
+      <description>A whiteboard walk-through of the seven layers — what each one actually does, and why “that's a Layer 7 problem” still means something even though the modern internet runs on TCP/IP.</description>
       <content:encoded><![CDATA[<p>Sometimes the best way to lock in a concept is to grab a marker and start scribbling. I sketched out the OSI model recently — seven layers stacked top to bottom, with a few mnemonic hints squeezed into the margins. Here's the walk-through.</p>
 <h2>What the OSI Model Actually Is</h2>
 <p>The Open Systems Interconnection model is a conceptual framework that breaks network communication into seven distinct layers. It was published by ISO back in the 1980s, and while the modern internet runs on the looser TCP/IP model, OSI is still the lingua franca for <em>talking about</em> networking. When somebody says &quot;that's a Layer 7 problem&quot; or &quot;Layer 2 broadcast storm,&quot; they're speaking OSI.</p>
@@ -566,7 +566,7 @@ circleback daily --rebuild    # regenerate today's auto spine from the master li
       <link>https://timbeach.com/#/article/aegix-on-the-aur</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/aegix-on-the-aur</guid>
       <pubDate>Fri, 01 May 2026 00:00:00 +0000</pubDate>
-      <description></description>
+      <description>How my suckless edits travel from ~/.local/src into the AEGIX monorepo and out to the AUR as installable -git packages — a post-commit hook, four packages, and one rule: live on this machine is truth, the network is a manual gesture.</description>
       <content:encoded><![CDATA[<p>If you run <a href="https://aegixlinux.org">Aegix</a> — or you're an Arch / Artix tinkerer who likes the suckless stack — you can now <code>yay -S dwm-aegix-git</code> (or <code>st-aegix-git</code>, <code>dmenu-aegix-git</code>, <code>dwmblocks-aegix-git</code>) and pull down the exact builds I run on my own machine. This post is the short story of how that pipeline got built, and a couple of small gotchas worth knowing if you publish your own.</p>
 <h2>The problem</h2>
 <p>I edit my suckless tools the obvious way: in <code>~/.local/src/{dwm,st,dmenu,dwmblocks}</code>, then <code>sudo make clean install</code>. That's the source of truth on this machine. Two things needed solving:</p>
@@ -645,7 +645,7 @@ exec git &quot;$@&quot;
       <link>https://timbeach.com/#/article/pipeline-vs-harness</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/pipeline-vs-harness</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
-      <description></description>
+      <description>Two words that sound alike and get used loosely but mean opposite things — a pipeline is a conveyor belt that work flows through; a harness is a jig that wraps a fixed thing to drive it. The distinction, with the instances we actually use.</description>
       <content:encoded><![CDATA[<p>Two words that sound similar, get used loosely, and actually mean different things. Short version up top, then the nuance.</p>
 <h2>TL;DR</h2>
 <ul>
@@ -753,7 +753,7 @@ exec git &quot;$@&quot;
       <link>https://timbeach.com/#/article/how-my-blog-got-a-voice</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/how-my-blog-got-a-voice</guid>
       <pubDate>Sun, 26 Apr 2026 00:00:00 +0000</pubDate>
-      <description></description>
+      <description>Adding read-aloud to this blog took three tries — Web Speech that stays silent on Linux, in-browser WASM that hung the page — before the dumb-in-retrospect fix: render the audio once at publish time and ship the bytes. Plus the two parser bugs hiding on the way.</description>
       <content:encoded><![CDATA[<p><img src="pix/blog-got-a-voice.png" alt="How my blog got a voice" /></p>
 <p>Click <strong>▶ read aloud</strong> at the top of this article. A British man named Lewis is going to read it to you. He works for me now.</p>
 <p>This is a story about how I got there, and about all the wrong turns I took along the way. If you're considering adding text-to-speech to your site, please learn from my mistakes — there are at least four of them.</p>
