@@ -1,0 +1,126 @@
+{
+  "voice": "bm_lewis",
+  "duration": 253.269,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 17.109333333333332,
+      "text": "Every personal site used to have one: a little odometer in the footer ticking up with each visitor. They mostly disappeared, and the modern replacement is to bolt on an analytics suite that ships your readers' data to a third party in exchange for a dashboard you check twice a year."
+    },
+    {
+      "idx": 1,
+      "start": 17.109333333333332,
+      "end": 40.42666666666667,
+      "text": "That always felt like the wrong trade for a personal site. I wanted the number back without the surveillance \u2014 and it turns out a refresh-proof hit counter is about a hundred lines of PHP and a single JSON file. No database, no tracking script, nothing phoning home. There's one running in the footer of this very page. Here's how it works, and how to put one in your own footer."
+    },
+    {
+      "idx": 2,
+      "start": 40.42666666666667,
+      "end": 42.666666666666664,
+      "text": "Counting once, not every refresh"
+    },
+    {
+      "idx": 3,
+      "start": 42.666666666666664,
+      "end": 56.08533333333333,
+      "text": "The core rule is simple: each visitor counts once per day, no matter how many times they reload. The naive version \u2014 increment on every page load \u2014 produces a number that mostly measures your own refreshing."
+    },
+    {
+      "idx": 4,
+      "start": 56.08533333333333,
+      "end": 77.99466666666666,
+      "text": "So on each request the server looks at the visitor's IP and only bumps the total if it hasn't already seen that IP today. \"Today\" is measured in UTC, so the day boundary is the same for everyone. The headline number becomes a running sum of daily-unique visits: a reload never moves it, but a genuine returning reader counts again tomorrow."
+    },
+    {
+      "idx": 5,
+      "start": 77.99466666666666,
+      "end": 80.42666666666666,
+      "text": "Storing what you need, and nothing else"
+    },
+    {
+      "idx": 6,
+      "start": 80.42666666666666,
+      "end": 88.34133333333334,
+      "text": "This is the part I cared about most. The counter never writes a raw IP address to disk. Instead it stores a salted hash:"
+    },
+    {
+      "idx": 7,
+      "start": 88.34133333333334,
+      "end": 113.216,
+      "text": "The salt is a random value generated once per install and kept in a file that never leaves the server. Because the date is folded into the hash and the set of \"seen\" visitors is wiped every midnight, there is no way to link a visitor from one day to the next, and nothing sensitive sits at rest. If the data file leaked, it would be a list of opaque hashes \u2014 no addresses, no browsing history, nothing reversible."
+    },
+    {
+      "idx": 8,
+      "start": 113.216,
+      "end": 115.456,
+      "text": "The entire state on disk is this:"
+    },
+    {
+      "idx": 9,
+      "start": 115.456,
+      "end": 123.2,
+      "text": "seen holds only today's hashes, so it resets daily and never grows without bound. total carries forward forever."
+    },
+    {
+      "idx": 10,
+      "start": 123.2,
+      "end": 125.22666666666667,
+      "text": "The boring parts that make it correct"
+    },
+    {
+      "idx": 11,
+      "start": 125.22666666666667,
+      "end": 138.496,
+      "text": "A counter is a deceptively good little exercise in getting concurrency right, because two visitors can land on the same instant. Read-modify-write a shared file without care and you silently lose increments."
+    },
+    {
+      "idx": 12,
+      "start": 138.496,
+      "end": 167.168,
+      "text": "Two things prevent that. Every update takes an exclusive lock (flock) before it touches the file, so writes are serialized. And the new state is written to a temporary file and then renamed over the old one \u2014 an atomic swap on POSIX filesystems, so a reader never sees a half-written file even if the process dies mid-write. There is a small test that fires fifty hits in parallel from fifty different IPs and asserts the total lands at exactly fifty; without the lock, it doesn't."
+    },
+    {
+      "idx": 13,
+      "start": 167.168,
+      "end": 193.74933333333334,
+      "text": "The salt is generated inside that same lock \u2014 a subtlety worth calling out, because it is easy to miss. Generate it outside the lock and two visitors arriving in the very first moments of a fresh install could each mint a different salt and race to write it, quietly breaking deduplication for one of them. It only matters once, on the first day of a new install, which is exactly the kind of bug that never shows up in casual testing."
+    },
+    {
+      "idx": 14,
+      "start": 193.74933333333334,
+      "end": 195.54133333333334,
+      "text": "Dropping it on your own site"
+    },
+    {
+      "idx": 15,
+      "start": 195.54133333333334,
+      "end": 204.71466666666666,
+      "text": "The whole thing is one file, count.php. Copy it into your web root, add a few lines of HTML to show the number, and you are done:"
+    },
+    {
+      "idx": 16,
+      "start": 204.71466666666666,
+      "end": 216.46933333333334,
+      "text": "The span starts hidden and only appears once the count loads, so if PHP is ever unavailable the page simply looks normal \u2014 no broken widget, no error a reader would ever see."
+    },
+    {
+      "idx": 17,
+      "start": 216.46933333333334,
+      "end": 232.96,
+      "text": "On Apache or typical shared hosting there is nothing else to do; PHP files execute by default. On nginx you add a small scoped block so that only this one file runs through PHP, rather than enabling it across your whole web root:"
+    },
+    {
+      "idx": 18,
+      "start": 232.96,
+      "end": 233.92,
+      "text": "Borrow it"
+    },
+    {
+      "idx": 19,
+      "start": 233.92,
+      "end": 253.26933333333332,
+      "text": "It is on GitHub under an MIT license: github.com/timbeach/site-counter. One file, a README, a demo page, and the tests. Take it, change the emoji, seed it with the count from whatever you are migrating off of, and put a quiet little odometer back in your footer where it belongs."
+    }
+  ]
+}
