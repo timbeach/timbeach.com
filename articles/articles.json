@@ -1,4 +1,23 @@
 {
+  "the-terminal-setup-i-cant-work-without.md": {
+    "title": "The Terminal Setup I Built and Can't Work Without",
+    "date": "2026-06-08",
+    "tags": [
+      "terminal",
+      "tmux",
+      "suckless",
+      "aur",
+      "linux",
+      "claude-code"
+    ],
+    "emoji": "🗂️",
+    "hero": "pix/the-terminal-setup-i-cant-work-without.png",
+    "summary": "I patched suckless `tabbed` into a terminal I actually love: clickable, tmux-keyed tabs of real terminals — transparent, pywal-themed, and self-naming. Rename a Claude Code session and the tab follows live. One `yay` on any Arch box.",
+    "audio": "audio/the-terminal-setup-i-cant-work-without.ogg",
+    "timings": "audio/the-terminal-setup-i-cant-work-without.timings.json",
+    "voice": "bm_lewis",
+    "duration": 405.184
+  },
   "how-my-links-got-their-pictures.md": {
     "title": "How My Links Got Their Pictures",
     "date": "2026-06-10",

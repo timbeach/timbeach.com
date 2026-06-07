@@ -1,0 +1,192 @@
+{
+  "voice": "bm_lewis",
+  "duration": 405.184,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 22.805333333333333,
+      "text": "A couple of weeks ago I patched two tiny terminal programs into the setup I now run all day \u2014 and I'm not going back. It gives me tabs full of real terminals \u2014 click one to switch, or fly between them from the keyboard. They're see-through over my wallpaper and themed to match the rest of my desktop. And the part I still grin at every time: the tabs name themselves."
+    },
+    {
+      "idx": 1,
+      "start": 22.805333333333333,
+      "end": 34.77333333333333,
+      "text": "I called the result st-tabbed-aegix-git and put it on the AUR, so you can install it in one command on any Arch-based machine (we'll get there). Here's what it does \u2014 and why I built it."
+    },
+    {
+      "idx": 2,
+      "start": 34.77333333333333,
+      "end": 36.096,
+      "text": "What it actually is"
+    },
+    {
+      "idx": 3,
+      "start": 36.096,
+      "end": 59.52,
+      "text": "Two tiny programs, each doing one job. st is a terminal emulator \u2014 the window that shows your shell. tabbed is a generic little container that embeds other programs as tabs. Point tabbed at st and you get a strip of tabs across the top, each one a complete, independent terminal. A three-line launcher named stt glues them together. That's the whole thing."
+    },
+    {
+      "idx": 4,
+      "start": 59.52,
+      "end": 74.624,
+      "text": "Both come from suckless, a project whose entire philosophy is \"do the job in as little code as possible, then get out of the way.\" You don't need to know any of that to use this \u2014 but it's why the result is fast, small, and endlessly tweakable."
+    },
+    {
+      "idx": 5,
+      "start": 74.624,
+      "end": 77.22666666666667,
+      "text": "Why I reach for it instead of tmux"
+    },
+    {
+      "idx": 6,
+      "start": 77.22666666666667,
+      "end": 87.936,
+      "text": "If you've met tmux, you know it can carve a terminal into panes and windows. This scratches a similar itch, with two differences that won me over \u2014 and one honest caveat."
+    },
+    {
+      "idx": 7,
+      "start": 87.936,
+      "end": 116.37333333333333,
+      "text": "You can just click. A newcomer doesn't have to memorize a single command: click a tab to switch, scroll with the mouse wheel, done. The thing that actually broke me on tmux was scrollback \u2014 switch to another window, then try to scroll up through what it printed, and suddenly you're fumbling into \"copy mode\" keybindings before you can read your own output. Here, every tab is a genuine terminal with its own native scrollback. Switch to it, scroll up, read. No mode, no prefix, no ceremony."
+    },
+    {
+      "idx": 8,
+      "start": 116.37333333333333,
+      "end": 133.952,
+      "text": "Your tmux muscle memory still works. If you do live in tmux, I wired the keybindings to match: Ctrl+b then c for a new tab, n/p to move between them, and so on. So the newcomer clicks and the veteran never lifts their hands off home row. Both win."
+    },
+    {
+      "idx": 9,
+      "start": 133.952,
+      "end": 136.74666666666667,
+      "text": "The honest caveat: no detached sessions"
+    },
+    {
+      "idx": 10,
+      "start": 136.74666666666667,
+      "end": 163.15733333333333,
+      "text": "Here's the one thing you must know if you're coming from tmux. For years, tmux meant exactly one thing to me: start a long job on a server, detach, close my laptop, drive across town, ssh back in, reattach, and pick up precisely where I left off. This tool does not do that. It has no session persistence and nothing to detach from. It is a local development tool \u2014 tabs for the terminals on the machine right in front of you."
+    },
+    {
+      "idx": 11,
+      "start": 163.15733333333333,
+      "end": 177.664,
+      "text": "So they aren't really rivals; they just look alike. If you need a session that survives a disconnect, use tmux \u2014 that's still the right tool for it. If you want comfortable, clickable, good-looking tabs for your everyday local work, that's this."
+    },
+    {
+      "idx": 12,
+      "start": 177.664,
+      "end": 178.66666666666666,
+      "text": "Getting around"
+    },
+    {
+      "idx": 13,
+      "start": 178.66666666666666,
+      "end": 182.42133333333334,
+      "text": "Three ways to drive it \u2014 use whichever you like, or mix them:"
+    },
+    {
+      "idx": 14,
+      "start": 182.42133333333334,
+      "end": 191.59466666666665,
+      "text": "There's nothing to configure to get started. And if you do want to change a binding, it's a couple of lines in one file \u2014 that suckless hackability again."
+    },
+    {
+      "idx": 15,
+      "start": 191.59466666666665,
+      "end": 193.68533333333335,
+      "text": "It looks like the rest of my desktop"
+    },
+    {
+      "idx": 16,
+      "start": 193.68533333333335,
+      "end": 211.34933333333333,
+      "text": "The terminals are transparent over my wallpaper, and their colors come straight from pywal \u2014 so when I re-theme my desktop from a new wallpaper, the tabs re-theme right along with it. There's no separate config to keep in sync; it reads the same system colors everything else on my screen does."
+    },
+    {
+      "idx": 17,
+      "start": 211.34933333333333,
+      "end": 230.05866666666665,
+      "text": "(Getting the tab bar opaque while keeping the terminals see-through cost me an embarrassing afternoon chasing a single missing byte in how a color was stored \u2014 a bug that made 0.9 and 1.0 opacity look identical. It took far longer to find than to fix, which is the usual ratio.)"
+    },
+    {
+      "idx": 18,
+      "start": 230.05866666666665,
+      "end": 232.87466666666666,
+      "text": "Name your tabs \u2014 or let them name themselves"
+    },
+    {
+      "idx": 19,
+      "start": 232.87466666666666,
+      "end": 241.32266666666666,
+      "text": "Press Ctrl+b then , and a little prompt asks for a tab name. Type it, press enter, and that tab keeps that name. Classic."
+    },
+    {
+      "idx": 20,
+      "start": 241.32266666666666,
+      "end": 256.5973333333333,
+      "text": "But here's the feature I didn't actually build \u2014 I just got out of its way. A tab automatically shows the title of whatever's running in it. Your shell, vim, an ssh session \u2014 anything that sets the terminal title shows up on the tab, for free."
+    },
+    {
+      "idx": 21,
+      "start": 256.5973333333333,
+      "end": 278.08,
+      "text": "And this is where it gets fun if you work with Claude Code like I do. Claude sets the terminal title to the name of your current session. So my tabs label themselves with what I'm working on \u2014 and if I run /rename to rename a Claude session, the tab updates to match, live, while I watch. I rename the conversation; the tab follows. Every single time."
+    },
+    {
+      "idx": 22,
+      "start": 278.08,
+      "end": 299.776,
+      "text": "I want to be clear that this isn't some clever integration I wrote. Terminals have broadcast their title for decades; tabbed just listens. All I added was the opt-out \u2014 the manual Ctrl+b , name \u2014 so that a tab you've named by hand stops following along. I built the override, not the feature. The coolest thing in here was already in the box."
+    },
+    {
+      "idx": 23,
+      "start": 299.776,
+      "end": 301.2266666666667,
+      "text": "Install it anywhere"
+    },
+    {
+      "idx": 24,
+      "start": 301.2266666666667,
+      "end": 317.3546666666667,
+      "text": "It's on the AUR. If that's new to you: the Arch User Repository is a huge community catalog of install recipes for Arch-based systems \u2014 Arch, Artix, my own Aegix, and friends. With a helper like yay, installing from it is one line:"
+    },
+    {
+      "idx": 25,
+      "start": 317.3546666666667,
+      "end": 341.3333333333333,
+      "text": "That pulls down the terminal, the tabbed container, and the stt launcher, builds them, and you're done. Run stt and you've got tabs. It works on any Arch / Artix / Aegix box, not just mine. (If you're curious how these suckless tools get from my laptop to the AUR in the first place, I wrote that up separately: From ~/.local/src to the AUR.)"
+    },
+    {
+      "idx": 26,
+      "start": 341.3333333333333,
+      "end": 359.744,
+      "text": "Not on Arch? Nothing here is Arch-specific \u2014 these are suckless tools, so the install really is just git clone and sudo make clean install; the AUR package only automates that part. On Debian or Ubuntu you grab the build dependencies first, then build it from source:"
+    },
+    {
+      "idx": 27,
+      "start": 359.744,
+      "end": 380.88533333333334,
+      "text": "You'll also want st itself, which is rarely packaged outside Arch \u2014 so build it the same way (from AegixLinux/st or stock suckless st). For the extras: dmenu powers the rename prompt (Debian ships it in suckless-tools), xprop backs it (x11-utils), and any compositor like picom gives you the transparency."
+    },
+    {
+      "idx": 28,
+      "start": 380.88533333333334,
+      "end": 382.74133333333333,
+      "text": "Why this one matters to me"
+    },
+    {
+      "idx": 29,
+      "start": 382.74133333333333,
+      "end": 403.2853333333333,
+      "text": "This one stuck. It's load-bearing now \u2014 the place my actual work happens all day. It started as an itch about scrollback and turned into a couple hundred lines of C: a tmux-style keybinding mode, an honest fight with X11 transparency, tab colors wired to the system theme, and a package anyone can install."
+    },
+    {
+      "idx": 30,
+      "start": 403.2853333333333,
+      "end": 405.184,
+      "text": "yay -S st-tabbed-aegix-git"
+    }
+  ]
+}
