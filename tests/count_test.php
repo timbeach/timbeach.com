@@ -25,6 +25,8 @@ check('rollover prior ip -> 3',    counter_hit($dir, '1.1.1.1', 'Mozilla', '2026
 // 5. bot UA does not increment; same ip with normal UA does
 check('bot UA -> 3',               counter_hit($dir, '9.9.9.9', 'Googlebot/2.1', '2026-06-08') === 3);
 check('normal UA -> 4',            counter_hit($dir, '9.9.9.9', 'Mozilla', '2026-06-08') === 4);
+// 6. missing UA still counts (don't under-count privacy browsers)
+check('empty UA -> 5',             counter_hit($dir, '4.4.4.4', '', '2026-06-08') === 5);
 // 7. privacy: only hashes on disk, never raw IPs
 $json = file_get_contents("$dir/counter.json");
 check('raw IP absent from store',  strpos($json, '1.1.1.1') === false);
