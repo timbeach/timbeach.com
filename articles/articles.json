@@ -1,4 +1,23 @@
 {
+  "cron-assumes-your-computer-never-sleeps.md": {
+    "title": "Cron Assumes Your Computer Never Sleeps",
+    "date": "2026-06-11",
+    "tags": [
+      "cron",
+      "anacron",
+      "linux",
+      "automation",
+      "sysadmin",
+      "suckless"
+    ],
+    "emoji": "⏰",
+    "summary": "I'd run cron for a decade — on servers, where machines never sleep. Then I gave it a job on my laptop and it silently never ran. anacron is cron for computers that power off: it thinks in elapsed days, catches up after downtime, and (the part nobody mentions) rides on top of cron rather than replacing it.",
+    "hero": "pix/cron-assumes-your-computer-never-sleeps.png",
+    "audio": "audio/cron-assumes-your-computer-never-sleeps.ogg",
+    "timings": "audio/cron-assumes-your-computer-never-sleeps.timings.json",
+    "voice": "bm_lewis",
+    "duration": 325.355
+  },
   "paste-markdown-into-medium.md": {
     "title": "One Command to Paste Markdown Into Medium",
     "date": "2026-06-09",
