@@ -31,9 +31,13 @@ check('empty UA -> 5',             counter_hit($dir, '4.4.4.4', '', '2026-06-08'
 $json = file_get_contents("$dir/counter.json");
 check('raw IP absent from store',  strpos($json, '1.1.1.1') === false);
 check('sha256 hash present',       (bool) preg_match('/[0-9a-f]{64}/', $json));
-// 8. malformed store recovered, not fatal
+// 8. malformed store recovered, not fatal (data loss on corruption is accepted)
 file_put_contents("$dir/counter.json", '{ not valid json ');
 check('malformed recovered -> 1',  counter_hit($dir, '3.3.3.3', 'Mozilla', '2026-06-08') === 1);
+
+// 9. client IP resolution: normal + fallback
+check('client ip from REMOTE_ADDR', counter_client_ip(['REMOTE_ADDR' => '5.6.7.8']) === '5.6.7.8');
+check('client ip fallback -> 0.0.0.0', counter_client_ip([]) === '0.0.0.0');
 
 // cleanup
 foreach (glob("$dir/*") ?: [] as $f) { @unlink($f); }
