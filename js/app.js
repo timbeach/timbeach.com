@@ -3,6 +3,7 @@ import { initTheme } from './theme.js';
 import { initRouter, registerRoute } from './router.js';
 import { renderArticle } from './article.js';
 import { initStarfield, destroyStarfield } from './starfield.js';
+import { initCounter } from './counter.js';
 
 const app = () => document.getElementById('app');
 
@@ -226,4 +227,5 @@ export function bootstrap() {
   registerRoute('about', renderAbout);
   registerRoute('404', renderNotFound);
   initRouter();
+  initCounter();
 }
