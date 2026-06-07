@@ -160,6 +160,7 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
 .site-footer a:hover { color: var(--fg); }
 .site-counter { color: var(--fg-muted); }
 .site-counter::before { content: "·"; margin: 0 .4em; }
+.site-counter[hidden]::before { content: none; }
 
 /* === Homepage === */
 
