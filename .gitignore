@@ -11,3 +11,6 @@ tools/__pycache__/
 # deploy.sh via tools/build_share_pages.py. Build artifact, like feed output.
 /a/
 
+# Live site-counter state (created server-side, never committed)
+counter-data/
+

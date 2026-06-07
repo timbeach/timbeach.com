@@ -19,6 +19,8 @@ STATUS-*.md
 
 # --- internal / tooling trees ---
 /docs/
+/tests/
+counter-data/
 .beads/
 .pytest_cache/
 .claude/
