@@ -3,6 +3,7 @@
 // Records one visit per client IP per UTC day and returns {"total": N}.
 // Privacy: only salted SHA-256 IP hashes are stored, never raw IPs.
 // Portable: drop this one file in a PHP web root; see docs/site-counter.md.
+// Canonical source: https://github.com/timbeach/site-counter (this is a vendored copy).
 
 if (!defined('COUNTER_DATA_DIR')) {
     define('COUNTER_DATA_DIR', __DIR__ . '/counter-data');
