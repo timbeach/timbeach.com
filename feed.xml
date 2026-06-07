@@ -4,66 +4,9 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Sat, 06 Jun 2026 06:26:24 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 07 Jun 2026 17:08:23 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
-    <item>
-      <title>How My Links Got Their Pictures</title>
-      <link>https://timbeach.com/#/article/how-my-links-got-their-pictures</link>
-      <guid isPermaLink="false">https://timbeach.com/#/article/how-my-links-got-their-pictures</guid>
-      <pubDate>Wed, 10 Jun 2026 00:00:00 +0000</pubDate>
-      <description>The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.</description>
-      <content:encoded><![CDATA[<p><img src="pix/open-graph-protocol.png" alt="How My Links Got Their Pictures" /></p>
-<p>Paste a link to this site into LinkedIn, or Slack, or a text message, and a little card unfurls: a title, a sentence, and a picture. That card is doing a lot of quiet work — it's the difference between a friend tapping your link and a friend scrolling past a naked blue URL.</p>
-<p>For a long time, every link to this site unfurled with the <em>same</em> picture — a generic photo of me that had nothing to do with whatever article I was actually sharing. This is the story of the protocol that fixes that, and the three traps I fell into making it work on a site like mine.</p>
-<h2>🔗 The protocol nobody told you about</h2>
-<p>The technology is called the <strong>Open Graph protocol</strong>, and you've been looking at its output for years without knowing its name. Facebook published it in 2010 so that a shared link could carry a title, a description, and an image into the news feed. It caught on, and now essentially every platform that renders a &quot;link preview&quot; — LinkedIn, X, Slack, Discord, iMessage, WhatsApp, Signal — reads the same tags.</p>
-<p>The tags live in the <code>&lt;head&gt;</code> of your HTML, and they're almost insultingly simple:</p>
-<pre><code class="language-html">&lt;meta property=&quot;og:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
-&lt;meta property=&quot;og:description&quot; content=&quot;The protocol behind every link preview, and three traps I hit.&quot; /&gt;
-&lt;meta property=&quot;og:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
-&lt;meta property=&quot;og:url&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/&quot; /&gt;
-&lt;meta property=&quot;og:type&quot; content=&quot;article&quot; /&gt;
-</code></pre>
-<p>That's it. <code>og:title</code>, <code>og:description</code>, and <code>og:image</code> are the three that matter; the others are polish. There is no JavaScript, no API, no SDK. You write five lines of HTML and the entire internet's worth of chat apps suddenly know how to show your link off.</p>
-<h2>🐦 Twitter wanted to be different</h2>
-<p>X — Twitter, when this all started — decided it needed its own parallel set of tags, prefixed <code>twitter:</code> instead of <code>og:</code>:</p>
-<pre><code class="language-html">&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot; /&gt;
-&lt;meta name=&quot;twitter:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
-&lt;meta name=&quot;twitter:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
-</code></pre>
-<p>The one that does real work is <code>twitter:card</code>. Set it to <code>summary_large_image</code> and you get the big edge-to-edge picture instead of a cramped thumbnail. The good news is that Twitter falls back to your Open Graph tags for anything it can't find a <code>twitter:</code> version of — so in practice you write the <code>og:</code> tags, add <code>twitter:card</code> on top, and you're covered everywhere. I emit both on every page, belt and suspenders.</p>
-<p>One quirk worth knowing: since around 2023, X often renders link cards as <em>just the image</em> with the domain stamped on it, dropping the title and description text that LinkedIn shows. That's a display choice on their end, not a mistake in your tags. Your picture still shows up large.</p>
-<h2>🤖 The crawler doesn't run your code</h2>
-<p>Here is the single most important fact about Open Graph, and the one that caused all my grief: <strong>the thing reading your tags is a dumb robot, not a browser.</strong></p>
-<p>When you paste a link, the platform sends out a crawler — LinkedIn's is called <code>LinkedInBot</code>, Twitter's is <code>Twitterbot</code> — to fetch your page. That crawler downloads the raw HTML and reads the meta tags. It does <strong>not</strong> run your JavaScript. It does not wait for your single-page app to boot, fetch data, and render. It reads what the server hands it, on the first byte, and leaves.</p>
-<p>For a normal website with real HTML pages, this is fine. For my site, it was a disaster, and to explain why I have to admit how this site is built.</p>
-<h2>🪤 Trap one: the fragment that never arrives</h2>
-<p>timbeach.com is a single-page app. Every article lives at a URL like <code>timbeach.com/#/article/how-tmux-works</code>. That <code>#</code> is a <em>hash fragment</em>, and the site's router watches it to decide which article to show — all in the browser, all in JavaScript.</p>
-<p>Here's the problem, and it's baked into the web itself: <strong>the part of a URL after the <code>#</code> is never sent to the server.</strong> It's a client-side-only construct, by design, going back to the original purpose of fragments as &quot;jump to this anchor on the page.&quot; So when LinkedIn's crawler fetches <code>timbeach.com/#/article/how-tmux-works</code>, the server only ever sees a request for <code>timbeach.com/</code>. The crawler gets my homepage, reads the homepage's generic OG tags, and shows that same generic photo of me — no matter which article the link pointed to.</p>
-<p>Two strikes, both fatal: the crawler can't run the JavaScript that would pick the right article, <em>and</em> it can't even see which article was requested. There is no clever tag I could add to fix this. The hash URL is a dead end at the protocol level.</p>
-<p>The fix is to stop asking a hash URL to do a server's job. At deploy time, a script now walks every article and writes a real, honest HTML file at a real path — <code>a/how-tmux-works/index.html</code> — with that article's own Open Graph tags baked in. That's a page the crawler can actually fetch and read. A human who clicks it gets a one-line redirect into the usual single-page reader, so the experience is unchanged; only the URL you <em>share</em> is different. Crawlers read the static tags; people land in the app. Everybody gets what they came for.</p>
-<h2>🌫️ Trap two: the blur</h2>
-<p>I shipped the share pages, pasted a link, and there it was — the right article's image, finally. Except it was <em>blurry</em>.</p>
-<p>The culprit was aspect ratio. Open Graph images want to be <strong>1200×630 pixels</strong> — a specific, slightly-wider-than-2:1 rectangle. The image I'd handed it was a 1536×1024 screenshot. When the crawler gets an image that isn't the right shape, it crops and resamples it to fit, then re-encodes the result as a compressed JPEG. For a screenshot full of small text, that round of squashing and recompression turns crisp pixels to mush.</p>
-<p>Worse, a couple of my images were smaller than 1200 pixels wide, and platforms will quietly <em>demote</em> an undersized image — showing it as a tiny thumbnail off to the side instead of the big card. Same tags, completely different result, purely because of pixel dimensions.</p>
-<p>The fix was to stop handing crawlers raw images and start handing them finished cards. Now the publish pipeline composites every article's image onto an exact 1200×630 canvas — the whole image, scaled to fit, centered on a dark background that matches the site, downsampled once with a good filter. The crawler receives something already the precise shape and size it wants, so it has nothing left to crop or resample. The blur is gone, and a square diagram or an undersized photo gets the same clean treatment as a perfect screenshot.</p>
-<h2>♻️ Trap three: the cache that never forgets</h2>
-<p>This one is the cruelest, because everything was <em>working</em> when it bit me.</p>
-<p>I'd been iterating — first a plain text card, then the real image, then the sharp composited version — and each time I redeployed and re-checked the preview. At one point the preview reverted to showing an <em>old</em> version I thought I'd deleted two iterations ago. The file on my server was unambiguously the new one; I checked the bytes by hand. And yet LinkedIn kept showing the stale one.</p>
-<p>Platforms cache Open Graph images aggressively, and they cache them <strong>by URL</strong>. My image had lived at the same URL the whole time — <code>.../og.png</code> — while its contents changed underneath. LinkedIn had fetched that URL early, stored the bytes, and from then on it served its copy without ever asking my server whether the image had changed. Re-scraping the <em>page</em> refreshed the tags but not the cached <em>image</em>. The URL was the cache key, the URL never changed, so the cache never expired.</p>
-<p>The fix is a trick as old as web development: put a fingerprint of the contents into the filename. The card is now named after a hash of its own bytes — <code>og-de50d8b938.png</code> — so the moment the image changes, its filename changes, and therefore its URL changes, and therefore every cache on earth treats it as a brand-new image it's never seen. When nothing changes, the name stays put and the cache stays valid. You only bust the cache exactly when you mean to.</p>
-<h2>🌟 The whole trick, in one breath</h2>
-<p>Open Graph is a beautiful little protocol: five lines of HTML buy you a polished presence in every chat app and feed on the internet. But it rests on one assumption — that a crawler can fetch a real page and read real tags — and the moment your site bends that assumption, you find out exactly how much was riding on it.</p>
-<p>If you take three things from my bruises:</p>
-<ul>
-<li><strong>Crawlers don't run JavaScript.</strong> If your content only exists after your app boots, the crawler will never see it. Serve real HTML with real tags at a real URL.</li>
-<li><strong>Hand over a finished 1200×630 image,</strong> not a raw one. Let the crawler do as little as possible, and it can't make your picture worse.</li>
-<li><strong>Fingerprint the filename</strong> so the URL changes when — and only when — the image does. Otherwise some cache, somewhere, will haunt you with a picture you killed days ago.</li>
-</ul>
-<p>I added a read-aloud voice to this blog last month and learned that two parsers will always eventually disagree. This month I learned that a crawler is just a very literal reader who refuses to run your code, resizes your art without asking, and never throws anything away. Build for that reader, and your links will finally look like they mean something.</p>
-]]></content:encoded>
-    </item>
     <item>
       <title>Still Really Simple: A Short History of RSS (and How This Site Uses It)</title>
       <link>https://timbeach.com/#/article/rss-still-really-simple</link>
