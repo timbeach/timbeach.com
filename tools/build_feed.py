@@ -60,9 +60,20 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
     articles_dir  = project_root / "articles"
     data = json.loads(articles_json.read_text())
 
-    # Sort by date descending
+    # Today in the build machine's local calendar, as YYYY-MM-DD. Future-dated
+    # articles (date > today) are withheld from the feed, mirroring the homepage
+    # gate in js/app.js. NOTE: unlike the homepage — which reveals client-side on
+    # the viewer's own clock — the feed is generated at deploy time, so releasing
+    # a scheduled post into the feed requires a (re)deploy on or after its date.
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Sort by date descending; drop entries without date/title and any not-yet-due.
     items = sorted(
-        ((filename, meta) for filename, meta in data.items() if meta.get("date") and meta.get("title")),
+        (
+            (filename, meta)
+            for filename, meta in data.items()
+            if meta.get("date") and meta.get("title") and meta["date"] <= today
+        ),
         key=lambda kv: kv[1]["date"],
         reverse=True,
     )
