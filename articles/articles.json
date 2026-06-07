@@ -1,4 +1,23 @@
 {
+  "paste-markdown-into-medium.md": {
+    "title": "One Command to Paste Markdown Into Medium",
+    "date": "2026-06-09",
+    "tags": [
+      "markdown",
+      "medium",
+      "clipboard",
+      "rust",
+      "suckless",
+      "cli"
+    ],
+    "emoji": "📋",
+    "summary": "Medium closed its API — but its editor still honors the text/html clipboard flavor. So I built mdpaste, a single Rust binary that turns markdown into paste-ready rich text for Medium, Substack, and Ghost.",
+    "hero": "pix/paste-markdown-into-medium.png",
+    "audio": "audio/paste-markdown-into-medium.ogg",
+    "timings": "audio/paste-markdown-into-medium.timings.json",
+    "voice": "bm_lewis",
+    "duration": 303.659
+  },
   "the-terminal-setup-i-cant-work-without.md": {
     "title": "The Terminal Setup I Built and Can't Work Without",
     "date": "2026-06-08",

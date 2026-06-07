@@ -1,0 +1,138 @@
+{
+  "voice": "bm_lewis",
+  "duration": 303.659,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 32.72533333333333,
+      "text": "I write everything in markdown. Plain text, version-controlled, the same format whether it's a README, a note to myself, or an article headed somewhere with a nicer font. Then I go to publish on Medium and the spell breaks: paste my markdown into their editor and it shows up as literal ## headings and **asterisks**, the formatting sitting there inert. The obvious fix \u2014 let a script publish for me through Medium's API \u2014 turns out to be a door that's been quietly nailed shut."
+    },
+    {
+      "idx": 1,
+      "start": 32.72533333333333,
+      "end": 34.346666666666664,
+      "text": "The API is gone"
+    },
+    {
+      "idx": 2,
+      "start": 34.346666666666664,
+      "end": 63.89333333333333,
+      "text": "Medium had a real publishing API once: an integration token, a POST to create a post, the whole thing documented on GitHub. As of 2025 they stopped issuing new tokens and stopped allowing new integrations. The docs repo is archived with a note at the top: the Medium API is no longer supported. Old tokens still work; new ones can't be minted. So if you didn't already have one, programmatic publishing simply isn't on the table anymore."
+    },
+    {
+      "idx": 3,
+      "start": 63.89333333333333,
+      "end": 69.35466666666666,
+      "text": "That sounds like a dead end. It isn't \u2014 it just means the seam is somewhere less obvious."
+    },
+    {
+      "idx": 4,
+      "start": 69.35466666666666,
+      "end": 71.04,
+      "text": "The seam is the clipboard"
+    },
+    {
+      "idx": 5,
+      "start": 71.04,
+      "end": 94.37866666666666,
+      "text": "Medium's editor ignores pasted markdown text. But like most rich-text editors, it pays close attention to the text/html flavor of the clipboard. Paste plain text and you get plain text; paste HTML and it reconstructs headings, bold, links, lists. The browser carries two versions of whatever you copy, and the editor reaches for the formatted one."
+    },
+    {
+      "idx": 6,
+      "start": 94.37866666666666,
+      "end": 104.40533333333333,
+      "text": "Which means the entire problem collapses to: turn markdown into HTML, and put it on the clipboard as HTML. On X11 that's one pipe:"
+    },
+    {
+      "idx": 7,
+      "start": 104.40533333333333,
+      "end": 120.85333333333334,
+      "text": "comrak does markdown-to-HTML; xclip -t text/html sets the rich-text flavor specifically. Paste into Medium and the formatting survives. That one line is genuinely 80% of the job, and for a quick post it's all you need."
+    },
+    {
+      "idx": 8,
+      "start": 120.85333333333334,
+      "end": 129.45066666666668,
+      "text": "The hard part of a problem is often a layer below where you're looking. I was hunting for an API; the answer was a clipboard MIME type."
+    },
+    {
+      "idx": 9,
+      "start": 129.45066666666668,
+      "end": 131.49866666666668,
+      "text": "Why it wanted to be a real tool"
+    },
+    {
+      "idx": 10,
+      "start": 131.49866666666668,
+      "end": 158.35733333333334,
+      "text": "The one-liner is honest about what it is. The remaining 20% is the stuff that only shows up once you paste a real article \u2014 and that's what earns a proper binary. So I wrote one: mdpaste, a single Rust binary that parses the markdown to a syntax tree, fixes the things each editor mangles, and hands over clean HTML. It carries quirk profiles for Medium, Substack, and Ghost, since they all honor the same clipboard trick."
+    },
+    {
+      "idx": 11,
+      "start": 158.35733333333334,
+      "end": 159.82933333333332,
+      "text": "A few of the fixes:"
+    },
+    {
+      "idx": 12,
+      "start": 159.82933333333332,
+      "end": 183.40266666666668,
+      "text": "Images. A pasted <img> only works if its src is a public URL \u2014 the editor can't see a path on my laptop. My article images already live on my own site, so mdpaste rewrites relative paths like pix/shot.png into https://timbeach.com/pix/shot.png and warns me about any local path it can't place."
+    },
+    {
+      "idx": 13,
+      "start": 183.40266666666668,
+      "end": 201.19466666666668,
+      "text": "Embeds. A bare YouTube or gist URL sitting alone on a line gets auto-expanded into an embed card \u2014 but only if it's a bare URL, not a markdown link. So a paragraph that's nothing but a link to an embed host gets unwrapped back down to the naked URL."
+    },
+    {
+      "idx": 14,
+      "start": 201.19466666666668,
+      "end": 203.54133333333334,
+      "text": "The gotcha: invisible newlines"
+    },
+    {
+      "idx": 15,
+      "start": 203.54133333333334,
+      "end": 218.06933333333333,
+      "text": "The fix I didn't see coming was blockquotes. I pasted a finished article, and every quote came through padded with a blank line above and below the text \u2014 like the quote was holding the words at arm's length. The HTML looked fine:"
+    },
+    {
+      "idx": 16,
+      "start": 218.06933333333333,
+      "end": 251.648,
+      "text": "Those newlines after <blockquote> and before </blockquote> are meaningless when a browser renders the page \u2014 whitespace between block tags is collapsed and you'd never know it was there. But Medium's paste importer is not a browser. It reads each of those newlines as content and turns them into empty lines inside the quote. The cleanup is almost too small to mention: strip the newlines on the inside edges of the blockquote so the editor gets <blockquote><p>...</p></blockquote> in one piece. Identical rendering everywhere, tidy quote on paste."
+    },
+    {
+      "idx": 17,
+      "start": 251.648,
+      "end": 271.63733333333334,
+      "text": "I'd never have predicted that one. It only surfaced because I actually pasted and looked \u2014 which is the whole lesson. You can reason about an HTML-to-editor pipeline all day, but the editor is a black box on the far side of the clipboard, and the only way to know what it does with your markup is to send some across and watch."
+    },
+    {
+      "idx": 18,
+      "start": 271.63733333333334,
+      "end": 272.576,
+      "text": "Why bother"
+    },
+    {
+      "idx": 19,
+      "start": 272.576,
+      "end": 295.53066666666666,
+      "text": "Because the boring, repeated thing should stay boring. I write in markdown, run one command, and paste a clean, formatted draft into Medium \u2014 images resolved, embeds embedding, quotes sitting tight. It's a single binary, no daemon, no account, no API that can be turned off from under me. When the official door closes, the clipboard is still wide open."
+    },
+    {
+      "idx": 20,
+      "start": 295.53066666666666,
+      "end": 298.112,
+      "text": "This very article made the trip that way."
+    },
+    {
+      "idx": 21,
+      "start": 298.112,
+      "end": 303.65866666666665,
+      "text": "mdpaste is on GitHub: github.com/timbeach/mdpaste."
+    }
+  ]
+}
