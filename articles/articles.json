@@ -430,5 +430,23 @@
     "timings": "audio/rss-still-really-simple.timings.json",
     "voice": "bm_lewis",
     "duration": 378.219
+  },
+  "change-your-luks-passphrase.md": {
+    "title": "How to Change Your LUKS Passphrase (and Other Sysadmin-y Things)",
+    "date": "2026-06-11",
+    "tags": [
+      "luks",
+      "linux",
+      "encryption",
+      "sysadmin",
+      "aegix"
+    ],
+    "emoji": "\ud83d\udd10",
+    "summary": "The add-verify-kill sequence that changes a LUKS passphrase with zero lockout risk, why usermod refuses to rename a logged-in user (and the detached-script trick around it), and the stale /etc references a rename leaves behind.",
+    "hero": "pix/change-your-luks-passphrase.png",
+    "audio": "audio/change-your-luks-passphrase.ogg",
+    "timings": "audio/change-your-luks-passphrase.timings.json",
+    "voice": "bm_lewis",
+    "duration": 264.021
   }
 }

@@ -1,0 +1,174 @@
+{
+  "voice": "bm_lewis",
+  "duration": 264.021,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 22.272,
+      "text": "Every encrypted Linux install eventually needs its passphrase changed. Maybe the machine changed hands, maybe the passphrase has been hunter2 since the day you imaged it. The change itself is three commands \u2014 but it's a change where a wrong move locks you out of your own disk, so the procedure below is built around never having a moment without a known-good passphrase."
+    },
+    {
+      "idx": 1,
+      "start": 22.272,
+      "end": 43.968,
+      "text": "I hit this on an Aegix box this week, along with two smaller identity chores \u2014 renaming a user and changing a password \u2014 that have their own sharp edges, so those are covered after the main event. Aegix is Artix-based and runs runit, but everything here is init-agnostic: it works the same on any Linux with shadow utils and LUKS2."
+    },
+    {
+      "idx": 2,
+      "start": 43.968,
+      "end": 45.653333333333336,
+      "text": "Changing a LUKS passphrase"
+    },
+    {
+      "idx": 3,
+      "start": 45.653333333333336,
+      "end": 61.013333333333335,
+      "text": "Don't use luksChangeKey \u2014 it's an in-place swap with no checkpoint. Use add, verify, then kill: the old passphrase and the new one are both valid through the middle of the procedure, and the old one only dies after the new one has proven itself."
+    },
+    {
+      "idx": 4,
+      "start": 61.013333333333335,
+      "end": 62.80533333333333,
+      "text": "First find your LUKS device:"
+    },
+    {
+      "idx": 5,
+      "start": 62.80533333333333,
+      "end": 70.67733333333334,
+      "text": "On a stock Aegix install that's the partition under your aegixluks mapper \u2014 call it /dev/sda2 here."
+    },
+    {
+      "idx": 6,
+      "start": 70.67733333333334,
+      "end": 77.93066666666667,
+      "text": "Step 1 \u2014 add the new passphrase to a free keyslot. It asks for an existing passphrase first, then the new one twice:"
+    },
+    {
+      "idx": 7,
+      "start": 77.93066666666667,
+      "end": 82.83733333333333,
+      "text": "Step 2 \u2014 prove the new passphrase actually unlocks the disk. Type the new one:"
+    },
+    {
+      "idx": 8,
+      "start": 82.83733333333333,
+      "end": 91.09333333333333,
+      "text": "Silence plus GOOD is what you want. If this fails, stop \u2014 you still have the old passphrase, nothing is lost, try the add again."
+    },
+    {
+      "idx": 9,
+      "start": 91.09333333333333,
+      "end": 93.73866666666666,
+      "text": "Step 3 \u2014 see which keyslots are occupied:"
+    },
+    {
+      "idx": 10,
+      "start": 93.73866666666666,
+      "end": 99.49866666666667,
+      "text": "You should see two slots now \u2014 the original (usually 0) and your new one (usually 1)."
+    },
+    {
+      "idx": 11,
+      "start": 99.49866666666667,
+      "end": 109.312,
+      "text": "Step 4 \u2014 kill the old slot. When it prompts, give it the new passphrase; it's asking you to prove a surviving key still works, not to identify the victim:"
+    },
+    {
+      "idx": 12,
+      "start": 109.312,
+      "end": 124.39466666666667,
+      "text": "Two rules make this bulletproof: never reboot between steps 1 and 2, and never run step 4 until step 2 has printed GOOD. The next reboot \u2014 unlocking with the new passphrase at the initramfs prompt \u2014 is your end-to-end confirmation."
+    },
+    {
+      "idx": 13,
+      "start": 124.39466666666667,
+      "end": 125.90933333333334,
+      "text": "Renaming a user"
+    },
+    {
+      "idx": 14,
+      "start": 125.90933333333334,
+      "end": 128.384,
+      "text": "The commands themselves are two lines:"
+    },
+    {
+      "idx": 15,
+      "start": 128.384,
+      "end": 133.16266666666667,
+      "text": "If the user has a personal primary group (most setups), rename that too:"
+    },
+    {
+      "idx": 16,
+      "start": 133.16266666666667,
+      "end": 151.18933333333334,
+      "text": "The sharp edge: usermod -l refuses to run while the target user owns any process \u2014 and on a desktop, your X session is a wall of those processes. Worse, you can't be logged in as the user to type the command, because the login itself is a blocking process. The error looks like:"
+    },
+    {
+      "idx": 17,
+      "start": 151.18933333333334,
+      "end": 165.376,
+      "text": "The clean fix: log all the way out of X, switch to a spare TTY (Ctrl+Alt+F2), log in as root (or another wheel user), and run the commands from there. No processes, no complaints."
+    },
+    {
+      "idx": 18,
+      "start": 165.376,
+      "end": 179.05066666666667,
+      "text": "If the machine is headless or you only have SSH \u2014 where your own session is the blocker \u2014 detach the rename from your login entirely. Launch it as a root-owned background script, then disconnect before it fires:"
+    },
+    {
+      "idx": 19,
+      "start": 179.05066666666667,
+      "end": 198.80533333333332,
+      "text": "By the time the sleep runs out, your SSH session is gone, the pkill sweeps any stragglers, and usermod runs against a process-free user. Reconnect as the new name (your ~/.ssh/authorized_keys moved with the home directory) and check /tmp/rename.log."
+    },
+    {
+      "idx": 20,
+      "start": 198.80533333333332,
+      "end": 206.12266666666667,
+      "text": "Afterward, sweep for stale references. The rename updates /etc/passwd and friends, but not everything:"
+    },
+    {
+      "idx": 21,
+      "start": 206.12266666666667,
+      "end": 230.69866666666667,
+      "text": "In practice the usual stragglers are /etc/subuid and /etc/subgid (container UID maps) \u2014 a one-line sed fixes both. /etc/passwd- will also match; that's just the automatic backup file, leave it. Sudo access survives untouched if it's granted through the wheel group rather than a per-user rule, which is one more reason to do it that way."
+    },
+    {
+      "idx": 22,
+      "start": 230.69866666666667,
+      "end": 232.10666666666665,
+      "text": "Changing a password"
+    },
+    {
+      "idx": 23,
+      "start": 232.10666666666665,
+      "end": 235.776,
+      "text": "The easy one, included for completeness. As the user:"
+    },
+    {
+      "idx": 24,
+      "start": 235.776,
+      "end": 237.71733333333333,
+      "text": "Or as root, for any account:"
+    },
+    {
+      "idx": 25,
+      "start": 237.71733333333333,
+      "end": 240.61866666666666,
+      "text": "That's it \u2014 no process drama, no keyslots."
+    },
+    {
+      "idx": 26,
+      "start": 240.61866666666666,
+      "end": 242.13333333333333,
+      "text": "The shape of all three"
+    },
+    {
+      "idx": 27,
+      "start": 242.13333333333333,
+      "end": 264.02133333333336,
+      "text": "The pattern worth keeping is in the LUKS sequence: when a change can lock you out, structure it so the old credential and the new one are both valid in the middle, verify the new one independently, and only then retire the old. It's the same instinct as keeping an SSH session open while you edit sshd_config. Cheap insurance, every time."
+    }
+  ]
+}
