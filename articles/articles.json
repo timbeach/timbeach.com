@@ -433,7 +433,7 @@
   },
   "change-your-luks-passphrase.md": {
     "title": "How to Change Your LUKS Passphrase (and Other Sysadmin-y Things)",
-    "date": "2026-06-11",
+    "date": "2026-06-13",
     "tags": [
       "luks",
       "linux",

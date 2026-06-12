@@ -1,5 +1,7 @@
 # How to Change Your LUKS Passphrase (and Other Sysadmin-y Things)
 
+![Changing a LUKS passphrase](pix/change-your-luks-passphrase.png)
+
 Every encrypted Linux install eventually needs its passphrase changed. Maybe the machine changed hands, maybe the passphrase has been `hunter2` since the day you imaged it. The change itself is three commands — but it's a change where a wrong move locks you out of your own disk, so the procedure below is built around never having a moment without a known-good passphrase.
 
 I hit this on an Aegix box this week, along with two smaller identity chores — renaming a user and changing a password — that have their own sharp edges, so those are covered after the main event. Aegix is Artix-based and runs runit, but everything here is init-agnostic: it works the same on any Linux with shadow utils and LUKS2.
