@@ -4,9 +4,358 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Sun, 07 Jun 2026 17:08:23 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 13 Jun 2026 09:00:02 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>How to Change Your LUKS Passphrase (and Other Sysadmin-y Things)</title>
+      <link>https://timbeach.com/#/article/change-your-luks-passphrase</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/change-your-luks-passphrase</guid>
+      <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
+      <description>The add-verify-kill sequence that changes a LUKS passphrase with zero lockout risk, why usermod refuses to rename a logged-in user (and the detached-script trick around it), and the stale /etc references a rename leaves behind.</description>
+      <content:encoded><![CDATA[<p><img src="pix/change-your-luks-passphrase.png" alt="Changing a LUKS passphrase" /></p>
+<p>Every encrypted Linux install eventually needs its passphrase changed. Maybe the machine changed hands, maybe the passphrase has been <code>hunter2</code> since the day you imaged it. The change itself is three commands — but it's a change where a wrong move locks you out of your own disk, so the procedure below is built around never having a moment without a known-good passphrase.</p>
+<p>I hit this on an Aegix box this week, along with two smaller identity chores — renaming a user and changing a password — that have their own sharp edges, so those are covered after the main event. Aegix is Artix-based and runs runit, but everything here is init-agnostic: it works the same on any Linux with shadow utils and LUKS2.</p>
+<h2>Changing a LUKS passphrase</h2>
+<p>Don't use <code>luksChangeKey</code> — it's an in-place swap with no checkpoint. Use add, verify, <em>then</em> kill: the old passphrase and the new one are both valid through the middle of the procedure, and the old one only dies after the new one has proven itself.</p>
+<p>First find your LUKS device:</p>
+<pre><code class="language-sh">lsblk -f | grep -i crypto
+</code></pre>
+<p>On a stock Aegix install that's the partition under your <code>aegixluks</code> mapper — call it <code>/dev/sda2</code> here.</p>
+<p><strong>Step 1 — add the new passphrase to a free keyslot.</strong> It asks for an existing passphrase first, then the new one twice:</p>
+<pre><code class="language-sh">sudo cryptsetup luksAddKey /dev/sda2
+</code></pre>
+<p><strong>Step 2 — prove the new passphrase actually unlocks the disk.</strong> Type the <em>new</em> one:</p>
+<pre><code class="language-sh">sudo cryptsetup open --test-passphrase /dev/sda2 &amp;&amp; echo GOOD
+</code></pre>
+<p>Silence plus <code>GOOD</code> is what you want. If this fails, stop — you still have the old passphrase, nothing is lost, try the add again.</p>
+<p><strong>Step 3 — see which keyslots are occupied:</strong></p>
+<pre><code class="language-sh">sudo cryptsetup luksDump /dev/sda2 | grep -A2 Keyslots
+</code></pre>
+<p>You should see two slots now — the original (usually <code>0</code>) and your new one (usually <code>1</code>).</p>
+<p><strong>Step 4 — kill the old slot.</strong> When it prompts, give it the <strong>new</strong> passphrase; it's asking you to prove a surviving key still works, not to identify the victim:</p>
+<pre><code class="language-sh">sudo cryptsetup luksKillSlot /dev/sda2 0
+</code></pre>
+<p>Two rules make this bulletproof: never reboot between steps 1 and 2, and never run step 4 until step 2 has printed <code>GOOD</code>. The next reboot — unlocking with the new passphrase at the initramfs prompt — is your end-to-end confirmation.</p>
+<h2>Renaming a user</h2>
+<p>The commands themselves are two lines:</p>
+<pre><code class="language-sh">sudo usermod -l newname oldname            # rename the account
+sudo usermod -d /home/newname -m newname   # rename and move the home dir
+</code></pre>
+<p>If the user has a personal primary group (most setups), rename that too:</p>
+<pre><code class="language-sh">sudo groupmod -n newname oldname
+</code></pre>
+<p><strong>The sharp edge:</strong> <code>usermod -l</code> refuses to run while the target user owns <em>any</em> process — and on a desktop, your X session is a wall of those processes. Worse, you can't be logged in as the user to type the command, because the login itself is a blocking process. The error looks like:</p>
+<pre><code>usermod: user oldname is currently used by process 1234
+</code></pre>
+<p>The clean fix: log all the way out of X, switch to a spare TTY (Ctrl+Alt+F2), log in as root (or another wheel user), and run the commands from there. No processes, no complaints.</p>
+<p>If the machine is headless or you only have SSH — where your own session is the blocker — detach the rename from your login entirely. Launch it as a root-owned background script, then disconnect before it fires:</p>
+<pre><code class="language-sh">sudo sh -c 'setsid sh -c &quot;
+  sleep 20
+  pkill -9 -u oldname
+  sleep 3
+  usermod -l newname oldname
+  usermod -d /home/newname -m newname
+&quot; &gt; /tmp/rename.log 2&gt;&amp;1 &lt; /dev/null &amp;'
+exit
+</code></pre>
+<p>By the time the <code>sleep</code> runs out, your SSH session is gone, the <code>pkill</code> sweeps any stragglers, and <code>usermod</code> runs against a process-free user. Reconnect as the new name (your <code>~/.ssh/authorized_keys</code> moved with the home directory) and check <code>/tmp/rename.log</code>.</p>
+<p><strong>Afterward, sweep for stale references.</strong> The rename updates <code>/etc/passwd</code> and friends, but not everything:</p>
+<pre><code class="language-sh">grep -rl oldname /etc 2&gt;/dev/null
+ls /var/spool/cron/
+</code></pre>
+<p>In practice the usual stragglers are <code>/etc/subuid</code> and <code>/etc/subgid</code> (container UID maps) — a one-line <code>sed</code> fixes both. <code>/etc/passwd-</code> will also match; that's just the automatic backup file, leave it. Sudo access survives untouched if it's granted through the <code>wheel</code> group rather than a per-user rule, which is one more reason to do it that way.</p>
+<h2>Changing a password</h2>
+<p>The easy one, included for completeness. As the user:</p>
+<pre><code class="language-sh">passwd
+</code></pre>
+<p>Or as root, for any account:</p>
+<pre><code class="language-sh">sudo passwd someuser
+</code></pre>
+<p>That's it — no process drama, no keyslots.</p>
+<h2>The shape of all three</h2>
+<p>The pattern worth keeping is in the LUKS sequence: when a change can lock you out, structure it so the old credential and the new one are both valid in the middle, verify the new one independently, and only then retire the old. It's the same instinct as keeping an SSH session open while you edit <code>sshd_config</code>. Cheap insurance, every time.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Bring Back the Hit Counter — Privately, in One File</title>
+      <link>https://timbeach.com/#/article/bring-back-the-hit-counter</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/bring-back-the-hit-counter</guid>
+      <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
+      <description>A privacy-respecting hit counter in a single file of PHP — counts each visitor once per day with salted IP hashes, no database and no tracking, and you can drop it straight into your own site.</description>
+      <content:encoded><![CDATA[<p><img src="pix/bring-back-the-hit-counter.png" alt="Infographic: a refresh-proof, privacy-respecting hit counter — counts each visitor once per day, stores a salted hash instead of a raw IP, keeps one small JSON state file, stays correct under concurrency with a lock and atomic rename, drops into your footer as one PHP file, and adds no third-party tracking — beneath a retro odometer reading 37,042 hits." /></p>
+<p>Every personal site used to have one: a little odometer in the footer ticking up with each visitor. They mostly disappeared, and the modern replacement is to bolt on an analytics suite that ships your readers' data to a third party in exchange for a dashboard you check twice a year.</p>
+<p>That always felt like the wrong trade for a personal site. I wanted the number back without the surveillance — and it turns out a refresh-proof hit counter is about a hundred lines of PHP and a single JSON file. No database, no tracking script, nothing phoning home. There's one running in the footer of this very page. Here's how it works, and how to put one in your own footer.</p>
+<h2>Counting once, not every refresh</h2>
+<p>The core rule is simple: each visitor counts once per day, no matter how many times they reload. The naive version — increment on every page load — produces a number that mostly measures your own refreshing.</p>
+<p>So on each request the server looks at the visitor's IP and only bumps the total if it hasn't already seen that IP today. &quot;Today&quot; is measured in UTC, so the day boundary is the same for everyone. The headline number becomes a running sum of daily-unique visits: a reload never moves it, but a genuine returning reader counts again tomorrow.</p>
+<h2>Storing what you need, and nothing else</h2>
+<p>This is the part I cared about most. The counter never writes a raw IP address to disk. Instead it stores a salted hash:</p>
+<pre><code>sha256(salt + date + ip)
+</code></pre>
+<p>The salt is a random value generated once per install and kept in a file that never leaves the server. Because the date is folded into the hash and the set of &quot;seen&quot; visitors is wiped every midnight, there is no way to link a visitor from one day to the next, and nothing sensitive sits at rest. If the data file leaked, it would be a list of opaque hashes — no addresses, no browsing history, nothing reversible.</p>
+<p>The entire state on disk is this:</p>
+<pre><code class="language-json">{ &quot;date&quot;: &quot;2026-06-07&quot;, &quot;total&quot;: 37041, &quot;seen&quot;: { &quot;&lt;hash&gt;&quot;: 1 } }
+</code></pre>
+<p><code>seen</code> holds only today's hashes, so it resets daily and never grows without bound. <code>total</code> carries forward forever.</p>
+<h2>The boring parts that make it correct</h2>
+<p>A counter is a deceptively good little exercise in getting concurrency right, because two visitors can land on the same instant. Read-modify-write a shared file without care and you silently lose increments.</p>
+<p>Two things prevent that. Every update takes an exclusive lock (<code>flock</code>) before it touches the file, so writes are serialized. And the new state is written to a temporary file and then <code>rename</code>d over the old one — an atomic swap on POSIX filesystems, so a reader never sees a half-written file even if the process dies mid-write. There is a small test that fires fifty hits in parallel from fifty different IPs and asserts the total lands at exactly fifty; without the lock, it doesn't.</p>
+<p>The salt is generated inside that same lock — a subtlety worth calling out, because it is easy to miss. Generate it outside the lock and two visitors arriving in the very first moments of a fresh install could each mint a different salt and race to write it, quietly breaking deduplication for one of them. It only matters once, on the first day of a new install, which is exactly the kind of bug that never shows up in casual testing.</p>
+<h2>Dropping it on your own site</h2>
+<p>The whole thing is one file, <code>count.php</code>. Copy it into your web root, add a few lines of HTML to show the number, and you are done:</p>
+<pre><code class="language-html">&lt;span id=&quot;site-counter&quot; hidden&gt;&lt;/span&gt;
+&lt;script type=&quot;module&quot;&gt;
+  const el = document.getElementById('site-counter');
+  try {
+    const r = await fetch('/count.php');
+    if (r.ok) {
+      const { total } = await r.json();
+      if (typeof total === 'number') {
+        el.textContent = `👁 ${total.toLocaleString()} views`;
+        el.hidden = false;
+      }
+    }
+  } catch (_) { /* leave hidden on failure */ }
+&lt;/script&gt;
+</code></pre>
+<p>The span starts hidden and only appears once the count loads, so if PHP is ever unavailable the page simply looks normal — no broken widget, no error a reader would ever see.</p>
+<p>On Apache or typical shared hosting there is nothing else to do; PHP files execute by default. On nginx you add a small scoped block so that only this one file runs through PHP, rather than enabling it across your whole web root:</p>
+<pre><code class="language-nginx">location = /count.php {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php8.2-fpm.sock;
+}
+</code></pre>
+<h2>Borrow it</h2>
+<p>It is on GitHub under an MIT license: <a href="https://github.com/timbeach/site-counter">github.com/timbeach/site-counter</a>. One file, a README, a demo page, and the tests. Take it, change the emoji, seed it with the count from whatever you are migrating off of, and put a quiet little odometer back in your footer where it belongs.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Cron Assumes Your Computer Never Sleeps</title>
+      <link>https://timbeach.com/#/article/cron-assumes-your-computer-never-sleeps</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/cron-assumes-your-computer-never-sleeps</guid>
+      <pubDate>Thu, 11 Jun 2026 00:00:00 +0000</pubDate>
+      <description>I'd run cron for a decade — on servers, where machines never sleep. Then I gave it a job on my laptop and it silently never ran. anacron is cron for computers that power off: it thinks in elapsed days, catches up after downtime, and (the part nobody mentions) rides on top of cron rather than replacing it.</description>
+      <content:encoded><![CDATA[<p><img src="pix/cron-assumes-your-computer-never-sleeps.png" alt="Infographic for &quot;Cron Assumes Your Computer Never Sleeps&quot; (subtitle: &quot;Cron is a clock. Anacron is a memory.&quot;). Five panels: cron fires at a fixed moment — fine on an always-awake server, silently missed on a sleeping laptop; anacron runs overdue jobs by tracking a per-job timestamp, with a sample anacrontab line; anacron &quot;rides on cron&quot; — cron asks &quot;is it time to check?&quot;, anacron asks &quot;is anything overdue?&quot;; a laptop crontab wiring anacron via @reboot and a 5am trigger; and why it matters — leave and the laptop sleeps, come back and the work still happens. Footer: &quot;Cron keeps time. Anacron keeps promises.&quot;" /></p>
+<p>For years, cron and I had an understanding. I'd hand it a line — a backup at 2am, a cert renewal on the first of the month — and it would do the thing, forever, without ever being thought about again. The best kind of tool: one you forget you're relying on. What I never noticed is that every one of those jobs lived on a <em>server</em> — a machine whose whole purpose is to never turn off. Cron kept its promises because I'd only ever asked it to keep them somewhere the lights never go out.</p>
+<p>Then I gave cron a job on my laptop, and it quietly broke its word.</p>
+<h2>Cron is a clock, not a calendar</h2>
+<p>A cron entry is a moment, not an intention. <code>0 5 * * *</code> doesn't mean &quot;once a day&quot; — it means &quot;at 05:00, if you happen to be listening.&quot; Cron wakes every minute, checks whether the wall clock matches any of its lines, and runs what does. That's the whole model.</p>
+<p>On a server it's a distinction without a difference: the clock always strikes 5 and the machine is always there to hear it. On a laptop the gap opens up. Close the lid at midnight and your 5am job doesn't run late — it doesn't run <em>at all</em>. Cron never circles back, because from its point of view nothing was ever scheduled to happen during a minute it wasn't awake to see. No error, no retry, no trace. Just a backup that silently didn't occur.</p>
+<blockquote>
+<p>Cron doesn't run your job daily. It runs your job at a <em>moment</em>, and trusts that you'll be there to catch it.</p>
+</blockquote>
+<p>The silence is the dangerous part. A job that fails loudly gets fixed. A job that simply never fires can go unnoticed until the day you reach for the thing it was supposed to have been doing all along.</p>
+<h2>anacron remembers</h2>
+<p><code>anacron</code> is the answer, and it's been sitting in the repos the whole time. It's built for exactly the machine cron ignores: one that powers off.</p>
+<p>The trick is that anacron doesn't think in clock times at all. It thinks in <strong>elapsed days</strong>. For each job it keeps a little timestamp file recording when that job last ran. Whenever anacron gets a chance to look, it asks one question per job — <em>&quot;has it been at least N days since this last ran?&quot;</em> — and if the answer is yes, it runs it now, late or not. A job missed because the laptop was shut doesn't vanish; it runs shortly after the lid comes back up.</p>
+<p>An anacrontab line trades cron's five time-fields for three plainer ones:</p>
+<pre><code># period(days)  delay(min)  job-id    command
+1               5           backup    /home/me/bin/backup
+</code></pre>
+<p>&quot;Every 1 day, wait 5 minutes after you're triggered, and remember this one under the name <code>backup</code>.&quot; No hour, no minute — because anacron's promise isn't <em>when</em>, it's <em>eventually, and soon</em>.</p>
+<h2>The part nobody mentions: anacron rides on cron</h2>
+<p>Here's the bit that tripped me up, and that most quick explainers skip: <strong>anacron is not a daemon.</strong> It doesn't sit in the background waiting. It runs <em>once</em> — checks what's overdue, runs it, exits. Which raises the obvious question: if it's not always running, what starts it?</p>
+<p>Two things, traditionally: the machine <strong>booting</strong>, and a <strong>periodic nudge</strong> while it's up. And that periodic nudge is, almost always… cron. On many distributions anacron is literally kicked by an <code>/etc/cron.hourly</code> entry. So anacron doesn't <em>replace</em> cron — it sits on top of it. Cron answers &quot;is it time to check?&quot;; anacron answers &quot;is anything overdue?&quot;</p>
+<p>That has a sharp edge if you get it backwards. Wire anacron to fire <em>only</em> at boot, and on a machine that stays up for weeks anacron never gets invoked — so your &quot;daily&quot; job never runs at all. The thing built to make jobs more reliable will, misconfigured, make them never happen. You still need a cron tick to poke it.</p>
+<h2>Wiring it up for a personal machine</h2>
+<p>You don't need root or the system anacron to get this. Point anacron at your own table and spool with <code>-t</code> and <code>-S</code>, and drive it from your <em>user</em> crontab:</p>
+<pre><code>@reboot   anacron -t ~/.config/anacrontab -S ~/.local/var/spool/anacron
+0 5 * * * anacron -t ~/.config/anacrontab -S ~/.local/var/spool/anacron
+</code></pre>
+<p>Two triggers, two jobs. The <code>0 5 * * *</code> line is the ordinary day — on a machine that's awake at 5am, that's when your work runs. The <code>@reboot</code> line is the safety net: come home from a week away, power on, and the first thing that happens is the overdue job finally running. Between them you get a predictable morning time <em>and</em> catch-up after downtime — the two things cron alone can't give a laptop at once.</p>
+<p>My own reason for going down this road: this very site schedules its articles by date, and the RSS feed only rebuilds when I deploy — from my laptop. A small job notices when a post has come due and ships it. With plain cron, a post dated to a travel day would just… miss, and sit unpublished until I happened to redeploy by hand. With anacron, it goes out the morning I'm back online instead of never.</p>
+<h2>Why bother</h2>
+<p>Cron's assumptions are a <em>server's</em> assumptions: infinite uptime, an unblinking clock, someone always home to answer the door. A personal machine is the opposite of all three. It sleeps when you sleep, travels when you travel, and spends more hours dark than lit. anacron is just cron with that fact admitted up front — and once you've seen the difference, every &quot;daily&quot; job on a laptop that's really a &quot;daily, if I'm lucky&quot; job starts to itch.</p>
+<p>I'd run cron for a decade and never met anacron, because servers never gave me a reason to. The reason, it turns out, was sitting closed on my desk the whole time.</p>
+<p>And the small, pleasing irony: this post reached you on a schedule kept by the exact job it describes.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>How My Links Got Their Pictures</title>
+      <link>https://timbeach.com/#/article/how-my-links-got-their-pictures</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-my-links-got-their-pictures</guid>
+      <pubDate>Wed, 10 Jun 2026 00:00:00 +0000</pubDate>
+      <description>The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.</description>
+      <content:encoded><![CDATA[<p><img src="pix/open-graph-protocol.png" alt="How My Links Got Their Pictures" /></p>
+<p>Paste a link to this site into LinkedIn, or Slack, or a text message, and a little card unfurls: a title, a sentence, and a picture. That card is doing a lot of quiet work — it's the difference between a friend tapping your link and a friend scrolling past a naked blue URL.</p>
+<p>For a long time, every link to this site unfurled with the <em>same</em> picture — a generic photo of me that had nothing to do with whatever article I was actually sharing. This is the story of the protocol that fixes that, and the three traps I fell into making it work on a site like mine.</p>
+<h2>🔗 The protocol nobody told you about</h2>
+<p>The technology is called the <strong>Open Graph protocol</strong>, and you've been looking at its output for years without knowing its name. Facebook published it in 2010 so that a shared link could carry a title, a description, and an image into the news feed. It caught on, and now essentially every platform that renders a &quot;link preview&quot; — LinkedIn, X, Slack, Discord, iMessage, WhatsApp, Signal — reads the same tags.</p>
+<p>The tags live in the <code>&lt;head&gt;</code> of your HTML, and they're almost insultingly simple:</p>
+<pre><code class="language-html">&lt;meta property=&quot;og:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;The protocol behind every link preview, and three traps I hit.&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/&quot; /&gt;
+&lt;meta property=&quot;og:type&quot; content=&quot;article&quot; /&gt;
+</code></pre>
+<p>That's it. <code>og:title</code>, <code>og:description</code>, and <code>og:image</code> are the three that matter; the others are polish. There is no JavaScript, no API, no SDK. You write five lines of HTML and the entire internet's worth of chat apps suddenly know how to show your link off.</p>
+<h2>🐦 Twitter wanted to be different</h2>
+<p>X — Twitter, when this all started — decided it needed its own parallel set of tags, prefixed <code>twitter:</code> instead of <code>og:</code>:</p>
+<pre><code class="language-html">&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot; /&gt;
+&lt;meta name=&quot;twitter:title&quot; content=&quot;How My Links Got Their Pictures&quot; /&gt;
+&lt;meta name=&quot;twitter:image&quot; content=&quot;https://timbeach.com/a/how-my-links-got-their-pictures/og.png&quot; /&gt;
+</code></pre>
+<p>The one that does real work is <code>twitter:card</code>. Set it to <code>summary_large_image</code> and you get the big edge-to-edge picture instead of a cramped thumbnail. The good news is that Twitter falls back to your Open Graph tags for anything it can't find a <code>twitter:</code> version of — so in practice you write the <code>og:</code> tags, add <code>twitter:card</code> on top, and you're covered everywhere. I emit both on every page, belt and suspenders.</p>
+<p>One quirk worth knowing: since around 2023, X often renders link cards as <em>just the image</em> with the domain stamped on it, dropping the title and description text that LinkedIn shows. That's a display choice on their end, not a mistake in your tags. Your picture still shows up large.</p>
+<h2>🤖 The crawler doesn't run your code</h2>
+<p>Here is the single most important fact about Open Graph, and the one that caused all my grief: <strong>the thing reading your tags is a dumb robot, not a browser.</strong></p>
+<p>When you paste a link, the platform sends out a crawler — LinkedIn's is called <code>LinkedInBot</code>, Twitter's is <code>Twitterbot</code> — to fetch your page. That crawler downloads the raw HTML and reads the meta tags. It does <strong>not</strong> run your JavaScript. It does not wait for your single-page app to boot, fetch data, and render. It reads what the server hands it, on the first byte, and leaves.</p>
+<p>For a normal website with real HTML pages, this is fine. For my site, it was a disaster, and to explain why I have to admit how this site is built.</p>
+<h2>🪤 Trap one: the fragment that never arrives</h2>
+<p>timbeach.com is a single-page app. Every article lives at a URL like <code>timbeach.com/#/article/how-tmux-works</code>. That <code>#</code> is a <em>hash fragment</em>, and the site's router watches it to decide which article to show — all in the browser, all in JavaScript.</p>
+<p>Here's the problem, and it's baked into the web itself: <strong>the part of a URL after the <code>#</code> is never sent to the server.</strong> It's a client-side-only construct, by design, going back to the original purpose of fragments as &quot;jump to this anchor on the page.&quot; So when LinkedIn's crawler fetches <code>timbeach.com/#/article/how-tmux-works</code>, the server only ever sees a request for <code>timbeach.com/</code>. The crawler gets my homepage, reads the homepage's generic OG tags, and shows that same generic photo of me — no matter which article the link pointed to.</p>
+<p>Two strikes, both fatal: the crawler can't run the JavaScript that would pick the right article, <em>and</em> it can't even see which article was requested. There is no clever tag I could add to fix this. The hash URL is a dead end at the protocol level.</p>
+<p>The fix is to stop asking a hash URL to do a server's job. At deploy time, a script now walks every article and writes a real, honest HTML file at a real path — <code>a/how-tmux-works/index.html</code> — with that article's own Open Graph tags baked in. That's a page the crawler can actually fetch and read. A human who clicks it gets a one-line redirect into the usual single-page reader, so the experience is unchanged; only the URL you <em>share</em> is different. Crawlers read the static tags; people land in the app. Everybody gets what they came for.</p>
+<h2>🌫️ Trap two: the blur</h2>
+<p>I shipped the share pages, pasted a link, and there it was — the right article's image, finally. Except it was <em>blurry</em>.</p>
+<p>The culprit was aspect ratio. Open Graph images want to be <strong>1200×630 pixels</strong> — a specific, slightly-wider-than-2:1 rectangle. The image I'd handed it was a 1536×1024 screenshot. When the crawler gets an image that isn't the right shape, it crops and resamples it to fit, then re-encodes the result as a compressed JPEG. For a screenshot full of small text, that round of squashing and recompression turns crisp pixels to mush.</p>
+<p>Worse, a couple of my images were smaller than 1200 pixels wide, and platforms will quietly <em>demote</em> an undersized image — showing it as a tiny thumbnail off to the side instead of the big card. Same tags, completely different result, purely because of pixel dimensions.</p>
+<p>The fix was to stop handing crawlers raw images and start handing them finished cards. Now the publish pipeline composites every article's image onto an exact 1200×630 canvas — the whole image, scaled to fit, centered on a dark background that matches the site, downsampled once with a good filter. The crawler receives something already the precise shape and size it wants, so it has nothing left to crop or resample. The blur is gone, and a square diagram or an undersized photo gets the same clean treatment as a perfect screenshot.</p>
+<h2>♻️ Trap three: the cache that never forgets</h2>
+<p>This one is the cruelest, because everything was <em>working</em> when it bit me.</p>
+<p>I'd been iterating — first a plain text card, then the real image, then the sharp composited version — and each time I redeployed and re-checked the preview. At one point the preview reverted to showing an <em>old</em> version I thought I'd deleted two iterations ago. The file on my server was unambiguously the new one; I checked the bytes by hand. And yet LinkedIn kept showing the stale one.</p>
+<p>Platforms cache Open Graph images aggressively, and they cache them <strong>by URL</strong>. My image had lived at the same URL the whole time — <code>.../og.png</code> — while its contents changed underneath. LinkedIn had fetched that URL early, stored the bytes, and from then on it served its copy without ever asking my server whether the image had changed. Re-scraping the <em>page</em> refreshed the tags but not the cached <em>image</em>. The URL was the cache key, the URL never changed, so the cache never expired.</p>
+<p>The fix is a trick as old as web development: put a fingerprint of the contents into the filename. The card is now named after a hash of its own bytes — <code>og-de50d8b938.png</code> — so the moment the image changes, its filename changes, and therefore its URL changes, and therefore every cache on earth treats it as a brand-new image it's never seen. When nothing changes, the name stays put and the cache stays valid. You only bust the cache exactly when you mean to.</p>
+<h2>🌟 The whole trick, in one breath</h2>
+<p>Open Graph is a beautiful little protocol: five lines of HTML buy you a polished presence in every chat app and feed on the internet. But it rests on one assumption — that a crawler can fetch a real page and read real tags — and the moment your site bends that assumption, you find out exactly how much was riding on it.</p>
+<p>If you take three things from my bruises:</p>
+<ul>
+<li><strong>Crawlers don't run JavaScript.</strong> If your content only exists after your app boots, the crawler will never see it. Serve real HTML with real tags at a real URL.</li>
+<li><strong>Hand over a finished 1200×630 image,</strong> not a raw one. Let the crawler do as little as possible, and it can't make your picture worse.</li>
+<li><strong>Fingerprint the filename</strong> so the URL changes when — and only when — the image does. Otherwise some cache, somewhere, will haunt you with a picture you killed days ago.</li>
+</ul>
+<p>I added a read-aloud voice to this blog last month and learned that two parsers will always eventually disagree. This month I learned that a crawler is just a very literal reader who refuses to run your code, resizes your art without asking, and never throws anything away. Build for that reader, and your links will finally look like they mean something.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>One Command to Paste Markdown Into Medium</title>
+      <link>https://timbeach.com/#/article/paste-markdown-into-medium</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/paste-markdown-into-medium</guid>
+      <pubDate>Tue, 09 Jun 2026 00:00:00 +0000</pubDate>
+      <description>Medium closed its API — but its editor still honors the text/html clipboard flavor. So I built mdpaste, a single Rust binary that turns markdown into paste-ready rich text for Medium, Substack, and Ghost.</description>
+      <content:encoded><![CDATA[<p><img src="pix/paste-markdown-into-medium.png" alt="Infographic for &quot;One Command to Paste Markdown Into Medium&quot;: an article.md terminal flows through a central text/html &quot;rich clipboard&quot; into the Medium editor, with panels on why it became a real tool (images, embeds, fixes for Medium/Substack/Ghost), the clipboard as the seam, and the invisible-newlines blockquote gotcha. Footer: &quot;Write in markdown. Copy as HTML. Paste anywhere.&quot;" /></p>
+<p>I write everything in markdown. Plain text, version-controlled, the same format whether it's a README, a note to myself, or an article headed somewhere with a nicer font. Then I go to publish on Medium and the spell breaks: paste my markdown into their editor and it shows up as literal <code>## headings</code> and <code>**asterisks**</code>, the formatting sitting there inert. The obvious fix — let a script publish for me through Medium's API — turns out to be a door that's been quietly nailed shut.</p>
+<h2>The API is gone</h2>
+<p>Medium had a real publishing API once: an integration token, a <code>POST</code> to create a post, the whole thing documented on GitHub. As of 2025 they stopped issuing new tokens and stopped allowing new integrations. The docs repo is archived with a note at the top: <em>the Medium API is no longer supported.</em> Old tokens still work; new ones can't be minted. So if you didn't already have one, programmatic publishing simply isn't on the table anymore.</p>
+<p>That sounds like a dead end. It isn't — it just means the seam is somewhere less obvious.</p>
+<h2>The seam is the clipboard</h2>
+<p>Medium's editor ignores pasted markdown <em>text</em>. But like most rich-text editors, it pays close attention to the <code>text/html</code> flavor of the clipboard. Paste plain text and you get plain text; paste HTML and it reconstructs headings, bold, links, lists. The browser carries two versions of whatever you copy, and the editor reaches for the formatted one.</p>
+<p>Which means the entire problem collapses to: turn markdown into HTML, and put it on the clipboard <em>as HTML</em>. On X11 that's one pipe:</p>
+<pre><code class="language-sh">comrak article.md | xclip -selection clipboard -t text/html
+</code></pre>
+<p><code>comrak</code> does markdown-to-HTML; <code>xclip -t text/html</code> sets the rich-text flavor specifically. Paste into Medium and the formatting survives. That one line is genuinely 80% of the job, and for a quick post it's all you need.</p>
+<blockquote>
+<p>The hard part of a problem is often a layer below where you're looking. I was hunting for an API; the answer was a clipboard MIME type.</p>
+</blockquote>
+<h2>Why it wanted to be a real tool</h2>
+<p>The one-liner is honest about what it is. The remaining 20% is the stuff that only shows up once you paste a <em>real</em> article — and that's what earns a proper binary. So I wrote one: <code>mdpaste</code>, a single Rust binary that parses the markdown to a syntax tree, fixes the things each editor mangles, and hands over clean HTML. It carries quirk profiles for Medium, Substack, and Ghost, since they all honor the same clipboard trick.</p>
+<p>A few of the fixes:</p>
+<ul>
+<li><strong>Images.</strong> A pasted <code>&lt;img&gt;</code> only works if its <code>src</code> is a public URL — the editor can't see a path on my laptop. My article images already live on my own site, so <code>mdpaste</code> rewrites relative paths like <code>pix/shot.png</code> into <code>https://timbeach.com/pix/shot.png</code> and warns me about any local path it can't place.</li>
+<li><strong>Embeds.</strong> A bare YouTube or gist URL sitting alone on a line gets auto-expanded into an embed card — but only if it's a <em>bare</em> URL, not a markdown link. So a paragraph that's nothing but a link to an embed host gets unwrapped back down to the naked URL.</li>
+</ul>
+<h2>The gotcha: invisible newlines</h2>
+<p>The fix I didn't see coming was blockquotes. I pasted a finished article, and every quote came through padded with a blank line above and below the text — like the quote was holding the words at arm's length. The HTML looked fine:</p>
+<pre><code class="language-html">&lt;blockquote&gt;
+&lt;p&gt;...the quoted text...&lt;/p&gt;
+&lt;/blockquote&gt;
+</code></pre>
+<p>Those newlines after <code>&lt;blockquote&gt;</code> and before <code>&lt;/blockquote&gt;</code> are meaningless when a browser renders the page — whitespace between block tags is collapsed and you'd never know it was there. But Medium's paste importer is not a browser. It reads each of those newlines as content and turns them into empty lines inside the quote. The cleanup is almost too small to mention: strip the newlines on the inside edges of the blockquote so the editor gets <code>&lt;blockquote&gt;&lt;p&gt;...&lt;/p&gt;&lt;/blockquote&gt;</code> in one piece. Identical rendering everywhere, tidy quote on paste.</p>
+<p>I'd never have predicted that one. It only surfaced because I actually pasted and <em>looked</em> — which is the whole lesson. You can reason about an HTML-to-editor pipeline all day, but the editor is a black box on the far side of the clipboard, and the only way to know what it does with your markup is to send some across and watch.</p>
+<h2>Why bother</h2>
+<p>Because the boring, repeated thing should stay boring. I write in markdown, run one command, and paste a clean, formatted draft into Medium — images resolved, embeds embedding, quotes sitting tight. It's a single binary, no daemon, no account, no API that can be turned off from under me. When the official door closes, the clipboard is still wide open.</p>
+<p>This very article made the trip that way.</p>
+<p><code>mdpaste</code> is on GitHub: <a href="https://github.com/timbeach/mdpaste">github.com/timbeach/mdpaste</a>.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>The Terminal Setup I Built and Can't Work Without</title>
+      <link>https://timbeach.com/#/article/the-terminal-setup-i-cant-work-without</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/the-terminal-setup-i-cant-work-without</guid>
+      <pubDate>Mon, 08 Jun 2026 00:00:00 +0000</pubDate>
+      <description>I patched suckless `tabbed` into a terminal I actually love: clickable, tmux-keyed tabs of real terminals — transparent, pywal-themed, and self-naming. Rename a Claude Code session and the tab follows live. One `yay` on any Arch box.</description>
+      <content:encoded><![CDATA[<p><img src="pix/the-terminal-setup-i-cant-work-without.png" alt="The Terminal Setup I Built and Can't Work Without" /></p>
+<p>A couple of weeks ago I patched two tiny terminal programs into the setup I now run all day — and I'm not going back. It gives me tabs full of <em>real</em> terminals — click one to switch, or fly between them from the keyboard. They're see-through over my wallpaper and themed to match the rest of my desktop. And the part I still grin at every time: <strong>the tabs name themselves.</strong></p>
+<p>I called the result <code>st-tabbed-aegix-git</code> and put it on the AUR, so you can install it in one command on any Arch-based machine (we'll get there). Here's what it does — and why I built it.</p>
+<h2>What it actually is</h2>
+<p>Two tiny programs, each doing one job. <strong><a href="https://st.suckless.org/"><code>st</code></a></strong> is a terminal emulator — the window that shows your shell. <strong><a href="https://tools.suckless.org/tabbed/"><code>tabbed</code></a></strong> is a generic little container that embeds other programs as tabs. Point <code>tabbed</code> at <code>st</code> and you get a strip of tabs across the top, each one a complete, independent terminal. A three-line launcher named <code>stt</code> glues them together. That's the whole thing.</p>
+<p>Both come from <a href="https://suckless.org">suckless</a>, a project whose entire philosophy is &quot;do the job in as little code as possible, then get out of the way.&quot; You don't need to know any of that to use this — but it's why the result is fast, small, and endlessly tweakable.</p>
+<h2>Why I reach for it instead of tmux</h2>
+<p>If you've met <a href="#articles/how-tmux-works.md">tmux</a>, you know it can carve a terminal into panes and windows. This scratches a similar itch, with two differences that won me over — and one honest caveat.</p>
+<p><strong>You can just click.</strong> A newcomer doesn't have to memorize a single command: click a tab to switch, scroll with the mouse wheel, done. The thing that actually broke me on tmux was scrollback — switch to another window, then try to scroll up through what it printed, and suddenly you're fumbling into &quot;copy mode&quot; keybindings before you can read your own output. Here, every tab is a genuine terminal with its own native scrollback. Switch to it, scroll up, read. No mode, no prefix, no ceremony.</p>
+<p><strong>Your tmux muscle memory still works.</strong> If you <em>do</em> live in tmux, I wired the keybindings to match: <code>Ctrl+b</code> then <code>c</code> for a new tab, <code>n</code>/<code>p</code> to move between them, and so on. So the newcomer clicks and the veteran never lifts their hands off home row. Both win.</p>
+<h3>The honest caveat: no detached sessions</h3>
+<p>Here's the one thing you must know if you're coming from tmux. For years, tmux meant exactly one thing to me: start a long job on a server, <em>detach</em>, close my laptop, drive across town, <code>ssh</code> back in, <em>reattach</em>, and pick up precisely where I left off. <strong>This tool does not do that.</strong> It has no session persistence and nothing to detach from. It is a <em>local development</em> tool — tabs for the terminals on the machine right in front of you.</p>
+<p>So they aren't really rivals; they just look alike. If you need a session that survives a disconnect, use tmux — that's still the right tool for it. If you want comfortable, clickable, good-looking tabs for your everyday local work, that's this.</p>
+<h2>Getting around</h2>
+<p>Three ways to drive it — use whichever you like, or mix them:</p>
+<table>
+<thead>
+<tr>
+<th>Want to…</th>
+<th>Mouse</th>
+<th>Quick keys</th>
+<th>tmux-style</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Switch tab</td>
+<td>click it</td>
+<td><code>Ctrl+Shift+N</code> / <code>P</code></td>
+<td><code>Ctrl+b</code> then <code>n</code> / <code>p</code></td>
+</tr>
+<tr>
+<td>New tab</td>
+<td>—</td>
+<td><code>Ctrl+Shift+T</code></td>
+<td><code>Ctrl+b</code> then <code>c</code></td>
+</tr>
+<tr>
+<td>Jump to tab N</td>
+<td>click it</td>
+<td><code>Ctrl+1</code>…<code>0</code></td>
+<td><code>Ctrl+b</code> then <code>1</code>…<code>0</code></td>
+</tr>
+<tr>
+<td>Close tab</td>
+<td>—</td>
+<td><code>Ctrl+q</code></td>
+<td><code>Ctrl+b</code> then <code>x</code></td>
+</tr>
+<tr>
+<td>Scroll back</td>
+<td>wheel</td>
+<td><code>Shift+PageUp</code></td>
+<td><code>Shift+PageUp</code></td>
+</tr>
+</tbody>
+</table>
+<p>There's nothing to configure to get started. And if you <em>do</em> want to change a binding, it's a couple of lines in one file — that suckless hackability again.</p>
+<h2>It looks like the rest of my desktop</h2>
+<p>The terminals are transparent over my wallpaper, and their colors come straight from <a href="https://github.com/dylanaraps/pywal">pywal</a> — so when I re-theme my desktop from a new wallpaper, the tabs re-theme right along with it. There's no separate config to keep in sync; it reads the same system colors everything else on my screen does.</p>
+<p>(Getting the tab <em>bar</em> opaque while keeping the <em>terminals</em> see-through cost me an embarrassing afternoon chasing a single missing byte in how a color was stored — a bug that made <code>0.9</code> and <code>1.0</code> opacity look identical. It took far longer to find than to fix, which is the usual ratio.)</p>
+<h2>Name your tabs — or let them name themselves</h2>
+<p>Press <code>Ctrl+b</code> then <code>,</code> and a little prompt asks for a tab name. Type it, press enter, and that tab keeps that name. Classic.</p>
+<p>But here's the feature I didn't actually build — I just got out of its way. <strong>A tab automatically shows the title of whatever's running in it.</strong> Your shell, <code>vim</code>, an <code>ssh</code> session — anything that sets the terminal title shows up on the tab, for free.</p>
+<p>And this is where it gets fun if you work with <a href="#articles/claude-code-agent-teams.md">Claude Code</a> like I do. Claude sets the terminal title to the name of your current session. So my tabs <em>label themselves with what I'm working on</em> — and if I run <code>/rename</code> to rename a Claude session, <strong>the tab updates to match, live, while I watch.</strong> I rename the conversation; the tab follows. Every single time.</p>
+<p>I want to be clear that this isn't some clever integration I wrote. Terminals have broadcast their title for decades; <code>tabbed</code> just listens. All I added was the <em>opt-out</em> — the manual <code>Ctrl+b ,</code> name — so that a tab you've named by hand stops following along. I built the override, not the feature. The coolest thing in here was already in the box.</p>
+<h2>Install it anywhere</h2>
+<p>It's on the <strong>AUR</strong>. If that's new to you: the Arch User Repository is a huge community catalog of install recipes for Arch-based systems — Arch, Artix, my own <a href="https://aegixlinux.org">Aegix</a>, and friends. With a helper like <code>yay</code>, installing from it is one line:</p>
+<pre><code class="language-bash">yay -S st-tabbed-aegix-git
+</code></pre>
+<p>That pulls down the terminal, the tabbed container, and the <code>stt</code> launcher, builds them, and you're done. Run <code>stt</code> and you've got tabs. It works on any Arch / Artix / Aegix box, not just mine. (If you're curious how these suckless tools get from my laptop to the AUR in the first place, I wrote that up separately: <a href="#articles/aegix-on-the-aur.md">From <code>~/.local/src</code> to the AUR</a>.)</p>
+<p><strong>Not on Arch?</strong> Nothing here is Arch-specific — these are suckless tools, so the install really is just <code>git clone</code> and <code>sudo make clean install</code>; the AUR package only automates that part. On Debian or Ubuntu you grab the build dependencies first, then build it from source:</p>
+<pre><code class="language-bash">sudo apt install build-essential libx11-dev libxft-dev libfontconfig1-dev
+git clone https://github.com/AegixLinux/tabbed &amp;&amp; cd tabbed &amp;&amp; sudo make clean install
+</code></pre>
+<p>You'll also want <code>st</code> itself, which is rarely packaged outside Arch — so build it the same way (from <a href="https://github.com/AegixLinux/st">AegixLinux/st</a> or stock <a href="https://st.suckless.org/">suckless st</a>). For the extras: <code>dmenu</code> powers the rename prompt (Debian ships it in <code>suckless-tools</code>), <code>xprop</code> backs it (<code>x11-utils</code>), and any compositor like <code>picom</code> gives you the transparency.</p>
+<h2>Why this one matters to me</h2>
+<p>This one stuck. It's load-bearing now — the place my actual work happens all day. It started as an itch about scrollback and turned into a couple hundred lines of C: a tmux-style keybinding mode, an honest fight with X11 transparency, tab colors wired to the system theme, and a package anyone can install.</p>
+<p><code>yay -S st-tabbed-aegix-git</code></p>
+]]></content:encoded>
+    </item>
     <item>
       <title>Still Really Simple: A Short History of RSS (and How This Site Uses It)</title>
       <link>https://timbeach.com/#/article/rss-still-really-simple</link>
