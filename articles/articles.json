@@ -448,5 +448,23 @@
     "timings": "audio/change-your-luks-passphrase.timings.json",
     "voice": "bm_lewis",
     "duration": 264.021
+  },
+  "three-coming-soon-sites-on-one-vps.md": {
+    "title": "Three Coming-Soon Sites on One VPS: nginx, Let's Encrypt, and a Repo Each",
+    "date": "2026-06-16",
+    "tags": [
+      "nginx",
+      "lets-encrypt",
+      "devops",
+      "tls",
+      "github"
+    ],
+    "emoji": "\ud83d\ude80",
+    "summary": "A repeatable, verify-as-you-go routine for taking three domains from fresh DNS to HTTPS-with-auto-renewing-certs and a private repo each \u2014 on one VPS, in about twenty minutes.",
+    "hero": "pix/coming-soon-sites-article.png",
+    "audio": "audio/three-coming-soon-sites-on-one-vps.ogg",
+    "timings": "audio/three-coming-soon-sites-on-one-vps.timings.json",
+    "voice": "bm_lewis",
+    "duration": 502.891
   }
 }

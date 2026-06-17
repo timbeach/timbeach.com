@@ -1,0 +1,354 @@
+{
+  "voice": "bm_lewis",
+  "duration": 502.891,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 25.877333333333333,
+      "text": "There's a satisfying little corner of web ops where a handful of commands take you from \"I just bought a domain\" to \"it's live, on HTTPS, with auto-renewing certs and version control.\" This is a walkthrough of doing that for three domains at once on a single VPS \u2014 each getting its own nginx server block, its own Let's Encrypt certificate, a distinctive static \"coming soon\" page, and its own private GitHub repo."
+    },
+    {
+      "idx": 1,
+      "start": 25.877333333333333,
+      "end": 39.14666666666667,
+      "text": "The whole thing is maybe twenty minutes of work once DNS has propagated. The value isn't any single step \u2014 it's having a repeatable, verifiable routine so the tenth domain is as boring as the first."
+    },
+    {
+      "idx": 2,
+      "start": 39.14666666666667,
+      "end": 48.02133333333333,
+      "text": "The stack: Debian 12, nginx 1.22, certbot 2.1, the GitHub CLI, and plain static HTML."
+    },
+    {
+      "idx": 3,
+      "start": 48.02133333333333,
+      "end": 49.45066666666666,
+      "text": "The shape of the work"
+    },
+    {
+      "idx": 4,
+      "start": 49.45066666666666,
+      "end": 53.61066666666667,
+      "text": "Five phases, each with a verification step before moving on:"
+    },
+    {
+      "idx": 5,
+      "start": 53.61066666666667,
+      "end": 59.178666666666665,
+      "text": "DNS \u2014 point apex + www at the box, and prove it resolves."
+    },
+    {
+      "idx": 6,
+      "start": 59.178666666666665,
+      "end": 64.68266666666666,
+      "text": "nginx \u2014 one HTTP server block per site, enabled via symlink."
+    },
+    {
+      "idx": 7,
+      "start": 64.68266666666666,
+      "end": 71.21066666666667,
+      "text": "TLS \u2014 let certbot issue certs and rewrite the configs for HTTPS + redirect."
+    },
+    {
+      "idx": 8,
+      "start": 71.21066666666667,
+      "end": 77.01333333333334,
+      "text": "Pages \u2014 a self-contained index.html per site, deployed with scp."
+    },
+    {
+      "idx": 9,
+      "start": 77.01333333333334,
+      "end": 82.13333333333334,
+      "text": "Repos \u2014 one private GitHub repo per site, with a collaborator invited."
+    },
+    {
+      "idx": 10,
+      "start": 82.13333333333334,
+      "end": 90.304,
+      "text": "The recurring theme: never trust a step you didn't verify. Every phase below ends with a command whose output you actually read."
+    },
+    {
+      "idx": 11,
+      "start": 90.304,
+      "end": 92.48,
+      "text": "1. DNS, and proving it"
+    },
+    {
+      "idx": 12,
+      "start": 92.48,
+      "end": 102.848,
+      "text": "For each domain, create four records pointing apex (@) and www at the VPS \u2014 an A record for IPv4 and an AAAA for IPv6:"
+    },
+    {
+      "idx": 13,
+      "start": 102.848,
+      "end": 108.416,
+      "text": "(Those are documentation-range placeholders \u2014 substitute your server's real addresses.)"
+    },
+    {
+      "idx": 14,
+      "start": 108.416,
+      "end": 122.112,
+      "text": "Before requesting any certificates, confirm every name resolves. certbot's HTTP-01 challenge fails if DNS isn't live yet, and the failure messages are vague enough to waste your afternoon:"
+    },
+    {
+      "idx": 15,
+      "start": 122.112,
+      "end": 127.85066666666667,
+      "text": "If a name comes back empty, propagation isn't done. Wait, re-run, then proceed."
+    },
+    {
+      "idx": 16,
+      "start": 127.85066666666667,
+      "end": 130.56,
+      "text": "2. nginx, HTTP first"
+    },
+    {
+      "idx": 17,
+      "start": 130.56,
+      "end": 146.41066666666666,
+      "text": "Start each site as plain HTTP. This isn't laziness \u2014 certbot's nginx plugin reads your port-80 server block, then rewrites it in place to add the TLS bits. Give it a clean starting point and it does the tedious part for you."
+    },
+    {
+      "idx": 18,
+      "start": 146.41066666666666,
+      "end": 151.78666666666666,
+      "text": "/etc/nginx/sites-available/example.com:"
+    },
+    {
+      "idx": 19,
+      "start": 151.78666666666666,
+      "end": 168.384,
+      "text": "The two location blocks at the end matter: the catch-all /\\. dotfile deny would otherwise also block /.well-known/acme-challenge/, which is exactly the path Let's Encrypt needs to reach. Allow it explicitly before the deny."
+    },
+    {
+      "idx": 20,
+      "start": 168.384,
+      "end": 171.22133333333332,
+      "text": "Enable each site with a symlink and reload:"
+    },
+    {
+      "idx": 21,
+      "start": 171.22133333333332,
+      "end": 196.288,
+      "text": "A real gotcha: one of my domains already had a config sitting in sites-enabled as a regular file rather than a symlink. Mixed conventions like that are how you end up with a site that mysteriously won't update. I deleted it and re-created it as a symlink so all sites follow the same sites-available \u2192 sites-enabled pattern. Pick one convention and let nothing drift from it."
+    },
+    {
+      "idx": 22,
+      "start": 196.288,
+      "end": 198.42133333333334,
+      "text": "3. TLS, the easy way"
+    },
+    {
+      "idx": 23,
+      "start": 198.42133333333334,
+      "end": 214.48533333333333,
+      "text": "certbot's nginx plugin does issuance and installation in one shot. Cover both apex and www in a single cert, and pass --redirect so it also writes the HTTP\u2192HTTPS 301:"
+    },
+    {
+      "idx": 24,
+      "start": 214.48533333333333,
+      "end": 217.38666666666666,
+      "text": "For each site, certbot rewrites the config to:"
+    },
+    {
+      "idx": 25,
+      "start": 217.38666666666666,
+      "end": 229.12,
+      "text": "add listen 443 ssl for IPv4 and IPv6, with the cert/key under /etc/letsencrypt/live/<domain>/,"
+    },
+    {
+      "idx": 26,
+      "start": 229.12,
+      "end": 235.09333333333333,
+      "text": "include the recommended options-ssl-nginx.conf and ssl-dhparams.pem,"
+    },
+    {
+      "idx": 27,
+      "start": 235.09333333333333,
+      "end": 241.81333333333333,
+      "text": "append a second server {} that 301-redirects port 80 to https://."
+    },
+    {
+      "idx": 28,
+      "start": 241.81333333333333,
+      "end": 253.33333333333334,
+      "text": "Renewal is handled by certbot's own systemd timer \u2014 there's no cron line to write and nothing to remember. Certs are 90-day; the timer renews them well ahead of expiry."
+    },
+    {
+      "idx": 29,
+      "start": 253.33333333333334,
+      "end": 262.784,
+      "text": "Verify the whole TLS story in one loop \u2014 redirect on 80, 200 on 443, and www behaving:"
+    },
+    {
+      "idx": 30,
+      "start": 262.784,
+      "end": 275.62666666666667,
+      "text": "You want 301 \u2192 https://\u2026, then 200, then 301 again. If you see a 200 on plain HTTP, your redirect didn't land."
+    },
+    {
+      "idx": 31,
+      "start": 275.62666666666667,
+      "end": 277.6533333333333,
+      "text": "4. Pages worth landing on"
+    },
+    {
+      "idx": 32,
+      "start": 277.6533333333333,
+      "end": 300.13866666666667,
+      "text": "A \"coming soon\" page is a tiny canvas, which makes it a fun one. I kept each page a single self-contained index.html \u2014 inline CSS and JS, web fonts, no build step. That keeps deployment to a one-line scp and keeps each repo trivially simple. Rather than one shared template, I gave each domain its own character:"
+    },
+    {
+      "idx": 33,
+      "start": 300.13866666666667,
+      "end": 305.408,
+      "text": "a dark, instrument-panel look with a live oscilloscope trace drawn on a <canvas>;"
+    },
+    {
+      "idx": 34,
+      "start": 305.408,
+      "end": 311.53066666666666,
+      "text": "a light, editorial layout with slowly drifting topographic contour lines in SVG;"
+    },
+    {
+      "idx": 35,
+      "start": 311.53066666666666,
+      "end": 317.5253333333333,
+      "text": "a retro amber CRT terminal, scanlines and all, that types out a little boot sequence."
+    },
+    {
+      "idx": 36,
+      "start": 317.5253333333333,
+      "end": 330.6453333333333,
+      "text": "All three honor prefers-reduced-motion \u2014 if a visitor's OS asks for less animation, the motion stops and the page renders static. That's a one-line media query and there's no excuse to skip it."
+    },
+    {
+      "idx": 37,
+      "start": 330.6453333333333,
+      "end": 335.12533333333334,
+      "text": "Deploy and confirm what's actually being served, not just what's on disk:"
+    },
+    {
+      "idx": 38,
+      "start": 335.12533333333334,
+      "end": 337.30133333333333,
+      "text": "5. A private repo per site"
+    },
+    {
+      "idx": 39,
+      "start": 337.30133333333333,
+      "end": 350.12266666666665,
+      "text": "Each site gets its own private GitHub repo, created and pushed straight from the local directory with the GitHub CLI. If you juggle multiple GitHub accounts, set the right one active first:"
+    },
+    {
+      "idx": 40,
+      "start": 350.12266666666665,
+      "end": 357.07733333333334,
+      "text": "Then, from each site's directory (holding index.html, a README.md, and a .gitignore):"
+    },
+    {
+      "idx": 41,
+      "start": 357.07733333333334,
+      "end": 370.8586666666667,
+      "text": "A small thing that trips people up: GitHub repo names may contain dots, so naming the repo example.com \u2014 matching the domain exactly \u2014 is perfectly valid and keeps the mapping between repo and site obvious."
+    },
+    {
+      "idx": 42,
+      "start": 370.8586666666667,
+      "end": 398.8693333333333,
+      "text": "The collaborator step is worth understanding precisely. On a private repo, adding a collaborator doesn't grant instant access \u2014 it creates an invitation. Until the person accepts it (via the email GitHub sends, or the repo page, or their notifications), they're listed as a pending invite, not an active collaborator. So \"I added you\" and \"you can push\" are two events with the other person's click in between. Verify the invitation went out with the right permission:"
+    },
+    {
+      "idx": 43,
+      "start": 398.8693333333333,
+      "end": 404.05333333333334,
+      "text": "And later, once they've accepted, the pending list empties and this returns their level:"
+    },
+    {
+      "idx": 44,
+      "start": 404.05333333333334,
+      "end": 405.248,
+      "text": "What you're left with"
+    },
+    {
+      "idx": 45,
+      "start": 405.248,
+      "end": 430.63466666666665,
+      "text": "Per domain: HTTPS with an auto-renewing certificate, HTTP and www both 301-ing to the canonical https:// apex, a static page served from /var/www/<domain>/, and a private repo with history. Updating a page later is two independent pushes \u2014 one to GitHub, one to the server:"
+    },
+    {
+      "idx": 46,
+      "start": 430.63466666666665,
+      "end": 445.2266666666667,
+      "text": "There's deliberately no CI here; for a coming-soon page, a GitHub Action that deploys on push would be the obvious next increment, and the natural place to grow this into a real pipeline once the actual sites take shape."
+    },
+    {
+      "idx": 47,
+      "start": 445.2266666666667,
+      "end": 446.82666666666665,
+      "text": "The reusable checklist"
+    },
+    {
+      "idx": 48,
+      "start": 446.82666666666665,
+      "end": 452.3306666666667,
+      "text": "Strip away the prose and the routine for the next domain is short enough to keep in your head:"
+    },
+    {
+      "idx": 49,
+      "start": 452.3306666666667,
+      "end": 458.944,
+      "text": "DNS: A + AAAA for @ and www \u2192 the box; verify with dig."
+    },
+    {
+      "idx": 50,
+      "start": 458.944,
+      "end": 463.7013333333333,
+      "text": "mkdir -p /var/www/<domain>."
+    },
+    {
+      "idx": 51,
+      "start": 463.7013333333333,
+      "end": 468.8,
+      "text": "Drop the nginx server block in sites-available, symlink into sites-enabled."
+    },
+    {
+      "idx": 52,
+      "start": 468.8,
+      "end": 472.7253333333333,
+      "text": "nginx -t && systemctl reload nginx."
+    },
+    {
+      "idx": 53,
+      "start": 472.7253333333333,
+      "end": 478.18666666666667,
+      "text": "certbot --nginx -d <domain> -d www.<domain> --redirect."
+    },
+    {
+      "idx": 54,
+      "start": 478.18666666666667,
+      "end": 481.51466666666664,
+      "text": "Build index.html; scp it up."
+    },
+    {
+      "idx": 55,
+      "start": 481.51466666666664,
+      "end": 486.272,
+      "text": "gh repo create <owner>/<domain> --private --source=. --push."
+    },
+    {
+      "idx": 56,
+      "start": 486.272,
+      "end": 492.8213333333333,
+      "text": "Invite collaborators; verify visibility, redirects, and a 200 on HTTPS."
+    },
+    {
+      "idx": 57,
+      "start": 492.8213333333333,
+      "end": 502.8906666666667,
+      "text": "Eight steps, each with a way to check it worked. That's the whole trick \u2014 not the commands themselves, but refusing to move to the next one until the current one is proven."
+    }
+  ]
+}
