@@ -1,4 +1,22 @@
 {
+  "use-the-best-model.md": {
+    "title": "Use the Best Model. Your Time Is the Expensive Part.",
+    "date": "2026-06-28",
+    "tags": [
+      "ai",
+      "engineering",
+      "tools",
+      "productivity",
+      "llms"
+    ],
+    "emoji": "\ud83e\udde0",
+    "summary": "The economic case for defaulting to the best frontier model on interactive engineering work \u2014 the model is cheap, your hours aren't \u2014 plus the five specific situations where stepping down is the right call.",
+    "hero": "pix/claude-is-cheap.png",
+    "audio": "audio/use-the-best-model.ogg",
+    "timings": "audio/use-the-best-model.timings.json",
+    "voice": "bm_lewis",
+    "duration": 329.536
+  },
   "bring-back-the-hit-counter.md": {
     "title": "Bring Back the Hit Counter \u2014 Privately, in One File",
     "date": "2026-06-12",
