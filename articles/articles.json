@@ -1,4 +1,21 @@
 {
+  "my-cognitive-and-longevity-stack.md": {
+    "title": "My Cognitive & Longevity Stack",
+    "date": "2026-07-02",
+    "tags": [
+      "health",
+      "longevity",
+      "cognition",
+      "personal"
+    ],
+    "emoji": "\ud83d\udc8a",
+    "summary": "A software engineer's morning-to-night health stack, framed as a build/runtime/shutdown cycle \u2014 why a dawn run and sunlight anchor the cortisol curve, how the D3\u2192K2\u2192magnesium\u2192omega-3 pieces interlock, and why the timing is the real intervention. A log, not a prescription.",
+    "hero": "pix/health-span.png",
+    "audio": "audio/my-cognitive-and-longevity-stack.ogg",
+    "timings": "audio/my-cognitive-and-longevity-stack.timings.json",
+    "voice": "bm_lewis",
+    "duration": 701.556
+  },
   "use-the-best-model.md": {
     "title": "Use the Best Model. Your Time Is the Expensive Part.",
     "date": "2026-06-28",
