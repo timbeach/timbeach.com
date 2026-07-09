@@ -8,9 +8,13 @@
       "tennessee",
       "personal"
     ],
-    "emoji": "🦝",
-    "summary": "Rescuing two orphaned raccoon kits — Charls and Doozy — turned into a two-hour race against the bureaucracy of compassion. What Tennessee's Rabies Vector Species laws do to anyone who tries to help, and the underground network of rehabbers who actually will.",
-    "hero": "pix/3AM_kits_first_encounter.jpg"
+    "emoji": "\ud83e\udd9d",
+    "summary": "Rescuing two orphaned raccoon kits \u2014 Charls and Doozy \u2014 turned into a two-hour race against the bureaucracy of compassion. What Tennessee's Rabies Vector Species laws do to anyone who tries to help, and the underground network of rehabbers who actually will.",
+    "hero": "pix/3AM_kits_first_encounter.jpg",
+    "audio": "audio/raccoons-are-illegal.ogg",
+    "timings": "audio/raccoons-are-illegal.timings.json",
+    "voice": "bm_lewis",
+    "duration": 402.005
   },
   "my-cognitive-and-longevity-stack.md": {
     "title": "My Cognitive & Longevity Stack",

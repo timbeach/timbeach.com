@@ -18,6 +18,13 @@ from bs4 import BeautifulSoup
 # Must match client selector at index.html:3908
 PARAGRAPH_SELECTOR = "h2, h3, h4, p, li"
 
+# A whole-line {{youtube:ID}} / {{youtube:ID|short}} token. The client
+# parseMarkdown turns these into a <div class="video-embed"> (not a spoken
+# <p>/<h*>/<li>), so they are absent from the client paragraph list. markdown-it
+# has no such rule and renders the token as a literal-text <p>, so we must skip
+# it here to keep server/client paragraph parity — mirror of the client regex.
+_EMBED_TOKEN_RE = re.compile(r"\{\{youtube:[\w-]+(?:\|short)?\}\}")
+
 
 def extract_paragraphs(md_text: str) -> list[str]:
     """Parse markdown, extract readable paragraphs matching client rules."""
@@ -34,7 +41,9 @@ def extract_paragraphs(md_text: str) -> list[str]:
         for tag in el.select("img"):
             tag.decompose()
         text = el.get_text().strip()
-        if text:
+        # Skip whole-line YouTube embed tokens — the client renders them as a
+        # non-spoken <div>, so they must not become spoken paragraphs here.
+        if text and not _EMBED_TOKEN_RE.fullmatch(text):
             paragraphs.append(text)
     return paragraphs
 
