@@ -82,6 +82,26 @@ function parseMarkdown(content) {
     .replace(/!\[([^\]]*)\]\((.+?)\)/g, '<img src="$2" alt="$1" />')
     .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
 
+  // Handle YouTube embeds — a line of the form {{youtube:VIDEO_ID}} (optionally
+  // {{youtube:VIDEO_ID|short}} for a vertical 9:16 Short) becomes a responsive
+  // iframe. Placeholder-protected so the <p> wrapper below doesn't swallow it,
+  // exactly like the table/list/quote handling. This is a NEW block type:
+  // existing articles contain no {{youtube:...}} tokens, so their paragraph
+  // boundaries — and therefore their TTS timings parity — are untouched.
+  const embedPlaceholders = [];
+  let embedIndex = 0;
+  processedContent = processedContent.replace(
+    /^\{\{youtube:([\w-]+)(\|short)?\}\}$/gm,
+    (_match, id, short) => {
+      const cls = short ? 'video-embed short' : 'video-embed';
+      const html = `<div class="${cls}"><iframe src="https://www.youtube.com/embed/${id}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen loading="lazy"></iframe></div>`;
+      const placeholder = `__EMBED_BLOCK_${embedIndex}__`;
+      embedPlaceholders.push({ placeholder, html });
+      embedIndex++;
+      return placeholder;
+    }
+  );
+
   // Handle markdown tables — replace with placeholders to protect from <p> wrapping
   const tablePlaceholders = [];
   let tableIndex = 0;
@@ -255,6 +275,12 @@ function parseMarkdown(content) {
 
   // Restore blockquote blocks
   quotePlaceholders.forEach(({ placeholder, html }) => {
+    processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
+    processedContent = processedContent.replace(placeholder, html);
+  });
+
+  // Restore YouTube embed blocks
+  embedPlaceholders.forEach(({ placeholder, html }) => {
     processedContent = processedContent.replace(`<p>${placeholder}</p>`, html);
     processedContent = processedContent.replace(placeholder, html);
   });

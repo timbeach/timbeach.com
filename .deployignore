@@ -31,6 +31,11 @@ counter-data/
 /IDEAS.md
 /.deployignore
 
+# --- local video masters (published via YouTube embeds, never hosted here) and
+#     unused source photos we deliberately keep out of the public site ---
+*.mp4
+/pix/Elliott_w_kits_0.jpg
+
 # --- pre-existing deploy excludes (carried over from the old inline list) ---
 .well-known/
 irc.txt.gpg
