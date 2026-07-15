@@ -1,0 +1,120 @@
+{
+  "voice": "bm_lewis",
+  "duration": 259.051,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 20.842666666666666,
+      "text": "New tabs in Chromium browsers open at the far end of the tab strip \u2014 somewhere past tab forty, in the region cartographers mark \"here be dragons.\" tabnext opens them where you actually are: immediately to the right of the tab you're on. Ctrl+T, middle-clicked links, links from other apps \u2014 everything lands next to you."
+    },
+    {
+      "idx": 1,
+      "start": 20.842666666666666,
+      "end": 30.954666666666668,
+      "text": "It also gives the toolbar penguin a job: a live badge with the number of tabs you have open. No judgment. Just a number. (You can pretend it's judgment.)"
+    },
+    {
+      "idx": 2,
+      "start": 30.954666666666668,
+      "end": 31.637333333333334,
+      "text": "Get it:"
+    },
+    {
+      "idx": 3,
+      "start": 31.637333333333334,
+      "end": 37.717333333333336,
+      "text": "tabnext on the Chrome Web Store \u2014 works in Chrome, Brave, Edge, Vivaldi, anything Chromium"
+    },
+    {
+      "idx": 4,
+      "start": 37.717333333333336,
+      "end": 47.59466666666667,
+      "text": "Source on GitHub (MIT) \u2014 two files, about a hundred lines; if you'd rather not trust a store, read all of it in two minutes and Load Unpacked it yourself"
+    },
+    {
+      "idx": 5,
+      "start": 47.59466666666667,
+      "end": 51.712,
+      "text": "A few things worth knowing before you install, all of them deliberate:"
+    },
+    {
+      "idx": 6,
+      "start": 51.712,
+      "end": 65.38666666666667,
+      "text": "Zero permissions. The install prompt warns you about nothing because there is nothing to warn about \u2014 tabnext never reads your URLs, titles, or history. It counts tabs and it moves tabs. That's the whole thing."
+    },
+    {
+      "idx": 7,
+      "start": 65.38666666666667,
+      "end": 78.656,
+      "text": "Tab-group safe. Grouped tabs are never yanked out of their groups, and session restore keeps your order and your groups exactly as you left them. Open a tab from inside a group and it joins the group, right next to you."
+    },
+    {
+      "idx": 8,
+      "start": 78.656,
+      "end": 87.82933333333334,
+      "text": "Nothing resident. One event-driven service worker that sleeps between tab events. No settings page, no popup, no onboarding tour."
+    },
+    {
+      "idx": 9,
+      "start": 87.82933333333334,
+      "end": 89.04533333333333,
+      "text": "Why it exists"
+    },
+    {
+      "idx": 10,
+      "start": 89.04533333333333,
+      "end": 115.54133333333333,
+      "text": "For years I used Open Tabs Next to Current \u2014 an extension so reliable I forgot it was an extension. Then Brave greeted me with a gray banner: \"This extension was turned off because it is no longer supported.\" It was written for Manifest V2, Chromium retired Manifest V2, and the author never ported it. That's the whole obituary \u2014 and it belongs to thousands of small, finished, single-purpose extensions that died the same way."
+    },
+    {
+      "idx": 11,
+      "start": 115.54133333333333,
+      "end": 122.15466666666667,
+      "text": "Here's the part that surprised me: rebuilding it took a morning. The entire concept fits in one listener \u2014"
+    },
+    {
+      "idx": 12,
+      "start": 122.15466666666667,
+      "end": 128.36266666666666,
+      "text": "\u2014 and the rest of the hundred lines exist because that obvious version is wrong in two interesting ways."
+    },
+    {
+      "idx": 13,
+      "start": 128.36266666666666,
+      "end": 130.176,
+      "text": "What I learned along the way"
+    },
+    {
+      "idx": 14,
+      "start": 130.176,
+      "end": 166.08,
+      "text": "New tabs are born active. A tab you open in the foreground \u2014 Ctrl+T, the new-tab button \u2014 is already the active tab by the time the creation event fires. So \"find the active tab and move next to it\" finds the newborn itself, and moving a tab next to itself is a no-op wearing a trench coat. The fix is to ask a different question when that happens: not \"which tab is active?\" but \"which tab was I just using?\" Chromium tracks a lastAccessed timestamp on every tab (also permission-free), and the previously-used tab is simply the most recent one that isn't you."
+    },
+    {
+      "idx": 15,
+      "start": 166.08,
+      "end": 200.34133333333332,
+      "text": "Session restore is also \"opening tabs.\" This was the good bug. After restoring my session, tabs had escaped their tab groups and scattered across the strip. Three facts conspire: a restore fires the same creation event as a human opening tabs, dozens of times fast; a tab's group membership isn't set yet when that event fires, so restored tabs briefly look ungrouped; and moving a tab to a spot outside its group silently strips its membership. So my extension was \"helpfully\" repositioning every restored tab and shredding the groups as it went."
+    },
+    {
+      "idx": 16,
+      "start": 200.34133333333332,
+      "end": 239.95733333333334,
+      "text": "The fix that stuck: treat rapid-fire tab creation as the browser talking to itself, and stay out of the conversation. A new window gets a two-second quiet period, and any tab created during quiet \u2014 or within 300 ms of the previous one, a cadence only a browser produces \u2014 extends it. On top of that, every move waits 150 ms and re-checks the tab first; if it joined a group or got closed in the meantime, leave it alone. As a bonus, Chromium's own move semantics mean Ctrl+T from inside a tab group opens the new tab in that group \u2014 exactly what a groups person wants, zero code written for it."
+    },
+    {
+      "idx": 17,
+      "start": 239.95733333333334,
+      "end": 241.04533333333333,
+      "text": "Build your own"
+    },
+    {
+      "idx": 18,
+      "start": 241.04533333333333,
+      "end": 259.05066666666664,
+      "text": "If an extension you loved died in the MV2 purge, go look at how big it actually was. The odds are good it was a hundred lines of somebody's weekend, and the platform underneath \u2014 chrome.tabs, chrome.action, a JSON manifest \u2014 is still right there, waiting for yours."
+    }
+  ]
+}

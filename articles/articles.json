@@ -1,6 +1,6 @@
 {
   "tabnext.md": {
-    "title": "tabnext — Open New Browser Tabs Next to Your Current One",
+    "title": "tabnext \u2014 Open New Browser Tabs Next to Your Current One",
     "date": "2026-08-15",
     "tags": [
       "browser-extensions",
@@ -9,9 +9,13 @@
       "suckless",
       "tabnext"
     ],
-    "emoji": "🐧",
-    "summary": "When the MV2 purge killed Open Tabs Next to Current, rebuilding it took 105 lines and zero permissions — plus two non-obvious lessons: foreground tabs are already active when onCreated fires, and a session restore looks exactly like a user opening forty tabs, so naive tab-moving rips them out of their groups.",
-    "hero": "pix/tabnext-article-hero.png"
+    "emoji": "\ud83d\udc27",
+    "summary": "When the MV2 purge killed Open Tabs Next to Current, rebuilding it took 105 lines and zero permissions \u2014 plus two non-obvious lessons: foreground tabs are already active when onCreated fires, and a session restore looks exactly like a user opening forty tabs, so naive tab-moving rips them out of their groups.",
+    "hero": "pix/tabnext-article-hero.png",
+    "audio": "audio/tabnext.ogg",
+    "timings": "audio/tabnext.timings.json",
+    "voice": "bm_lewis",
+    "duration": 259.051
   },
   "raccoons-are-illegal.md": {
     "title": "Raccoons Are Illegal",
@@ -22,8 +26,8 @@
       "tennessee",
       "personal"
     ],
-    "emoji": "🦝",
-    "summary": "Rescuing two orphaned raccoon kits — Charls and Doozy — turned into a two-hour race against the bureaucracy of compassion. What Tennessee's Rabies Vector Species laws do to anyone who tries to help, and the underground network of rehabbers who actually will.",
+    "emoji": "\ud83e\udd9d",
+    "summary": "Rescuing two orphaned raccoon kits \u2014 Charls and Doozy \u2014 turned into a two-hour race against the bureaucracy of compassion. What Tennessee's Rabies Vector Species laws do to anyone who tries to help, and the underground network of rehabbers who actually will.",
     "hero": "pix/3AM_kits_first_encounter.jpg",
     "audio": "audio/raccoons-are-illegal.ogg",
     "timings": "audio/raccoons-are-illegal.timings.json",
@@ -39,8 +43,8 @@
       "cognition",
       "personal"
     ],
-    "emoji": "💊",
-    "summary": "A software engineer's morning-to-night health stack, framed as a build/runtime/shutdown cycle — why a dawn run and sunlight anchor the cortisol curve, how the D3→K2→magnesium→omega-3 pieces interlock, and why the timing is the real intervention. A log, not a prescription.",
+    "emoji": "\ud83d\udc8a",
+    "summary": "A software engineer's morning-to-night health stack, framed as a build/runtime/shutdown cycle \u2014 why a dawn run and sunlight anchor the cortisol curve, how the D3\u2192K2\u2192magnesium\u2192omega-3 pieces interlock, and why the timing is the real intervention. A log, not a prescription.",
     "hero": "pix/health-span.png",
     "audio": "audio/my-cognitive-and-longevity-stack.ogg",
     "timings": "audio/my-cognitive-and-longevity-stack.timings.json",
@@ -57,8 +61,8 @@
       "productivity",
       "llms"
     ],
-    "emoji": "🧠",
-    "summary": "The economic case for defaulting to the best frontier model on interactive engineering work — the model is cheap, your hours aren't — plus the five specific situations where stepping down is the right call.",
+    "emoji": "\ud83e\udde0",
+    "summary": "The economic case for defaulting to the best frontier model on interactive engineering work \u2014 the model is cheap, your hours aren't \u2014 plus the five specific situations where stepping down is the right call.",
     "hero": "pix/claude-is-cheap.png",
     "audio": "audio/use-the-best-model.ogg",
     "timings": "audio/use-the-best-model.timings.json",
@@ -66,15 +70,15 @@
     "duration": 329.536
   },
   "bring-back-the-hit-counter.md": {
-    "title": "Bring Back the Hit Counter — Privately, in One File",
+    "title": "Bring Back the Hit Counter \u2014 Privately, in One File",
     "date": "2026-06-12",
     "tags": [
       "projects",
       "php",
       "privacy"
     ],
-    "emoji": "👁",
-    "summary": "A privacy-respecting hit counter in a single file of PHP — counts each visitor once per day with salted IP hashes, no database and no tracking, and you can drop it straight into your own site.",
+    "emoji": "\ud83d\udc41",
+    "summary": "A privacy-respecting hit counter in a single file of PHP \u2014 counts each visitor once per day with salted IP hashes, no database and no tracking, and you can drop it straight into your own site.",
     "hero": "pix/bring-back-the-hit-counter.png",
     "audio": "audio/bring-back-the-hit-counter.ogg",
     "timings": "audio/bring-back-the-hit-counter.timings.json",
@@ -92,8 +96,8 @@
       "sysadmin",
       "suckless"
     ],
-    "emoji": "⏰",
-    "summary": "I'd run cron for a decade — on servers, where machines never sleep. Then I gave it a job on my laptop and it silently never ran. anacron is cron for computers that power off: it thinks in elapsed days, catches up after downtime, and (the part nobody mentions) rides on top of cron rather than replacing it.",
+    "emoji": "\u23f0",
+    "summary": "I'd run cron for a decade \u2014 on servers, where machines never sleep. Then I gave it a job on my laptop and it silently never ran. anacron is cron for computers that power off: it thinks in elapsed days, catches up after downtime, and (the part nobody mentions) rides on top of cron rather than replacing it.",
     "hero": "pix/cron-assumes-your-computer-never-sleeps.png",
     "audio": "audio/cron-assumes-your-computer-never-sleeps.ogg",
     "timings": "audio/cron-assumes-your-computer-never-sleeps.timings.json",
@@ -111,8 +115,8 @@
       "suckless",
       "cli"
     ],
-    "emoji": "📋",
-    "summary": "Medium closed its API — but its editor still honors the text/html clipboard flavor. So I built mdpaste, a single Rust binary that turns markdown into paste-ready rich text for Medium, Substack, and Ghost.",
+    "emoji": "\ud83d\udccb",
+    "summary": "Medium closed its API \u2014 but its editor still honors the text/html clipboard flavor. So I built mdpaste, a single Rust binary that turns markdown into paste-ready rich text for Medium, Substack, and Ghost.",
     "hero": "pix/paste-markdown-into-medium.png",
     "audio": "audio/paste-markdown-into-medium.ogg",
     "timings": "audio/paste-markdown-into-medium.timings.json",
@@ -130,9 +134,9 @@
       "linux",
       "claude-code"
     ],
-    "emoji": "🗂️",
+    "emoji": "\ud83d\uddc2\ufe0f",
     "hero": "pix/the-terminal-setup-i-cant-work-without.png",
-    "summary": "I patched suckless `tabbed` into a terminal I actually love: clickable, tmux-keyed tabs of real terminals — transparent, pywal-themed, and self-naming. Rename a Claude Code session and the tab follows live. One `yay` on any Arch box.",
+    "summary": "I patched suckless `tabbed` into a terminal I actually love: clickable, tmux-keyed tabs of real terminals \u2014 transparent, pywal-themed, and self-naming. Rename a Claude Code session and the tab follows live. One `yay` on any Arch box.",
     "audio": "audio/the-terminal-setup-i-cant-work-without.ogg",
     "timings": "audio/the-terminal-setup-i-cant-work-without.timings.json",
     "voice": "bm_lewis",
@@ -147,9 +151,9 @@
       "social",
       "frontend"
     ],
-    "emoji": "🔗",
+    "emoji": "\ud83d\udd17",
     "hero": "pix/open-graph-protocol.png",
-    "summary": "The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.",
+    "summary": "The Open Graph protocol gives every shared link its title, blurb, and picture \u2014 and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.",
     "audio": "audio/how-my-links-got-their-pictures.ogg",
     "timings": "audio/how-my-links-got-their-pictures.timings.json",
     "voice": "bm_lewis",
@@ -165,8 +169,8 @@
       "tips",
       "workflow"
     ],
-    "emoji": "🔓",
-    "summary": "Permission mode is fixed at startup, so resumed sessions silently reset to prompting — and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.",
+    "emoji": "\ud83d\udd13",
+    "summary": "Permission mode is fixed at startup, so resumed sessions silently reset to prompting \u2014 and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.",
     "audio": "audio/claude-code-permission-modes.ogg",
     "timings": "audio/claude-code-permission-modes.timings.json",
     "voice": "bm_lewis",
@@ -181,8 +185,8 @@
       "tips",
       "reverse-engineering"
     ],
-    "emoji": "💡",
-    "summary": "Every tip Claude Code ships with — extracted by pointing Claude at its own binary — plus the keyboard shortcuts and sigils that aren't in the rotation.",
+    "emoji": "\ud83d\udca1",
+    "summary": "Every tip Claude Code ships with \u2014 extracted by pointing Claude at its own binary \u2014 plus the keyboard shortcuts and sigils that aren't in the rotation.",
     "audio": "audio/claude-tips-complete-list.ogg",
     "timings": "audio/claude-tips-complete-list.timings.json",
     "voice": "bm_lewis",
@@ -196,8 +200,8 @@
       "fundamentals",
       "osi"
     ],
-    "emoji": "🌐",
-    "summary": "A whiteboard walk-through of the seven layers — what each one actually does, and why “that's a Layer 7 problem” still means something even though the modern internet runs on TCP/IP.",
+    "emoji": "\ud83c\udf10",
+    "summary": "A whiteboard walk-through of the seven layers \u2014 what each one actually does, and why \u201cthat's a Layer 7 problem\u201d still means something even though the modern internet runs on TCP/IP.",
     "audio": "audio/osi-model-whiteboard.ogg",
     "timings": "audio/osi-model-whiteboard.timings.json",
     "voice": "af_bella",
@@ -214,8 +218,8 @@
       "agents",
       "testing"
     ],
-    "emoji": "🛤️",
-    "summary": "Two words that sound alike and get used loosely but mean opposite things — a pipeline is a conveyor belt that work flows through; a harness is a jig that wraps a fixed thing to drive it. The distinction, with the instances we actually use.",
+    "emoji": "\ud83d\udee4\ufe0f",
+    "summary": "Two words that sound alike and get used loosely but mean opposite things \u2014 a pipeline is a conveyor belt that work flows through; a harness is a jig that wraps a fixed thing to drive it. The distinction, with the instances we actually use.",
     "audio": "audio/pipeline-vs-harness.ogg",
     "timings": "audio/pipeline-vs-harness.timings.json",
     "voice": "bm_lewis",
@@ -232,7 +236,7 @@
       "subagents",
       "tutorial"
     ],
-    "emoji": "🗒️",
+    "emoji": "\ud83d\uddd2\ufe0f",
     "audio": "audio/how-to-config-obsidian.ogg",
     "timings": "audio/how-to-config-obsidian.timings.json",
     "voice": "bm_lewis",
@@ -248,7 +252,7 @@
       "devops",
       "tutorial"
     ],
-    "emoji": "🔥",
+    "emoji": "\ud83d\udd25",
     "audio": "audio/dependency-hell.ogg",
     "timings": "audio/dependency-hell.timings.json",
     "voice": "bm_lewis",
@@ -263,7 +267,7 @@
       "tutorial",
       "skills"
     ],
-    "emoji": "🛠️",
+    "emoji": "\ud83d\udee0\ufe0f",
     "audio": "audio/custom-claude-skills.ogg",
     "timings": "audio/custom-claude-skills.timings.json",
     "voice": "bm_lewis",
@@ -279,7 +283,7 @@
       "devops",
       "sop"
     ],
-    "emoji": "📋",
+    "emoji": "\ud83d\udccb",
     "audio": "audio/software-delivery-sop.ogg",
     "timings": "audio/software-delivery-sop.timings.json",
     "voice": "bm_lewis",
@@ -295,7 +299,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "🤖",
+    "emoji": "\ud83e\udd16",
     "audio": "audio/claude-code-agent-teams.ogg",
     "timings": "audio/claude-code-agent-teams.timings.json",
     "voice": "bm_lewis",
@@ -310,7 +314,7 @@
       "security",
       "hardware"
     ],
-    "emoji": "🎲",
+    "emoji": "\ud83c\udfb2",
     "audio": "audio/trng-deep-dive.ogg",
     "timings": "audio/trng-deep-dive.timings.json",
     "voice": "bm_lewis",
@@ -324,7 +328,7 @@
       "deployment",
       "web"
     ],
-    "emoji": "🚀",
+    "emoji": "\ud83d\ude80",
     "audio": "audio/deploy-a-website.ogg",
     "timings": "audio/deploy-a-website.timings.json",
     "voice": "bm_lewis",
@@ -338,7 +342,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "💬",
+    "emoji": "\ud83d\udcac",
     "audio": "audio/install-signal-on-aegix.ogg",
     "timings": "audio/install-signal-on-aegix.timings.json",
     "voice": "bm_lewis",
@@ -352,7 +356,7 @@
       "tutorial",
       "linux"
     ],
-    "emoji": "🖥️",
+    "emoji": "\ud83d\udda5\ufe0f",
     "audio": "audio/how-tmux-works.ogg",
     "timings": "audio/how-tmux-works.timings.json",
     "voice": "bm_lewis",
@@ -366,7 +370,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "👥",
+    "emoji": "\ud83d\udc65",
     "audio": "audio/second-aegix-user.ogg",
     "timings": "audio/second-aegix-user.timings.json",
     "voice": "bm_lewis",
@@ -380,7 +384,7 @@
       "aegix",
       "philosophy"
     ],
-    "emoji": "🧘",
+    "emoji": "\ud83e\uddd8",
     "audio": "audio/parsimony.ogg",
     "timings": "audio/parsimony.timings.json",
     "voice": "bm_lewis",
@@ -394,7 +398,7 @@
       "meta",
       "example"
     ],
-    "emoji": "📝",
+    "emoji": "\ud83d\udcdd",
     "audio": "audio/add-articles.ogg",
     "timings": "audio/add-articles.timings.json",
     "voice": "bm_lewis",
@@ -408,7 +412,7 @@
       "philosophy",
       "linux"
     ],
-    "emoji": "⚡",
+    "emoji": "\u26a1",
     "audio": "audio/simplicity.ogg",
     "timings": "audio/simplicity.timings.json",
     "voice": "bm_lewis",
@@ -424,7 +428,7 @@
       "symbolism",
       "red-book"
     ],
-    "emoji": "🌙",
+    "emoji": "\ud83c\udf19",
     "audio": "audio/jungian-dream-notes.ogg",
     "timings": "audio/jungian-dream-notes.timings.json",
     "voice": "bm_lewis",
@@ -440,8 +444,8 @@
       "retrospective",
       "web-speech"
     ],
-    "emoji": "🎙️",
-    "summary": "Adding read-aloud to this blog took three tries — Web Speech that stays silent on Linux, in-browser WASM that hung the page — before the dumb-in-retrospect fix: render the audio once at publish time and ship the bytes. Plus the two parser bugs hiding on the way.",
+    "emoji": "\ud83c\udf99\ufe0f",
+    "summary": "Adding read-aloud to this blog took three tries \u2014 Web Speech that stays silent on Linux, in-browser WASM that hung the page \u2014 before the dumb-in-retrospect fix: render the audio once at publish time and ship the bytes. Plus the two parser bugs hiding on the way.",
     "audio": "audio/how-my-blog-got-a-voice.ogg",
     "timings": "audio/how-my-blog-got-a-voice.timings.json",
     "voice": "bm_lewis",
@@ -457,8 +461,8 @@
       "linux",
       "git"
     ],
-    "emoji": "📦",
-    "summary": "How my suckless edits travel from ~/.local/src into the AEGIX monorepo and out to the AUR as installable -git packages — a post-commit hook, four packages, and one rule: live on this machine is truth, the network is a manual gesture.",
+    "emoji": "\ud83d\udce6",
+    "summary": "How my suckless edits travel from ~/.local/src into the AEGIX monorepo and out to the AUR as installable -git packages \u2014 a post-commit hook, four packages, and one rule: live on this machine is truth, the network is a manual gesture.",
     "audio": "audio/aegix-on-the-aur.ogg",
     "timings": "audio/aegix-on-the-aur.timings.json",
     "voice": "bm_lewis",
@@ -474,8 +478,8 @@
       "cli",
       "fzf"
     ],
-    "emoji": "🧶",
-    "summary": "A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread.",
+    "emoji": "\ud83e\uddf6",
+    "summary": "A dozen long-running Claude Code sessions across unrelated projects \u2014 and the hard part isn't building the work, it's finding your way back to each thread.",
     "audio": "audio/circleback.ogg",
     "timings": "audio/circleback.timings.json",
     "voice": "bm_lewis",
@@ -489,9 +493,9 @@
       "web",
       "feeds"
     ],
-    "emoji": "📡",
+    "emoji": "\ud83d\udce1",
     "section": "RSS",
-    "summary": "A short history of RSS — what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.",
+    "summary": "A short history of RSS \u2014 what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.",
     "audio": "audio/rss-still-really-simple.ogg",
     "timings": "audio/rss-still-really-simple.timings.json",
     "voice": "bm_lewis",
@@ -507,7 +511,7 @@
       "sysadmin",
       "aegix"
     ],
-    "emoji": "🔐",
+    "emoji": "\ud83d\udd10",
     "summary": "The add-verify-kill sequence that changes a LUKS passphrase with zero lockout risk, why usermod refuses to rename a logged-in user (and the detached-script trick around it), and the stale /etc references a rename leaves behind.",
     "hero": "pix/change-your-luks-passphrase.png",
     "audio": "audio/change-your-luks-passphrase.ogg",
@@ -525,8 +529,8 @@
       "tls",
       "github"
     ],
-    "emoji": "🚀",
-    "summary": "A repeatable, verify-as-you-go routine for taking three domains from fresh DNS to HTTPS-with-auto-renewing-certs and a private repo each — on one VPS, in about twenty minutes.",
+    "emoji": "\ud83d\ude80",
+    "summary": "A repeatable, verify-as-you-go routine for taking three domains from fresh DNS to HTTPS-with-auto-renewing-certs and a private repo each \u2014 on one VPS, in about twenty minutes.",
     "hero": "pix/coming-soon-sites-article.png",
     "audio": "audio/three-coming-soon-sites-on-one-vps.ogg",
     "timings": "audio/three-coming-soon-sites-on-one-vps.timings.json",
