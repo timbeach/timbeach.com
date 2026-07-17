@@ -4,7 +4,7 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Fri, 17 Jul 2026 06:05:23 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2026 06:15:40 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -14,7 +14,7 @@
       <pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate>
       <description>A fiscal year of timesheets turned up 551 unpaid overtime hours — tracing why led through FLSA exempt-duties tests, why the employee's state (not the employer's HQ) governs, and why claiming California residency on paper wouldn't fix it.</description>
       <content:encoded><![CDATA[<p><img src="pix/no-overtime.png" alt="No overtime" /></p>
-<p>I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a dollar of it owed to me as overtime. At my hourly rate, that's $28,557 in straight-time value, or $42,835 if it had been paid at time-and-a-half.</p>
+<p>I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a single one of them owed to me as overtime. That's nearly fourteen extra 40-hour work weeks folded invisibly into one fiscal year.</p>
 <p>None of it is owed, and the reason has almost nothing to do with how many hours I worked. It has to do with two lines on an org chart: my employer is headquartered in Virginia, and I work from Tennessee. That combination, it turns out, is close to the worst-case scenario for a salaried remote worker in America. Here's the actual legal mechanics of why — and why I can't just fix it by claiming to live somewhere else.</p>
 <p><em>(General information only — not legal or tax advice. Wage-and-hour law is fact-specific; talk to an employment attorney about your own situation.)</em></p>
 <h2>First wrong assumption: the employer's state doesn't matter</h2>

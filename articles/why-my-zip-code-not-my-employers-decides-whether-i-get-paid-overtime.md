@@ -2,7 +2,7 @@
 
 ![No overtime](pix/no-overtime.png)
 
-I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a dollar of it owed to me as overtime. At my hourly rate, that's $28,557 in straight-time value, or $42,835 if it had been paid at time-and-a-half.
+I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a single one of them owed to me as overtime. That's nearly fourteen extra 40-hour work weeks folded invisibly into one fiscal year.
 
 None of it is owed, and the reason has almost nothing to do with how many hours I worked. It has to do with two lines on an org chart: my employer is headquartered in Virginia, and I work from Tennessee. That combination, it turns out, is close to the worst-case scenario for a salaried remote worker in America. Here's the actual legal mechanics of why — and why I can't just fix it by claiming to live somewhere else.
 

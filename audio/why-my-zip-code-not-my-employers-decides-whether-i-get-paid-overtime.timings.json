@@ -1,215 +1,215 @@
 {
   "voice": "bm_lewis",
-  "duration": 558.592,
+  "duration": 554.304,
   "paragraphs": [
     {
       "idx": 0,
       "start": 0.0,
-      "end": 32.17066666666667,
-      "text": "I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over \u2014 worked, logged, approved, and not a dollar of it owed to me as overtime. At my hourly rate, that's $28,557 in straight-time value, or $42,835 if it had been paid at time-and-a-half."
+      "end": 27.882666666666665,
+      "text": "I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over \u2014 worked, logged, approved, and not a single one of them owed to me as overtime. That's nearly fourteen extra 40-hour work weeks folded invisibly into one fiscal year."
     },
     {
       "idx": 1,
-      "start": 32.17066666666667,
-      "end": 57.408,
+      "start": 27.882666666666665,
+      "end": 53.12,
       "text": "None of it is owed, and the reason has almost nothing to do with how many hours I worked. It has to do with two lines on an org chart: my employer is headquartered in Virginia, and I work from Tennessee. That combination, it turns out, is close to the worst-case scenario for a salaried remote worker in America. Here's the actual legal mechanics of why \u2014 and why I can't just fix it by claiming to live somewhere else."
     },
     {
       "idx": 2,
-      "start": 57.408,
-      "end": 67.2,
+      "start": 53.12,
+      "end": 62.912,
       "text": "(General information only \u2014 not legal or tax advice. Wage-and-hour law is fact-specific; talk to an employment attorney about your own situation.)"
     },
     {
       "idx": 3,
-      "start": 67.2,
-      "end": 70.69866666666667,
+      "start": 62.912,
+      "end": 66.41066666666667,
       "text": "First wrong assumption: the employer's state doesn't matter"
     },
     {
       "idx": 4,
-      "start": 70.69866666666667,
-      "end": 106.112,
+      "start": 66.41066666666667,
+      "end": 101.824,
       "text": "My instinct was to look at Virginia law, since that's where the paychecks originate. That's backwards. For a remote employee, wage-and-hour law follows where the work is physically performed, not where the company is headquartered or incorporated. Employment-law guidance is consistent on this point \u2014 enough that firms explicitly tell employers to track where their remote staff currently live and work, because an employee relocating to a new state can silently import that state's stricter overtime rules into the relationship (McLane Middleton; Wage & Hour Around the Corner)."
     },
     {
       "idx": 5,
-      "start": 106.112,
-      "end": 112.68266666666666,
+      "start": 101.824,
+      "end": 108.39466666666667,
       "text": "So Virginia is irrelevant to me. Tennessee \u2014 where I sit when I open my laptop \u2014 is what governs."
     },
     {
       "idx": 6,
-      "start": 112.68266666666666,
-      "end": 115.79733333333333,
+      "start": 108.39466666666667,
+      "end": 111.50933333333333,
       "text": "Second layer: exempt vs. non-exempt"
     },
     {
       "idx": 7,
-      "start": 115.79733333333333,
-      "end": 133.22666666666666,
+      "start": 111.50933333333333,
+      "end": 128.93866666666668,
       "text": "Even within Tennessee, the federal Fair Labor Standards Act (FLSA) only requires overtime pay for employees classified as non-exempt. Exempt status requires satisfying two independent tests \u2014 meeting the salary number alone is not sufficient:"
     },
     {
       "idx": 8,
-      "start": 133.22666666666666,
-      "end": 141.22666666666666,
+      "start": 128.93866666666668,
+      "end": 136.93866666666668,
       "text": "Salary basis test: a predetermined, fixed salary that doesn't get docked for variations in quality or quantity of work."
     },
     {
       "idx": 9,
-      "start": 141.22666666666666,
-      "end": 163.52,
+      "start": 136.93866666666668,
+      "end": 159.232,
       "text": "Salary level test: currently $684/week ($35,568/year) for the standard executive/administrative/professional (EAP) exemption, or $107,432/year under the alternate Highly Compensated Employee test (DOL)."
     },
     {
       "idx": 10,
-      "start": 163.52,
-      "end": 175.21066666666667,
+      "start": 159.232,
+      "end": 170.92266666666666,
       "text": "Duties test: the actual substance of the job has to fit one of the exemption categories (management, independent judgment on significant matters, advanced knowledge, etc.)."
     },
     {
       "idx": 11,
-      "start": 175.21066666666667,
-      "end": 215.97866666666667,
+      "start": 170.92266666666666,
+      "end": 211.69066666666666,
       "text": "Worth noting because it was genuinely unsettled for a while: a 2024 DOL rule would have pushed that threshold up to $43,888 and then $58,656. It was preliminarily blocked in June 2024, then vacated nationwide by a federal court that November. DOL appealed \u2014 and then dropped the appeal in 2026, formally rescinding the rule and reinstating the 2019-era levels (SHRM). This is now settled, not pending: $35,568/year is the real federal floor."
     },
     {
       "idx": 12,
-      "start": 215.97866666666667,
-      "end": 230.48533333333333,
+      "start": 211.69066666666666,
+      "end": 226.19733333333335,
       "text": "A salaried professional easily clears that salary number, so classification almost always comes down to the duties test \u2014 which is exactly why \"exempt salaried employee\" swallows so much of the white-collar remote workforce whole."
     },
     {
       "idx": 13,
-      "start": 230.48533333333333,
-      "end": 233.344,
+      "start": 226.19733333333335,
+      "end": 229.056,
       "text": "Third layer: Tennessee adds nothing on top"
     },
     {
       "idx": 14,
-      "start": 233.344,
-      "end": 255.296,
+      "start": 229.056,
+      "end": 251.008,
       "text": "Some states layer their own protections on top of the federal floor. Tennessee isn't one of them. Tennessee has no state overtime statute of its own \u2014 overtime rights for a Tennessee employee come entirely from the FLSA, calculated weekly only. There's no daily overtime trigger, no matter how long a single shift runs (FindLaw)."
     },
     {
       "idx": 15,
-      "start": 255.296,
-      "end": 300.45866666666666,
+      "start": 251.008,
+      "end": 296.17066666666665,
       "text": "Virginia, for what it's worth, doesn't go further either. The Virginia Overtime Wage Act was rewritten in 2022 to expressly track the FLSA's thresholds, exemptions, and calculation methods \u2014 same $35,568 line, same duties tests. The one place Virginia law bites harder is remedies: a Virginia-covered employee who's actually owed overtime and doesn't get it can claim double damages under state law, on top of the federal award (Va. Code \u00a7 40.1-29.2). Moot for me, since my rights track Tennessee, not Virginia \u2014 but it tells you Virginia isn't a soft touch; the whole US map is just genuinely uneven here."
     },
     {
       "idx": 16,
-      "start": 300.45866666666666,
-      "end": 302.63466666666665,
+      "start": 296.17066666666665,
+      "end": 298.3466666666667,
       "text": "The contrast case: California"
     },
     {
       "idx": 17,
-      "start": 302.63466666666665,
-      "end": 317.93066666666664,
+      "start": 298.3466666666667,
+      "end": 313.6426666666667,
       "text": "California is the state most people invoke as \"what real overtime protection looks like,\" and the invocation is earned. Its Department of Industrial Relations lays out three separate overtime triggers, any one of which can apply:"
     },
     {
       "idx": 18,
-      "start": 317.93066666666664,
-      "end": 322.92266666666666,
+      "start": 313.6426666666667,
+      "end": 318.63466666666665,
       "text": "1.5x for hours worked between 8 and 12 in a single workday"
     },
     {
       "idx": 19,
-      "start": 322.92266666666666,
-      "end": 330.1546666666667,
+      "start": 318.63466666666665,
+      "end": 325.8666666666667,
       "text": "2x (double-time) beyond 12 hours in a workday, or beyond 8 hours on the 7th consecutive workday"
     },
     {
       "idx": 20,
-      "start": 330.1546666666667,
-      "end": 336.4053333333333,
+      "start": 325.8666666666667,
+      "end": 332.1173333333333,
       "text": "1.5x for anything over 40 hours in a week \u2014 the same weekly trigger everyone has"
     },
     {
       "idx": 21,
-      "start": 336.4053333333333,
-      "end": 338.09066666666666,
+      "start": 332.1173333333333,
+      "end": 333.80266666666665,
       "text": "(California DIR)"
     },
     {
       "idx": 22,
-      "start": 338.09066666666666,
-      "end": 369.344,
+      "start": 333.80266666666665,
+      "end": 365.056,
       "text": "California also sets its exempt-salary floor by statute at twice the state minimum wage, annualized \u2014 roughly $70,304/year in 2026, double the federal number (Labor Code \u00a7515). That single design choice is why so many California job postings for the same role pay noticeably more than their Tennessee equivalents: below that line, California simply won't let an employer call you exempt, duties test or not."
     },
     {
       "idx": 23,
-      "start": 369.344,
-      "end": 372.07466666666664,
+      "start": 365.056,
+      "end": 367.7866666666667,
       "text": "Could I just... say I live in California?"
     },
     {
       "idx": 24,
-      "start": 372.07466666666664,
-      "end": 378.70933333333335,
+      "start": 367.7866666666667,
+      "end": 374.42133333333334,
       "text": "This was my actual next thought, and the honest answer is no \u2014 not without committing tax and wage fraud."
     },
     {
       "idx": 25,
-      "start": 378.70933333333335,
-      "end": 414.80533333333335,
+      "start": 374.42133333333334,
+      "end": 410.51733333333334,
       "text": "California residency determinations turn on physical presence supported by objective facts \u2014 lease agreements, utility bills, where your car is registered, where your kid goes to school \u2014 not a stated intention or a mailing address (FTB). And the reverse is equally true and, for a remote worker, more relevant: even someone who is not a California resident but is physically present and performing work inside California generates California-source wage exposure for that work. Coverage runs on where your hands are on the keyboard, not on paperwork."
     },
     {
       "idx": 26,
-      "start": 414.80533333333335,
-      "end": 436.5013333333333,
+      "start": 410.51733333333334,
+      "end": 432.2133333333333,
       "text": "So there's no version of this where declaring California residency on a form \u2014 while my body stays in Tennessee \u2014 does anything except create tax exposure I don't currently have. The only way to actually get California's protections is to actually live and work in California, with everything that entails (cost of living, state income tax, the works)."
     },
     {
       "idx": 27,
-      "start": 436.5013333333333,
-      "end": 439.65866666666665,
+      "start": 432.2133333333333,
+      "end": 435.3706666666667,
       "text": "The lever employers actually pull: geographic pay"
     },
     {
       "idx": 28,
-      "start": 439.65866666666665,
-      "end": 467.4773333333333,
+      "start": 435.3706666666667,
+      "end": 463.1893333333333,
       "text": "None of this means geography is irrelevant to pay \u2014 it's just a different lever than overtime law. Geographic (or \"locality\") pay differentials are a real, common practice: SHRM's research on employer surveys puts the figure at 86\u201389% of companies that set them anchoring the adjustment to local cost-of-labor \u2014 what a salary survey says the role is worth in that specific metro \u2014 rather than cost-of-living indices (SHRM)."
     },
     {
       "idx": 29,
-      "start": 467.4773333333333,
-      "end": 492.5013333333333,
+      "start": 463.1893333333333,
+      "end": 488.2133333333333,
       "text": "That's a base-pay-setting decision. It doesn't touch which state's wage-and-hour law applies to you, and it doesn't change your exempt/non-exempt status. An employer can perfectly legally pay a Tennessee-based employee a Tennessee-market salary while that employee's actual legal protections are also pinned to Tennessee's (thin) statute \u2014 two separate systems that happen to point the same direction for me."
     },
     {
       "idx": 30,
-      "start": 492.5013333333333,
-      "end": 496.256,
+      "start": 488.2133333333333,
+      "end": 491.968,
       "text": "Comparison table: where you stand depends on where you stand"
     },
     {
       "idx": 31,
-      "start": 496.256,
-      "end": 508.3093333333333,
+      "start": 491.968,
+      "end": 504.02133333333336,
       "text": "Sources: Tennessee \u00b7 Virginia \u00b7 California \u00b7 Colorado COMPS Order #40 \u00b7 Nevada NRS 608.018 \u00b7 Alaska AS 23.10.060"
     },
     {
       "idx": 32,
-      "start": 508.3093333333333,
-      "end": 510.1653333333333,
+      "start": 504.02133333333336,
+      "end": 505.87733333333335,
       "text": "Where that leaves someone like me"
     },
     {
       "idx": 33,
-      "start": 510.1653333333333,
-      "end": 544.9813333333333,
+      "start": 505.87733333333335,
+      "end": 540.6933333333334,
       "text": "For a salaried remote worker sitting in a federal-only state, overtime eligibility comes down almost entirely to how the exempt/non-exempt duties test gets applied to your specific job \u2014 not to your employer's address, and not to a location you can declare on paper. The only lever that actually moves the needle is physically living and working somewhere with stronger protections, which is a real decision with real trade-offs (state income tax, cost of living, and whatever your employer's own remote-work-location policy allows), not a paperwork trick."
     },
     {
       "idx": 34,
-      "start": 544.9813333333333,
-      "end": 558.592,
+      "start": 540.6933333333334,
+      "end": 554.304,
       "text": "Which is, in its own way, a strange thing to sit with: 551 hours of a fiscal year, worked and unpaid-as-overtime, resting entirely on which side of a state line my desk happens to be on."
     }
   ]
