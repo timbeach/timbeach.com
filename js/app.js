@@ -31,13 +31,16 @@ async function loadArticles() {
   const now = new Date();
   const todayLocal = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
   // Convert {slug.md: {meta}} into [{slug, ...meta}], sorted by date desc.
+  // `unlisted: true` articles are excluded here (no homepage placement) but
+  // remain reachable via direct #/article/<slug> link and still ship in the
+  // RSS feed — build_feed.py only gates on date, not this flag.
   articlesCache = Object.entries(map)
     .map(([filename, meta]) => ({
       filename,                     // "osi-model-whiteboard.md"
       slug: filename.replace(/\.md$/, ''),
       ...meta,
     }))
-    .filter((a) => a.date && a.title && a.date <= todayLocal)
+    .filter((a) => a.date && a.title && a.date <= todayLocal && !a.unlisted)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
   return articlesCache;
 }

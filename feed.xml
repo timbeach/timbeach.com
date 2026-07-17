@@ -4,9 +4,145 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Thu, 09 Jul 2026 21:51:45 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 17 Jul 2026 06:05:23 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Why My Zip Code — Not My Employer's — Decides Whether I Get Paid Overtime</title>
+      <link>https://timbeach.com/#/article/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime</guid>
+      <pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate>
+      <description>A fiscal year of timesheets turned up 551 unpaid overtime hours — tracing why led through FLSA exempt-duties tests, why the employee's state (not the employer's HQ) governs, and why claiming California residency on paper wouldn't fix it.</description>
+      <content:encoded><![CDATA[<p><img src="pix/no-overtime.png" alt="No overtime" /></p>
+<p>I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a dollar of it owed to me as overtime. At my hourly rate, that's $28,557 in straight-time value, or $42,835 if it had been paid at time-and-a-half.</p>
+<p>None of it is owed, and the reason has almost nothing to do with how many hours I worked. It has to do with two lines on an org chart: my employer is headquartered in Virginia, and I work from Tennessee. That combination, it turns out, is close to the worst-case scenario for a salaried remote worker in America. Here's the actual legal mechanics of why — and why I can't just fix it by claiming to live somewhere else.</p>
+<p><em>(General information only — not legal or tax advice. Wage-and-hour law is fact-specific; talk to an employment attorney about your own situation.)</em></p>
+<h2>First wrong assumption: the employer's state doesn't matter</h2>
+<p>My instinct was to look at Virginia law, since that's where the paychecks originate. That's backwards. For a remote employee, wage-and-hour law follows <strong>where the work is physically performed</strong>, not where the company is headquartered or incorporated. Employment-law guidance is consistent on this point — enough that firms explicitly tell employers to track where their remote staff currently live and work, because an employee relocating to a new state can silently import that state's stricter overtime rules into the relationship (<a href="https://www.mclane.com/insights/out-of-state-remote-employees-and-state-employment-laws/">McLane Middleton</a>; <a href="https://www.wagehourlitigation.com/2025/04/wage-and-hour-around-the-corner-from-zoom-to-room-staying-on-solid-legal-grounds-with-a-remote-staff-or-an-office-return/">Wage &amp; Hour Around the Corner</a>).</p>
+<p>So Virginia is irrelevant to me. Tennessee — where I sit when I open my laptop — is what governs.</p>
+<h2>Second layer: exempt vs. non-exempt</h2>
+<p>Even within Tennessee, the federal Fair Labor Standards Act (FLSA) only requires overtime pay for employees classified as <strong>non-exempt</strong>. Exempt status requires satisfying two independent tests — meeting the salary number alone is not sufficient:</p>
+<ul>
+<li><strong>Salary basis test</strong>: a predetermined, fixed salary that doesn't get docked for variations in quality or quantity of work.</li>
+<li><strong>Salary level test</strong>: currently <strong>$684/week ($35,568/year)</strong> for the standard executive/administrative/professional (EAP) exemption, or <strong>$107,432/year</strong> under the alternate Highly Compensated Employee test (<a href="https://www.dol.gov/agencies/whd/overtime/salary-levels">DOL</a>).</li>
+<li><strong>Duties test</strong>: the actual substance of the job has to fit one of the exemption categories (management, independent judgment on significant matters, advanced knowledge, etc.).</li>
+</ul>
+<p>Worth noting because it was genuinely unsettled for a while: a 2024 DOL rule would have pushed that threshold up to $43,888 and then $58,656. It was preliminarily blocked in June 2024, then vacated nationwide by a federal court that November. DOL appealed — and then dropped the appeal in 2026, formally rescinding the rule and reinstating the 2019-era levels (<a href="https://www.shrm.org/topics-tools/employment-law-compliance/expanded-overtime-rule-dies-court">SHRM</a>). This is now settled, not pending: $35,568/year is the real federal floor.</p>
+<p>A salaried professional easily clears that salary number, so classification almost always comes down to the duties test — which is exactly why &quot;exempt salaried employee&quot; swallows so much of the white-collar remote workforce whole.</p>
+<h2>Third layer: Tennessee adds nothing on top</h2>
+<p>Some states layer their own protections on top of the federal floor. Tennessee isn't one of them. Tennessee has <strong>no state overtime statute of its own</strong> — overtime rights for a Tennessee employee come entirely from the FLSA, calculated weekly only. There's no daily overtime trigger, no matter how long a single shift runs (<a href="https://www.findlaw.com/state/tennessee-law/tennessee-overtime-laws.html">FindLaw</a>).</p>
+<p>Virginia, for what it's worth, doesn't go further either. The Virginia Overtime Wage Act was rewritten in 2022 to expressly track the FLSA's thresholds, exemptions, and calculation methods — same $35,568 line, same duties tests. The one place Virginia law bites harder is <em>remedies</em>: a Virginia-covered employee who's actually owed overtime and doesn't get it can claim double damages under state law, on top of the federal award (<a href="https://law.lis.virginia.gov/vacode/title40.1/chapter3/section40.1-29.2/">Va. Code § 40.1-29.2</a>). Moot for me, since my rights track Tennessee, not Virginia — but it tells you Virginia isn't a soft touch; the whole US map is just genuinely uneven here.</p>
+<h2>The contrast case: California</h2>
+<p>California is the state most people invoke as &quot;what real overtime protection looks like,&quot; and the invocation is earned. Its Department of Industrial Relations lays out three separate overtime triggers, any one of which can apply:</p>
+<ul>
+<li><strong>1.5x</strong> for hours worked between 8 and 12 in a single workday</li>
+<li><strong>2x (double-time)</strong> beyond 12 hours in a workday, or beyond 8 hours on the 7th consecutive workday</li>
+<li><strong>1.5x</strong> for anything over 40 hours in a week — the same weekly trigger everyone has</li>
+</ul>
+<p>(<a href="https://www.dir.ca.gov/dlse/faq_overtime.htm">California DIR</a>)</p>
+<p>California also sets its exempt-salary floor by statute at <strong>twice the state minimum wage, annualized</strong> — roughly $70,304/year in 2026, double the federal number (<a href="https://legalaidatwork.org/factsheet/overtime-in-california/">Labor Code §515</a>). That single design choice is why so many California job postings for the same role pay noticeably more than their Tennessee equivalents: below that line, California simply won't let an employer call you exempt, duties test or not.</p>
+<h2>Could I just... say I live in California?</h2>
+<p>This was my actual next thought, and the honest answer is no — not without committing tax and wage fraud.</p>
+<p>California residency determinations turn on <strong>physical presence supported by objective facts</strong> — lease agreements, utility bills, where your car is registered, where your kid goes to school — not a stated intention or a mailing address (<a href="https://www.ftb.ca.gov/file/personal/residency-status/part-year-and-nonresident.html">FTB</a>). And the reverse is equally true and, for a remote worker, more relevant: even someone who is <em>not</em> a California resident but is physically present and performing work inside California generates California-source wage exposure for that work. Coverage runs on where your hands are on the keyboard, not on paperwork.</p>
+<p>So there's no version of this where declaring California residency on a form — while my body stays in Tennessee — does anything except create tax exposure I don't currently have. The only way to actually get California's protections is to actually live and work in California, with everything that entails (cost of living, state income tax, the works).</p>
+<h2>The lever employers actually pull: geographic pay</h2>
+<p>None of this means geography is irrelevant to pay — it's just a different lever than overtime law. Geographic (or &quot;locality&quot;) pay differentials are a real, common practice: SHRM's research on employer surveys puts the figure at 86–89% of companies that set them anchoring the adjustment to <strong>local cost-of-labor</strong> — what a salary survey says the role is worth in that specific metro — rather than cost-of-living indices (<a href="https://www.shrm.org/topics-tools/news/benefits-compensation/geographic-pay-differentials-practices-managing-pay-locations">SHRM</a>).</p>
+<p>That's a base-pay-setting decision. It doesn't touch which state's wage-and-hour law applies to you, and it doesn't change your exempt/non-exempt status. An employer can perfectly legally pay a Tennessee-based employee a Tennessee-market salary while that employee's actual legal protections are also pinned to Tennessee's (thin) statute — two separate systems that happen to point the same direction for me.</p>
+<h2>Comparison table: where you stand depends on where you stand</h2>
+<table>
+<thead>
+<tr>
+<th>State</th>
+<th>Weekly OT (&gt;40 hrs)</th>
+<th>Daily/other OT trigger</th>
+<th>Standard exempt salary floor (2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tennessee</td>
+<td>Yes, FLSA only</td>
+<td>None</td>
+<td>$35,568/yr (federal)</td>
+</tr>
+<tr>
+<td>Virginia</td>
+<td>Yes, matches FLSA</td>
+<td>None (VOWA tracks FLSA); adds double-damages remedy</td>
+<td>$35,568/yr (federal)</td>
+</tr>
+<tr>
+<td>California</td>
+<td>Yes</td>
+<td>1.5x &gt;8 hrs/day; 2x &gt;12 hrs/day or &gt;8 hrs on 7th consecutive day</td>
+<td>~$70,304/yr (2x state min wage)</td>
+</tr>
+<tr>
+<td>Colorado</td>
+<td>Yes</td>
+<td>1.5x after 12 hrs/day <em>or</em> 12 consecutive hours (whichever pays more)</td>
+<td>State-specific, above federal</td>
+</tr>
+<tr>
+<td>Nevada</td>
+<td>Yes</td>
+<td>1.5x after 8 hrs/day, but <em>only</em> for employees paid under ~$18/hr (1.5x state min wage)</td>
+<td>Federal floor generally applies</td>
+</tr>
+<tr>
+<td>Alaska</td>
+<td>Yes</td>
+<td>1.5x after 8 hrs/day, flat</td>
+<td>Federal floor generally applies</td>
+</tr>
+</tbody>
+</table>
+<p>Sources: <a href="https://www.findlaw.com/state/tennessee-law/tennessee-overtime-laws.html">Tennessee</a> · <a href="https://law.lis.virginia.gov/vacode/title40.1/chapter3/section40.1-29.2/">Virginia</a> · <a href="https://www.dir.ca.gov/dlse/faq_overtime.htm">California</a> · <a href="https://cdle.colorado.gov/sites/cdle/files/info_%231_2026_comps_&amp;_paycalc_orders_12.18.25.pdf">Colorado COMPS Order #40</a> · <a href="https://www.leg.state.nv.us/nrs/nrs-608.html">Nevada NRS 608.018</a> · <a href="https://law.justia.com/codes/alaska/title-23/chapter-10/article-3/section-23-10-060/">Alaska AS 23.10.060</a></p>
+<h2>Where that leaves someone like me</h2>
+<p>For a salaried remote worker sitting in a federal-only state, overtime eligibility comes down almost entirely to how the exempt/non-exempt duties test gets applied to your specific job — not to your employer's address, and not to a location you can declare on paper. The only lever that actually moves the needle is physically living and working somewhere with stronger protections, which is a real decision with real trade-offs (state income tax, cost of living, and whatever your employer's own remote-work-location policy allows), not a paperwork trick.</p>
+<p>Which is, in its own way, a strange thing to sit with: 551 hours of a fiscal year, worked and unpaid-as-overtime, resting entirely on which side of a state line my desk happens to be on.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>tabnext — Open New Browser Tabs Next to Your Current One</title>
+      <link>https://timbeach.com/#/article/tabnext</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/tabnext</guid>
+      <pubDate>Thu, 16 Jul 2026 00:00:00 +0000</pubDate>
+      <description>When the MV2 purge killed Open Tabs Next to Current, rebuilding it took 105 lines and zero permissions — plus two non-obvious lessons: foreground tabs are already active when onCreated fires, and a session restore looks exactly like a user opening forty tabs, so naive tab-moving rips them out of their groups.</description>
+      <content:encoded><![CDATA[<p><img src="pix/tabnext-article-hero.png" alt="Pixel-art scene: a graveyard of Manifest V2 extensions with tombstones like &quot;Open Tabs Next to Current — died&quot;, while a heart-eyed penguin rebuilds one at a workbench from a Manifest V3 blueprint. A display reads TAB COUNT: 42." /></p>
+<p>New tabs in Chromium browsers open at the far end of the tab strip — somewhere past tab forty, in the region cartographers mark &quot;here be dragons.&quot; tabnext opens them where you actually are: immediately to the right of the tab you're on. Ctrl+T, middle-clicked links, links from other apps — everything lands next to you.</p>
+<p>It also gives the toolbar penguin a job: a live badge with the number of tabs you have open. No judgment. Just a number. (You can pretend it's judgment.)</p>
+<p><strong>Get it:</strong></p>
+<ul>
+<li><a href="https://chromewebstore.google.com/detail/tabnext/emomhgbeeiicnljgihhnnimgknknkefb">tabnext on the Chrome Web Store</a> — works in Chrome, Brave, Edge, Vivaldi, anything Chromium</li>
+<li><a href="https://github.com/timbeach/tabnext">Source on GitHub</a> (MIT) — two files, about a hundred lines; if you'd rather not trust a store, read all of it in two minutes and Load Unpacked it yourself</li>
+</ul>
+<p>A few things worth knowing before you install, all of them deliberate:</p>
+<ul>
+<li><strong>Zero permissions.</strong> The install prompt warns you about nothing because there is nothing to warn about — tabnext never reads your URLs, titles, or history. It counts tabs and it moves tabs. That's the whole thing.</li>
+<li><strong>Tab-group safe.</strong> Grouped tabs are never yanked out of their groups, and session restore keeps your order and your groups exactly as you left them. Open a tab from inside a group and it joins the group, right next to you.</li>
+<li><strong>Nothing resident.</strong> One event-driven service worker that sleeps between tab events. No settings page, no popup, no onboarding tour.</li>
+</ul>
+<h2>Why it exists</h2>
+<p>For years I used <em>Open Tabs Next to Current</em> — an extension so reliable I forgot it was an extension. Then Brave greeted me with a gray banner: &quot;This extension was turned off because it is no longer supported.&quot; It was written for Manifest V2, Chromium retired Manifest V2, and the author never ported it. That's the whole obituary — and it belongs to thousands of small, finished, single-purpose extensions that died the same way.</p>
+<p>Here's the part that surprised me: rebuilding it took a morning. The entire concept fits in one listener —</p>
+<pre><code class="language-js">chrome.tabs.onCreated.addListener(async (tab) =&gt; {
+  const [active] = await chrome.tabs.query({
+    active: true,
+    windowId: tab.windowId,
+  });
+  chrome.tabs.move(tab.id, { index: active.index + 1 });
+});
+</code></pre>
+<p>— and the rest of the hundred lines exist because that obvious version is wrong in two interesting ways.</p>
+<h2>What I learned along the way</h2>
+<p><strong>New tabs are born active.</strong> A tab you open in the foreground — Ctrl+T, the new-tab button — is already the active tab by the time the creation event fires. So &quot;find the active tab and move next to it&quot; finds the newborn itself, and moving a tab next to itself is a no-op wearing a trench coat. The fix is to ask a different question when that happens: not &quot;which tab is active?&quot; but &quot;which tab was I <em>just using</em>?&quot; Chromium tracks a <code>lastAccessed</code> timestamp on every tab (also permission-free), and the previously-used tab is simply the most recent one that isn't you.</p>
+<p><strong>Session restore is also &quot;opening tabs.&quot;</strong> This was the good bug. After restoring my session, tabs had escaped their tab groups and scattered across the strip. Three facts conspire: a restore fires the same creation event as a human opening tabs, dozens of times fast; a tab's group membership isn't set yet when that event fires, so restored tabs briefly look ungrouped; and moving a tab to a spot outside its group silently strips its membership. So my extension was &quot;helpfully&quot; repositioning every restored tab and shredding the groups as it went.</p>
+<p>The fix that stuck: treat rapid-fire tab creation as the browser talking to itself, and stay out of the conversation. A new window gets a two-second quiet period, and any tab created during quiet — or within 300 ms of the previous one, a cadence only a browser produces — extends it. On top of that, every move waits 150 ms and re-checks the tab first; if it joined a group or got closed in the meantime, leave it alone. As a bonus, Chromium's own move semantics mean Ctrl+T from inside a tab group opens the new tab <em>in</em> that group — exactly what a groups person wants, zero code written for it.</p>
+<h2>Build your own</h2>
+<p>If an extension you loved died in the MV2 purge, go look at how big it actually was. The odds are good it was a hundred lines of somebody's weekend, and the platform underneath — <code>chrome.tabs</code>, <code>chrome.action</code>, a JSON manifest — is still right there, waiting for yours.</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>Raccoons Are Illegal</title>
       <link>https://timbeach.com/#/article/raccoons-are-illegal</link>
