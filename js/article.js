@@ -53,7 +53,10 @@ function parseMarkdown(content) {
   let codeBlockIndex = 0;
 
   // Handle code blocks with language specification
-  processedContent = processedContent.replace(/```\s*(\w+)?\s*\n?([\s\S]*?)\n?```/g, (match, lang, code) => {
+  // NOTE: [ \t]* not \s* before the lang — \s matches newlines, so on a bare ``` fence the old
+  // pattern crossed the line break and captured the FIRST WORD OF THE CODE as the "language",
+  // silently deleting it from the rendered block (e.g. "sudo foo" rendered as "foo").
+  processedContent = processedContent.replace(/```[ \t]*(\w+)?[ \t]*\n?([\s\S]*?)\n?```/g, (match, lang, code) => {
     const placeholder = `__CODE_BLOCK_${codeBlockIndex}__`;
     codeBlocks.push({ placeholder, lang: lang || '', code: code.trim() });
     codeBlockIndex++;
