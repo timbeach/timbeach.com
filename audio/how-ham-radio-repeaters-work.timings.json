@@ -1,0 +1,240 @@
+{
+  "voice": "bm_lewis",
+  "duration": 495.936,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 22.442666666666668,
+      "text": "A five-watt handheld radio is a small miracle \u2014 a complete transmitter and receiver you can clip to your belt. It is also, on its own, a bit of a disappointment. In town, two handhelds might manage a mile or two before buildings and hills eat the signal. Yet that same little radio can carry a conversation across an entire city and three counties beyond it."
+    },
+    {
+      "idx": 1,
+      "start": 22.442666666666668,
+      "end": 39.104,
+      "text": "The difference is a machine most people have never heard of: the repeater. And the best way I've found to explain one \u2014 tested on a ten-year-old, approved for all ages \u2014 is to think of it as a very powerful, very helpful robot radio living on top of a mountain."
+    },
+    {
+      "idx": 2,
+      "start": 39.104,
+      "end": 48.42666666666667,
+      "text": "Ours lives on Bays Mountain, about 2,600 feet above Kingsport, Tennessee. Its name is W4TRC. Let's meet it."
+    },
+    {
+      "idx": 3,
+      "start": 48.42666666666667,
+      "end": 51.413333333333334,
+      "text": "The problem: your signal dies at the horizon"
+    },
+    {
+      "idx": 4,
+      "start": 51.413333333333334,
+      "end": 72.128,
+      "text": "The bands handheld radios use travel in essentially straight lines. They don't bend over ridges or follow the curve of the Earth. If your antenna can't \"see\" the other antenna, the conversation is over \u2014 and from chest height on a sidewalk, you can't see very far at all. Every building and hill in between takes a bite out of what's left."
+    },
+    {
+      "idx": 5,
+      "start": 72.128,
+      "end": 82.47466666666666,
+      "text": "Here's the part that surprises people: more power barely helps. Doubling your wattage doesn't double your range \u2014 it nudges it. The thing that actually wins is height."
+    },
+    {
+      "idx": 6,
+      "start": 82.47466666666666,
+      "end": 85.20533333333333,
+      "text": "The fix: a robot radio on the mountain"
+    },
+    {
+      "idx": 7,
+      "start": 85.20533333333333,
+      "end": 92.24533333333333,
+      "text": "If height wins, the answer is obvious: put a radio on the highest ground around and let it do the talking for you."
+    },
+    {
+      "idx": 8,
+      "start": 92.24533333333333,
+      "end": 112.064,
+      "text": "That's a repeater \u2014 an automated station on a mountaintop or tower that listens for faint signals and instantly re-broadcasts them from its spectacular location, with more power and a far better antenna than you'll ever hold. Your five watts only has to make one hop: up to the mountain. The robot shouts the rest."
+    },
+    {
+      "idx": 9,
+      "start": 112.064,
+      "end": 130.176,
+      "text": "Two handhelds that can't hear each other across town can both see that mountaintop. So the robot bridges them, and your effective range goes from \"a couple of miles on a good day\" to the whole region its antenna can see \u2014 for W4TRC, essentially all of the Tri-Cities."
+    },
+    {
+      "idx": 10,
+      "start": 130.176,
+      "end": 132.05333333333334,
+      "text": "The robot's mouth and ears"
+    },
+    {
+      "idx": 11,
+      "start": 132.05333333333334,
+      "end": 147.92533333333333,
+      "text": "Now the clever part. The robot has to listen and talk at the same instant \u2014 that's what repeating means. But it can't do both on one frequency, for the same reason you can't hear someone whisper while you're shouting: its own voice would drown out everything else."
+    },
+    {
+      "idx": 12,
+      "start": 147.92533333333333,
+      "end": 152.064,
+      "text": "So the robot keeps its mouth and its ears on two different channels:"
+    },
+    {
+      "idx": 13,
+      "start": 152.064,
+      "end": 167.50933333333333,
+      "text": "The mouth is the repeater's output \u2014 the frequency it talks on, and the one everybody listens to. This is the number published for a repeater. W4TRC's mouth is 146.970 MHz."
+    },
+    {
+      "idx": 14,
+      "start": 167.50933333333333,
+      "end": 188.544,
+      "text": "The ears are the input \u2014 the frequency it listens on, and the one your radio talks into. The ears sit a fixed distance away from the mouth, called the offset. On the 2-meter band that's 0.6 MHz; W4TRC's ears are 0.6 below, at 146.370 MHz."
+    },
+    {
+      "idx": 15,
+      "start": 188.544,
+      "end": 213.78133333333332,
+      "text": "Your handheld handles the switch by itself. Program it with the mouth frequency and the offset, and it listens on 146.970 \u2014 then the instant you press the talk button, it silently jumps down to 146.370 to speak into the robot's ears, and snaps back the moment you let go. You never notice. Two frequencies, one seamless conversation."
+    },
+    {
+      "idx": 16,
+      "start": 213.78133333333332,
+      "end": 234.60266666666666,
+      "text": "For the curious: keeping the robot's own shout from deafening its own ears is genuinely hard, because mouth and ears usually share a single antenna. The fix is a duplexer \u2014 a rack of scuba-tank-sized tuned metal cans that let one frequency through while blocking the other. It's the least glamorous and most critical hardware on the mountain."
+    },
+    {
+      "idx": 17,
+      "start": 234.60266666666666,
+      "end": 235.69066666666666,
+      "text": "The secret knock"
+    },
+    {
+      "idx": 18,
+      "start": 235.69066666666666,
+      "end": 249.30133333333333,
+      "text": "A receiver on a mountaintop hears everything \u2014 static crashes, distant repeaters on the same frequency, electrical noise from every direction. If the robot repeated all of it, it would babble around the clock."
+    },
+    {
+      "idx": 19,
+      "start": 249.30133333333333,
+      "end": 273.9626666666667,
+      "text": "So the robot only wakes up for people who know the secret knock. The knock is a CTCSS tone (old-timers say \"PL tone\"): a continuous low hum, pitched below where voices sit, that your radio hides underneath your speech. W4TRC listens for a 123.0 Hz hum. Hear the knock, repeat the signal. No knock, and the robot pretends you don't exist."
+    },
+    {
+      "idx": 20,
+      "start": 273.9626666666667,
+      "end": 292.544,
+      "text": "It isn't a security measure \u2014 the tone is published right next to the frequency; anyone can look it up. It's noise discipline. But it is the classic newcomer trap: program the frequency and offset correctly, forget the tone, and everything looks fine on your end while the mountain ignores you completely."
+    },
+    {
+      "idx": 21,
+      "start": 292.544,
+      "end": 294.2506666666667,
+      "text": "One press of the button"
+    },
+    {
+      "idx": 22,
+      "start": 294.2506666666667,
+      "end": 298.88,
+      "text": "Put it all together and here's what happens in the half-second after you key up:"
+    },
+    {
+      "idx": 23,
+      "start": 298.88,
+      "end": 305.06666666666666,
+      "text": "Your radio jumps to the ears frequency and transmits your voice with the secret knock humming underneath."
+    },
+    {
+      "idx": 24,
+      "start": 305.06666666666666,
+      "end": 308.88533333333334,
+      "text": "The robot hears you, checks the knock, and keys its transmitter."
+    },
+    {
+      "idx": 25,
+      "start": 308.88533333333334,
+      "end": 318.42133333333334,
+      "text": "Your words blast out of the mouth frequency from the mountaintop at the same instant you speak \u2014 anyone within maybe forty miles hears you at full strength."
+    },
+    {
+      "idx": 26,
+      "start": 318.42133333333334,
+      "end": 337.36533333333335,
+      "text": "You let go. The robot hangs on for a second \u2014 the squelch tail \u2014 and marks the gap with a courtesy beep. That beep isn't decoration: it says \"the other person is done,\" and the pause it enforces gives a third voice a chance to jump in. Then the transmitter drops and the robot goes back to listening."
+    },
+    {
+      "idx": 27,
+      "start": 337.36533333333335,
+      "end": 351.46666666666664,
+      "text": "That tail is also your built-in test meter. Key up, say your callsign, let go: if the tail and beep come back, you're hitting the machine. Silence means your frequency, offset, or tone is wrong \u2014 almost always the tone."
+    },
+    {
+      "idx": 28,
+      "start": 351.46666666666664,
+      "end": 352.96,
+      "text": "Manners on the mountain"
+    },
+    {
+      "idx": 29,
+      "start": 352.96,
+      "end": 362.2613333333333,
+      "text": "A repeater is shared infrastructure \u2014 one conversation at a time, built and maintained by a local club \u2014 and the culture around it reflects that:"
+    },
+    {
+      "idx": 30,
+      "start": 362.2613333333333,
+      "end": 378.28266666666667,
+      "text": "Say who you are. The FCC requires your callsign every ten minutes and when you sign off. Keying up silently just to hear the beep \u2014 \"kerchunking\" \u2014 is against the rules and the fastest way to be known unfavorably on a machine before anyone has met you."
+    },
+    {
+      "idx": 31,
+      "start": 378.28266666666667,
+      "end": 386.09066666666666,
+      "text": "Leave pauses. The courtesy-beep gap exists so someone with emergency traffic, or just a third voice, can break in."
+    },
+    {
+      "idx": 32,
+      "start": 386.09066666666666,
+      "end": 393.3226666666667,
+      "text": "Listen first. A minute of listening tells you whether a conversation or a scheduled net is already underway."
+    },
+    {
+      "idx": 33,
+      "start": 393.3226666666667,
+      "end": 410.816,
+      "text": "Nets are the front door. Most clubs hold a weekly on-air meetup \u2014 W4TRC's is Sunday evenings at 8:30 \u2014 and they genuinely want newcomers to check in. It's the easiest first transmission you'll ever make: someone literally asks whether anyone new is listening."
+    },
+    {
+      "idx": 34,
+      "start": 410.816,
+      "end": 411.9893333333333,
+      "text": "More than a relay"
+    },
+    {
+      "idx": 35,
+      "start": 411.9893333333333,
+      "end": 443.8186666666667,
+      "text": "Modern repeaters rarely stop at relaying. Many are linked over the internet \u2014 EchoLink, AllStar, digital modes \u2014 so a handheld in Kingsport can, through the mountain, chat with a station on another continent. And because clubs treat them as emergency assets, good repeaters run on battery banks and solar panels. When a storm takes down the power grid \u2014 and the cell towers with it \u2014 the robot on the mountain keeps right on repeating. That resilience is a big part of why ham radio still matters when everything else fails."
+    },
+    {
+      "idx": 36,
+      "start": 443.8186666666667,
+      "end": 444.97066666666666,
+      "text": "Try it yourself"
+    },
+    {
+      "idx": 37,
+      "start": 444.97066666666666,
+      "end": 477.6533333333333,
+      "text": "Everything here is public and reproducible. RepeaterBook lists nearly every repeater in North America with its frequency, offset, and tone. Free software called CHIRP will program your whole local list into an inexpensive handheld in an afternoon. Listening requires no license at all \u2014 tune to a repeater's mouth frequency and you'll hear your local radio community going about its day. Talking takes a Technician-class license: a 35-question exam that a weekend of study will comfortably beat."
+    },
+    {
+      "idx": 38,
+      "start": 477.6533333333333,
+      "end": 495.936,
+      "text": "And the first time you press the button, say your callsign, and hear the mountain beep back \u2014 a robot two thousand feet over your head confirming it heard your little radio and shouted your words across three counties \u2014 you'll grin about this hundred-year-old technology like it was invented yesterday."
+    }
+  ]
+}
