@@ -11,7 +11,6 @@
     "emoji": "\ud83d\udce1",
     "summary": "Why a 5-watt handheld can suddenly talk across three counties: the duplex offset, CTCSS gatekeeping, duplexer cavities, and mountaintop etiquette behind an amateur repeater, traced through the W4TRC machine on Bays Mountain.",
     "hero": "pix/repeaters.png",
-    "unlisted": true,
     "audio": "audio/how-ham-radio-repeaters-work.ogg",
     "timings": "audio/how-ham-radio-repeaters-work.timings.json",
     "voice": "bm_lewis",
