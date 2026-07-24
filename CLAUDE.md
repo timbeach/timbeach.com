@@ -21,6 +21,8 @@ This is a static personal website (timbeach.com) built as a single-page applicat
 - **js/router.js** — hash router (`#/`, `#/article/<slug>`, `#/music`, `#/about`) with legacy `#articles/<slug>.md` redirect.
 - **js/article.js** — article fetch + markdown render. Hosts the ported `parseMarkdown` (paragraph-boundary parity with `tools/render_article.py:extract_paragraphs` is required by the TTS validate gate — DO NOT refactor without re-rendering all audio).
 - **js/tts.js** — read-aloud bar (transport, voice select, paragraph highlight via timings sidecar). Auto-closes on navigation away from an article.
+- **js/search.js** — homepage full-text search: lazy-loads `search-index.json` on first keystroke, AND-matches whitespace-split terms across title/tags/summary/body (weighted 4/3/2/1), renders ranked results with `<mark>`-highlighted snippets into the More section. Degrades to metadata-only search if the index fetch fails (e.g. fresh clone before any build). `Escape` clears; `/` focuses the box.
+- **js/util.js** — shared DOM-free helpers (`escapeHtml`, `formatDateShort`), importable from node for logic checks.
 - **js/theme.js** — theme toggle, localStorage persistence, OS auto-detect fallback.
 - **js/starfield.js** — astronomical starfield + sky-info widget. Mounted only on the `/about` route via init/destroy pair.
 - **articles/** — markdown articles + `articles.json` registry.
@@ -28,9 +30,11 @@ This is a static personal website (timbeach.com) built as a single-page applicat
 - **tools/render_article.py** — TTS pre-render + validate.
 - **tools/build_feed.py** — RSS 2.0 generator (run by `deploy.sh`).
 - **tools/build_share_pages.py** — per-article social "share pages" generator (run by `deploy.sh`). See [Social Share Pages](#social-share-pages).
+- **tools/build_search_index.py** — search index generator (run by `deploy.sh`): bakes `search-index.json` (slug → plain article text) via `render_article.extract_paragraphs`, so index text extraction shares the TTS parity definition. Includes future-dated/unlisted articles on purpose — the client only searches its own date-filtered list. Tested by `tools/test_build_search_index.py`; browser-level harness at `tests/searchtest.html` (serve repo root, headless-chrome dump-dom, PASS/FAIL in `<title>`).
+- **search-index.json** — generated full-text search index. Build artifact: gitignored, rebuilt each deploy, rsynced (not in `.deployignore`).
 - **feed.xml** — generated RSS feed (regenerated each deploy).
 - **a/** — generated share pages (`a/<slug>/index.html` + fallback `og.png`). Build artifact: gitignored, rebuilt each deploy, rsynced (not in `.deployignore`).
-- **deploy.sh** — validate TTS → build feed → build share pages → rsync.
+- **deploy.sh** — validate TTS → build feed → build share pages → build search index → rsync.
 
 ### Article System
 

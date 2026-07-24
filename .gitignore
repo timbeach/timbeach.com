@@ -11,6 +11,10 @@ tools/__pycache__/
 # deploy.sh via tools/build_share_pages.py. Build artifact, like feed output.
 /a/
 
+# Generated full-text search index — rebuilt by deploy.sh via
+# tools/build_search_index.py. Build artifact, like /a/.
+/search-index.json
+
 # Live site-counter state (created server-side, never committed)
 counter-data/
 

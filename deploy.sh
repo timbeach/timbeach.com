@@ -11,6 +11,8 @@ if [ -x tools/venv/bin/python ]; then
   tools/venv/bin/python tools/build_feed.py
   echo "→ generating social share pages (a/<slug>/)"
   tools/venv/bin/python tools/build_share_pages.py
+  echo "→ generating search index"
+  tools/venv/bin/python tools/build_search_index.py
 else
   echo "! tools/venv missing; skipping audio validation, feed, and share pages"
 fi
