@@ -4,6 +4,7 @@ import { initRouter, registerRoute } from './router.js';
 import { renderArticle } from './article.js';
 import { initStarfield, destroyStarfield } from './starfield.js';
 import { initCounter } from './counter.js';
+import { escapeHtml, formatDateShort } from './util.js';
 
 const app = () => document.getElementById('app');
 
@@ -60,18 +61,6 @@ function deriveSection(article) {
     return t.charAt(0).toUpperCase() + t.slice(1).replace(/-/g, ' ');
   }
   return 'Writing';
-}
-
-function formatDateShort(iso) {
-  // "2026-05-02" -> "May 2"
-  const d = new Date(iso + 'T00:00:00Z');
-  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
-}
-
-function escapeHtml(s) {
-  return String(s).replace(/[&<>"']/g, (c) => ({
-    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
-  }[c]));
 }
 
 // === Route renderers ===
