@@ -1,0 +1,65 @@
+<!doctype html>
+<!-- Headless-chrome harness for js/search.js — drives initSearch against the
+     real articles.json + search-index.json and reports via document.title.
+     Served from repo root; <base> makes all relative fetches root-relative. -->
+<html>
+<head><base href="/"><title>PENDING</title></head>
+<body>
+<section class="more">
+  <div class="search-box"><input class="search-input" type="search"></div>
+  <h2>More</h2>
+  <div data-search-default><ul><li>default row</li></ul></div>
+  <div data-search-results hidden></div>
+</section>
+<script type="module">
+  import { initSearch } from './js/search.js';
+
+  const report = (msg) => { document.title = msg; };
+  window.addEventListener('error', (e) => report('ERROR:' + e.message));
+
+  try {
+    const map = await fetch('articles/articles.json').then((r) => r.json());
+    const articles = Object.entries(map)
+      .map(([filename, meta]) => ({ slug: filename.replace(/\.md$/, ''), ...meta }))
+      .filter((a) => a.date && a.title && !a.unlisted);
+
+    const section = document.querySelector('.more');
+    initSearch(section, articles);
+    const input = section.querySelector('.search-input');
+    const resultsEl = section.querySelector('[data-search-results]');
+    const defaultEl = section.querySelector('[data-search-default]');
+
+    const type = (value) => {
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      return new Promise((res) => setTimeout(res, 600)); // > debounce + fetch
+    };
+
+    const checks = [];
+
+    // 1. body-only term (appears in article text, not metadata)
+    await type('squelch');
+    checks.push(['fulltext-hit', !resultsEl.hidden && /<mark>squelch<\/mark>/i.test(resultsEl.innerHTML)]);
+    checks.push(['default-hidden', defaultEl.hidden === true]);
+
+    // 2. nonsense query -> "No matches."
+    await type('zzzqqqxyzzy');
+    checks.push(['no-matches', resultsEl.innerHTML.includes('No matches.')]);
+
+    // 3. clearing restores the default list
+    await type('');
+    checks.push(['restored', resultsEl.hidden === true && defaultEl.hidden === false]);
+
+    // 4. heading swaps to Search while querying
+    await type('tmux');
+    checks.push(['heading', section.querySelector('h2').textContent === 'Search']);
+    checks.push(['tmux-results', /#\/article\/how-tmux-works/.test(resultsEl.innerHTML)]);
+
+    const failed = checks.filter(([, ok]) => !ok).map(([name]) => name);
+    report(failed.length ? 'FAIL:' + failed.join(',') : 'PASS:' + checks.length + ' checks');
+  } catch (err) {
+    report('ERROR:' + err.message);
+  }
+</script>
+</body>
+</html>

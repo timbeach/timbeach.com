@@ -5,6 +5,7 @@ import { renderArticle } from './article.js';
 import { initStarfield, destroyStarfield } from './starfield.js';
 import { initCounter } from './counter.js';
 import { escapeHtml, formatDateShort } from './util.js';
+import { initSearch } from './search.js';
 
 const app = () => document.getElementById('app');
 
@@ -97,21 +98,33 @@ async function renderHome() {
     </section>
   ` : '';
 
-  const moreHtml = more.length ? `
+  // Rendered unconditionally: the search box covers ALL articles, so the
+  // section must exist even when the tail list under it is empty.
+  const moreHtml = `
     <section class="more">
+      <div class="search-box">
+        <input class="search-input" type="search" placeholder="Search articles…"
+               aria-label="Search articles" autocomplete="off" spellcheck="false" />
+      </div>
       <h2>More</h2>
-      <ul>
-        ${more.map((a) => `
-          <li>
-            <time datetime="${escapeHtml(a.date)}">${escapeHtml(formatDateShort(a.date))}</time>
-            <a href="#/article/${encodeURIComponent(a.slug)}">${escapeHtml(a.title)}</a>
-          </li>
-        `).join('')}
-      </ul>
+      <div data-search-default>
+        ${more.length ? `
+        <ul>
+          ${more.map((a) => `
+            <li>
+              <time datetime="${escapeHtml(a.date)}">${escapeHtml(formatDateShort(a.date))}</time>
+              <a href="#/article/${encodeURIComponent(a.slug)}">${escapeHtml(a.title)}</a>
+            </li>
+          `).join('')}
+        </ul>
+        ` : ''}
+      </div>
+      <div data-search-results hidden></div>
     </section>
-  ` : '';
+  `;
 
   app().innerHTML = leadHtml + cardsHtml + moreHtml;
+  initSearch(app().querySelector('.more'), all);
   document.title = 'Timothy D Beach';
 }
 

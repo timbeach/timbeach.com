@@ -241,6 +241,43 @@ h1, h2, h3, h4 { font-family: var(--font-serif); margin: 0; }
 }
 .more li a:hover { color: var(--link-hover); }
 
+/* === Homepage search === */
+
+.search-box { margin: 0 0 14px; }
+.search-input {
+  width: 100%;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--fg);
+  background: var(--bg-elev);
+  border: 1px solid var(--divider);
+  border-radius: 2px;
+  padding: 7px 10px;
+  outline: none;
+}
+.search-input:focus { border-color: var(--fg-faint); }
+.search-input::placeholder { color: var(--fg-faint); }
+
+.search-count {
+  font-family: var(--font-sans);
+  font-size: 11px;
+  color: var(--fg-faint);
+  margin: 0 0 8px;
+}
+.more li .search-hit { min-width: 0; }
+.search-snippet {
+  font-family: var(--font-serif);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--fg-muted);
+  margin: 2px 0 0;
+}
+.search-snippet mark {
+  background: var(--selection);
+  color: var(--fg);
+  padding: 0 1px;
+}
+
 /* === Article reading view === */
 
 .back-link {
