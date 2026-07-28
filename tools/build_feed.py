@@ -93,7 +93,13 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
 
     for filename, meta in items:
         slug = filename[:-3] if filename.endswith(".md") else filename
-        link = f"{site_url}/#/article/{slug}"
+        # Item links point at the static /a/<slug>/ pages: crawlers strip the
+        # '#' fragment from hash-route URLs, so every #-link resolved to the
+        # bare homepage (a Search Console "duplicate" source). The guid keeps
+        # the historical #-URL — it's an opaque ID (isPermaLink=false), and
+        # changing it would re-deliver every article to existing subscribers.
+        link = f"{site_url}/a/{slug}/"
+        guid = f"{site_url}/#/article/{slug}"
         title = meta["title"]
         desc  = meta.get("summary", "")
         pubdate = _date_to_rfc822(meta["date"])
@@ -106,7 +112,7 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
         parts.append('    <item>')
         parts.append(f'      <title>{escape(title)}</title>')
         parts.append(f'      <link>{escape(link)}</link>')
-        parts.append(f'      <guid isPermaLink="false">{escape(link)}</guid>')
+        parts.append(f'      <guid isPermaLink="false">{escape(guid)}</guid>')
         parts.append(f'      <pubDate>{pubdate}</pubDate>')
         parts.append(f'      <description>{escape(desc)}</description>')
         # CDATA wrapper keeps embedded HTML readable to RSS readers without

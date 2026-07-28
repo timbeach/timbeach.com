@@ -1,27 +1,36 @@
 #!/usr/bin/env python3
-"""build_share_pages.py — generate per-article social "share pages".
+"""build_share_pages.py — generate static per-article pages under a/<slug>/.
 
 Why this exists
 ---------------
 The site is a hash-routed SPA: articles live at
 `https://timbeach.com/#/article/<slug>`. The fragment after `#` is never sent
-to the server, and social crawlers (LinkedIn, Twitter/X, Facebook, Slack,
-iMessage) don't run JS — so they only ever fetch the bare `index.html` and
-read its generic Open Graph image. Every shared article gets the same preview.
+to the server, so neither social crawlers nor Googlebot can ever see an
+article as its own page — they all fetch the bare `index.html`.
 
-The fix: emit a real, crawlable HTML file per article at `a/<slug>/index.html`
-carrying that article's own OG/Twitter tags. A human who clicks the link is
-redirected (JS + <meta refresh>) straight into the SPA at `#/article/<slug>`,
-so the reading experience is unchanged — only the URL you *share* differs:
+The fix: emit a real, crawlable HTML page per article at `a/<slug>/index.html`
+carrying that article's OG/Twitter tags AND its full rendered body. These
+pages are the site's indexable surface:
 
-    share  https://timbeach.com/a/<slug>/        (crawlable, per-article preview)
-    reader https://timbeach.com/#/article/<slug> (where humans land)
+    share/index  https://timbeach.com/a/<slug>/        (static, canonical)
+    reader       https://timbeach.com/#/article/<slug> (interactive SPA)
+
+History: until 2026-07 these were zero-second meta-refresh redirect stubs into
+the SPA. Google treats meta-refresh-0 as a redirect and refused to index them
+("Page with redirect" in Search Console), which left the site's writing
+invisible to search. Now the page IS the content; a link offers the
+interactive reader (read-aloud audio) instead of forcing a redirect.
+
+Gating: future-dated and `unlisted` articles still get pages (so they can be
+shared by direct link) but carry `<meta name="robots" content="noindex">` and
+are excluded from sitemap.xml. The nightly anacron redeploy regenerates the
+pages, so a scheduled article's noindex lifts automatically on its date.
 
 og:image resolution
 -------------------
 1. If the article's articles.json entry has a `hero`, use it.
 2. Otherwise auto-generate a branded 1200x630 card (title over the site's
-   night-theme palette) at `a/<slug>/og.png`.
+   night-theme palette) at `a/<slug>/og-<hash>.png`.
 
 Run:
     tools/venv/bin/python tools/build_share_pages.py
@@ -34,9 +43,12 @@ import html
 import json
 import re
 import sys
+from datetime import datetime
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
+
+from build_feed import render_article_html
 
 # First markdown image in an article body: ![alt](path)
 _MD_IMAGE = re.compile(r"!\[[^\]]*\]\(([^)\s]+)")
@@ -209,6 +221,51 @@ def _image_dims(project_root: Path, ref: str) -> tuple[str, str]:
         return str(CARD_W), str(CARD_H)
 
 
+# Relative src/href attributes in rendered article HTML. The page lives two
+# levels deep (/a/<slug>/), so 'pix/foo.png' and '../pix/foo.png' must become
+# '/pix/foo.png' or every embedded image 404s.
+_REL_ATTR = re.compile(r'\b(src|href)="(?!https?://|mailto:|#|/|data:)([^"]+)"')
+
+# {{youtube:ID}} / {{youtube:ID|short}} lines pass through markdown-it as a
+# literal text paragraph; swap them for the same responsive iframe the SPA
+# renders (js/article.js).
+_YT_PARA = re.compile(r"<p>\{\{youtube:([\w-]+)(\|short)?\}\}</p>")
+
+
+def _rootify_html(body: str) -> str:
+    return _REL_ATTR.sub(
+        lambda m: f'{m.group(1)}="/{_normalize_ref(m.group(2))}"', body)
+
+
+def _embed_youtube(body: str) -> str:
+    def sub(m: re.Match) -> str:
+        cls = "video-embed short" if m.group(2) else "video-embed"
+        return (
+            f'<div class="{cls}"><iframe src="https://www.youtube.com/embed/{m.group(1)}" '
+            'title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; '
+            'clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" '
+            'allowfullscreen loading="lazy"></iframe></div>'
+        )
+    return _YT_PARA.sub(sub, body)
+
+
+def _derive_section(meta: dict) -> str:
+    """Mirror of js/article.js deriveSection: override → first tag, prettified."""
+    if meta.get("section"):
+        return meta["section"]
+    tags = meta.get("tags") or []
+    if tags:
+        return tags[0][:1].upper() + tags[0][1:].replace("-", " ")
+    return "Writing"
+
+
+def _format_long_date(iso: str) -> str:
+    """'2026-05-02' → 'May 2, 2026' (matches the SPA reader's meta line)."""
+    d = datetime.strptime(iso, "%Y-%m-%d")
+    return f"{d.strftime('%B')} {d.day}, {d.year}"
+
+
+# Doubled braces ({{ }}) are literal — this template goes through str.format.
 _PAGE = """\
 <!DOCTYPE html>
 <html lang="en">
@@ -217,7 +274,7 @@ _PAGE = """\
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>{title_esc} — {site_name}</title>
 <meta name="description" content="{desc_esc}" />
-<meta property="og:type" content="article" />
+{robots}<meta property="og:type" content="article" />
 <meta property="og:title" content="{title_esc}" />
 <meta property="og:description" content="{desc_esc}" />
 <meta property="og:image" content="{image}" />
@@ -229,12 +286,51 @@ _PAGE = """\
 <meta name="twitter:title" content="{title_esc}" />
 <meta name="twitter:description" content="{desc_esc}" />
 <meta name="twitter:image" content="{image}" />
-<link rel="canonical" href="{reader_url}" />
-<meta http-equiv="refresh" content="0; url={reader_path}" />
-<script>location.replace("{reader_path}");</script>
+<link rel="canonical" href="{share_url}" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="alternate" type="application/rss+xml" title="{site_name}" href="/feed.xml" />
+<script>
+(function () {{
+  try {{
+    var t = localStorage.getItem('theme');
+    if (t === 'light' || t === 'dark') {{
+      document.documentElement.setAttribute('data-theme', t);
+    }}
+  }} catch (e) {{ /* ignore: localStorage may be disabled */ }}
+}})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Charis+SIL:wght@400;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="/css/site.css" />
 </head>
-<body style="background:#0e0e0e;color:#e6e3da;font-family:Georgia,serif;margin:0;display:flex;min-height:100vh;align-items:center;justify-content:center">
-<p>Redirecting to <a href="{reader_path}" style="color:#e6e3da">{title_esc}</a>…</p>
+<body>
+<div class="page">
+  <header class="masthead">
+    <a href="/" class="brand">{site_name}</a>
+    <nav class="nav" aria-label="Primary">
+      <a href="/#/">Writing</a>
+      <a href="/#/music">Music</a>
+      <a href="/#/about">About</a>
+    </nav>
+  </header>
+  <main role="main">
+    <a class="back-link" href="/#/">← Writing</a>
+    <article class="article">
+      <header class="article-header">
+        <p class="meta">{date_long} · {section}</p>
+        <h1>{title_esc}</h1>
+{actions}      </header>
+      <div class="article-body">{body_html}</div>
+    </article>
+  </main>
+  <footer class="site-footer">
+    © {year} Timothy D Beach
+    &middot; <a href="/feed.xml">RSS</a>
+    &middot; <a href="https://github.com/timbeach" target="_blank" rel="noopener">GitHub</a>
+    &middot; <a href="mailto:beachtimothyd@gmail.com">Email</a>
+  </footer>
+</div>
 </body>
 </html>
 """
@@ -246,6 +342,10 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
     out_root = project_root / "a"
     data = json.loads(articles_json.read_text())
 
+    # Same local-calendar gate as build_feed: pages regenerate on every deploy
+    # (including the nightly anacron one), so noindex lifts on the go-live date.
+    today = datetime.now().strftime("%Y-%m-%d")
+
     count = 0
     for filename, meta in data.items():
         if not (meta.get("title") and meta.get("date")):
@@ -253,6 +353,10 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
         slug = filename[:-3] if filename.endswith(".md") else filename
         title = meta["title"]
         desc = meta.get("summary", "")
+
+        md_path = articles_dir / filename
+        if not md_path.exists():
+            continue
 
         out_dir = out_root / slug
         reader_path = f"/#/article/{slug}"
@@ -292,6 +396,22 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
         if meta.get("date"):
             published = f'<meta property="article:published_time" content="{meta["date"]}" />\n'
 
+        # Not-yet-published and unlisted articles stay shareable but must not
+        # enter the index before the homepage would show them.
+        robots = ""
+        if meta.get("unlisted") or meta["date"] > today:
+            robots = '<meta name="robots" content="noindex" />\n'
+
+        body_html = _embed_youtube(_rootify_html(render_article_html(md_path)))
+
+        actions = ""
+        if meta.get("audio") and meta.get("timings"):
+            actions = (
+                '        <div class="article-actions">\n'
+                f'          <a class="read-aloud" href="{reader_path}">▶ Listen to this article</a>\n'
+                '        </div>\n'
+            )
+
         page = _PAGE.format(
             title_esc=html.escape(title, quote=True),
             desc_esc=html.escape(desc, quote=True),
@@ -300,11 +420,14 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
             img_w=img_w,
             img_h=img_h,
             share_url=f"{site_url}/a/{slug}/",
-            reader_url=f"{site_url}{reader_path}",
-            reader_path=reader_path,
             published=published,
+            robots=robots,
+            date_long=_format_long_date(meta["date"]),
+            section=html.escape(_derive_section(meta), quote=True),
+            actions=actions,
+            body_html=body_html,
+            year=datetime.now().year,
         )
-        out_dir.mkdir(parents=True, exist_ok=True)
         (out_dir / "index.html").write_text(page, encoding="utf-8")
         count += 1
 
@@ -312,7 +435,7 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
 
 
 def main(argv: list[str] | None = None) -> int:
-    p = argparse.ArgumentParser(description="Generate per-article social share pages under a/<slug>/")
+    p = argparse.ArgumentParser(description="Generate per-article static pages under a/<slug>/")
     p.add_argument("--site-url", default=SITE_URL_DEFAULT)
     args = p.parse_args(argv)
 

@@ -13,6 +13,8 @@ if [ -x tools/venv/bin/python ]; then
   tools/venv/bin/python tools/build_share_pages.py
   echo "→ generating search index"
   tools/venv/bin/python tools/build_search_index.py
+  echo "→ generating sitemap.xml"
+  tools/venv/bin/python tools/build_sitemap.py
 else
   echo "! tools/venv missing; skipping audio validation, feed, and share pages"
 fi

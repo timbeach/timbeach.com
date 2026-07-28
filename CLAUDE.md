@@ -29,12 +29,14 @@ This is a static personal website (timbeach.com) built as a single-page applicat
 - **audio/** — pre-rendered Opus + timings sidecars (TTS).
 - **tools/render_article.py** — TTS pre-render + validate.
 - **tools/build_feed.py** — RSS 2.0 generator (run by `deploy.sh`).
-- **tools/build_share_pages.py** — per-article social "share pages" generator (run by `deploy.sh`). See [Social Share Pages](#social-share-pages).
+- **tools/build_share_pages.py** — per-article static page generator (run by `deploy.sh`). See [Static Article Pages](#static-article-pages-a-slug).
+- **tools/build_sitemap.py** — sitemap.xml generator (run by `deploy.sh`): homepage + every published, listed `/a/<slug>/` URL. Future-dated/unlisted articles are excluded (their pages carry `noindex` until they go live).
 - **tools/build_search_index.py** — search index generator (run by `deploy.sh`): bakes `search-index.json` (slug → plain article text) via `render_article.extract_paragraphs`, so index text extraction shares the TTS parity definition. Includes future-dated/unlisted articles on purpose — the client only searches its own date-filtered list. Tested by `tools/test_build_search_index.py`; browser-level harness at `tests/searchtest.html` (serve repo root, headless-chrome dump-dom, PASS/FAIL in `<title>`).
 - **search-index.json** — generated full-text search index. Build artifact: gitignored, rebuilt each deploy, rsynced (not in `.deployignore`).
-- **feed.xml** — generated RSS feed (regenerated each deploy).
-- **a/** — generated share pages (`a/<slug>/index.html` + fallback `og.png`). Build artifact: gitignored, rebuilt each deploy, rsynced (not in `.deployignore`).
-- **deploy.sh** — validate TTS → build feed → build share pages → build search index → rsync.
+- **feed.xml** — generated RSS feed (regenerated each deploy). Item `<link>`s point at the static `/a/<slug>/` pages (crawlers strip `#` fragments); `<guid>`s keep the historical `#`-URLs so subscribers aren't re-delivered everything.
+- **sitemap.xml** — generated sitemap (regenerated each deploy, tracked in git like feed.xml). Referenced from the static `robots.txt`.
+- **a/** — generated static article pages (`a/<slug>/index.html` + `og-<hash>.png`). Build artifact: gitignored, rebuilt each deploy, rsynced (not in `.deployignore`).
+- **deploy.sh** — validate TTS → build feed → build share pages → build search index → build sitemap → rsync.
 
 ### Article System
 
@@ -144,18 +146,30 @@ Requires `ffmpeg` on PATH (system package).
 
 `./deploy.sh` runs `tools/render_article.py --validate` before rsyncing. If any article's timings are stale relative to its markdown, the deploy aborts. Catches "edited an article, forgot to re-render."
 
-## Social Share Pages
+## Static Article Pages (a/<slug>/)
 
-Social crawlers (LinkedIn, X, Facebook, Slack, iMessage) don't run JS and never
-see the hash fragment — so a shared `#/article/<slug>` URL always resolves to
-`index.html`'s generic OG image. To get per-article previews, `deploy.sh`
-generates a crawlable page per article:
+Neither social crawlers (LinkedIn, X, Facebook, Slack, iMessage) nor Googlebot
+ever see the hash fragment — a `#/article/<slug>` URL always resolves to the
+bare `index.html`. So `deploy.sh` generates a real static page per article,
+which serves two jobs at once: per-article social previews AND the site's
+Google-indexable surface.
 
 - `tools/build_share_pages.py` reads `articles/articles.json` and writes
-  `a/<slug>/index.html` with that article's `og:`/`twitter:` tags plus a JS +
-  `<meta http-equiv="refresh">` redirect into the SPA at `#/article/<slug>`.
-- **Share the `https://timbeach.com/a/<slug>/` URL**, not the `#` URL. Humans get
-  redirected into the same reader view; crawlers read the baked-in tags.
+  `a/<slug>/index.html` with that article's `og:`/`twitter:` tags, a
+  self-referencing canonical, and the **full rendered article body** (markdown
+  → HTML via `build_feed.render_article_html`, relative image paths rewritten
+  root-absolute, `{{youtube:...}}` lines converted to iframes). Articles with
+  audio get a "▶ Listen to this article" link into the SPA reader.
+- **History (2026-07 SEO rework):** these pages used to be zero-second
+  meta-refresh redirect stubs into the SPA. Google classified them as "Page
+  with redirect" and indexed nothing — do not reintroduce a redirect here.
+- **Gating:** future-dated and `unlisted` articles still get pages (shareable
+  by direct link) but carry `<meta name="robots" content="noindex" />` and are
+  left out of `sitemap.xml`. The nightly anacron redeploy regenerates pages, so
+  a scheduled article becomes indexable automatically on its date.
+- **Share the `https://timbeach.com/a/<slug>/` URL**, not the `#` URL. Crawlers
+  read the baked-in tags; humans read the article right there (masthead links
+  lead into the SPA).
 - **og:image**: always a crisp **1200×630** `a/<slug>/og.png` (rendered with
   Pillow). Handing crawlers an image already at OG dimensions avoids the blur/
   crop they introduce when resampling an arbitrary-aspect source. Source
@@ -168,6 +182,16 @@ generates a crawlable page per article:
 - After deploying a new/edited article, re-scrape the URL in the
   [LinkedIn Post Inspector](https://www.linkedin.com/post-inspector/) to bust
   any cached preview.
+
+## SEO / Canonical Host
+
+- The canonical host is bare **`https://timbeach.com`**. nginx on the vultr
+  server (`/etc/nginx/sites-available/vultr-2024`) 301-redirects
+  `www.timbeach.com` and `timbeach.net`/`www.timbeach.net` to it
+  (`timothybeach.org` already did); `index.html` also carries a canonical tag.
+- `robots.txt` (static, checked in) points at the generated `sitemap.xml`.
+- Article URLs submitted to search engines are the static `/a/<slug>/` pages —
+  never `#`-fragment URLs, which crawlers collapse into the bare homepage.
 
 ## Real Star System
 

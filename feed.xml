@@ -4,12 +4,158 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Fri, 17 Jul 2026 06:15:40 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 28 Jul 2026 18:39:16 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>How Ham Radio Repeaters Work</title>
+      <link>https://timbeach.com/a/how-ham-radio-repeaters-work/</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/how-ham-radio-repeaters-work</guid>
+      <pubDate>Thu, 23 Jul 2026 00:00:00 +0000</pubDate>
+      <description>Why a 5-watt handheld can suddenly talk across three counties: the duplex offset, CTCSS gatekeeping, duplexer cavities, and mountaintop etiquette behind an amateur repeater, traced through the W4TRC machine on Bays Mountain.</description>
+      <content:encoded><![CDATA[<p><img src="pix/repeaters.png" alt="A mountaintop ham radio repeater relaying signals between handheld radios across a valley" /></p>
+<p>A five-watt handheld radio is a small miracle — a complete transmitter and receiver you can clip to your belt. It is also, on its own, a bit of a disappointment. In town, two handhelds might manage a mile or two before buildings and hills eat the signal. Yet that same little radio can carry a conversation across an entire city and three counties beyond it.</p>
+<p>The difference is a machine most people have never heard of: the repeater. And the best way I've found to explain one — tested on a ten-year-old, approved for all ages — is to think of it as a very powerful, very helpful robot radio living on top of a mountain.</p>
+<p>Ours lives on Bays Mountain, about 2,600 feet above Kingsport, Tennessee. Its name is W4TRC. Let's meet it.</p>
+<h2>The problem: your signal dies at the horizon</h2>
+<p>The bands handheld radios use travel in essentially straight lines. They don't bend over ridges or follow the curve of the Earth. If your antenna can't &quot;see&quot; the other antenna, the conversation is over — and from chest height on a sidewalk, you can't see very far at all. Every building and hill in between takes a bite out of what's left.</p>
+<p>Here's the part that surprises people: more power barely helps. Doubling your wattage doesn't double your range — it nudges it. The thing that actually wins is height.</p>
+<h2>The fix: a robot radio on the mountain</h2>
+<p>If height wins, the answer is obvious: put a radio on the highest ground around and let it do the talking for you.</p>
+<p>That's a repeater — an automated station on a mountaintop or tower that listens for faint signals and instantly re-broadcasts them from its spectacular location, with more power and a far better antenna than you'll ever hold. Your five watts only has to make one hop: up to the mountain. The robot shouts the rest.</p>
+<p>Two handhelds that can't hear each other across town can both see that mountaintop. So the robot bridges them, and your effective range goes from &quot;a couple of miles on a good day&quot; to the whole region its antenna can see — for W4TRC, essentially all of the Tri-Cities.</p>
+<h2>The robot's mouth and ears</h2>
+<p>Now the clever part. The robot has to listen and talk at the same instant — that's what repeating means. But it can't do both on one frequency, for the same reason you can't hear someone whisper while you're shouting: its own voice would drown out everything else.</p>
+<p>So the robot keeps its mouth and its ears on two different channels:</p>
+<ul>
+<li><strong>The mouth</strong> is the repeater's output — the frequency it talks on, and the one everybody listens to. This is the number published for a repeater. W4TRC's mouth is 146.970 MHz.</li>
+<li><strong>The ears</strong> are the input — the frequency it listens on, and the one your radio talks into. The ears sit a fixed distance away from the mouth, called the <strong>offset</strong>. On the 2-meter band that's 0.6 MHz; W4TRC's ears are 0.6 below, at 146.370 MHz.</li>
+</ul>
+<pre><code>  your voice  ─────────────►  146.370 MHz  (the robot's ears)
+                                  │
+                          [ Bays Mountain ]
+                                  │
+  your radio  ◄─────────────  146.970 MHz  (the robot's mouth)
+</code></pre>
+<p>Your handheld handles the switch by itself. Program it with the mouth frequency and the offset, and it listens on 146.970 — then the instant you press the talk button, it silently jumps down to 146.370 to speak into the robot's ears, and snaps back the moment you let go. You never notice. Two frequencies, one seamless conversation.</p>
+<p>For the curious: keeping the robot's own shout from deafening its own ears is genuinely hard, because mouth and ears usually share a single antenna. The fix is a <strong>duplexer</strong> — a rack of scuba-tank-sized tuned metal cans that let one frequency through while blocking the other. It's the least glamorous and most critical hardware on the mountain.</p>
+<h2>The secret knock</h2>
+<p>A receiver on a mountaintop hears everything — static crashes, distant repeaters on the same frequency, electrical noise from every direction. If the robot repeated all of it, it would babble around the clock.</p>
+<p>So the robot only wakes up for people who know the secret knock. The knock is a <strong>CTCSS tone</strong> (old-timers say &quot;PL tone&quot;): a continuous low hum, pitched below where voices sit, that your radio hides underneath your speech. W4TRC listens for a 123.0 Hz hum. Hear the knock, repeat the signal. No knock, and the robot pretends you don't exist.</p>
+<p>It isn't a security measure — the tone is published right next to the frequency; anyone can look it up. It's noise discipline. But it is the classic newcomer trap: program the frequency and offset correctly, forget the tone, and everything looks fine on your end while the mountain ignores you completely.</p>
+<h2>One press of the button</h2>
+<p>Put it all together and here's what happens in the half-second after you key up:</p>
+<ol>
+<li>Your radio jumps to the ears frequency and transmits your voice with the secret knock humming underneath.</li>
+<li>The robot hears you, checks the knock, and keys its transmitter.</li>
+<li>Your words blast out of the mouth frequency from the mountaintop at the same instant you speak — anyone within maybe forty miles hears you at full strength.</li>
+<li>You let go. The robot hangs on for a second — the <strong>squelch tail</strong> — and marks the gap with a <strong>courtesy beep</strong>. That beep isn't decoration: it says &quot;the other person is done,&quot; and the pause it enforces gives a third voice a chance to jump in. Then the transmitter drops and the robot goes back to listening.</li>
+</ol>
+<p>That tail is also your built-in test meter. Key up, say your callsign, let go: if the tail and beep come back, you're hitting the machine. Silence means your frequency, offset, or tone is wrong — almost always the tone.</p>
+<h2>Manners on the mountain</h2>
+<p>A repeater is shared infrastructure — one conversation at a time, built and maintained by a local club — and the culture around it reflects that:</p>
+<ul>
+<li><strong>Say who you are.</strong> The FCC requires your callsign every ten minutes and when you sign off. Keying up silently just to hear the beep — &quot;kerchunking&quot; — is against the rules and the fastest way to be known unfavorably on a machine before anyone has met you.</li>
+<li><strong>Leave pauses.</strong> The courtesy-beep gap exists so someone with emergency traffic, or just a third voice, can break in.</li>
+<li><strong>Listen first.</strong> A minute of listening tells you whether a conversation or a scheduled net is already underway.</li>
+<li><strong>Nets are the front door.</strong> Most clubs hold a weekly on-air meetup — W4TRC's is Sunday evenings at 8:30 — and they genuinely want newcomers to check in. It's the easiest first transmission you'll ever make: someone literally asks whether anyone new is listening.</li>
+</ul>
+<h2>More than a relay</h2>
+<p>Modern repeaters rarely stop at relaying. Many are linked over the internet — EchoLink, AllStar, digital modes — so a handheld in Kingsport can, through the mountain, chat with a station on another continent. And because clubs treat them as emergency assets, good repeaters run on battery banks and solar panels. When a storm takes down the power grid — and the cell towers with it — the robot on the mountain keeps right on repeating. That resilience is a big part of why ham radio still matters when everything else fails.</p>
+<h2>Try it yourself</h2>
+<p>Everything here is public and reproducible. RepeaterBook lists nearly every repeater in North America with its frequency, offset, and tone. Free software called CHIRP will program your whole local list into an inexpensive handheld in an afternoon. Listening requires no license at all — tune to a repeater's mouth frequency and you'll hear your local radio community going about its day. Talking takes a Technician-class license: a 35-question exam that a weekend of study will comfortably beat.</p>
+<p>And the first time you press the button, say your callsign, and hear the mountain beep back — a robot two thousand feet over your head confirming it heard your little radio and shouted your words across three counties — you'll grin about this hundred-year-old technology like it was invented yesterday.</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Your Backup Is a Hypothesis</title>
+      <link>https://timbeach.com/a/your-backup-is-a-hypothesis/</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/your-backup-is-a-hypothesis</guid>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 +0000</pubDate>
+      <description>Why a backup you haven't booted is a hypothesis, not a backup — and how aegix-backup turns a dead encrypted laptop drive into a five-minute recovery on Aegix/Artix with nightly re-earned bootable clones and a ciphertext-only offsite.</description>
+      <content:encoded><![CDATA[<p><img src="pix/aegix-backup.png" alt="aegix-backup — encrypted, tested-restore disaster recovery" /></p>
+<p>Your laptop's SSD is going to die. Not today, probably. But SSDs fail without warning — no clicking, no grinding, no grace period. One morning the machine just doesn't come back. If everything you care about lives on an encrypted laptop, the question isn't whether you have backups. It's this:</p>
+<p><strong>How long after a dead drive are you back to work — on your own system, with your own config, your own keys, your own muscle memory?</strong></p>
+<p>For most setups the honest answer is &quot;days, if the restore even works.&quot; I built <a href="https://github.com/timbeach/aegix-backup">aegix-backup</a> to make the answer &quot;about five minutes.&quot; This is what it does, why it's built the way it is, and how to set it up on your own machine.</p>
+<h2>The principle</h2>
+<p>Most backup advice optimizes the wrong thing: how elegant the backup is. Snapshots, dedup ratios, incremental transfer efficiency. All fine — and all irrelevant on the day it matters. The only metric that counts is <strong>how boring and certain the restore is</strong>, executed at 2am, half-asleep, on the worst computing day of your month.</p>
+<p>That leads to one rule that shapes the entire tool:</p>
+<p><strong>A backup you haven't booted is a hypothesis, not a backup.</strong></p>
+<p>I can say this with some authority, because when I finally boot-tested my own &quot;working&quot; clone — one that had reported success every night for a month — I found it wasn't bootable at all. Its bootloader pointed at the <em>original</em> drive. The test would have silently booted my internal system and told me everything was fine. Behind that one lie were five more: excludes that matched nothing, swallowed error codes, an initramfs that would kernel-panic on any other machine, a missing <code>/tmp</code> that broke the cloned system, a safety guard that guarded nothing. Every one of them produced a confident success message. Every one of them was found only by actually testing the restore.</p>
+<p>So aegix-backup is designed around restores you <em>actually test</em> — and it re-earns bootability every single night, instead of assuming it.</p>
+<h2>What you get</h2>
+<p>Three legs, each covering a failure the others don't. All of it runs unattended from one nightly cron entry; all of it is driven by one config file.</p>
+<table>
+<thead>
+<tr>
+<th>Leg</th>
+<th>Lives on</th>
+<th>Survives</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Bootable clone, internal</td>
+<td>a second internal drive (LUKS + btrfs)</td>
+<td>dead primary drive — reboot, pick the other disk, keep working</td>
+</tr>
+<tr>
+<td>Bootable clone, external</td>
+<td>a drive that leaves the building</td>
+<td>the laptop being lost, stolen, or destroyed</td>
+</tr>
+<tr>
+<td>Encrypted offsite</td>
+<td>restic repo mirrored to Hugging Face</td>
+<td>everything local at once — only ciphertext ever leaves the machine</td>
+</tr>
+</tbody>
+</table>
+<p>The clones are not archives. They are complete, independently bootable systems. When the primary drive dies, there is no restore step: you press F12, pick the clone, type your LUKS passphrase, and you are on your machine — desktop, dotfiles, browser sessions, everything. Buy a replacement drive whenever it's convenient; the tool rebuilds onto it with one command.</p>
+<h2>What makes it different</h2>
+<p><strong>Clones are made bootable on every run.</strong> The nightly rsync necessarily copies the source system's <code>fstab</code>, <code>crypttab</code>, and GRUB config — all pointing at the <em>source</em> drive. Left alone, that clone boots the wrong disk or nothing. After every sync, aegix-backup repoints the whole boot chain at the clone's own UUIDs, reinstalls GRUB for both BIOS and UEFI, and verifies the result. Bootability isn't a setup step that decays; it's re-earned nightly.</p>
+<p><strong>It boots on hardware you haven't bought yet.</strong> A default Arch-family initramfs is built with <code>autodetect</code> — it contains drivers for the machine it was built on and nothing else. Restore that clone onto a replacement laptop and it panics before it can even find the disk. Every clone gets a second, fallback initramfs carrying every storage driver, with its own boot entry. Your travel drive can rescue you onto unfamiliar hardware, which is the entire point of a travel drive.</p>
+<p><strong>It works during the disaster, not just before it.</strong> Booted from a clone — which is exactly where you'll be when it counts — the tool still functions: it detects what system is actually running, snapshots that, and refuses to clone a running system onto itself. Recovery mode isn't an afterthought; it's a tested code path.</p>
+<p><strong>Only ciphertext leaves the machine.</strong> The offsite leg is a restic repository — client-side AES-256, content-addressed, deduplicated — mirrored to a private Hugging Face dataset repo. HF never sees a plaintext byte. The mirror even regenerates DO-NOT-DELETE guard files inside the repo on every sync, so any human or AI agent managing the account's storage knows this is a backup, not clutter.</p>
+<p><strong>It's runit-native.</strong> No systemd units, no timers, no crypttab assumptions (Artix-family systems don't process it at boot). Auto-unlock and auto-mount are done with runit one-shots and a udev rule: plug in your external clone and it appears read-only at a mountpoint, so you can browse yesterday's system without any risk of writing to your recovery image. Internal clones stay unmounted until you ask (<code>clone-browse internal</code>) — a permanently mounted duplicate of your filesystem just confuses every tool that walks the disk.</p>
+<p><strong>It fails loudly and succeeds honestly.</strong> rsync's &quot;some files vanished&quot; and restic's &quot;one file unreadable&quot; are warnings, logged and tolerated — a nightly job that dies because one cache file disappeared mid-read is worse than useless. Everything else fails to your desktop via notify-send. Both directions matter: this tool's history includes a restic warning treated as fatal that silently skipped the offsite upload for weeks, and swallowed rsync errors that reported broken clones as clean. Those bugs are why the exit-code handling looks paranoid. It is.</p>
+<h2>Setting it up</h2>
+<p>You need: an Arch-family system with runit (Aegix, Artix), btrfs root with <code>@</code> and <code>@home</code> subvolumes on LUKS, and at least one spare drive to become a clone target. Internal or external both work — internal is the better first target, because your firmware boots it without any USB-boot drama.</p>
+<p><strong>1. Install the tool.</strong></p>
+<pre><code>git clone https://github.com/timbeach/aegix-backup
+cd aegix-backup
+sudo ./install.sh
+</code></pre>
+<p>This installs the script, a placeholder config, the nightly cron entry, and the runit/udev plumbing.</p>
+<p><strong>2. Provision a clone target.</strong> Mirror a known-bootable layout: MBR, a ~1 GB FAT32 boot partition with the boot flag, the rest LUKS2 holding btrfs with <code>@</code> and <code>@home</code> subvolumes. Give the LUKS container two keyslots — a keyfile (so the nightly can unlock it unattended) and a passphrase (so <em>you</em> can unlock it at boot; a keyfile on the dead machine's encrypted root helps nobody). <code>RECOVERY.md</code> in the repo walks through this step by step.</p>
+<p><strong>3. Fill in the config.</strong> Everything is UUIDs in <code>/etc/aegix-backup.conf</code>:</p>
+<pre><code>CLONE_TARGETS=( internal external )
+TGT_internal_LUKS_UUID=...
+TGT_internal_BOOT_UUID=...
+</code></pre>
+<p>One habit the config file will nag you about: never identify drives by <code>/dev/nvme0n1</code> versus <code>/dev/nvme1n1</code>. That numbering reshuffles between reboots — mine has swapped twice, once nearly pointing a destructive operation at the wrong disk. UUIDs, models, and serials only.</p>
+<p><strong>4. Dry-run, then run.</strong></p>
+<pre><code>sudo aegix-backup preflight
+sudo aegix-backup --dry-run daily
+sudo aegix-backup clone-daily
+</code></pre>
+<p>The first clone moves your whole system, so it takes a while — an internal NVMe target runs at PCIe speed, a USB-2 enclosure very much does not. Nightly runs after that are incremental and quick. A target that isn't plugged in is skipped, not an error, so the travel drive can come and go.</p>
+<p><strong>5. Boot the clone. Actually boot it.</strong> While your real system is healthy, reboot, open the firmware boot menu, pick the clone, unlock it, and check where you landed:</p>
+<pre><code>findmnt -no SOURCE /
+</code></pre>
+<p>If that prints the clone's mapper name, congratulations — you have a backup. Until that moment you had a hypothesis. Mine failed this test the first time, in a way that every automated check had missed, and that single reboot is what turned the tool from plausible into trustworthy.</p>
+<p>Then open the things you'd hate to lose. My test found one more bug this way: an encrypted vault whose mountpoint directory hadn't been cloned, which would have left a recovered system holding ciphertext with no place to mount it. Five minutes of clicking around the booted clone is the cheapest audit you will ever run.</p>
+<h2>The part you can't automate</h2>
+<p>Two keys exist that no backup can regenerate: your LUKS passphrase, and your restic repository password (plus the token for the offsite mirror). The restic password is the <em>only</em> key to your offsite data — lose it and that leg of the system is unrecoverable ciphertext, working exactly as designed. Put them somewhere that is not the laptop. The repo ships a <code>RECOVERY.md</code> runbook meant to be printed or copied to your phone, because a recovery procedure that only exists on the machine you just lost is not a procedure.</p>
+<h2>Get it</h2>
+<p>The tool is a single auditable shell script, MIT-licensed, config-driven, with every hard-won lesson documented in comments where it's enforced:</p>
+<p><strong><a href="https://github.com/timbeach/aegix-backup">github.com/timbeach/aegix-backup</a></strong></p>
+<p>Clone it, point it at a spare drive, and — this part is not optional — boot the result. Somewhere between &quot;my backups ran fine&quot; and &quot;I have booted my backup&quot; is the difference between a hypothesis and a plan.</p>
+]]></content:encoded>
+    </item>
+    <item>
       <title>Why My Zip Code — Not My Employer's — Decides Whether I Get Paid Overtime</title>
-      <link>https://timbeach.com/#/article/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime</link>
+      <link>https://timbeach.com/a/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime</guid>
       <pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate>
       <description>A fiscal year of timesheets turned up 551 unpaid overtime hours — tracing why led through FLSA exempt-duties tests, why the employee's state (not the employer's HQ) governs, and why claiming California residency on paper wouldn't fix it.</description>
@@ -105,7 +251,7 @@
     </item>
     <item>
       <title>tabnext — Open New Browser Tabs Next to Your Current One</title>
-      <link>https://timbeach.com/#/article/tabnext</link>
+      <link>https://timbeach.com/a/tabnext/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/tabnext</guid>
       <pubDate>Thu, 16 Jul 2026 00:00:00 +0000</pubDate>
       <description>When the MV2 purge killed Open Tabs Next to Current, rebuilding it took 105 lines and zero permissions — plus two non-obvious lessons: foreground tabs are already active when onCreated fires, and a session restore looks exactly like a user opening forty tabs, so naive tab-moving rips them out of their groups.</description>
@@ -145,7 +291,7 @@
     </item>
     <item>
       <title>Raccoons Are Illegal</title>
-      <link>https://timbeach.com/#/article/raccoons-are-illegal</link>
+      <link>https://timbeach.com/a/raccoons-are-illegal/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/raccoons-are-illegal</guid>
       <pubDate>Thu, 09 Jul 2026 00:00:00 +0000</pubDate>
       <description>Rescuing two orphaned raccoon kits — Charls and Doozy — turned into a two-hour race against the bureaucracy of compassion. What Tennessee's Rabies Vector Species laws do to anyone who tries to help, and the underground network of rehabbers who actually will.</description>
@@ -187,7 +333,7 @@
     </item>
     <item>
       <title>My Cognitive &amp; Longevity Stack</title>
-      <link>https://timbeach.com/#/article/my-cognitive-and-longevity-stack</link>
+      <link>https://timbeach.com/a/my-cognitive-and-longevity-stack/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/my-cognitive-and-longevity-stack</guid>
       <pubDate>Thu, 02 Jul 2026 00:00:00 +0000</pubDate>
       <description>A software engineer's morning-to-night health stack, framed as a build/runtime/shutdown cycle — why a dawn run and sunlight anchor the cortisol curve, how the D3→K2→magnesium→omega-3 pieces interlock, and why the timing is the real intervention. A log, not a prescription.</description>
@@ -234,7 +380,7 @@
     </item>
     <item>
       <title>Use the Best Model. Your Time Is the Expensive Part.</title>
-      <link>https://timbeach.com/#/article/use-the-best-model</link>
+      <link>https://timbeach.com/a/use-the-best-model/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/use-the-best-model</guid>
       <pubDate>Sun, 28 Jun 2026 00:00:00 +0000</pubDate>
       <description>The economic case for defaulting to the best frontier model on interactive engineering work — the model is cheap, your hours aren't — plus the five specific situations where stepping down is the right call.</description>
@@ -266,7 +412,7 @@
     </item>
     <item>
       <title>Three Coming-Soon Sites on One VPS: nginx, Let's Encrypt, and a Repo Each</title>
-      <link>https://timbeach.com/#/article/three-coming-soon-sites-on-one-vps</link>
+      <link>https://timbeach.com/a/three-coming-soon-sites-on-one-vps/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/three-coming-soon-sites-on-one-vps</guid>
       <pubDate>Tue, 16 Jun 2026 00:00:00 +0000</pubDate>
       <description>A repeatable, verify-as-you-go routine for taking three domains from fresh DNS to HTTPS-with-auto-renewing-certs and a private repo each — on one VPS, in about twenty minutes.</description>
@@ -466,7 +612,7 @@ scp index.html vps:/var/www/&lt;domain&gt;/index.html
     </item>
     <item>
       <title>How to Change Your LUKS Passphrase (and Other Sysadmin-y Things)</title>
-      <link>https://timbeach.com/#/article/change-your-luks-passphrase</link>
+      <link>https://timbeach.com/a/change-your-luks-passphrase/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/change-your-luks-passphrase</guid>
       <pubDate>Sat, 13 Jun 2026 00:00:00 +0000</pubDate>
       <description>The add-verify-kill sequence that changes a LUKS passphrase with zero lockout risk, why usermod refuses to rename a logged-in user (and the detached-script trick around it), and the stale /etc references a rename leaves behind.</description>
@@ -536,7 +682,7 @@ ls /var/spool/cron/
     </item>
     <item>
       <title>Bring Back the Hit Counter — Privately, in One File</title>
-      <link>https://timbeach.com/#/article/bring-back-the-hit-counter</link>
+      <link>https://timbeach.com/a/bring-back-the-hit-counter/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/bring-back-the-hit-counter</guid>
       <pubDate>Fri, 12 Jun 2026 00:00:00 +0000</pubDate>
       <description>A privacy-respecting hit counter in a single file of PHP — counts each visitor once per day with salted IP hashes, no database and no tracking, and you can drop it straight into your own site.</description>
@@ -589,7 +735,7 @@ ls /var/spool/cron/
     </item>
     <item>
       <title>Cron Assumes Your Computer Never Sleeps</title>
-      <link>https://timbeach.com/#/article/cron-assumes-your-computer-never-sleeps</link>
+      <link>https://timbeach.com/a/cron-assumes-your-computer-never-sleeps/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/cron-assumes-your-computer-never-sleeps</guid>
       <pubDate>Thu, 11 Jun 2026 00:00:00 +0000</pubDate>
       <description>I'd run cron for a decade — on servers, where machines never sleep. Then I gave it a job on my laptop and it silently never ran. anacron is cron for computers that power off: it thinks in elapsed days, catches up after downtime, and (the part nobody mentions) rides on top of cron rather than replacing it.</description>
@@ -630,7 +776,7 @@ ls /var/spool/cron/
     </item>
     <item>
       <title>How My Links Got Their Pictures</title>
-      <link>https://timbeach.com/#/article/how-my-links-got-their-pictures</link>
+      <link>https://timbeach.com/a/how-my-links-got-their-pictures/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/how-my-links-got-their-pictures</guid>
       <pubDate>Wed, 10 Jun 2026 00:00:00 +0000</pubDate>
       <description>The Open Graph protocol gives every shared link its title, blurb, and picture — and three traps I hit making it work on a hash-routed single-page app: the fragment that never reaches the server, the blur, and the cache that never forgets.</description>
@@ -687,7 +833,7 @@ ls /var/spool/cron/
     </item>
     <item>
       <title>One Command to Paste Markdown Into Medium</title>
-      <link>https://timbeach.com/#/article/paste-markdown-into-medium</link>
+      <link>https://timbeach.com/a/paste-markdown-into-medium/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/paste-markdown-into-medium</guid>
       <pubDate>Tue, 09 Jun 2026 00:00:00 +0000</pubDate>
       <description>Medium closed its API — but its editor still honors the text/html clipboard flavor. So I built mdpaste, a single Rust binary that turns markdown into paste-ready rich text for Medium, Substack, and Ghost.</description>
@@ -728,7 +874,7 @@ ls /var/spool/cron/
     </item>
     <item>
       <title>The Terminal Setup I Built and Can't Work Without</title>
-      <link>https://timbeach.com/#/article/the-terminal-setup-i-cant-work-without</link>
+      <link>https://timbeach.com/a/the-terminal-setup-i-cant-work-without/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/the-terminal-setup-i-cant-work-without</guid>
       <pubDate>Mon, 08 Jun 2026 00:00:00 +0000</pubDate>
       <description>I patched suckless `tabbed` into a terminal I actually love: clickable, tmux-keyed tabs of real terminals — transparent, pywal-themed, and self-naming. Rename a Claude Code session and the tab follows live. One `yay` on any Arch box.</description>
@@ -815,7 +961,7 @@ git clone https://github.com/AegixLinux/tabbed &amp;&amp; cd tabbed &amp;&amp; s
     </item>
     <item>
       <title>Still Really Simple: A Short History of RSS (and How This Site Uses It)</title>
-      <link>https://timbeach.com/#/article/rss-still-really-simple</link>
+      <link>https://timbeach.com/a/rss-still-really-simple/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/rss-still-really-simple</guid>
       <pubDate>Sun, 07 Jun 2026 00:00:00 +0000</pubDate>
       <description>A short history of RSS — what it is, why it still matters, and exactly how this static site builds the feed at /feed.xml.</description>
@@ -856,7 +1002,7 @@ git clone https://github.com/AegixLinux/tabbed &amp;&amp; cd tabbed &amp;&amp; s
     </item>
     <item>
       <title>Why Claude Code Keeps Asking for Permission (and How to Make It Stop)</title>
-      <link>https://timbeach.com/#/article/claude-code-permission-modes</link>
+      <link>https://timbeach.com/a/claude-code-permission-modes/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/claude-code-permission-modes</guid>
       <pubDate>Sat, 06 Jun 2026 00:00:00 +0000</pubDate>
       <description>Permission mode is fixed at startup, so resumed sessions silently reset to prompting — and Shift+Tab deliberately won't cycle to bypass. The one-line settings.json fix, and what to do with sessions already running.</description>
@@ -926,7 +1072,7 @@ git clone https://github.com/AegixLinux/tabbed &amp;&amp; cd tabbed &amp;&amp; s
     </item>
     <item>
       <title>Claude /tips: The Complete List</title>
-      <link>https://timbeach.com/#/article/claude-tips-complete-list</link>
+      <link>https://timbeach.com/a/claude-tips-complete-list/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/claude-tips-complete-list</guid>
       <pubDate>Thu, 04 Jun 2026 00:00:00 +0000</pubDate>
       <description>Every tip Claude Code ships with — extracted by pointing Claude at its own binary — plus the keyboard shortcuts and sigils that aren't in the rotation.</description>
@@ -1062,7 +1208,7 @@ git clone https://github.com/AegixLinux/tabbed &amp;&amp; cd tabbed &amp;&amp; s
     </item>
     <item>
       <title>Future Me Has Receipts: Building circleback</title>
-      <link>https://timbeach.com/#/article/circleback</link>
+      <link>https://timbeach.com/a/circleback/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/circleback</guid>
       <pubDate>Tue, 26 May 2026 00:00:00 +0000</pubDate>
       <description>A dozen long-running Claude Code sessions across unrelated projects — and the hard part isn't building the work, it's finding your way back to each thread.</description>
@@ -1256,7 +1402,7 @@ circleback daily --rebuild    # regenerate today's auto spine from the master li
     </item>
     <item>
       <title>The OSI Model, Explained from a Whiteboard</title>
-      <link>https://timbeach.com/#/article/osi-model-whiteboard</link>
+      <link>https://timbeach.com/a/osi-model-whiteboard/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/osi-model-whiteboard</guid>
       <pubDate>Sat, 02 May 2026 00:00:00 +0000</pubDate>
       <description>A whiteboard walk-through of the seven layers — what each one actually does, and why “that's a Layer 7 problem” still means something even though the modern internet runs on TCP/IP.</description>
@@ -1312,7 +1458,7 @@ circleback daily --rebuild    # regenerate today's auto spine from the master li
     </item>
     <item>
       <title>From ~/.local/src to the AUR</title>
-      <link>https://timbeach.com/#/article/aegix-on-the-aur</link>
+      <link>https://timbeach.com/a/aegix-on-the-aur/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/aegix-on-the-aur</guid>
       <pubDate>Fri, 01 May 2026 00:00:00 +0000</pubDate>
       <description>How my suckless edits travel from ~/.local/src into the AEGIX monorepo and out to the AUR as installable -git packages — a post-commit hook, four packages, and one rule: live on this machine is truth, the network is a manual gesture.</description>
@@ -1391,7 +1537,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>Pipeline vs Harness</title>
-      <link>https://timbeach.com/#/article/pipeline-vs-harness</link>
+      <link>https://timbeach.com/a/pipeline-vs-harness/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/pipeline-vs-harness</guid>
       <pubDate>Wed, 29 Apr 2026 00:00:00 +0000</pubDate>
       <description>Two words that sound alike and get used loosely but mean opposite things — a pipeline is a conveyor belt that work flows through; a harness is a jig that wraps a fixed thing to drive it. The distinction, with the instances we actually use.</description>
@@ -1499,7 +1645,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>How My Blog Got a Voice</title>
-      <link>https://timbeach.com/#/article/how-my-blog-got-a-voice</link>
+      <link>https://timbeach.com/a/how-my-blog-got-a-voice/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/how-my-blog-got-a-voice</guid>
       <pubDate>Sun, 26 Apr 2026 00:00:00 +0000</pubDate>
       <description>Adding read-aloud to this blog took three tries — Web Speech that stays silent on Linux, in-browser WASM that hung the page — before the dumb-in-retrospect fix: render the audio once at publish time and ship the bytes. Plus the two parser bugs hiding on the way.</description>
@@ -1544,7 +1690,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>Jungian Dream Notes</title>
-      <link>https://timbeach.com/#/article/jungian-dream-notes</link>
+      <link>https://timbeach.com/a/jungian-dream-notes/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/jungian-dream-notes</guid>
       <pubDate>Thu, 23 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -1605,7 +1751,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>How to Configure Obsidian the Agentic Way</title>
-      <link>https://timbeach.com/#/article/how-to-config-obsidian</link>
+      <link>https://timbeach.com/a/how-to-config-obsidian/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/how-to-config-obsidian</guid>
       <pubDate>Tue, 21 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -1640,7 +1786,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>Dependency Hell: Why Software Breaks When Everything Works</title>
-      <link>https://timbeach.com/#/article/dependency-hell</link>
+      <link>https://timbeach.com/a/dependency-hell/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/dependency-hell</guid>
       <pubDate>Mon, 06 Apr 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -1730,7 +1876,7 @@ exec git &quot;$@&quot;
     </item>
     <item>
       <title>How to Write a Custom Claude Code Skill</title>
-      <link>https://timbeach.com/#/article/custom-claude-skills</link>
+      <link>https://timbeach.com/a/custom-claude-skills/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/custom-claude-skills</guid>
       <pubDate>Thu, 19 Mar 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -1870,7 +2016,7 @@ Stage only the specific changed files. Commit and push.
     </item>
     <item>
       <title>Software Delivery and Deployment SOP</title>
-      <link>https://timbeach.com/#/article/software-delivery-sop</link>
+      <link>https://timbeach.com/a/software-delivery-sop/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/software-delivery-sop</guid>
       <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -2288,7 +2434,7 @@ git push origin main
     </item>
     <item>
       <title>Claude Code Agent Teams: Put Your AI Coworkers in tmux Panes</title>
-      <link>https://timbeach.com/#/article/claude-code-agent-teams</link>
+      <link>https://timbeach.com/a/claude-code-agent-teams/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/claude-code-agent-teams</guid>
       <pubDate>Sat, 21 Feb 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -2588,7 +2734,7 @@ Create a team to explore this:
     </item>
     <item>
       <title>True Random Number Generators: From Quantum Physics to Silicon</title>
-      <link>https://timbeach.com/#/article/trng-deep-dive</link>
+      <link>https://timbeach.com/a/trng-deep-dive/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/trng-deep-dive</guid>
       <pubDate>Fri, 20 Feb 2026 00:00:00 +0000</pubDate>
       <description></description>
@@ -2781,7 +2927,7 @@ CSPRNG (fast, computationally indistinguishable from random)
     </item>
     <item>
       <title>Deploy a Website</title>
-      <link>https://timbeach.com/#/article/deploy-a-website</link>
+      <link>https://timbeach.com/a/deploy-a-website/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/deploy-a-website</guid>
       <pubDate>Sun, 28 Sep 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3034,7 +3180,7 @@ df -h
     </item>
     <item>
       <title>Install Signal Desktop on Aegix Linux</title>
-      <link>https://timbeach.com/#/article/install-signal-on-aegix</link>
+      <link>https://timbeach.com/a/install-signal-on-aegix/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/install-signal-on-aegix</guid>
       <pubDate>Tue, 19 Aug 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3055,7 +3201,7 @@ df -h
     </item>
     <item>
       <title>How tmux Works</title>
-      <link>https://timbeach.com/#/article/how-tmux-works</link>
+      <link>https://timbeach.com/a/how-tmux-works/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/how-tmux-works</guid>
       <pubDate>Fri, 01 Aug 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3110,7 +3256,7 @@ df -h
     </item>
     <item>
       <title>Adding a Second Aegix User</title>
-      <link>https://timbeach.com/#/article/second-aegix-user</link>
+      <link>https://timbeach.com/a/second-aegix-user/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/second-aegix-user</guid>
       <pubDate>Wed, 30 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3175,7 +3321,7 @@ su - timothy
     </item>
     <item>
       <title>Parsimony and Aegix Linux</title>
-      <link>https://timbeach.com/#/article/parsimony</link>
+      <link>https://timbeach.com/a/parsimony/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/parsimony</guid>
       <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3185,7 +3331,7 @@ su - timothy
     </item>
     <item>
       <title>How to Add New Articles to timbeach.com</title>
-      <link>https://timbeach.com/#/article/add-articles</link>
+      <link>https://timbeach.com/a/add-articles/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/add-articles</guid>
       <pubDate>Tue, 29 Jul 2025 00:00:00 +0000</pubDate>
       <description></description>
@@ -3343,7 +3489,7 @@ echo &quot;Hello, World!&quot;
     </item>
     <item>
       <title>Simplicity in Software Engineering</title>
-      <link>https://timbeach.com/#/article/simplicity</link>
+      <link>https://timbeach.com/a/simplicity/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/simplicity</guid>
       <pubDate>Fri, 10 Jan 2025 00:00:00 +0000</pubDate>
       <description></description>

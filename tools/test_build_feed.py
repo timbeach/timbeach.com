@@ -80,7 +80,7 @@ def test_feed_item_has_link_pubdate_guid(tmp_path):
     build_feed(project_root=project, out_path=out, site_url="https://timbeach.com")
 
     item = ET.parse(out).getroot().find("channel/item")
-    assert item.findtext("link") == "https://timbeach.com/#/article/first-article"
+    assert item.findtext("link") == "https://timbeach.com/a/first-article/"
     assert item.findtext("pubDate")  # RFC 822
     guid = item.find("guid")
     assert guid is not None
