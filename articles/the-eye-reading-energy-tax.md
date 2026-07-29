@@ -1,5 +1,7 @@
 # The App I Built for the Eye-Reading Energy Tax
 
+![Diagram of two input buses reaching one comprehension center: a faint dotted line from an eye node, a strong warm line from an ear node](pix/eye-reading-energy-tax-og.png)
+
 I was diagnosed with dyslexia when I was eight years old, during my first year attending school outside the home. I hadn't learned to read yet. I spent most of the decades since carrying a quiet shame about that — and this is the story of the realization that finally put the shame down, and the tool I built once it was gone.
 
 Here's what the shame looked like in practice. I always knew, deep down, that I had the intellect for academia. You can tell, talking with people — I could hold my own in understanding, in connecting ideas, in seeing the shape of a problem. But I could never get past a couple of semesters of college before burning out and moving on to something more interesting. The coursework wasn't beyond me. The reading was draining me. I'd watch classmates absorb a hundred assigned pages like the act itself was free, while the same pages cost me something real — focus, energy, hours. I was paying a tax they weren't paying, and I didn't have a name for it. So I named it the way ashamed people do: lazy. Undisciplined. Not cut out for it.

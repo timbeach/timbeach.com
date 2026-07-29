@@ -14,7 +14,8 @@
     "audio": "audio/the-eye-reading-energy-tax.ogg",
     "timings": "audio/the-eye-reading-energy-tax.timings.json",
     "voice": "bm_lewis",
-    "duration": 430.443
+    "duration": 430.443,
+    "hero": "pix/eye-reading-energy-tax-og.png"
   },
   "how-ham-radio-repeaters-work.md": {
     "title": "How Ham Radio Repeaters Work",
