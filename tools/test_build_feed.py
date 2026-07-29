@@ -35,8 +35,28 @@ def _articles_fixture(tmp_path: Path) -> Path:
             "tags": ["test"],
             "summary": "The second one.",
         },
+        "hidden-article.md": {
+            "title": "Hidden Article",
+            "date": "2026-04-15",
+            "tags": ["test"],
+            "unlisted": True,
+        },
     }))
+    (articles / "hidden-article.md").write_text(
+        "# Hidden Article\n\nUnlisted body.\n"
+    )
     return tmp_path
+
+
+def test_unlisted_article_excluded(tmp_path):
+    # 'unlisted' gates the homepage, sitemap, and share-page indexing —
+    # the feed must match, or unlisting leaks the article to subscribers.
+    project = _articles_fixture(tmp_path)
+    out = project / "feed.xml"
+    build_feed(project_root=project, out_path=out, site_url="https://timbeach.com")
+    titles = [i.findtext("title") for i in ET.parse(out).getroot().iter("item")]
+    assert "Hidden Article" not in titles
+    assert len(titles) == 2
 
 
 def test_build_feed_produces_valid_xml(tmp_path):

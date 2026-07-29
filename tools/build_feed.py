@@ -67,12 +67,15 @@ def build_feed(project_root: Path, out_path: Path, site_url: str = SITE_URL_DEFA
     # a scheduled post into the feed requires a (re)deploy on or after its date.
     today = datetime.now().strftime("%Y-%m-%d")
 
-    # Sort by date descending; drop entries without date/title and any not-yet-due.
+    # Sort by date descending; drop entries without date/title, any not-yet-due,
+    # and unlisted articles (reachable by direct /a/<slug>/ link only — same
+    # gate as the homepage and sitemap).
     items = sorted(
         (
             (filename, meta)
             for filename, meta in data.items()
             if meta.get("date") and meta.get("title") and meta["date"] <= today
+            and not meta.get("unlisted")
         ),
         key=lambda kv: kv[1]["date"],
         reverse=True,

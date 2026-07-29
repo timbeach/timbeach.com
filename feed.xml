@@ -4,9 +4,38 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Tue, 28 Jul 2026 18:39:16 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 29 Jul 2026 01:27:59 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>The App I Built for the Eye-Reading Energy Tax</title>
+      <link>https://timbeach.com/a/the-eye-reading-energy-tax/</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/the-eye-reading-energy-tax</guid>
+      <pubDate>Tue, 28 Jul 2026 00:00:00 +0000</pubDate>
+      <description>Diagnosed dyslexic at eight, I burned out of college twice knowing the intellect was there — what was missing was a name for the tax. Ear-reading and eye-reading are two buses into the same comprehension center, mine are priced differently, and choosing the cheaper one is wisdom, not weakness. So I built ear, a local TTS reader for Linux. It's on the AUR.</description>
+      <content:encoded><![CDATA[<p>I was diagnosed with dyslexia when I was eight years old, during my first year attending school outside the home. I hadn't learned to read yet. I spent most of the decades since carrying a quiet shame about that — and this is the story of the realization that finally put the shame down, and the tool I built once it was gone.</p>
+<p>Here's what the shame looked like in practice. I always knew, deep down, that I had the intellect for academia. You can tell, talking with people — I could hold my own in understanding, in connecting ideas, in seeing the shape of a problem. But I could never get past a couple of semesters of college before burning out and moving on to something more interesting. The coursework wasn't beyond me. The reading was draining me. I'd watch classmates absorb a hundred assigned pages like the act itself was free, while the same pages cost me something real — focus, energy, hours. I was paying a tax they weren't paying, and I didn't have a name for it. So I named it the way ashamed people do: lazy. Undisciplined. Not cut out for it.</p>
+<p>Meanwhile, the evidence for the defense was sitting right there in my headphones. I could listen to an entire Dostoevsky novel and enjoy every minute of it. Hundreds of pages of dense nineteenth-century Russian literature, no burnout, no tax. Same brain. Same ideas. Different door.</p>
+<h2>The realization</h2>
+<p>A few weeks ago I finally learned what's actually going on in there, and it landed like a verdict being overturned.</p>
+<p>Reading is not one skill — it's a relay between brain systems. When a typical reader sees a word, dedicated circuitry maps the visual symbols to speech sounds automatically. That mapping got wired in during childhood and now runs on background autopilot, effectively free. Dyslexia is a difference in exactly that machinery: the symbol-to-sound bridge never becomes automatic. It still works — but it runs manually, through a longer route, spending working memory and attention on every single word. The decoding bill arrives before comprehension ever gets to start.</p>
+<p>Listening skips that bridge entirely. Spoken language flows through auditory pathways that a dyslexic brain runs at full speed, straight into the same comprehension machinery that eye-readers use. Same content, same understanding — delivered over a different bus, at a fraction of the energy cost.</p>
+<p>That's the whole punch line of my life story, forty years late: eye-reading and ear-reading are two input buses to the same comprehension center, and mine are priced differently. Not broken. Priced differently.</p>
+<p>And once you see it that way, the shame math flips completely. Getting the same ideas into your brain at a lower energy cost isn't cheating, and it isn't a lesser form of reading — it's resource management. It's what a smart, resourceful person does with an accurate spec sheet of their own hardware. The real waste was all the years I spent paying the expensive toll out of shame, because academia is built by and for eye-readers, and it taught me that the expensive road was the only legitimate one. It isn't. Comprehension is the destination; nobody at the destination asks which road you took.</p>
+<h2>So I built for the ear bus</h2>
+<p>Once the shame was gone, the engineering problem was obvious: get any text, from anywhere, into my ears, with zero friction. I'd been improvising this for years — long before the AI boom I was converting PDFs to plain text and piping them through crude TTS on Linux, and my blog already reads itself aloud. But those were islands. I wanted a system.</p>
+<p>It's called ear, and it's on the AUR right now.</p>
+<p>The command line does what Unix tools should. Pipe anything into it. Point it at a Markdown file, a PDF, a URL. Highlight text anywhere on screen and hit a hotkey. Short snippets speak in under a second; longer reads get a warmer neural voice — the same British narrator my blog uses, so my whole machine speaks with one voice.</p>
+<p>Under the hood, text gets cleaned, split into paragraphs, and synthesized one paragraph at a time into a playlist that starts playing immediately while the renderer runs ahead. Pause, skip by paragraph, change speed, stop and pick up days later exactly where you left off.</p>
+<p>There's a listen-later shelf for long-form: point ear at a whole book and it renders in the background into a single audio file. My first test was a cryptography textbook — two thousand three hundred and eighty-one paragraphs, seventeen and a half hours of audio. I'm several hours in. A bash cookbook followed. My machine has quietly become an audiobook press.</p>
+<p>And then there's the part I didn't know I needed: the desk. Typing ear opens a window that shows the text of whatever's playing and highlights each paragraph as it's spoken, scrolling along with the voice. Click any paragraph and playback jumps there. Feel what that does to the energy math: the ears carry the decoding load, and the eyes get promoted to a map — structure, skimming, jumping around — without paying the per-word toll. The reader renders in Atkinson Hyperlegible, the dyslexia-friendly typeface I already use everywhere. It's the first reading interface I've ever used that was designed for how I'm actually wired, and I know that for certain, because I designed it that way.</p>
+<p>I built it with Claude Code in four days — spec first, then test-driven Rust, sixty-three tests by the end. It was almost called earbuss, after the Woven Summing Buss I used to hand-build in my audio-manufacturing days — a device that sums many input channels down to one output, which is exactly what this does with text. But the three-letter name was sitting free on the AUR, and some names you just pick up off the ground.</p>
+<h2>Why my heart is full</h2>
+<p>Here's the part that gets me. Any Arch-based Linux user, anywhere, can now type yay -S ear, run ear-cli setup, and have their machine read anything to them — files, books, web pages, whatever their day throws at their eyes. Within a day of the AUR listing going live, the first community install came in: a friend's Framework laptop, hardware I've never touched, reading their files aloud.</p>
+<p>I didn't build this as assistive technology, and I don't think of it that way. I built it because it's the correct engineering response to an accurate understanding of my own hardware. But I know how many people are out there paying the eye-reading energy tax without a name for it — grinding through pages at full toll, concluding they're lazy or not cut out for it, the way I did for decades. If even a few of them find this tool and feel the load lift, that's worth more to me than the tool itself.</p>
+<p>So, to anyone whose story rhymes with mine: if reading print exhausts you and listening doesn't, you are not lazy and you are not less. You have a premium audio bus and an expensive visual one, and routing around the toll isn't a workaround — it's wisdom about your own machinery. Being resourceful about how ideas reach your brain is a form of intelligence. Nobody gets to grade you on which door the ideas came through.</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>How Ham Radio Repeaters Work</title>
       <link>https://timbeach.com/a/how-ham-radio-repeaters-work/</link>
@@ -151,102 +180,6 @@ sudo aegix-backup clone-daily
 <p>The tool is a single auditable shell script, MIT-licensed, config-driven, with every hard-won lesson documented in comments where it's enforced:</p>
 <p><strong><a href="https://github.com/timbeach/aegix-backup">github.com/timbeach/aegix-backup</a></strong></p>
 <p>Clone it, point it at a spare drive, and — this part is not optional — boot the result. Somewhere between &quot;my backups ran fine&quot; and &quot;I have booted my backup&quot; is the difference between a hypothesis and a plan.</p>
-]]></content:encoded>
-    </item>
-    <item>
-      <title>Why My Zip Code — Not My Employer's — Decides Whether I Get Paid Overtime</title>
-      <link>https://timbeach.com/a/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime/</link>
-      <guid isPermaLink="false">https://timbeach.com/#/article/why-my-zip-code-not-my-employers-decides-whether-i-get-paid-overtime</guid>
-      <pubDate>Fri, 17 Jul 2026 00:00:00 +0000</pubDate>
-      <description>A fiscal year of timesheets turned up 551 unpaid overtime hours — tracing why led through FLSA exempt-duties tests, why the employee's state (not the employer's HQ) governs, and why claiming California residency on paper wouldn't fix it.</description>
-      <content:encoded><![CDATA[<p><img src="pix/no-overtime.png" alt="No overtime" /></p>
-<p>I recently pulled a full fiscal year of my own timesheet history: 2,671 hours clocked, averaging just over 50 a week. Once I subtracted a standard 40-hour week from every single one of those weeks, 551 hours were left over — worked, logged, approved, and not a single one of them owed to me as overtime. That's nearly fourteen extra 40-hour work weeks folded invisibly into one fiscal year.</p>
-<p>None of it is owed, and the reason has almost nothing to do with how many hours I worked. It has to do with two lines on an org chart: my employer is headquartered in Virginia, and I work from Tennessee. That combination, it turns out, is close to the worst-case scenario for a salaried remote worker in America. Here's the actual legal mechanics of why — and why I can't just fix it by claiming to live somewhere else.</p>
-<p><em>(General information only — not legal or tax advice. Wage-and-hour law is fact-specific; talk to an employment attorney about your own situation.)</em></p>
-<h2>First wrong assumption: the employer's state doesn't matter</h2>
-<p>My instinct was to look at Virginia law, since that's where the paychecks originate. That's backwards. For a remote employee, wage-and-hour law follows <strong>where the work is physically performed</strong>, not where the company is headquartered or incorporated. Employment-law guidance is consistent on this point — enough that firms explicitly tell employers to track where their remote staff currently live and work, because an employee relocating to a new state can silently import that state's stricter overtime rules into the relationship (<a href="https://www.mclane.com/insights/out-of-state-remote-employees-and-state-employment-laws/">McLane Middleton</a>; <a href="https://www.wagehourlitigation.com/2025/04/wage-and-hour-around-the-corner-from-zoom-to-room-staying-on-solid-legal-grounds-with-a-remote-staff-or-an-office-return/">Wage &amp; Hour Around the Corner</a>).</p>
-<p>So Virginia is irrelevant to me. Tennessee — where I sit when I open my laptop — is what governs.</p>
-<h2>Second layer: exempt vs. non-exempt</h2>
-<p>Even within Tennessee, the federal Fair Labor Standards Act (FLSA) only requires overtime pay for employees classified as <strong>non-exempt</strong>. Exempt status requires satisfying two independent tests — meeting the salary number alone is not sufficient:</p>
-<ul>
-<li><strong>Salary basis test</strong>: a predetermined, fixed salary that doesn't get docked for variations in quality or quantity of work.</li>
-<li><strong>Salary level test</strong>: currently <strong>$684/week ($35,568/year)</strong> for the standard executive/administrative/professional (EAP) exemption, or <strong>$107,432/year</strong> under the alternate Highly Compensated Employee test (<a href="https://www.dol.gov/agencies/whd/overtime/salary-levels">DOL</a>).</li>
-<li><strong>Duties test</strong>: the actual substance of the job has to fit one of the exemption categories (management, independent judgment on significant matters, advanced knowledge, etc.).</li>
-</ul>
-<p>Worth noting because it was genuinely unsettled for a while: a 2024 DOL rule would have pushed that threshold up to $43,888 and then $58,656. It was preliminarily blocked in June 2024, then vacated nationwide by a federal court that November. DOL appealed — and then dropped the appeal in 2026, formally rescinding the rule and reinstating the 2019-era levels (<a href="https://www.shrm.org/topics-tools/employment-law-compliance/expanded-overtime-rule-dies-court">SHRM</a>). This is now settled, not pending: $35,568/year is the real federal floor.</p>
-<p>A salaried professional easily clears that salary number, so classification almost always comes down to the duties test — which is exactly why &quot;exempt salaried employee&quot; swallows so much of the white-collar remote workforce whole.</p>
-<h2>Third layer: Tennessee adds nothing on top</h2>
-<p>Some states layer their own protections on top of the federal floor. Tennessee isn't one of them. Tennessee has <strong>no state overtime statute of its own</strong> — overtime rights for a Tennessee employee come entirely from the FLSA, calculated weekly only. There's no daily overtime trigger, no matter how long a single shift runs (<a href="https://www.findlaw.com/state/tennessee-law/tennessee-overtime-laws.html">FindLaw</a>).</p>
-<p>Virginia, for what it's worth, doesn't go further either. The Virginia Overtime Wage Act was rewritten in 2022 to expressly track the FLSA's thresholds, exemptions, and calculation methods — same $35,568 line, same duties tests. The one place Virginia law bites harder is <em>remedies</em>: a Virginia-covered employee who's actually owed overtime and doesn't get it can claim double damages under state law, on top of the federal award (<a href="https://law.lis.virginia.gov/vacode/title40.1/chapter3/section40.1-29.2/">Va. Code § 40.1-29.2</a>). Moot for me, since my rights track Tennessee, not Virginia — but it tells you Virginia isn't a soft touch; the whole US map is just genuinely uneven here.</p>
-<h2>The contrast case: California</h2>
-<p>California is the state most people invoke as &quot;what real overtime protection looks like,&quot; and the invocation is earned. Its Department of Industrial Relations lays out three separate overtime triggers, any one of which can apply:</p>
-<ul>
-<li><strong>1.5x</strong> for hours worked between 8 and 12 in a single workday</li>
-<li><strong>2x (double-time)</strong> beyond 12 hours in a workday, or beyond 8 hours on the 7th consecutive workday</li>
-<li><strong>1.5x</strong> for anything over 40 hours in a week — the same weekly trigger everyone has</li>
-</ul>
-<p>(<a href="https://www.dir.ca.gov/dlse/faq_overtime.htm">California DIR</a>)</p>
-<p>California also sets its exempt-salary floor by statute at <strong>twice the state minimum wage, annualized</strong> — roughly $70,304/year in 2026, double the federal number (<a href="https://legalaidatwork.org/factsheet/overtime-in-california/">Labor Code §515</a>). That single design choice is why so many California job postings for the same role pay noticeably more than their Tennessee equivalents: below that line, California simply won't let an employer call you exempt, duties test or not.</p>
-<h2>Could I just... say I live in California?</h2>
-<p>This was my actual next thought, and the honest answer is no — not without committing tax and wage fraud.</p>
-<p>California residency determinations turn on <strong>physical presence supported by objective facts</strong> — lease agreements, utility bills, where your car is registered, where your kid goes to school — not a stated intention or a mailing address (<a href="https://www.ftb.ca.gov/file/personal/residency-status/part-year-and-nonresident.html">FTB</a>). And the reverse is equally true and, for a remote worker, more relevant: even someone who is <em>not</em> a California resident but is physically present and performing work inside California generates California-source wage exposure for that work. Coverage runs on where your hands are on the keyboard, not on paperwork.</p>
-<p>So there's no version of this where declaring California residency on a form — while my body stays in Tennessee — does anything except create tax exposure I don't currently have. The only way to actually get California's protections is to actually live and work in California, with everything that entails (cost of living, state income tax, the works).</p>
-<h2>The lever employers actually pull: geographic pay</h2>
-<p>None of this means geography is irrelevant to pay — it's just a different lever than overtime law. Geographic (or &quot;locality&quot;) pay differentials are a real, common practice: SHRM's research on employer surveys puts the figure at 86–89% of companies that set them anchoring the adjustment to <strong>local cost-of-labor</strong> — what a salary survey says the role is worth in that specific metro — rather than cost-of-living indices (<a href="https://www.shrm.org/topics-tools/news/benefits-compensation/geographic-pay-differentials-practices-managing-pay-locations">SHRM</a>).</p>
-<p>That's a base-pay-setting decision. It doesn't touch which state's wage-and-hour law applies to you, and it doesn't change your exempt/non-exempt status. An employer can perfectly legally pay a Tennessee-based employee a Tennessee-market salary while that employee's actual legal protections are also pinned to Tennessee's (thin) statute — two separate systems that happen to point the same direction for me.</p>
-<h2>Comparison table: where you stand depends on where you stand</h2>
-<table>
-<thead>
-<tr>
-<th>State</th>
-<th>Weekly OT (&gt;40 hrs)</th>
-<th>Daily/other OT trigger</th>
-<th>Standard exempt salary floor (2026)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Tennessee</td>
-<td>Yes, FLSA only</td>
-<td>None</td>
-<td>$35,568/yr (federal)</td>
-</tr>
-<tr>
-<td>Virginia</td>
-<td>Yes, matches FLSA</td>
-<td>None (VOWA tracks FLSA); adds double-damages remedy</td>
-<td>$35,568/yr (federal)</td>
-</tr>
-<tr>
-<td>California</td>
-<td>Yes</td>
-<td>1.5x &gt;8 hrs/day; 2x &gt;12 hrs/day or &gt;8 hrs on 7th consecutive day</td>
-<td>~$70,304/yr (2x state min wage)</td>
-</tr>
-<tr>
-<td>Colorado</td>
-<td>Yes</td>
-<td>1.5x after 12 hrs/day <em>or</em> 12 consecutive hours (whichever pays more)</td>
-<td>State-specific, above federal</td>
-</tr>
-<tr>
-<td>Nevada</td>
-<td>Yes</td>
-<td>1.5x after 8 hrs/day, but <em>only</em> for employees paid under ~$18/hr (1.5x state min wage)</td>
-<td>Federal floor generally applies</td>
-</tr>
-<tr>
-<td>Alaska</td>
-<td>Yes</td>
-<td>1.5x after 8 hrs/day, flat</td>
-<td>Federal floor generally applies</td>
-</tr>
-</tbody>
-</table>
-<p>Sources: <a href="https://www.findlaw.com/state/tennessee-law/tennessee-overtime-laws.html">Tennessee</a> · <a href="https://law.lis.virginia.gov/vacode/title40.1/chapter3/section40.1-29.2/">Virginia</a> · <a href="https://www.dir.ca.gov/dlse/faq_overtime.htm">California</a> · <a href="https://cdle.colorado.gov/sites/cdle/files/info_%231_2026_comps_&amp;_paycalc_orders_12.18.25.pdf">Colorado COMPS Order #40</a> · <a href="https://www.leg.state.nv.us/nrs/nrs-608.html">Nevada NRS 608.018</a> · <a href="https://law.justia.com/codes/alaska/title-23/chapter-10/article-3/section-23-10-060/">Alaska AS 23.10.060</a></p>
-<h2>Where that leaves someone like me</h2>
-<p>For a salaried remote worker sitting in a federal-only state, overtime eligibility comes down almost entirely to how the exempt/non-exempt duties test gets applied to your specific job — not to your employer's address, and not to a location you can declare on paper. The only lever that actually moves the needle is physically living and working somewhere with stronger protections, which is a real decision with real trade-offs (state income tax, cost of living, and whatever your employer's own remote-work-location policy allows), not a paperwork trick.</p>
-<p>Which is, in its own way, a strange thing to sit with: 551 hours of a fiscal year, worked and unpaid-as-overtime, resting entirely on which side of a state line my desk happens to be on.</p>
 ]]></content:encoded>
     </item>
     <item>
