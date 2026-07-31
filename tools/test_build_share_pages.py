@@ -79,15 +79,25 @@ def test_absolute_link_untouched(first_page):
     assert 'href="https://example.com/x"' in first_page
 
 
-def test_audio_article_links_to_interactive_reader(first_page):
-    # The "Listen" action is the human's path into the SPA reader (read-aloud).
-    assert 'href="/#/article/first-article"' in first_page
+def test_audio_article_gets_listen_button_with_root_absolute_paths(first_page):
+    # The bar mounts in place (js/static-article.js); paths must be
+    # root-absolute because the page lives two directories deep.
+    assert 'data-act="read-aloud"' in first_page
+    assert 'data-audio="/audio/first-article.ogg"' in first_page
+    assert 'data-timings="/audio/first-article.timings.json"' in first_page
 
 
-def test_no_listen_link_without_audio(tmp_path):
+def test_no_listen_button_without_audio(tmp_path):
     build_share_pages(_project_fixture(tmp_path))
     page = (tmp_path / "a" / "hidden-article" / "index.html").read_text()
     assert "article-actions" not in page
+
+
+def test_page_wires_static_enhancements(first_page):
+    # Lightbox markup + the enhancement module (lightbox for every page,
+    # read-aloud only when the button exists).
+    assert 'data-act="img-lightbox"' in first_page
+    assert '<script type="module" src="/js/static-article.js"></script>' in first_page
 
 
 def test_published_listed_article_is_indexable(first_page):
@@ -104,3 +114,42 @@ def test_unlisted_article_gets_noindex(tmp_path):
     build_share_pages(_project_fixture(tmp_path))
     page = (tmp_path / "a" / "hidden-article" / "index.html").read_text()
     assert '<meta name="robots" content="noindex" />' in page
+
+
+def test_real_corpus_tts_paragraph_parity():
+    """Every real article's static-page DOM must yield the exact paragraph
+    sequence its timings sidecar was rendered against — js/tts.js highlights
+    by index, so any divergence mis-highlights (or hides the bar).
+
+    Extraction below replicates js/tts.js:eligibleParagraphs (same selector,
+    same strip-img-then-check-empty filter, same embed-token skip) against
+    the HTML build_share_pages actually ships.
+    """
+    from bs4 import BeautifulSoup
+    from build_share_pages import article_body_html
+    from render_article import PARAGRAPH_SELECTOR, _EMBED_TOKEN_RE, extract_paragraphs
+
+    project = Path(__file__).resolve().parent.parent
+    registry = project / "articles" / "articles.json"
+    if not registry.exists():
+        pytest.skip("real article corpus not present")
+
+    checked = 0
+    for filename, meta in json.loads(registry.read_text()).items():
+        if not meta.get("timings"):
+            continue
+        md_path = project / "articles" / filename
+        if not md_path.exists():
+            continue
+        expected = extract_paragraphs(md_path.read_text())
+        soup = BeautifulSoup(article_body_html(md_path), "html.parser")
+        got = []
+        for el in soup.select(PARAGRAPH_SELECTOR):
+            for img in el.select("img"):
+                img.decompose()
+            text = el.get_text().strip()
+            if text and not _EMBED_TOKEN_RE.fullmatch(text):
+                got.append(text)
+        assert got == expected, f"{filename}: static DOM diverges from timings"
+        checked += 1
+    assert checked > 0

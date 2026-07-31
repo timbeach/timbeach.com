@@ -21,6 +21,7 @@ This is a static personal website (timbeach.com) built as a single-page applicat
 - **js/router.js** — hash router (`#/`, `#/article/<slug>`, `#/music`, `#/about`) with legacy `#articles/<slug>.md` redirect.
 - **js/article.js** — article fetch + markdown render. Hosts the ported `parseMarkdown` (paragraph-boundary parity with `tools/render_article.py:extract_paragraphs` is required by the TTS validate gate — DO NOT refactor without re-rendering all audio).
 - **js/tts.js** — read-aloud bar (transport, voice select, paragraph highlight via timings sidecar). Auto-closes on navigation away from an article.
+- **js/static-article.js** — progressive enhancements for the static `a/<slug>/` pages: image lightbox + read-aloud bar (imports `mountTtsBar` from `js/tts.js`; article metadata comes from data attributes baked in at build time). Browser-level harness at `tests/staticarticletest.html` (serve repo root, headless-chrome dump-dom, PASS/FAIL in `<title>`).
 - **js/search.js** — homepage full-text search: lazy-loads `search-index.json` on first keystroke, AND-matches whitespace-split terms across title/tags/summary/body (weighted 4/3/2/1), renders ranked results with `<mark>`-highlighted snippets into the More section. Degrades to metadata-only search if the index fetch fails (e.g. fresh clone before any build). `Escape` clears; `/` focuses the box.
 - **js/util.js** — shared DOM-free helpers (`escapeHtml`, `formatDateShort`), importable from node for logic checks.
 - **js/theme.js** — theme toggle, localStorage persistence, OS auto-detect fallback.
@@ -158,8 +159,14 @@ Google-indexable surface.
   `a/<slug>/index.html` with that article's `og:`/`twitter:` tags, a
   self-referencing canonical, and the **full rendered article body** (markdown
   → HTML via `build_feed.render_article_html`, relative image paths rewritten
-  root-absolute, `{{youtube:...}}` lines converted to iframes). Articles with
-  audio get a "▶ Listen to this article" link into the SPA reader.
+  root-absolute, `{{youtube:...}}` lines converted to iframes). The pages get
+  the same reader enhancements as the SPA via `js/static-article.js`: image
+  lightbox and a working "▶ Listen to this article" button that mounts the
+  shared TTS bar in place. **TTS parity on these pages holds by construction**
+  — the static body is rendered with markdown-it, the same renderer
+  `extract_paragraphs` used to produce the timings — and is pinned for the
+  whole real corpus by `test_real_corpus_tts_paragraph_parity` in
+  `tools/test_build_share_pages.py`.
 - **History (2026-07 SEO rework):** these pages used to be zero-second
   meta-refresh redirect stubs into the SPA. Google classified them as "Page
   with redirect" and indexed nothing — do not reintroduce a redirect here.

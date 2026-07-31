@@ -237,6 +237,16 @@ def _rootify_html(body: str) -> str:
         lambda m: f'{m.group(1)}="/{_normalize_ref(m.group(2))}"', body)
 
 
+def article_body_html(md_path: Path) -> str:
+    """Full pipeline for a static page's article body.
+
+    Shared with the TTS parity test: the DOM this produces must yield the
+    same paragraph sequence as render_article.extract_paragraphs, because
+    js/tts.js highlights paragraphs by index against the timings sidecar.
+    """
+    return _embed_youtube(_rootify_html(render_article_html(md_path)))
+
+
 def _embed_youtube(body: str) -> str:
     def sub(m: re.Match) -> str:
         cls = "video-embed short" if m.group(2) else "video-embed"
@@ -323,6 +333,10 @@ _PAGE = """\
 {actions}      </header>
       <div class="article-body">{body_html}</div>
     </article>
+    <div class="lightbox" data-act="img-lightbox" aria-hidden="true">
+      <button type="button" class="lightbox-close" aria-label="Close image">×</button>
+      <img class="lightbox-image" alt="" />
+    </div>
   </main>
   <footer class="site-footer">
     © {year} Timothy D Beach
@@ -331,6 +345,7 @@ _PAGE = """\
     &middot; <a href="mailto:beachtimothyd@gmail.com">Email</a>
   </footer>
 </div>
+<script type="module" src="/js/static-article.js"></script>
 </body>
 </html>
 """
@@ -402,13 +417,20 @@ def build_share_pages(project_root: Path, site_url: str = SITE_URL_DEFAULT) -> i
         if meta.get("unlisted") or meta["date"] > today:
             robots = '<meta name="robots" content="noindex" />\n'
 
-        body_html = _embed_youtube(_rootify_html(render_article_html(md_path)))
+        body_html = article_body_html(md_path)
 
+        # Real read-aloud button: js/static-article.js mounts the same TTS bar
+        # the SPA uses. Paths root-absolute — the page lives two levels deep.
         actions = ""
         if meta.get("audio") and meta.get("timings"):
+            audio_url = "/" + _normalize_ref(meta["audio"])
+            timings_url = "/" + _normalize_ref(meta["timings"])
+            duration = meta.get("duration", "")
             actions = (
                 '        <div class="article-actions">\n'
-                f'          <a class="read-aloud" href="{reader_path}">▶ Listen to this article</a>\n'
+                '          <button type="button" class="read-aloud" data-act="read-aloud"'
+                f' data-audio="{audio_url}" data-timings="{timings_url}"'
+                f' data-duration="{duration}">▶ Listen to this article</button>\n'
                 '        </div>\n'
             )
 

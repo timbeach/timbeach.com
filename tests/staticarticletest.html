@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<!-- Browser-level test for the static /a/<slug>/ page enhancements
+     (lightbox + read-aloud bar). Serve the repo root, then:
+
+       brave --headless --dump-dom --virtual-time-budget=8000 \
+         http://127.0.0.1:8123/tests/staticarticletest.html | grep '<title>'
+
+     PASS/FAIL lands in <title>. Uses /a/circleback/ (has images + audio).
+     Audio playback itself may be blocked headless (autoplay policy) — the
+     assertions target DOM state, which is set before play() is attempted. -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title>RUNNING</title>
+</head>
+<body>
+<iframe id="page" src="/a/circleback/" style="width:1000px;height:800px"></iframe>
+<pre id="log"></pre>
+<script>
+const results = [];
+const log = (name, ok, extra) => {
+  results.push(ok);
+  document.getElementById('log').textContent += `${ok ? 'ok' : 'FAIL'} - ${name}${extra ? ' :: ' + extra : ''}\n`;
+};
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+document.getElementById('page').addEventListener('load', async () => {
+  const doc = document.getElementById('page').contentDocument;
+  const win = document.getElementById('page').contentWindow;
+  await sleep(600); // let the module script initialize
+
+  // --- lightbox ---
+  const img = doc.querySelector('.article-body img');
+  const lb = doc.querySelector('[data-act="img-lightbox"]');
+  log('article has image', !!img);
+  log('lightbox present', !!lb);
+  if (img && lb) {
+    img.click();
+    await sleep(100);
+    log('lightbox opens on image click', lb.classList.contains('open'));
+    log('lightbox image src set', !!lb.querySelector('.lightbox-image').src);
+    lb.querySelector('.lightbox-close').click();
+    await sleep(100);
+    log('lightbox closes', !lb.classList.contains('open'));
+  }
+
+  // --- read-aloud ---
+  const btn = doc.querySelector('[data-act="read-aloud"]');
+  log('listen button present', !!btn);
+  if (btn) {
+    btn.click();
+    // mountTtsBar fetches the timings sidecar before showing the bar.
+    let bar = null;
+    for (let i = 0; i < 40 && !(bar && bar.classList.contains('visible')); i++) {
+      await sleep(100);
+      bar = doc.querySelector('.tts-bar');
+    }
+    log('tts bar mounted + visible', !!(bar && bar.classList.contains('visible')));
+    const paras = doc.querySelectorAll('.article-body [data-tts-wired]');
+    log('paragraphs wired for click-to-seek', paras.length > 0, `${paras.length} wired`);
+    // Count-parity against the sidecar: a mismatch is exactly the bug class
+    // that would break highlighting on static pages.
+    const t = await (await win.fetch('/audio/circleback.timings.json')).json();
+    log('wired count matches timings', paras.length === t.paragraphs.length,
+        `${paras.length} vs ${t.paragraphs.length}`);
+  }
+
+  document.title = results.every(Boolean) ? 'PASS' : 'FAIL';
+});
+</script>
+</body>
+</html>
