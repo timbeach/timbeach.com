@@ -4,16 +4,98 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Wed, 29 Jul 2026 01:27:59 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 04 Aug 2026 00:48:44 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>What Is a SIM Card, Actually?</title>
+      <link>https://timbeach.com/a/what-is-a-sim-card-actually/</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/what-is-a-sim-card-actually</guid>
+      <pubDate>Mon, 03 Aug 2026 00:00:00 +0000</pubDate>
+      <description>A SIM isn't a memory chip or a keycard — it's a sealed, tamper-resistant computer whose whole job is to prove it knows a 128-bit secret it will never let anyone read; here's the filesystem, the actual bytes, and how the authentication handshake works.</description>
+      <content:encoded><![CDATA[<p><img src="pix/sim-card-actually-og.png" alt="A SIM card opened up to reveal it is a tiny sealed computer, its contacts wired to a secret key it will never surrender" /></p>
+<p>You have thumbed a dozen of them out of little trays with the tip of a paperclip. A fingernail of plastic with a gold rectangle printed on it, small enough to lose in the carpet, and somehow the one thing standing between your phone and being an expensive Wi-Fi-only camera. Move it to a new phone and your number, your carrier, and your identity move with it. Leave it out and the phone forgets who it is.</p>
+<p>So what <em>is</em> the thing? A few honest guesses, all of which I've made:</p>
+<ul>
+<li>It's a little memory chip that stores my phone number.</li>
+<li>It's a security token — some crypto baked onto a bit of hardware.</li>
+<li>It's how the network authenticates me.</li>
+</ul>
+<p>Every one of those is a shadow of the truth, and the truth is much better. The short version: <strong>a SIM card is a complete, sealed-shut computer</strong> — with its own processor, its own operating system, and a filesystem — whose entire job is to guard one secret so well that it will happily prove it knows the secret without ever letting the secret out. Authentication is what it's <em>for</em>. Being a tiny tamper-resistant computer is what it <em>is</em>.</p>
+<p>Let's open it up.</p>
+<h2>It's not a chip. It's a computer.</h2>
+<p>Peel back the gold contact plate and you are not looking at a memory stick. You are looking at a <strong>smart card</strong> — the same family of chip that lives in a chip-and-PIN credit card or a building access badge. The industry name for the hardware is a <strong>UICC</strong> (Universal Integrated Circuit Card); &quot;SIM&quot; is really the name of a program that runs <em>on</em> it.</p>
+<p>On that sliver of silicon there is:</p>
+<ul>
+<li>a <strong>CPU</strong> — historically a humble 8- or 16-bit micro, now typically a 32-bit secure ARM core with hardware crypto accelerators;</li>
+<li><strong>ROM</strong>, holding the card's operating system, burned in at the factory;</li>
+<li><strong>EEPROM or flash</strong> — the writable, non-volatile memory that survives power-off, holding your data. Tens of kilobytes on an old card, up to a couple of megabytes on a modern one;</li>
+<li>a scrap of <strong>RAM</strong> for working memory;</li>
+<li>and a serial I/O line to talk to the phone.</li>
+</ul>
+<p>That's a computer. A slow one with a thimble of storage, but a real one, running a real OS — very often a <strong>Java Card</strong> virtual machine, which means the card can host small installable applets. This is how carriers push those &quot;SIM menu&quot; services onto your phone: little programs living on the card itself, driving the handset through a mechanism called the <strong>SIM Application Toolkit</strong>.</p>
+<p>The phone doesn't reach in and read the memory directly. It <em>asks</em>. The two of them speak a request-and-answer protocol over those gold pads, defined by an international standard called <strong>ISO/IEC 7816</strong>, in packets called <strong>APDUs</strong>. The phone sends a command — &quot;select this file,&quot; &quot;read those bytes&quot; — and the card answers with data and a two-byte status code. <code>90 00</code> means &quot;OK.&quot; It is, almost exactly, a tiny client and server talking over a two-wire network, where the wire is a strip of gold and the server is the size of your pinky nail.</p>
+<h2>What bytes are actually on it?</h2>
+<p>Here is the part that surprised me most: the data on a SIM is organized as a <strong>hierarchical filesystem</strong>. Directories and files, just like your laptop — only in miniature, and standardized down to the byte by the GSM and 3GPP specifications so that any phone on Earth can read any carrier's card.</p>
+<p>There are three kinds of node:</p>
+<ul>
+<li><strong>MF — the Master File.</strong> The root directory, <code>3F00</code>. Every card has exactly one.</li>
+<li><strong>DF — a Dedicated File.</strong> A directory. <code>7F20</code> (<code>DF_GSM</code>) holds network files; <code>7F10</code> (<code>DF_TELECOM</code>) holds your phonebook and messages.</li>
+<li><strong>EF — an Elementary File.</strong> A leaf that holds actual bytes.</li>
+</ul>
+<p>Files are named by two-byte IDs in hexadecimal, and the tree is walked exactly the way you'd <code>cd</code> through folders: select <code>3F00</code>, then <code>7F20</code>, then the file you want. Let's meet the famous residents.</p>
+<p><strong><code>2FE2</code> — the ICCID.</strong> The card's serial number — the long digit string printed on the plastic itself. Twenty-ish digits identifying the card as a physical object, and it's readable by anyone with no PIN, which is why it's the first thing a forensics tool grabs. One nice quirk: the digits are stored <strong>BCD-encoded with swapped nibbles</strong> — a printed <code>8944…</code> is physically stored as the bytes <code>98 44 …</code>, two digits per byte, low half first. The whole card is full of this packed, nibble-swapped decimal.</p>
+<p><strong><code>6F07</code> — the IMSI.</strong> This is the identity that matters — not your phone number, but the <em>subscriber</em> identity that says &quot;this account, on this carrier.&quot; Up to 15 digits: a <strong>country code</strong>, a <strong>network code</strong>, and then your unique subscriber number. When you roam onto a tower in another country, this is the string that lets it figure out who to bill and which home network to phone for permission.</p>
+<p><strong><code>6F3A</code> — the phonebook, <code>6F3C</code> — your text messages.</strong> Yes, the classic SIM phonebook is just an Elementary File full of fixed-length records, one contact per record: a name field, a length byte, and ten bytes of BCD-packed phone number. Text messages stored on the card sit in another file, 176 bytes per slot, each holding a raw SMS exactly as it arrived over the air. (A &quot;deleted&quot; contact is often just a record flagged free — the old bytes linger until something overwrites them. Forensics people love this.)</p>
+<p><strong>Network scratchpad files.</strong> The card also keeps notes about the world: a <strong>TMSI</strong>, a temporary throwaway identity the network assigns so your real IMSI isn't broadcast over the air every time; a record of the last location area it attached to; and a <strong>forbidden-networks list</strong> of carriers that have rejected it — which is exactly why a SIM can get stubbornly &quot;stuck searching&quot; after a bad roaming experience.</p>
+<p>So, concretely: the bytes on a SIM are a few dozen small files — mostly packed-decimal identifiers, some network state, some of your personal phonebook and messages — sitting in a standardized directory tree, each file individually walled off by its own permissions.</p>
+<h2>The one file you're not allowed to read</h2>
+<p>Every file has an access rule attached to each operation. Some are <strong>Always</strong> readable (the ICCID). Most of your subscriber data is readable only after the <strong>PIN</strong> is presented. A few can only be touched with the operator's administrative key.</p>
+<p>And one is set to <strong>Never</strong>. Not &quot;never without a password&quot; — <em>never</em>, full stop, across the card's edge, by anyone, forever.</p>
+<p>That file holds <strong>Ki</strong>: a 128-bit secret key, unique to your card, written once at the factory and then sealed. There is no command in the entire protocol that returns it. The phone can't read it. The carrier's own tools can't read it back off a finished card. You cannot read it. This is not a bug or an oversight — it is the entire point of the device.</p>
+<p>Because if Ki never comes out, how does anything use it? That's the beautiful trick, and it's the answer to &quot;how does authentication actually work.&quot;</p>
+<h2>The handshake: proving a secret without revealing it</h2>
+<p>Your carrier's network knows your Ki too — it's stored, heavily guarded, in a database back at the carrier. So both ends share a secret that lives on the SIM and in the network, and <em>nowhere in between</em>. Authentication is a <strong>challenge and response</strong> built on exactly that.</p>
+<p>In the original GSM (2G) design it went like this:</p>
+<pre><code>  network  ──►  RAND (128-bit random number)  ──►  SIM
+                                                     │
+                                    SIM runs a function of (Ki, RAND)
+                                    entirely inside itself
+                                                     │
+  network  ◄──  SRES (32-bit answer) + Kc (call key) ◄──
+</code></pre>
+<p>The network makes up a fresh random number, RAND, and sends it as a dare. The SIM stirs RAND together with its buried Ki using an on-card algorithm and hands back a short answer, SRES, plus a key for encrypting the call. The network ran the <em>same</em> math with its copy of Ki; if the answers match, you're in. Ki itself never crossed the gap — only a one-time answer to a one-time question.</p>
+<p>Elegant, and for its era, revolutionary. But it had two now-infamous flaws. The early algorithm carriers used, <strong>COMP128-1</strong>, turned out to be breakable: feed the card enough chosen challenges and you could reverse-engineer Ki and <strong>clone the SIM</strong>. And the handshake was <strong>one-way</strong> — the network verified your phone, but your phone never verified the network. Nothing stopped a fake tower from challenging you, and that gap is the ancestor of every &quot;IMSI catcher&quot; and Stingray you've read about.</p>
+<p>3G, 4G, and 5G fixed both with a scheme called <strong>AKA</strong> (Authentication and Key Agreement), whose standard algorithm is <strong>MILENAGE</strong>, built on AES. The upgrade is that the challenge now comes with proof of who's asking:</p>
+<pre><code>  network  ──►  RAND  +  AUTN (an authentication token)  ──►  USIM
+</code></pre>
+<p>The USIM does more work now. It uses Ki (and a second operator secret) to check the <strong>AUTN</strong> token, and the token is constructed so that only the real network could have produced it. Bundled inside is a <strong>sequence number</strong> the card checks for freshness — so an attacker can't record a valid old exchange and replay it later. Only if both the network's proof and the freshness check pass does the card compute its response and its session keys.</p>
+<p>That's <strong>mutual authentication</strong>: the card verifies the network as rigorously as the network verifies the card. The fake-tower trick that worked on 2G doesn't work here.</p>
+<p>One subtlety worth getting right, because it's the crux of the whole design. The handshake produces session keys — a cipher key and an integrity key — and <em>those</em> do leave the card, handed up to the phone so it can actually encrypt the connection. What never leaves, on any generation, is <strong>Ki</strong>. The card is a sealed box that emits fresh, disposable keys on demand while the master secret they're derived from stays locked inside for the life of the card. Session keys are cheap and temporary; Ki is forever, and Ki never moves.</p>
+<p>5G adds one more thing the earlier generations lacked: it stops broadcasting your identity in the clear. Older phones would sometimes send the raw IMSI over the air, which is exactly what IMSI-catchers listened for. A 5G SIM carries the carrier's <strong>public key</strong> and uses it to <strong>encrypt your subscriber identity</strong> before it's ever transmitted — concealing the one number that used to give you away. The tower forwards the sealed blob home; only the carrier can open it.</p>
+<h2>So is a SIM just crypto? Just authentication?</h2>
+<p>Now we can answer the questions I started with.</p>
+<p>Is it <em>just crypto on a bit of hardware</em>? No — it's a general-purpose secure computer that happens to be very good at crypto. The same tamper-resistant chip stores your phonebook, runs carrier applets, and in other form factors holds payment credentials and transit passes.</p>
+<p>Is it <em>just authentication</em>? Authentication is the headline act, but the deeper description is: it's a <strong>secure element</strong> — a little vault that can hold secrets and perform operations with them without ever exposing them. Proving your subscriber identity is the most famous thing it does with that power. It is not the only thing it <em>could</em> do.</p>
+<h2>The card with no card: eSIM</h2>
+<p>Which brings us to eSIM, the source of a lot of confusion. An eSIM is <strong>the exact same computer</strong>, soldered permanently onto the phone's board (or built straight into the main chip) instead of riding on a removable sliver of plastic. The hardware — called an <strong>eUICC</strong> — is identical in spirit: a sealed secure element with a Ki it will never surrender.</p>
+<p>What changed is <em>how the identity gets on there</em>. A plastic SIM is personalized at a factory and mailed to you. An eSIM is blank, and your carrier's identity — called a <strong>profile</strong> — is downloaded onto it over the internet. That QR code you scan to activate a plan points the phone's <strong>local profile assistant</strong> at a carrier server (a mouthful named <strong>SM-DP+</strong>), which securely delivers a profile onto the chip. The eUICC can hold several profiles at once, which is why one phone can juggle a work line, a personal line, and a travel eSIM. Same sealed computer; the SIM is now software you can install.</p>
+<h2>Try it yourself</h2>
+<p>None of this is behind glass. For under thirty dollars you can buy a <strong>PC/SC smart-card reader</strong> — the same kind of USB gadget that reads chip credit cards — and talk to a SIM you own directly.</p>
+<p>The open-source <strong>pySim</strong> tools, from the Osmocom project, will walk the filesystem for you: select the files, dump the ICCID, read the IMSI, list the phonebook, page through stored messages. It is genuinely startling the first time you watch your own IMSI scroll up the terminal, decoded from nibble-swapped BCD, straight off the chip.</p>
+<p>And then try to read Ki. You will send the command, and the card will refuse — not with your data, but with a status code that means <em>no</em>. You are holding the key in your hand, powering the very chip that computes with it billions of times, and you still cannot see it. That refusal is the most important byte the card will ever send you.</p>
+<p>That, in the end, is the whole story of the SIM: a serial number printed on the outside for anyone to read, wrapped around a secret sealed on the inside for no one to read, connected by a computer whose only real talent is knowing the difference.</p>
+<p>— Timothy</p>
+]]></content:encoded>
+    </item>
     <item>
       <title>The App I Built for the Eye-Reading Energy Tax</title>
       <link>https://timbeach.com/a/the-eye-reading-energy-tax/</link>
       <guid isPermaLink="false">https://timbeach.com/#/article/the-eye-reading-energy-tax</guid>
       <pubDate>Tue, 28 Jul 2026 00:00:00 +0000</pubDate>
       <description>Diagnosed dyslexic at eight, I burned out of college twice knowing the intellect was there — what was missing was a name for the tax. Ear-reading and eye-reading are two buses into the same comprehension center, mine are priced differently, and choosing the cheaper one is wisdom, not weakness. So I built ear, a local TTS reader for Linux. It's on the AUR.</description>
-      <content:encoded><![CDATA[<p>I was diagnosed with dyslexia when I was eight years old, during my first year attending school outside the home. I hadn't learned to read yet. I spent most of the decades since carrying a quiet shame about that — and this is the story of the realization that finally put the shame down, and the tool I built once it was gone.</p>
+      <content:encoded><![CDATA[<p><img src="pix/eye-reading-energy-tax-og.png" alt="Diagram of two input buses reaching one comprehension center: a faint dotted line from an eye node, a strong warm line from an ear node" /></p>
+<p>I was diagnosed with dyslexia when I was eight years old, during my first year attending school outside the home. I hadn't learned to read yet. I spent most of the decades since carrying a quiet shame about that — and this is the story of the realization that finally put the shame down, and the tool I built once it was gone.</p>
 <p>Here's what the shame looked like in practice. I always knew, deep down, that I had the intellect for academia. You can tell, talking with people — I could hold my own in understanding, in connecting ideas, in seeing the shape of a problem. But I could never get past a couple of semesters of college before burning out and moving on to something more interesting. The coursework wasn't beyond me. The reading was draining me. I'd watch classmates absorb a hundred assigned pages like the act itself was free, while the same pages cost me something real — focus, energy, hours. I was paying a tax they weren't paying, and I didn't have a name for it. So I named it the way ashamed people do: lazy. Undisciplined. Not cut out for it.</p>
 <p>Meanwhile, the evidence for the defense was sitting right there in my headphones. I could listen to an entire Dostoevsky novel and enjoy every minute of it. Hundreds of pages of dense nineteenth-century Russian literature, no burnout, no tax. Same brain. Same ideas. Different door.</p>
 <h2>The realization</h2>

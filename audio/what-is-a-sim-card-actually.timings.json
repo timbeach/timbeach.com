@@ -1,0 +1,348 @@
+{
+  "voice": "bm_lewis",
+  "duration": 820.416,
+  "paragraphs": [
+    {
+      "idx": 0,
+      "start": 0.0,
+      "end": 23.978666666666665,
+      "text": "You have thumbed a dozen of them out of little trays with the tip of a paperclip. A fingernail of plastic with a gold rectangle printed on it, small enough to lose in the carpet, and somehow the one thing standing between your phone and being an expensive Wi-Fi-only camera. Move it to a new phone and your number, your carrier, and your identity move with it. Leave it out and the phone forgets who it is."
+    },
+    {
+      "idx": 1,
+      "start": 23.978666666666665,
+      "end": 28.16,
+      "text": "So what is the thing? A few honest guesses, all of which I've made:"
+    },
+    {
+      "idx": 2,
+      "start": 28.16,
+      "end": 31.317333333333334,
+      "text": "It's a little memory chip that stores my phone number."
+    },
+    {
+      "idx": 3,
+      "start": 31.317333333333334,
+      "end": 35.392,
+      "text": "It's a security token \u2014 some crypto baked onto a bit of hardware."
+    },
+    {
+      "idx": 4,
+      "start": 35.392,
+      "end": 37.717333333333336,
+      "text": "It's how the network authenticates me."
+    },
+    {
+      "idx": 5,
+      "start": 37.717333333333336,
+      "end": 64.61866666666667,
+      "text": "Every one of those is a shadow of the truth, and the truth is much better. The short version: a SIM card is a complete, sealed-shut computer \u2014 with its own processor, its own operating system, and a filesystem \u2014 whose entire job is to guard one secret so well that it will happily prove it knows the secret without ever letting the secret out. Authentication is what it's for. Being a tiny tamper-resistant computer is what it is."
+    },
+    {
+      "idx": 6,
+      "start": 64.61866666666667,
+      "end": 65.83466666666666,
+      "text": "Let's open it up."
+    },
+    {
+      "idx": 7,
+      "start": 65.83466666666666,
+      "end": 68.13866666666667,
+      "text": "It's not a chip. It's a computer."
+    },
+    {
+      "idx": 8,
+      "start": 68.13866666666667,
+      "end": 89.25866666666667,
+      "text": "Peel back the gold contact plate and you are not looking at a memory stick. You are looking at a smart card \u2014 the same family of chip that lives in a chip-and-PIN credit card or a building access badge. The industry name for the hardware is a UICC (Universal Integrated Circuit Card); \"SIM\" is really the name of a program that runs on it."
+    },
+    {
+      "idx": 9,
+      "start": 89.25866666666667,
+      "end": 91.73333333333333,
+      "text": "On that sliver of silicon there is:"
+    },
+    {
+      "idx": 10,
+      "start": 91.73333333333333,
+      "end": 102.03733333333334,
+      "text": "a CPU \u2014 historically a humble 8- or 16-bit micro, now typically a 32-bit secure ARM core with hardware crypto accelerators;"
+    },
+    {
+      "idx": 11,
+      "start": 102.03733333333334,
+      "end": 106.26133333333334,
+      "text": "ROM, holding the card's operating system, burned in at the factory;"
+    },
+    {
+      "idx": 12,
+      "start": 106.26133333333334,
+      "end": 117.78133333333334,
+      "text": "EEPROM or flash \u2014 the writable, non-volatile memory that survives power-off, holding your data. Tens of kilobytes on an old card, up to a couple of megabytes on a modern one;"
+    },
+    {
+      "idx": 13,
+      "start": 117.78133333333334,
+      "end": 120.40533333333333,
+      "text": "a scrap of RAM for working memory;"
+    },
+    {
+      "idx": 14,
+      "start": 120.40533333333333,
+      "end": 123.648,
+      "text": "and a serial I/O line to talk to the phone."
+    },
+    {
+      "idx": 15,
+      "start": 123.648,
+      "end": 148.75733333333332,
+      "text": "That's a computer. A slow one with a thimble of storage, but a real one, running a real OS \u2014 very often a Java Card virtual machine, which means the card can host small installable applets. This is how carriers push those \"SIM menu\" services onto your phone: little programs living on the card itself, driving the handset through a mechanism called the SIM Application Toolkit."
+    },
+    {
+      "idx": 16,
+      "start": 148.75733333333332,
+      "end": 185.55733333333333,
+      "text": "The phone doesn't reach in and read the memory directly. It asks. The two of them speak a request-and-answer protocol over those gold pads, defined by an international standard called ISO/IEC 7816, in packets called APDUs. The phone sends a command \u2014 \"select this file,\" \"read those bytes\" \u2014 and the card answers with data and a two-byte status code. 90 00 means \"OK.\" It is, almost exactly, a tiny client and server talking over a two-wire network, where the wire is a strip of gold and the server is the size of your pinky nail."
+    },
+    {
+      "idx": 17,
+      "start": 185.55733333333333,
+      "end": 187.30666666666667,
+      "text": "What bytes are actually on it?"
+    },
+    {
+      "idx": 18,
+      "start": 187.30666666666667,
+      "end": 207.78666666666666,
+      "text": "Here is the part that surprised me most: the data on a SIM is organized as a hierarchical filesystem. Directories and files, just like your laptop \u2014 only in miniature, and standardized down to the byte by the GSM and 3GPP specifications so that any phone on Earth can read any carrier's card."
+    },
+    {
+      "idx": 19,
+      "start": 207.78666666666666,
+      "end": 209.51466666666667,
+      "text": "There are three kinds of node:"
+    },
+    {
+      "idx": 20,
+      "start": 209.51466666666667,
+      "end": 216.256,
+      "text": "MF \u2014 the Master File. The root directory, 3F00. Every card has exactly one."
+    },
+    {
+      "idx": 21,
+      "start": 216.256,
+      "end": 228.07466666666667,
+      "text": "DF \u2014 a Dedicated File. A directory. 7F20 (DF_GSM) holds network files; 7F10 (DF_TELECOM) holds your phonebook and messages."
+    },
+    {
+      "idx": 22,
+      "start": 228.07466666666667,
+      "end": 232.14933333333335,
+      "text": "EF \u2014 an Elementary File. A leaf that holds actual bytes."
+    },
+    {
+      "idx": 23,
+      "start": 232.14933333333335,
+      "end": 247.18933333333334,
+      "text": "Files are named by two-byte IDs in hexadecimal, and the tree is walked exactly the way you'd cd through folders: select 3F00, then 7F20, then the file you want. Let's meet the famous residents."
+    },
+    {
+      "idx": 24,
+      "start": 247.18933333333334,
+      "end": 280.36266666666666,
+      "text": "2FE2 \u2014 the ICCID. The card's serial number \u2014 the long digit string printed on the plastic itself. Twenty-ish digits identifying the card as a physical object, and it's readable by anyone with no PIN, which is why it's the first thing a forensics tool grabs. One nice quirk: the digits are stored BCD-encoded with swapped nibbles \u2014 a printed 8944\u2026 is physically stored as the bytes 98 44 \u2026, two digits per byte, low half first. The whole card is full of this packed, nibble-swapped decimal."
+    },
+    {
+      "idx": 25,
+      "start": 280.36266666666666,
+      "end": 304.7253333333333,
+      "text": "6F07 \u2014 the IMSI. This is the identity that matters \u2014 not your phone number, but the subscriber identity that says \"this account, on this carrier.\" Up to 15 digits: a country code, a network code, and then your unique subscriber number. When you roam onto a tower in another country, this is the string that lets it figure out who to bill and which home network to phone for permission."
+    },
+    {
+      "idx": 26,
+      "start": 304.7253333333333,
+      "end": 340.94933333333336,
+      "text": "6F3A \u2014 the phonebook, 6F3C \u2014 your text messages. Yes, the classic SIM phonebook is just an Elementary File full of fixed-length records, one contact per record: a name field, a length byte, and ten bytes of BCD-packed phone number. Text messages stored on the card sit in another file, 176 bytes per slot, each holding a raw SMS exactly as it arrived over the air. (A \"deleted\" contact is often just a record flagged free \u2014 the old bytes linger until something overwrites them. Forensics people love this.)"
+    },
+    {
+      "idx": 27,
+      "start": 340.94933333333336,
+      "end": 366.74133333333333,
+      "text": "Network scratchpad files. The card also keeps notes about the world: a TMSI, a temporary throwaway identity the network assigns so your real IMSI isn't broadcast over the air every time; a record of the last location area it attached to; and a forbidden-networks list of carriers that have rejected it \u2014 which is exactly why a SIM can get stubbornly \"stuck searching\" after a bad roaming experience."
+    },
+    {
+      "idx": 28,
+      "start": 366.74133333333333,
+      "end": 384.704,
+      "text": "So, concretely: the bytes on a SIM are a few dozen small files \u2014 mostly packed-decimal identifiers, some network state, some of your personal phonebook and messages \u2014 sitting in a standardized directory tree, each file individually walled off by its own permissions."
+    },
+    {
+      "idx": 29,
+      "start": 384.704,
+      "end": 386.496,
+      "text": "The one file you're not allowed to read"
+    },
+    {
+      "idx": 30,
+      "start": 386.496,
+      "end": 402.6453333333333,
+      "text": "Every file has an access rule attached to each operation. Some are Always readable (the ICCID). Most of your subscriber data is readable only after the PIN is presented. A few can only be touched with the operator's administrative key."
+    },
+    {
+      "idx": 31,
+      "start": 402.6453333333333,
+      "end": 410.21866666666665,
+      "text": "And one is set to Never. Not \"never without a password\" \u2014 never, full stop, across the card's edge, by anyone, forever."
+    },
+    {
+      "idx": 32,
+      "start": 410.21866666666665,
+      "end": 433.30133333333333,
+      "text": "That file holds Ki: a 128-bit secret key, unique to your card, written once at the factory and then sealed. There is no command in the entire protocol that returns it. The phone can't read it. The carrier's own tools can't read it back off a finished card. You cannot read it. This is not a bug or an oversight \u2014 it is the entire point of the device."
+    },
+    {
+      "idx": 33,
+      "start": 433.30133333333333,
+      "end": 441.81333333333333,
+      "text": "Because if Ki never comes out, how does anything use it? That's the beautiful trick, and it's the answer to \"how does authentication actually work.\""
+    },
+    {
+      "idx": 34,
+      "start": 441.81333333333333,
+      "end": 445.056,
+      "text": "The handshake: proving a secret without revealing it"
+    },
+    {
+      "idx": 35,
+      "start": 445.056,
+      "end": 462.976,
+      "text": "Your carrier's network knows your Ki too \u2014 it's stored, heavily guarded, in a database back at the carrier. So both ends share a secret that lives on the SIM and in the network, and nowhere in between. Authentication is a challenge and response built on exactly that."
+    },
+    {
+      "idx": 36,
+      "start": 462.976,
+      "end": 467.1573333333333,
+      "text": "In the original GSM (2G) design it went like this:"
+    },
+    {
+      "idx": 37,
+      "start": 467.1573333333333,
+      "end": 492.032,
+      "text": "The network makes up a fresh random number, RAND, and sends it as a dare. The SIM stirs RAND together with its buried Ki using an on-card algorithm and hands back a short answer, SRES, plus a key for encrypting the call. The network ran the same math with its copy of Ki; if the answers match, you're in. Ki itself never crossed the gap \u2014 only a one-time answer to a one-time question."
+    },
+    {
+      "idx": 38,
+      "start": 492.032,
+      "end": 523.6906666666666,
+      "text": "Elegant, and for its era, revolutionary. But it had two now-infamous flaws. The early algorithm carriers used, COMP128-1, turned out to be breakable: feed the card enough chosen challenges and you could reverse-engineer Ki and clone the SIM. And the handshake was one-way \u2014 the network verified your phone, but your phone never verified the network. Nothing stopped a fake tower from challenging you, and that gap is the ancestor of every \"IMSI catcher\" and Stingray you've read about."
+    },
+    {
+      "idx": 39,
+      "start": 523.6906666666666,
+      "end": 539.0506666666666,
+      "text": "3G, 4G, and 5G fixed both with a scheme called AKA (Authentication and Key Agreement), whose standard algorithm is MILENAGE, built on AES. The upgrade is that the challenge now comes with proof of who's asking:"
+    },
+    {
+      "idx": 40,
+      "start": 539.0506666666666,
+      "end": 565.6746666666667,
+      "text": "The USIM does more work now. It uses Ki (and a second operator secret) to check the AUTN token, and the token is constructed so that only the real network could have produced it. Bundled inside is a sequence number the card checks for freshness \u2014 so an attacker can't record a valid old exchange and replay it later. Only if both the network's proof and the freshness check pass does the card compute its response and its session keys."
+    },
+    {
+      "idx": 41,
+      "start": 565.6746666666667,
+      "end": 577.0026666666666,
+      "text": "That's mutual authentication: the card verifies the network as rigorously as the network verifies the card. The fake-tower trick that worked on 2G doesn't work here."
+    },
+    {
+      "idx": 42,
+      "start": 577.0026666666666,
+      "end": 608.5333333333333,
+      "text": "One subtlety worth getting right, because it's the crux of the whole design. The handshake produces session keys \u2014 a cipher key and an integrity key \u2014 and those do leave the card, handed up to the phone so it can actually encrypt the connection. What never leaves, on any generation, is Ki. The card is a sealed box that emits fresh, disposable keys on demand while the master secret they're derived from stays locked inside for the life of the card. Session keys are cheap and temporary; Ki is forever, and Ki never moves."
+    },
+    {
+      "idx": 43,
+      "start": 608.5333333333333,
+      "end": 636.992,
+      "text": "5G adds one more thing the earlier generations lacked: it stops broadcasting your identity in the clear. Older phones would sometimes send the raw IMSI over the air, which is exactly what IMSI-catchers listened for. A 5G SIM carries the carrier's public key and uses it to encrypt your subscriber identity before it's ever transmitted \u2014 concealing the one number that used to give you away. The tower forwards the sealed blob home; only the carrier can open it."
+    },
+    {
+      "idx": 44,
+      "start": 636.992,
+      "end": 640.64,
+      "text": "So is a SIM just crypto? Just authentication?"
+    },
+    {
+      "idx": 45,
+      "start": 640.64,
+      "end": 643.584,
+      "text": "Now we can answer the questions I started with."
+    },
+    {
+      "idx": 46,
+      "start": 643.584,
+      "end": 661.0133333333333,
+      "text": "Is it just crypto on a bit of hardware? No \u2014 it's a general-purpose secure computer that happens to be very good at crypto. The same tamper-resistant chip stores your phonebook, runs carrier applets, and in other form factors holds payment credentials and transit passes."
+    },
+    {
+      "idx": 47,
+      "start": 661.0133333333333,
+      "end": 682.1333333333333,
+      "text": "Is it just authentication? Authentication is the headline act, but the deeper description is: it's a secure element \u2014 a little vault that can hold secrets and perform operations with them without ever exposing them. Proving your subscriber identity is the most famous thing it does with that power. It is not the only thing it could do."
+    },
+    {
+      "idx": 48,
+      "start": 682.1333333333333,
+      "end": 684.416,
+      "text": "The card with no card: eSIM"
+    },
+    {
+      "idx": 49,
+      "start": 684.416,
+      "end": 707.3706666666667,
+      "text": "Which brings us to eSIM, the source of a lot of confusion. An eSIM is the exact same computer, soldered permanently onto the phone's board (or built straight into the main chip) instead of riding on a removable sliver of plastic. The hardware \u2014 called an eUICC \u2014 is identical in spirit: a sealed secure element with a Ki it will never surrender."
+    },
+    {
+      "idx": 50,
+      "start": 707.3706666666667,
+      "end": 747.072,
+      "text": "What changed is how the identity gets on there. A plastic SIM is personalized at a factory and mailed to you. An eSIM is blank, and your carrier's identity \u2014 called a profile \u2014 is downloaded onto it over the internet. That QR code you scan to activate a plan points the phone's local profile assistant at a carrier server (a mouthful named SM-DP+), which securely delivers a profile onto the chip. The eUICC can hold several profiles at once, which is why one phone can juggle a work line, a personal line, and a travel eSIM. Same sealed computer; the SIM is now software you can install."
+    },
+    {
+      "idx": 51,
+      "start": 747.072,
+      "end": 748.224,
+      "text": "Try it yourself"
+    },
+    {
+      "idx": 52,
+      "start": 748.224,
+      "end": 762.0266666666666,
+      "text": "None of this is behind glass. For under thirty dollars you can buy a PC/SC smart-card reader \u2014 the same kind of USB gadget that reads chip credit cards \u2014 and talk to a SIM you own directly."
+    },
+    {
+      "idx": 53,
+      "start": 762.0266666666666,
+      "end": 783.424,
+      "text": "The open-source pySim tools, from the Osmocom project, will walk the filesystem for you: select the files, dump the ICCID, read the IMSI, list the phonebook, page through stored messages. It is genuinely startling the first time you watch your own IMSI scroll up the terminal, decoded from nibble-swapped BCD, straight off the chip."
+    },
+    {
+      "idx": 54,
+      "start": 783.424,
+      "end": 803.7973333333333,
+      "text": "And then try to read Ki. You will send the command, and the card will refuse \u2014 not with your data, but with a status code that means no. You are holding the key in your hand, powering the very chip that computes with it billions of times, and you still cannot see it. That refusal is the most important byte the card will ever send you."
+    },
+    {
+      "idx": 55,
+      "start": 803.7973333333333,
+      "end": 819.6906666666666,
+      "text": "That, in the end, is the whole story of the SIM: a serial number printed on the outside for anyone to read, wrapped around a secret sealed on the inside for no one to read, connected by a computer whose only real talent is knowing the difference."
+    },
+    {
+      "idx": 56,
+      "start": 819.6906666666666,
+      "end": 820.416,
+      "text": "\u2014 Timothy"
+    }
+  ]
+}
