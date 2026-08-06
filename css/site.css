@@ -678,6 +678,65 @@ body.tts-open .page { padding-bottom: 88px; }
   font-family: var(--font-sans);
   font-size: 13px;
 }
+/* Per-single list on the music page */
+.music-tracks {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-sans);
+  font-size: 13px;
+}
+.music-tracks li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--divider);
+}
+.music-tracks li:last-child { border-bottom: none; }
+.music-tracks .t-name {
+  letter-spacing: 0.06em;
+  color: var(--fg);
+}
+.music-tracks .t-links {
+  display: flex;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+.music-tracks .t-links a {
+  color: var(--fg-muted);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.music-tracks .t-links a:hover {
+  color: var(--fg);
+  border-bottom-color: var(--fg-muted);
+}
+.music-tracks .t-pending {
+  color: var(--fg-faint);
+  font-style: italic;
+}
+
+.music-downloads {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  color: var(--fg-muted);
+  margin: 0 0 18px;
+}
+.music-downloads a {
+  color: var(--fg);
+  border-bottom: 1px solid var(--fg-muted);
+  text-decoration: none;
+  padding-bottom: 1px;
+  transition: border-color 0.15s ease;
+}
+.music-downloads a:hover { border-bottom-color: var(--fg); }
+
 .music-streaming {
   font-family: var(--font-sans);
   font-size: 13px;

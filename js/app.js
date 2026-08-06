@@ -132,20 +132,49 @@ function renderMusic() {
   ensureStarfieldOff();
   app().innerHTML = `
     <section class="music-page">
-      <button type="button" class="music-cover" data-act="play-promo" aria-label="Play GUT_LENS promo video">
-        <img src="pix/TWO_ROOMS_1.jpeg" alt="GUT_LENS by Gut Lens — single cover art" />
+      <button type="button" class="music-cover" data-act="play-promo" aria-label="Play the Gut Lens promo video">
+        <img src="pix/two-rooms.jpeg" alt="TWO_ROOMS by Gut Lens, cover art" />
         <span class="music-cover-play" aria-hidden="true">▶</span>
       </button>
-      <h1 class="music-title">GUT_LENS</h1>
+      <h1 class="music-title">TWO_ROOMS</h1>
       <p class="music-artist">Gut Lens</p>
-      <p class="music-status">Single · Out Now</p>
-      <p class="music-streaming">
-        <a href="https://music.youtube.com/playlist?list=OLAK5uy_k8GenqXSSx8jD0y6KBkRClx1o4yxc2S6M&si=K2RNckUVVjj1GX6L" target="_blank" rel="noopener">YouTube Music</a>
+      <p class="music-status">3 Singles · Free to download</p>
+
+      <ol class="music-tracks">
+        <li>
+          <span class="t-name">GUT_LENS</span>
+          <span class="t-links">
+            <a href="https://music.youtube.com/playlist?list=OLAK5uy_k8GenqXSSx8jD0y6KBkRClx1o4yxc2S6M&si=K2RNckUVVjj1GX6L" target="_blank" rel="noopener">YT&nbsp;Music</a>
+            <a href="https://open.spotify.com/album/1mTTLgGZDODcBT8wT0VN8u" target="_blank" rel="noopener">Spotify</a>
+            <a href="https://music.apple.com/us/album/gut-lens-single/1896449537" target="_blank" rel="noopener">Apple</a>
+          </span>
+        </li>
+        <li>
+          <span class="t-name">HOGAR_DE_TRES</span>
+          <span class="t-links">
+            <a href="https://music.youtube.com/playlist?list=OLAK5uy_kCuu0LNnypU_aaIcWUImll2zPMxx1sIbE&si=lltziJ7yYjYTh-iR" target="_blank" rel="noopener">YT&nbsp;Music</a>
+            <a href="https://open.spotify.com/album/1k5yyKTwNKjgjSQxPcGx62?si=XW15PFenSIqhV2fD4fz34Q" target="_blank" rel="noopener">Spotify</a>
+            <a href="https://music.apple.com/us/album/hogar-de-tres-single/6789335639" target="_blank" rel="noopener">Apple</a>
+          </span>
+        </li>
+        <li>
+          <span class="t-name">HELLO_INNER_CRITIC</span>
+          <span class="t-links t-pending">out Friday</span>
+        </li>
+      </ol>
+
+      <p class="music-downloads">
+        Free download:
+        <a href="https://gutlens.net/TWO_ROOMS-mp3.zip">MP3</a>
         <span class="sep" aria-hidden="true">·</span>
-        <a href="https://open.spotify.com/album/1mTTLgGZDODcBT8wT0VN8u" target="_blank" rel="noopener">Spotify</a>
+        <a href="https://gutlens.net/TWO_ROOMS-flac.zip">FLAC</a>
         <span class="sep" aria-hidden="true">·</span>
-        <a href="https://music.apple.com/us/album/gut-lens-single/1896449537" target="_blank" rel="noopener">Apple Music</a>
+        <a href="https://gutlens.net/TWO_ROOMS-wav.zip">WAV</a>
       </p>
+      <p class="music-streaming">
+        <a href="#/article/two-rooms">What these songs are about</a>
+      </p>
+
       <a class="music-link"
          href="https://gutlens.net"
          data-link-live="true"

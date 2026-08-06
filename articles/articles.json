@@ -1,4 +1,22 @@
 {
+  "two-rooms.md": {
+    "title": "TWO_ROOMS",
+    "date": "2026-08-07",
+    "tags": [
+      "music",
+      "gut-lens",
+      "recording",
+      "jung",
+      "files"
+    ],
+    "emoji": "\ud83d\udeaa",
+    "summary": "Three songs released as free zip files you can actually keep, and why that still matters: the Jungian doorway the record is set in, what each song is doing there, and where the depth in Tim Gennert's mixes comes from.",
+    "hero": "pix/two-rooms.jpeg",
+    "audio": "audio/two-rooms.ogg",
+    "timings": "audio/two-rooms.timings.json",
+    "voice": "bm_lewis",
+    "duration": 622.004
+  },
   "what-is-a-sim-card-actually.md": {
     "title": "What Is a SIM Card, Actually?",
     "date": "2026-08-03",
