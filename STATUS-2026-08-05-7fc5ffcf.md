@@ -96,3 +96,29 @@ deploy. Bundles do NOT need re-uploading.
 already on the door when he found it, and the closing paragraph is built on that.
 Needs confirming or the ending gets rewritten.
 
+## Phase 2: release day (2026-08-07)
+
+- Timothy supplied the Spotify and YouTube Music URLs but not Apple Music.
+  Rather than shipping two of three, checked the **public iTunes Search API**
+  (`itunes.apple.com/search?term=gut%20lens&entity=album`, no auth needed) and
+  found the release already live: `hello-inner-critic-single/6795483210`.
+  Recorded that trick in gutlens.net CLAUDE.md for future releases.
+- Verified all three URLs return 200 **and** that their page titles say
+  "HELLO_INNER_CRITIC - Single by Gut Lens" before shipping. A 200 alone would
+  not have proven the link points at the right release.
+- Swapped links into `placeholder.html` and `renderMusic()`, removed the
+  "Streaming links go live Friday" line, and deleted the two now-dead CSS rules
+  it left behind (`.pending`, `.t-pending`).
+- Article came out of stealth automatically: its date arrived, so the redeploy
+  dropped `noindex`, added it to sitemap.xml (38 article URLs), emitted exactly
+  one RSS item (pubDate Fri, 07 Aug 2026), and indexed it for search. All four
+  verified against production, not assumed.
+- Timothy confirmed the NOT AN EXIT sign was already on the door. The article's
+  closing paragraph stands as written. **Open question closed.**
+
+**Release complete.** gutlens.net `651ddfa`, timbeach.com `764f41a`, both pushed.
+
+Not done, by choice: social cache re-scrape (LinkedIn Post Inspector for
+`/s/two-rooms/` and `/a/two-rooms/`) is Timothy's to run before he posts.
+Email field remains deferred, filed in beads.
+
