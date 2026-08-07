@@ -717,11 +717,6 @@ body.tts-open .page { padding-bottom: 88px; }
   color: var(--fg);
   border-bottom-color: var(--fg-muted);
 }
-.music-tracks .t-pending {
-  color: var(--fg-faint);
-  font-style: italic;
-}
-
 .music-downloads {
   font-family: var(--font-sans);
   font-size: 13px;

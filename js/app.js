@@ -159,7 +159,11 @@ function renderMusic() {
         </li>
         <li>
           <span class="t-name">HELLO_INNER_CRITIC</span>
-          <span class="t-links t-pending">out Friday</span>
+          <span class="t-links">
+            <a href="https://music.youtube.com/playlist?list=OLAK5uy_lf3W7Vxx8iraNhcscaVuG6bQ1FZUZKStk&si=-ev163wlFEtScEHe" target="_blank" rel="noopener">YT&nbsp;Music</a>
+            <a href="https://open.spotify.com/album/3pAULPbU43IFdKdBb4AcMA" target="_blank" rel="noopener">Spotify</a>
+            <a href="https://music.apple.com/us/album/hello-inner-critic-single/6795483210" target="_blank" rel="noopener">Apple</a>
+          </span>
         </li>
       </ol>
 
