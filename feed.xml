@@ -4,7 +4,7 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Fri, 07 Aug 2026 15:08:46 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Aug 2026 04:07:06 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -100,6 +100,57 @@ i had invited you back in</p>
 <p>They are also on Spotify, Apple Music, and YouTube Music, and streaming them is a completely good way to listen. But streams are weather. Files are furniture.</p>
 <p>Keep them, copy them to your devices, hand them to somebody. Just do not sell them or upload them to streaming services, and we are square.</p>
 <p>The door in that photograph says NOT AN EXIT, and I keep thinking about how much better that is than any title I could have invented. You do not get out of the room you would rather not be in. You get a doorway, and some light coming through it, and three songs to play while you stand there deciding.</p>
+<p>Timothy</p>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Aegix Linux</title>
+      <link>https://timbeach.com/a/aegix-linux/</link>
+      <guid isPermaLink="false">https://timbeach.com/#/article/aegix-linux</guid>
+      <pubDate>Fri, 07 Aug 2026 00:00:00 +0000</pubDate>
+      <description>Nine years from Tank Linux to a downloadable ISO, and why this one is captured from a running machine instead of assembled from guesses.</description>
+      <content:encoded><![CDATA[<p>There is an old line about operating systems as vehicles. A Mac is a sleek sports car: beautiful, expensive, and you are not allowed to open the hood. Windows is the family sedan, practical and everywhere and full of things you did not ask for. And Linux is a tank. Ugly, loud, absurdly overbuilt, and it will go absolutely anywhere you point it.</p>
+<p>I loved that analogy enough that in 2017 I started building my own distribution and called it Tank Linux.</p>
+<p>The name did not survive, and I am glad. A tank is a weapon. What I was actually building had nothing to do with attacking anyone; it was about not being a soft target. So the project became <strong>Aegix</strong>, after the aegis: the shield. Same overbuilt machine, same go-anywhere attitude, but the point is protection rather than aggression. That single change of framing turned out to describe the software better than the tank ever did.</p>
+<p>Nine years later, Aegix has an ISO you can download and install. It's hard to describe how unreasonably excited I am about this.</p>
+<h2>What it actually is</h2>
+<p>Aegix is an Artix Linux base with a suckless graphical environment on top:</p>
+<ul>
+<li><strong>dwm, st, dmenu, and dwmblocks</strong>, compiled from source during the install, patched for Aegix</li>
+<li><strong>runit</strong> as the init system, not systemd</li>
+<li><strong>btrfs</strong> root with subvolumes, so snapshots and rollback are available from day one</li>
+<li><strong>LUKS full-disk encryption, mandatory</strong></li>
+<li>pipewire and wireplumber for audio, vim-style keys everywhere your fingers land</li>
+</ul>
+<p>That fourth item deserves a sentence of its own. The installer does not ask whether you want encryption. There is no checkbox, no &quot;skip for now.&quot; You provide a passphrase or you do not install. If that sounds unreasonable, this is not your distribution, and that is fine. A shield with an optional mode is a decoration.</p>
+<h2>Why I keep doing this</h2>
+<p>The honest answer is that I like living in a computer I understand.</p>
+<p>A suckless desktop is small enough to read. dwm is a couple thousand lines of C. When I want the status bar to behave differently, I edit a config header and recompile, and it takes less time than finding the setting would have taken in a desktop environment. Nothing phones home. Nothing updates itself into a shape I did not ask for. When something breaks, the cause is findable, because there is not that much of it.</p>
+<p>The other reason is that this stuff is evergreen. The X11 and suckless tools I set up years ago still work the same way today. Time spent learning them compounds instead of evaporating with the next major version.</p>
+<h2>What shipping an ISO changes</h2>
+<p>For most of its life, Aegix was an install script. You booted somebody else's ISO, connected to the network, ran <code>curl -LO aegixlinux.org/install.sh</code>, and hoped. That works, and I used it happily for years, but it is not a distribution. It is instructions.</p>
+<p>An ISO is different in a way that is easy to underestimate. It is a claim. It says: this specific set of bytes produces this specific working system, and I will stand behind that. You can hand it to someone. You can <code>dd</code> it to a stick and walk it to a laptop that has never seen the internet. It either boots or it does not, and if it does not, that is my problem and not yours.</p>
+<p>Every Aegix install now writes a file at <code>/etc/aegix-release</code> recording the exact ISO version and the commit of the profile that built it. If you file a bug, that file tells me precisely what you are running. No archaeology.</p>
+<h2>The part that surprises people</h2>
+<p>Here is the thing I find genuinely interesting about how this ISO gets made, and it is not how most distributions work.</p>
+<p>Most distros are assembled. Someone writes a package list and a directory of default config files, builds an image, and hopes the result feels coherent. The defaults are guesses about a hypothetical user, and they rot, because nobody actually lives in them.</p>
+<p>Aegix is captured instead. There is a real machine, the laptop I work on every day, and a pipeline that reads it and turns it into the ISO. When I improve my setup, the distribution inherits the improvement on the next sync. When I delete a script I stopped using, it leaves the ISO too. The desktop you install is the desktop I use, minus me.</p>
+<p>That &quot;minus me&quot; is the hard part, and it is where most of the engineering went. Capturing a personal machine means capturing a lot of things that must never ship: usernames, hostnames, work infrastructure, private bookmarks. So every file gets a recorded decision, ship or never or hand-curated, and every sync runs a gate over the whole result that refuses to build if anything personal survives. There is no override flag. If the gate fires, the fix is to sanitize the file, exclude it, or teach the gate a new rule.</p>
+<p>The gate earns its keep. Building this, it caught a compiled binary with my home directory baked into it. It caught a config file naming my monitors. That class of thing ships in hobby distributions all the time, usually without anyone noticing.</p>
+<h2>What actually broke</h2>
+<p>The unglamorous truth of the last few weeks is that the bugs that mattered were invisible on my machine and obvious on someone else's.</p>
+<p>The application launcher did not open. Not once, on any fresh install. It looked like a missing file, then a stale binary, then a broken keybinding. It was none of those. The setup was assigning a locale for 24-hour clocks and never actually generating it, because the check that was supposed to generate it matched a commented-out line in the config and concluded the work was done. Every program on the system tolerated the missing locale except one, which called <code>setlocale()</code> strictly, failed, and exited instantly. On my machine the locale had been generated years ago, so it worked perfectly, forever.</p>
+<p>Fresh users were also being created without membership in the <code>video</code> group, so changing screen brightness silently required root. My account had that group from an install long enough ago that I had forgotten it happened.</p>
+<p>And an rsync pattern intended to skip one README at the top of the profile was matching at every depth, quietly dropping eight README files out of every ISO ever built, including the documentation for the file manager's plugins.</p>
+<p>None of these were exotic. All of them survived because the machine that builds the distribution is the one place they cannot be seen. That is the argument for shipping an ISO in the first place, and for the audit tool that now compares any installed Aegix against what the image intended to deliver.</p>
+<h2>What I want from you</h2>
+<p>Install it on hardware I do not own and tell me what broke. That is the single most useful contribution to this project, and it needs nothing but a spare machine and a USB stick. There is an audit tool in the repo that will do the comparison and report in one pass; send me the output.</p>
+<p>The other thing I would genuinely love is help with the documentation. The site at aegixlinux.org is a git repository, and the docs are plain markdown in it. If you install Aegix and something in the guide is wrong, unclear, or missing the step that actually tripped you up, that correction is worth more than any feature request, because you can see the gap and I cannot. Open a pull request. Fix a sentence. Add the page you wished existed while you were stuck.</p>
+<p>Documentation written by the person who just struggled with something is always better than documentation written by the person who built it. I have been staring at this system for nine years. I have lost the ability to see which parts are confusing.</p>
+<h2>The shield</h2>
+<p>The tank analogy was fun, and it got the ruggedness right. What it missed is that the reason to run an overbuilt, unfashionable, fully-inspectable computer is not to go conquer anything. It is so that the machine you depend on every day belongs to you: encrypted by default, free of things phoning home, small enough that a curious person can read it end to end and know what it does.</p>
+<p>Nine years, one rename, and an ISO. Go boot it.</p>
+<p>aegixlinux.org</p>
 <p>Timothy</p>
 ]]></content:encoded>
     </item>

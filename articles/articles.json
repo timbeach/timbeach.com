@@ -645,5 +645,22 @@
     "timings": "audio/your-backup-is-a-hypothesis.timings.json",
     "voice": "bm_lewis",
     "duration": 550.955
+  },
+  "aegix-linux.md": {
+    "title": "Aegix Linux",
+    "date": "2026-08-07",
+    "tags": [
+      "linux",
+      "aegix",
+      "suckless",
+      "privacy",
+      "open-source"
+    ],
+    "emoji": "\ud83d\udee1\ufe0f",
+    "summary": "Nine years from Tank Linux to a downloadable ISO, and why this one is captured from a running machine instead of assembled from guesses.",
+    "audio": "audio/aegix-linux.ogg",
+    "timings": "audio/aegix-linux.timings.json",
+    "voice": "bm_lewis",
+    "duration": 507.115
   }
 }
