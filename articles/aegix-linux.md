@@ -1,5 +1,7 @@
 # Aegix Linux
 
+![The Aegix penguin planting a flag beneath a pixel-art mountain, the GRUB boot screen artwork](pix/mt-aso-penguin.png)
+
 There is an old line about operating systems as vehicles. A Mac is a sleek sports car: beautiful, expensive, and you are not allowed to open the hood. Windows is the family sedan, practical and everywhere and full of things you did not ask for. And Linux is a tank. Ugly, loud, absurdly overbuilt, and it will go absolutely anywhere you point it.
 
 I loved that analogy enough that in 2017 I started building my own distribution and called it Tank Linux.
