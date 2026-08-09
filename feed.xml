@@ -4,7 +4,7 @@
     <title>Timothy D Beach</title>
     <link>https://timbeach.com</link>
     <description>Software engineer, recording artist, GNU/Linux enthusiast.</description>
-    <lastBuildDate>Sun, 09 Aug 2026 15:38:41 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 09 Aug 2026 16:20:20 +0000</lastBuildDate>
     <language>en-us</language>
     <atom:link href="https://timbeach.com/feed.xml" rel="self" type="application/rss+xml" />
     <item>
@@ -13,7 +13,7 @@
       <guid isPermaLink="false">https://timbeach.com/#/article/aegix-linux</guid>
       <pubDate>Sun, 09 Aug 2026 00:00:00 +0000</pubDate>
       <description>Nine years from Tank Linux to a downloadable ISO, and why this one is captured from a running machine instead of assembled from guesses.</description>
-      <content:encoded><![CDATA[<p><img src="pix/mt-aso-penguin.png" alt="The Aegix penguin planting a flag beneath a pixel-art mountain, the GRUB boot screen artwork" /></p>
+      <content:encoded><![CDATA[<p><img src="pix/mt-aso-penguin.png" alt="Aegix Linux: a pixel-art penguin holding an Aegix flag on a hillside beneath a starry purple sky" /></p>
 <p>There is an old line about operating systems as vehicles. A Mac is a sleek sports car: beautiful, expensive, and you are not allowed to open the hood. Windows is the family sedan, practical and everywhere and full of things you did not ask for. And Linux is a tank. Ugly, loud, absurdly overbuilt, and it will go absolutely anywhere you point it.</p>
 <p>I loved that analogy enough that in 2017 I started building my own distribution and called it Tank Linux.</p>
 <p>The name did not survive, and I am glad. A tank is a weapon. What I was actually building had nothing to do with attacking anyone; it was about not being a soft target. So the project became <strong>Aegix</strong>, after the aegis: the shield. Same overbuilt machine, same go-anywhere attitude, but the point is protection rather than aggression. That single change of framing turned out to describe the software better than the tank ever did.</p>
